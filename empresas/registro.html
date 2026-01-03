@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>SKANO · Crear cuenta empresa</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- CSS GLOBAL -->
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="icon" type="image/png" href="../img/skano-logo.png" />
+</head>
+
+<body style="min-height:100vh;display:flex;flex-direction:column">
+
+<!-- ================= HEADER SIMPLE ================= -->
+<header class="main-header">
+  <div class="container header-inner">
+    <div class="header-left">
+      <img src="../img/skano-logo.png" class="header-logo-img" alt="SKANO" />
+      <span class="header-logo-text">SKANO</span>
+    </div>
+  </div>
+</header>
+
+<!-- ================= REGISTRO EMPRESA ================= -->
+<section class="section" style="flex:1;display:flex;align-items:center">
+  <div class="container" style="max-width:460px">
+
+    <div class="advanced-card" style="padding:28px 26px">
+      <h2 style="margin-top:0">Crear cuenta empresa</h2>
+
+      <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:22px">
+        Registra tu empresa para acceder al portal web SKANO.
+        <br>
+        <strong>Las cuentas se activan tras validación manual.</strong>
+      </p>
+
+      <form id="companyRegister">
+
+        <!-- NOMBRE EMPRESA -->
+        <div class="field">
+          <label>Nombre empresa</label>
+          <input
+            type="text"
+            placeholder="Ej: Parking Centro SpA"
+            required
+          />
+        </div>
+
+        <!-- RUT EMPRESA -->
+        <div class="field">
+          <label>RUT empresa</label>
+          <input
+            type="text"
+            placeholder="Ej: 76.123.456-7"
+            required
+          />
+        </div>
+
+        <!-- CORREO -->
+        <div class="field">
+          <label>Correo empresa</label>
+          <input
+            type="email"
+            placeholder="contacto@empresa.cl"
+            required
+          />
+        </div>
+
+        <!-- CLAVE -->
+        <div class="field">
+          <label>Clave de acceso</label>
+          <input
+            type="password"
+            placeholder="••••••••"
+            required
+          />
+        </div>
+
+        <!-- BOTÓN -->
+        <button class="btn btn-primary full" type="submit" style="margin-top:10px">
+          Crear cuenta empresa
+        </button>
+      </form>
+
+      <!-- MENSAJE LEGAL -->
+      <p style="margin-top:14px;font-size:0.75rem;color:var(--text-muted);text-align:center">
+        Al crear una cuenta aceptas los
+        <a href="../politicas.html" class="neon-text">términos y condiciones</a>.
+      </p>
+
+      <!-- VOLVER -->
+      <div style="margin-top:14px;text-align:center;font-size:0.8rem">
+        <a href="login.html" class="neon-text">
+          ← Volver a iniciar sesión
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= JS SIMULADO ================= -->
+<script>
+  document
+    .getElementById("companyRegister")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      alert(
+        "Cuenta empresa creada ✅\n\n" +
+        "Tu solicitud quedará en revisión.\n" +
+        "Te contactaremos por correo en 24–48 hrs."
+      );
+
+      window.location.href = "login.html";
+    });
+</script>
+
+</body>
+</html>
+
