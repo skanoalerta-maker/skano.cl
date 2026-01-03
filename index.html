@@ -794,20 +794,23 @@
         <p><strong>Empresas:</strong> contacto@skano.cl</p>
       </div>
 
-      <form class="advanced-card">
+      <form class="advanced-card" id="contactForm">
         <div class="field">
           <label>Correo electrónico</label>
-          <input type="email" required />
+          <input type="email" name="user_email" required />
         </div>
         <div class="field">
           <label>Mensaje</label>
-          <textarea rows="4" required></textarea>
+          <textarea name="message" rows="4" required></textarea>
         </div>
-        <button class="btn btn-primary full" type="submit">Enviar mensaje</button>
+        <button class="btn btn-primary full" type="submit">
+          Enviar mensaje
+        </button>
       </form>
     </div>
   </div>
 </section>
+
 <!-- ================= EMAILJS ================= -->
 <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
 
@@ -839,6 +842,7 @@
       );
     });
 </script>
+
 
 <!-- ================= FOOTER ================= -->
 <footer class="footer">
