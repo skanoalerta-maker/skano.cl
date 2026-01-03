@@ -1031,31 +1031,64 @@ body {
     top: -260px;
   }
 }
-/* ================= WHATSAPP FLOAT – FIX FINAL ================= */
+/* ================= WHATSAPP FLOAT – SKANO PREMIUM ================= */
 
 .whatsapp-float {
   position: fixed;
-  right: 24px;
-  bottom: 24px;
-  width: 60px;
-  height: 60px;
+  right: 26px;
+  bottom: 26px;
+
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #25D366, #1EBE57);
-  color: #fff;
-  font-size: 30px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
+  /* Paleta SKANO (no verde ordinario) */
+  background: radial-gradient(
+    circle at top left,
+    #4af2ff,
+    #0A6CFF 70%
+  );
+
+  color: #ffffff;
+  font-size: 26px;
   text-decoration: none;
 
   z-index: 2147483647;
   pointer-events: auto;
 
-  box-shadow: 0 0 25px rgba(37, 211, 102, 0.9);
+  /* Glass + glow elegante */
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 0 18px rgba(74, 242, 255, 0.35),
+    0 0 32px rgba(10, 108, 255, 0.45);
+
+  transition: 
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    filter 0.18s ease;
 }
 
+/* Hover PRO (no infantil) */
 .whatsapp-float:hover {
-  transform: scale(1.08);
-  box-shadow: 0 0 35px rgba(37, 211, 102, 1);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow:
+    0 0 26px rgba(74, 242, 255, 0.6),
+    0 0 44px rgba(10, 108, 255, 0.85);
+  filter: brightness(1.08);
+}
+
+/* Mobile: un poco más discreto */
+@media (max-width: 720px) {
+  .whatsapp-float {
+    width: 54px;
+    height: 54px;
+    font-size: 24px;
+    right: 20px;
+    bottom: 20px;
+  }
 }
 
