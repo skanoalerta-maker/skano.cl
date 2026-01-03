@@ -1031,6 +1031,35 @@ body {
     top: -260px;
   }
 }
+/* ===========================
+   FIX INTERACCIÓN FORMULARIOS
+   =========================== */
+
+/* Nunca bloquear inputs dentro de reveal */
+.reveal-on-scroll input,
+.reveal-on-scroll textarea,
+.reveal-on-scroll button {
+  pointer-events: auto !important;
+}
+
+/* Evita que transform bloquee foco */
+.reveal-on-scroll {
+  will-change: transform, opacity;
+}
+
+/* Asegura prioridad de formularios */
+.contact-grid form,
+.contact-grid .advanced-card {
+  position: relative;
+  z-index: 5;
+}
+
+/* Elimina overlays decorativos */
+.advanced-card::before,
+.advanced-card::after {
+  pointer-events: none !important;
+}
+
 /* ================= WHATSAPP FLOAT – SKANO PRO ================= */
 
 .whatsapp-float {
