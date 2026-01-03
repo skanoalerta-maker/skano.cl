@@ -585,46 +585,36 @@ body {
   color: var(--text-muted);
   margin-top: 10px;
 }
-/* ===== DOCUMENTOS – LIMPIO Y EDITORIAL ===== */
+/* ================= DOCUMENTOS – FIX DEFINITIVO ================= */
 
-.container.narrow {
-  max-width: 900px;
+#documentos .container {
+  max-width: 900px; /* evita el vacío lateral */
 }
 
-.docs-intro {
-  margin: 40px auto 50px;
-  text-align: left;
+/* Elimina herencia de grids grandes */
+#documentos .features-grid {
+  display: block;
 }
 
-.docs-intro h3 {
-  margin-bottom: 12px;
-  font-size: 1.2rem;
-}
-
-.doc-list.highlight li {
-  font-weight: 500;
-  color: #dbe6ff;
-}
-
+/* Grid exclusivo para documentos */
 .documents-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 28px;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-top: 24px;
 }
 
+/* Tarjetas más bajas, no columnas infinitas */
 .document-card {
   padding: 26px;
   border-radius: 18px;
-  background: rgba(10, 20, 40, 0.35);
-  border: 1px solid rgba(120, 180, 255, 0.2);
+  background: rgba(10, 20, 40, 0.38);
+  border: 1px solid rgba(120, 180, 255, 0.22);
 }
 
-.document-card h3 {
-  margin-bottom: 6px;
-}
-
+/* Texto más editorial */
 .document-card p {
-  margin-bottom: 10px;
+  max-width: 420px;
 }
 
 /* Mobile */
