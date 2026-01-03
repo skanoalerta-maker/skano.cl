@@ -875,16 +875,37 @@
 </footer>
 
 <!-- ================= WHATSAPP FLOAT ================= -->
-<a
-  href="https://wa.me/56966703303"
-  class="whatsapp-float"
-  target="_blank"
-  rel="noopener"
-  aria-label="Soporte SKANO por WhatsApp"
-  title="Habla con un asesor SKANO"
->
-  <!-- SVG -->
-</a>
+.whatsapp-float {
+  position: fixed;
+  right: 26px;
+  bottom: 26px;
+
+  width: 52px;
+  height: 52px;
+  border-radius: 14px; /* 🔑 ya no redondo */
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: linear-gradient(
+    145deg,
+    rgba(10, 108, 255, 0.9),
+    rgba(6, 22, 80, 0.9)
+  );
+
+  color: #eaf2ff;
+
+  z-index: 2147483647;
+  backdrop-filter: blur(10px);
+
+  /* 🔥 Glow MUCHO más sutil */
+  box-shadow:
+    0 6px 18px rgba(10, 108, 255, 0.35),
+    inset 0 0 6px rgba(255,255,255,0.06);
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
 <!-- ================= PANEL LATERAL WEB SKANO ================= -->
 <div class="side-panel">
