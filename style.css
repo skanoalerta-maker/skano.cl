@@ -1120,3 +1120,35 @@ body {
     bottom: 20px;
   }
 }
+/* ===========================
+   MENSAJE FINAL COMUNIDAD
+   =========================== */
+
+.community-message {
+  display: block;
+  padding: 40px 0 20px;
+  text-align: center;
+  position: relative;
+  z-index: 3;
+}
+
+.community-text {
+  max-width: 820px;
+  margin: 0 auto;
+  font-size: 16px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.community-text strong {
+  display: block;
+  font-size: 22px;
+  margin-bottom: 10px;
+  color: #38e8ff;
+}
+
+.community-text em {
+  display: block;
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.75);
+}
