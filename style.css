@@ -61,31 +61,36 @@ body {
   font-size: 0.98rem;
 }
 
-/* HEADER */
+/* ================= HEADER / NAV (FIX DEFINITIVO) ================= */
+
 .main-header {
   position: sticky;
   top: 0;
-  z-index: 40;
-  backdrop-filter: blur(20px);
+  z-index: 50;
+  backdrop-filter: blur(18px);
   background: linear-gradient(
     to bottom,
-    rgba(2, 6, 23, 0.97),
-    rgba(2, 6, 23, 0.82)
+    rgba(2, 6, 23, 0.96),
+    rgba(2, 6, 23, 0.85)
   );
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  overflow-x: auto;
 }
 
 .header-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 18px;
   padding: 14px 0;
+  min-width: max-content;
 }
 
 .header-left {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
 }
 
 .header-logo-img {
@@ -96,31 +101,41 @@ body {
 
 .header-logo-text {
   font-weight: 800;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   letter-spacing: 0.18em;
   color: var(--accent);
 }
 
+/* NAV CORREDIZO */
 .nav-menu {
   display: flex;
-  gap: 22px;
   align-items: center;
+  gap: 16px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.nav-menu::-webkit-scrollbar {
+  display: none;
 }
 
 .nav-menu a {
   color: var(--text-muted);
   text-decoration: none;
-  font-size: 0.85rem;
-  letter-spacing: 0.14em;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   position: relative;
+  padding: 6px 2px;
 }
 
 .nav-menu a::after {
   content: "";
   position: absolute;
   left: 0;
-  bottom: -6px;
+  bottom: -5px;
   width: 0;
   height: 2px;
   background: linear-gradient(90deg, #4af2ff, #0A6CFF);
@@ -138,12 +153,6 @@ body {
 
 .nav-toggle {
   display: none;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 999px;
-  color: var(--text-main);
-  font-size: 1.1rem;
-  padding: 4px 10px;
 }
 
 /* HERO */
