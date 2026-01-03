@@ -13,7 +13,7 @@
 <header class="main-header">
   <div class="container header-inner">
     <div class="header-left">
-      <img src="img/skano-logo.png" class="header-logo-img" />
+      <img src="img/skano-logo.png" class="header-logo-img" alt="Logo SKANO" />
       <span class="header-logo-text">SKANO</span>
     </div>
 
@@ -29,7 +29,7 @@
       <a href="#contacto">Contacto</a>
     </nav>
 
-    <button class="nav-toggle" id="navToggle">☰</button>
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">☰</button>
   </div>
 </header>
 
@@ -86,10 +86,10 @@
 
         <div class="hero-mockups">
           <div class="phone-frame">
-            <img src="img/app-mapa-reportar.png" />
+            <img src="img/app-mapa-reportar.png" alt="App SKANO - mapa y reportes" />
           </div>
           <div class="phone-frame phone-dark">
-            <img src="img/app-perfil-recompensas.png" />
+            <img src="img/app-perfil-recompensas.png" alt="App SKANO - perfil y recompensas" />
           </div>
         </div>
 
@@ -197,6 +197,7 @@
     </div>
   </div>
 </section>
+
 <!-- ================= QUE ES LA APP ================= -->
 <section id="app" class="section section-alt">
   <div class="container">
@@ -215,7 +216,7 @@
         <h3>📸 Reportar vehículos sospechosos</h3>
         <p>
           Cualquier persona puede usar la app para reportar una patente
-          sospechosa.  
+          sospechosa.
           Para que el reporte sea válido, la app solicita:
         </p>
         <ul class="mini-list">
@@ -252,6 +253,33 @@
           La identidad del reportante <strong>nunca se comparte</strong>.
         </p>
       </div>
+
+      <!-- ===== RECOMPENSAS ===== -->
+      <div class="advanced-card">
+        <h3>🏆 Recompensas reales</h3>
+        <p>
+          Los reportes válidos generan <strong>copas</strong> que permiten
+          acceder a recompensas económicas.
+        </p>
+        <p>
+          Además, compartir la app genera <strong>medallas</strong>
+          por referidos con reportes verificados.
+        </p>
+      </div>
+
+    </div>
+
+    <p class="section-lead" style="margin-top:24px;font-size:0.85rem;">
+      ✔ SKANO no rastrea personas
+      <br>
+      ✔ No controla ni bloquea vehículos
+      <br>
+      ✔ Actúa como intermediario seguro entre la comunidad y los dueños
+    </p>
+
+  </div>
+</section>
+
 <!-- ================= DOCUMENTOS ================= -->
 <section id="documentos" class="section section-alt">
   <div class="container docs-container">
@@ -260,80 +288,11 @@
 
     <p class="section-lead">
       Para proteger a la comunidad y evitar fraudes, SKANO exige validación
-      obligatoria de identidad y propiedad.  
+      obligatoria de identidad y propiedad.
       <strong>Sin documentos válidos no existen reportes ni alertas.</strong>
     </p>
 
-    <!-- ===== REQUISITOS USUARIO (SIN CAJA) ===== -->
-    <div class="docs-intro">
-      <h3>✅ Requisitos para registrarse y validarse como usuario</h3>
-
-      <ul class="doc-list">
-        <li>✔ Registro con correo electrónico válido</li>
-        <li>✔ Cédula de identidad vigente</li>
-        <li>✔ Creación de PIN de seguridad personal</li>
-        <li>✔ Selfie en tiempo real (no fotos ni videos)</li>
-        <li>✔ Aceptación de términos, políticas y protocolos SKANO</li>
-      </ul>
-
-      <p class="small">
-        Solo los usuarios correctamente validados pueden realizar reportes
-        y acceder a los sistemas de recompensas.
-      </p>
-    </div>
-
-    <!-- ===== DOCUMENTOS ===== -->
-    <div class="docs-grid">
-
-      <div class="docs-card">
-        <h3>👤 Documentos del usuario</h3>
-        <p>Validan que la persona que utiliza SKANO es real y trazable.</p>
-
-        <ul class="doc-list">
-          <li>🪪 Cédula de identidad vigente</li>
-          <li>🤳 Selfie en tiempo real</li>
-          <li>🔐 PIN de seguridad</li>
-        </ul>
-
-        <p class="small">
-          La identidad del usuario no se comparte con terceros.
-        </p>
-      </div>
-
-      <div class="docs-card">
-        <h3>🚗 Documentos del vehículo</h3>
-        <p>Solo el dueño legal puede registrar un vehículo en SKANO.</p>
-
-        <ul class="doc-list">
-          <li>📄 Padrón del vehículo</li>
-          <li>🧾 Permiso de circulación</li>
-          <li>🚔 Constancia policial (en caso de robo)</li>
-        </ul>
-
-        <p class="small">
-          ❌ No se aceptan cartas de poder ni representantes.
-        </p>
-      </div>
-
-    </div>
-
-  </div>
-</section>
-
-<style>
-<!-- ================= DOCUMENTOS ================= -->
-<section id="documentos" class="section section-alt">
-  <div class="container narrow">
-
-    <h2 class="section-title">Documentos y verificación en SKANO</h2>
-
-    <p class="section-lead">
-      Para proteger a la comunidad y evitar fraudes, SKANO exige validación
-      obligatoria de identidad y propiedad.  
-      <strong>Sin documentos válidos no existen reportes ni alertas.</strong>
-    </p>
-
-    <!-- ===== REQUISITOS USUARIO (SIN TARJETA) ===== -->
+    <!-- ===== REQUISITOS USUARIO ===== -->
     <div class="docs-intro">
       <h3>✅ Requisitos para registrarse y validarse como usuario</h3>
 
@@ -351,7 +310,7 @@
       </p>
     </div>
 
-    <!-- ===== DOCUMENTOS ===== -->
+    <!-- ===== DOCUMENTOS (2 COLUMNAS) ===== -->
     <div class="documents-grid">
 
       <div class="document-card">
@@ -386,8 +345,6 @@
 
     </div>
 
-  </div>
-</section>
     <!-- ================= REGLAS CLAVE ================= -->
     <div class="advanced-card" style="margin-top:30px;">
       <h3>⚠️ Reglas obligatorias del sistema</h3>
@@ -425,39 +382,13 @@
   </div>
 </section>
 
-      <!-- ===== RECOMPENSAS ===== -->
-      <div class="advanced-card">
-        <h3>🏆 Recompensas reales</h3>
-        <p>
-          Los reportes válidos generan <strong>copas</strong> que permiten
-          acceder a recompensas económicas.
-        </p>
-        <p>
-          Además, compartir la app genera <strong>medallas</strong>
-          por referidos con reportes verificados.
-        </p>
-      </div>
-
-    </div>
-
-    <p class="section-lead" style="margin-top:24px;font-size:0.85rem;">
-      ✔ SKANO no rastrea personas  
-      <br>
-      ✔ No controla ni bloquea vehículos  
-      <br>
-      ✔ Actúa como intermediario seguro entre la comunidad y los dueños
-    </p>
-
-  </div>
-</section>
-
 <!-- ================= PLANES ================= -->
 <section id="planes" class="section">
   <div class="container">
 
     <h2 class="section-title">Planes SKANO</h2>
     <p class="section-lead">
-      Reportar vehículos es <strong>100% gratuito</strong>.  
+      Reportar vehículos es <strong>100% gratuito</strong>.
       Los planes aplican solo para dueños y empresas que desean
       <strong>recibir alertas verificadas</strong>.
     </p>
@@ -478,7 +409,7 @@
           <li>✔ Acceso al sistema de recompensas</li>
         </ul>
 
-        <button class="btn btn-primary full">
+        <button class="btn btn-primary full" type="button">
           💳 Pagar con Mercado Pago
         </button>
 
@@ -513,9 +444,9 @@
     </div>
 
     <p class="section-lead" style="margin-top:24px;font-size:0.85rem;">
-      ✔ No existe permanencia  
+      ✔ No existe permanencia
       <br>
-      ✔ Cada vehículo se activa individualmente  
+      ✔ Cada vehículo se activa individualmente
       <br>
       ✔ SKANO no bloquea ni controla vehículos
     </p>
@@ -531,7 +462,7 @@
     <p class="section-lead">
       En SKANO existen <strong>dos formas reales de generar ingresos</strong>:
       <br>
-      🏆 reportando vehículos robados correctamente  
+      🏆 reportando vehículos robados correctamente
       <br>
       🥇 compartiendo SKANO por WhatsApp
     </p>
@@ -613,16 +544,15 @@
     </div>
 
     <p class="section-lead" style="margin-top:24px;font-size:0.85rem;">
-      ✔ Los usuarios pueden invitar a cuantas personas quieran  
+      ✔ Los usuarios pueden invitar a cuantas personas quieran
       <br>
-      ✔ Solo se paga una vez por grupo o cadena de difusión  
+      ✔ Solo se paga una vez por grupo o cadena de difusión
       <br>
       ✔ Todos los pagos se realizan tras validación antifraude
     </p>
 
   </div>
 </section>
-
 
 <!-- ================= CONTACTO ================= -->
 <section id="contacto" class="section">
@@ -645,7 +575,7 @@
           <label>Mensaje</label>
           <textarea rows="4" required></textarea>
         </div>
-        <button class="btn btn-primary full">Enviar mensaje</button>
+        <button class="btn btn-primary full" type="submit">Enviar mensaje</button>
       </form>
     </div>
   </div>
@@ -655,7 +585,7 @@
 <footer class="footer">
   <div class="container footer-grid">
     <div>
-      <img src="img/skano-logo.png" class="footer-logo" />
+      <img src="img/skano-logo.png" class="footer-logo" alt="Logo SKANO" />
       <p class="footer-slogan">“Reporta seguro, los buenos somos más.”</p>
     </div>
     <div>
@@ -665,17 +595,18 @@
 </footer>
 
 <!-- ================= WHATSAPP FLOAT ================= -->
-<a href="https://wa.me/56966703303" class="whatsapp-float" target="_blank" aria-label="WhatsApp">
+<a href="https://wa.me/56966703303" class="whatsapp-float" target="_blank" rel="noopener" aria-label="WhatsApp">
   💬
 </a>
 
 <script>
-const navToggle = document.getElementById("navToggle");
-const navMenu = document.getElementById("navMenu");
-navToggle.onclick = () => navMenu.classList.toggle("open");
+  const navToggle = document.getElementById("navToggle");
+  const navMenu = document.getElementById("navMenu");
+  navToggle.onclick = () => navMenu.classList.toggle("open");
 </script>
 
 </body>
 </html>
+
 
 
