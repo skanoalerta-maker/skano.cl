@@ -585,63 +585,75 @@ body {
   color: var(--text-muted);
   margin-top: 10px;
 }
-/* ================= FIX DEFINITIVO DOCUMENTOS ================= */
+/* ================= DOCUMENTOS – FIX FINAL DEFINITIVO ================= */
 
-/* El contenedor principal de documentos */
-#documentos .container {
-  display: flex;
-  flex-direction: column;
-  gap: 36px;
+/* Fuerza el centrado real del contenido */
+#documentos {
+  position: relative;
 }
 
-/* Grid exclusivo para Usuario / Vehículo */
+#documentos .container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Título alineado correctamente */
+#documentos h2,
+#documentos .section-title,
+#documentos .section-lead {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Grid SOLO para Usuario / Vehículo */
 #documentos .features-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(320px, 1fr));
+  justify-content: center;
+  align-items: stretch;
   gap: 32px;
-  margin-top: 0;
+  margin: 40px auto 0;
+  max-width: 900px;
 }
 
-/* Cards de documentos SIN crecer raro */
+/* Cards informativas (no flotan, no crecen raro) */
 #documentos .advanced-card {
-  height: auto;
-  min-height: unset;
+  width: 100%;
+  max-width: none;
   transform: none;
 }
 
-/* Desactiva hover solo en documentos (informativo) */
+/* Desactiva animación exagerada SOLO aquí */
 #documentos .advanced-card:hover {
   transform: none;
   box-shadow:
-    0 0 22px rgba(0, 160, 255, 0.10),
-    inset 0 0 20px rgba(0, 120, 255, 0.08),
-    0 12px 40px rgba(0, 0, 0, 0.7);
+    0 0 18px rgba(0, 160, 255, 0.12),
+    inset 0 0 18px rgba(0, 120, 255, 0.08),
+    0 12px 40px rgba(0, 0, 0, 0.75);
 }
 
-/* Listas bien alineadas */
-#documentos .doc-list {
-  margin: 14px 0;
-  padding: 0;
+/* Evita que el fondo "empuje" visualmente */
+#documentos::before,
+#documentos::after {
+  content: none !important;
 }
 
+/* Texto limpio y legible */
 #documentos .doc-list li {
+  line-height: 1.5;
   margin-bottom: 8px;
-  line-height: 1.45;
 }
 
-/* Texto pequeño consistente */
-#documentos .small {
-  font-size: 0.85rem;
-  opacity: 0.8;
-}
-
-/* Responsive: 1 columna en móvil */
+/* Responsive correcto */
 @media (max-width: 900px) {
   #documentos .features-grid {
     grid-template-columns: 1fr;
+    max-width: 520px;
   }
 }
-
 
 /* PLANES */
 .plans-grid {
