@@ -7,182 +7,165 @@
 
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" type="image/png" href="img/skano-logo.png" />
+
+  <!-- BOTÓN WHATSAPP -->
+  <style>
+    .whatsapp-float {
+      position: fixed;
+      width: 60px;
+      height: 60px;
+      bottom: 20px;
+      right: 20px;
+      background-color: #25d366;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.35);
+      z-index: 999;
+      text-decoration: none;
+    }
+    .whatsapp-float:hover {
+      background-color: #1ebe5d;
+    }
+  </style>
 </head>
 <body>
 
-  <!-- BARRA SUPERIOR -->
-  <header class="main-header">
-    <div class="container header-inner">
-      <div class="header-left">
-        <img src="img/skano-logo.png" alt="Logo SKANO" class="header-logo-img" />
-        <span class="header-logo-text">SKANO</span>
+<!-- BARRA SUPERIOR -->
+<header class="main-header">
+  <div class="container header-inner">
+    <div class="header-left">
+      <img src="img/skano-logo.png" alt="Logo SKANO" class="header-logo-img" />
+      <span class="header-logo-text">SKANO</span>
+    </div>
+
+    <nav class="nav-menu" id="navMenu">
+      <a href="#inicio">Inicio</a>
+      <a href="#que-es">Qué es</a>
+      <a href="#seguridad">Seguridad</a>
+      <a href="#app">App</a>
+      <a href="#documentos">Documentos</a>
+      <a href="#planes">Planes</a>
+      <a href="#empresas">Empresas</a>
+      <a href="#recompensas">Recompensas</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">☰</button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="inicio" class="hero">
+  <div class="hero-bg-orbit"></div>
+  <div class="hero-bg-grid"></div>
+  <div class="hero-gradient"></div>
+
+  <div class="hero-grid container">
+    <div class="hero-left reveal-on-scroll">
+      <p class="hero-pill">Seguridad ciudadana · Tecnología · Comunidad</p>
+
+      <h1 class="hero-title">
+        Encuentra tu vehículo robado
+        <span class="hero-title-highlight">con ayuda de la comunidad</span>
+      </h1>
+
+      <p class="hero-text">
+        SKANO permite detectar vehículos robados mediante reportes verificados,
+        protocolos de seguridad y un sistema antifraude diseñado para proteger
+        tanto a la comunidad como al propietario.
+      </p>
+
+      <!-- BOTONES ORIGINALES -->
+      <div class="hero-buttons">
+        <a href="#planes" class="btn btn-primary">Soy dueño del vehículo</a>
+        <a href="#que-es" class="btn btn-ghost">Quiero entender cómo funciona</a>
       </div>
 
-      <nav class="nav-menu" id="navMenu">
-        <a href="#inicio">Inicio</a>
-        <a href="#que-es">Qué es</a>
-        <a href="#seguridad">Seguridad</a>
-        <a href="#app">App</a>
-        <a href="#documentos">Documentos</a>
-        <a href="#planes">Planes</a>
-        <a href="#empresas">Empresas</a>
-        <a href="#recompensas">Recompensas</a>
-        <a href="#contacto">Contacto</a>
-      </nav>
+      <!-- BOTONES NUEVOS -->
+      <div class="hero-buttons" style="margin-top:12px;">
+        <a href="#" class="btn btn-primary">Descargar app Android</a>
+        <a href="#" class="btn btn-ghost">Descargar app iPhone (próximamente)</a>
+      </div>
 
-      <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">☰</button>
+      <div class="hero-buttons" style="margin-top:12px;">
+        <a href="https://skano.cl/empresas" class="btn btn-primary">
+          Portal Web SKANO (Empresas y Sistemas)
+        </a>
+      </div>
+
+      <div class="hero-note">
+        <span>Reportar patentes es 100% gratuito para la comunidad.</span>
+        <span>La app móvil es necesaria para reportes ciudadanos válidos.</span>
+      </div>
+
+      <div class="hero-help-box">
+        <span>¿Tuviste problemas al publicar tu vehículo o subir documentos?</span>
+        <a href="mailto:skano.oficial@gmail.com" class="btn-help">
+          Enviar documentos a un asesor
+        </a>
+      </div>
     </div>
-  </header>
 
-  <!-- HERO -->
-  <section id="inicio" class="hero">
-    <div class="hero-bg-orbit"></div>
-    <div class="hero-bg-grid"></div>
-    <div class="hero-gradient"></div>
-
-    <div class="hero-grid container">
-      <div class="hero-left reveal-on-scroll">
-        <p class="hero-pill">Seguridad ciudadana · Tecnología · Comunidad</p>
-
-        <h1 class="hero-title">
-          Encuentra tu vehículo robado
-          <span class="hero-title-highlight">con ayuda de la comunidad</span>
-        </h1>
-
-        <p class="hero-text">
-          SKANO combina reportes ciudadanos verificados, verificación facial nivel 3,
-          geolocalización controlada y un sistema antifraude para ayudarte a ubicar
-          tu vehículo robado o clonado sin exponerte a los delincuentes.
+    <div class="hero-right reveal-on-scroll">
+      <div class="glass-card hero-card">
+        <p class="hero-card-label">Vista previa app SKANO</p>
+        <div class="hero-mockups">
+          <div class="phone-frame phone-light">
+            <img src="img/app-mapa-reportar.png" alt="Mapa SKANO" />
+          </div>
+          <div class="phone-frame phone-dark">
+            <img src="img/app-perfil-recompensas.png" alt="Recompensas SKANO" />
+          </div>
+        </div>
+        <p class="hero-card-foot">
+          Alertas en tiempo real, reportes verificados y protección de identidad del reportante.
         </p>
-
-        <!-- BOTONES ORIGINALES -->
-        <div class="hero-buttons">
-          <a href="#planes" class="btn btn-primary">Soy dueño del vehículo</a>
-          <a href="#que-es" class="btn btn-ghost">Quiero entender cómo funciona</a>
-        </div>
-
-        <!-- BOTONES AGREGADOS (NO REEMPLAZAN) -->
-        <div class="hero-buttons" style="margin-top:12px;">
-          <a href="#" class="btn btn-primary">📱 Descargar app Android</a>
-          <a href="#" class="btn btn-ghost">🌐 Acceso Web SKANO (Parquímetros)</a>
-        </div>
-
-        <div class="hero-note">
-          <span>Reportar patentes es 100% gratuito para la comunidad.</span>
-          <span>Solo el dueño contrata la protección SKANO.</span>
-        </div>
-
-        <div class="hero-help-box">
-          <span>¿Tuviste problemas al publicar tu vehículo o subir documentos?</span>
-          <a href="mailto:skano.oficial@gmail.com" class="btn-help">
-            Enviar documentos a un asesor
-          </a>
-        </div>
-      </div>
-
-      <div class="hero-right reveal-on-scroll">
-        <div class="glass-card hero-card">
-          <p class="hero-card-label">Vista previa app SKANO</p>
-          <div class="hero-mockups">
-            <div class="phone-frame phone-light">
-              <img src="img/app-mapa-reportar.png" alt="Mapa SKANO" />
-            </div>
-            <div class="phone-frame phone-dark">
-              <img src="img/app-perfil-recompensas.png" alt="Recompensas SKANO" />
-            </div>
-          </div>
-          <p class="hero-card-foot">
-            Alertas en tiempo real, reportes verificados y protección de identidad del reportante.
-          </p>
-        </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- RECOMPENSAS -->
-  <section id="recompensas" class="section">
-    <div class="container">
-      <h2 class="section-title reveal-on-scroll">Sistema de recompensas SKANO</h2>
-      <p class="section-lead reveal-on-scroll">
-        Premios económicos para quienes ayudan a ubicar vehículos robados estacionados mediante reportes confirmados.
-      </p>
+<!-- SEGURIDAD (TEXTO ACTUALIZADO, SECCIÓN INTACTA) -->
+<section id="seguridad" class="section section-alt">
+  <div class="container">
+    <h2 class="section-title reveal-on-scroll">Seguridad y antifraude SKANO</h2>
 
-      <div class="rewards-grid">
-        <article class="glass-card reward-card reward-bronze advanced-card reveal-on-scroll">
-          <div style="font-size:2rem;">🥉</div>
-          <h3>Bronce</h3>
-          <p class="hallazgos">0 – 5 hallazgos</p>
-          <p class="monto">$50.000</p>
-        </article>
+    <div class="security-grid">
+      <article class="security-card advanced-card reveal-on-scroll">
+        <h3>Autenticación segura</h3>
+        <p>
+          Acciones sensibles protegidas mediante PIN de 6 dígitos.
+          Para reportes válidos se solicita selfie puntual como medida antifraude.
+        </p>
+      </article>
 
-        <article class="glass-card reward-card reward-silver advanced-card reveal-on-scroll">
-          <div style="font-size:2rem;">🥈</div>
-          <h3>Plata</h3>
-          <p class="hallazgos">6 – 10 hallazgos</p>
-          <p class="monto">$75.000</p>
-        </article>
-
-        <article class="glass-card reward-card reward-gold advanced-card reveal-on-scroll">
-          <div style="font-size:2rem;">🥇</div>
-          <h3>Oro</h3>
-          <p class="hallazgos">11 – 30 hallazgos</p>
-          <p class="monto">$100.000</p>
-        </article>
-
-        <article class="glass-card reward-card reward-elite advanced-card reveal-on-scroll">
-          <div style="font-size:2rem;">🏆</div>
-          <h3>Elite</h3>
-          <p class="hallazgos">31 – 50 hallazgos</p>
-          <p class="monto">$150.000</p>
-        </article>
-      </div>
-
-      <p class="section-lead" style="margin-top:26px; font-size:0.85rem;">
-        Los niveles tienen una vigencia de 2 años desde tu primer hallazgo confirmado.  
-        SKANO puede rechazar recompensas en casos de fraude o incumplimiento de las reglas.
-      </p>
+      <article class="security-card advanced-card reveal-on-scroll">
+        <h3>Sistema antifraude</h3>
+        <p>
+          Análisis de comportamiento, validación de evidencia y revisión manual
+          ante patrones sospechosos.
+        </p>
+      </article>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- EMPRESAS -->
-  <section id="empresas" class="section section-alt">
-    <div class="container">
-      <h2 class="section-title reveal-on-scroll">SKANO para empresas y flotas</h2>
-      <p class="section-lead reveal-on-scroll">
-        Especial para empresas con vehículos en operación, leasing o prenda.
-      </p>
+<script src="script.js"></script>
 
-      <div class="plans-grid">
-        <article class="glass-card plan-card advanced-card reveal-on-scroll">
-          <div class="badge badge-blue">Plan Empresas</div>
-          <h3>Protección para flotas</h3>
+<!-- BOTÓN WHATSAPP -->
+<a
+  href="https://wa.me/569XXXXXXXX?text=Hola%20quiero%20información%20sobre%20SKANO"
+  class="whatsapp-float"
+  target="_blank"
+  aria-label="WhatsApp SKANO"
+>
+  💬
+</a>
 
-          <p class="price">Desde <strong>$10.990</strong> / vehículo</p>
-
-          <ul class="plan-list">
-            <li>Registro de flota completa y panel administrativo.</li>
-            <li>Alertas simultáneas para el equipo responsable.</li>
-            <li>Compatible con leasing y vehículos en prenda.</li>
-          </ul>
-
-          <div class="empresa-precios">
-            <p><strong>0 – 5 vehículos:</strong> $16.990 c/u</p>
-            <p><strong>6 – 19 vehículos:</strong> $13.000 c/u</p>
-            <p><strong>20 o más vehículos:</strong> $10.990 c/u</p>
-          </div>
-
-          <!-- BOTÓN AGREGADO -->
-          <a href="#" class="btn btn-primary full" style="margin-top:14px;">
-            🌐 Acceso Web SKANO – Integración Parquímetros
-          </a>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTACTO + FOOTER SE MANTIENEN IGUALES -->
-  <!-- (todo lo demás de tu archivo original sigue sin cambios) -->
-
-  <script src="script.js"></script>
 </body>
 </html>
+
