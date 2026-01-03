@@ -1035,21 +1035,20 @@ body {
 
 .whatsapp-float {
   position: fixed;
-  right: 22px;
-  bottom: 22px;
-  width: 58px;
-  height: 58px;
+  right: 24px;
+  bottom: 24px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #25D366, #1EBE57);
-  color: #ffffff;
-  font-size: 28px;
+  background: #25D366;
+  color: #fff;
+  font-size: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  z-index: 9999;
-  box-shadow: 0 0 20px rgba(37, 211, 102, 0.8);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  z-index: 2147483647; /* ← CLAVE */
+  box-shadow: 0 0 25px rgba(37, 211, 102, 0.9);
 }
 
 .whatsapp-float:hover {
