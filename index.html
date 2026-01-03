@@ -813,17 +813,14 @@
 
 <!-- ================= EMAILJS ================= -->
 <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
-
 <script>
   (function () {
     emailjs.init("TU_PUBLIC_KEY");
   })();
-</script>
 
-<script>
-  document
-    .getElementById("contactForm")
-    .addEventListener("submit", function (e) {
+  const form = document.getElementById("contactForm");
+  if (form) {
+    form.addEventListener("submit", function (e) {
       e.preventDefault();
 
       emailjs.sendForm(
@@ -833,7 +830,7 @@
       ).then(
         function () {
           alert("Mensaje enviado correctamente ✅");
-          document.getElementById("contactForm").reset();
+          form.reset();
         },
         function (error) {
           alert("Error al enviar el mensaje ❌");
@@ -841,8 +838,28 @@
         }
       );
     });
+  }
 </script>
 
+<!-- ================= MENSAJE FINAL ================= -->
+<section class="final-message">
+  <div class="container">
+    <div class="final-card">
+      <h3 class="final-slogan">“Reporta seguro, los buenos somos más.”</h3>
+
+      <p class="final-text">
+        Con tu ayuda, SKANO puede marcar la diferencia.
+        Cada reporte, cada mensaje y cada apoyo de la comunidad nos acerca a convertir
+        SKANO en la mejor aplicación para la búsqueda y recuperación de vehículos robados.
+      </p>
+
+      <p class="final-text subtle">
+        Porque cuando la tecnología y las personas se unen,
+        la seguridad se construye entre todos.
+      </p>
+    </div>
+  </div>
+</section>
 
 <!-- ================= FOOTER ================= -->
 <footer class="footer">
@@ -866,49 +883,8 @@
   aria-label="Soporte SKANO por WhatsApp"
   title="Habla con un asesor SKANO"
 >
-  <!-- Icono minimal pro -->
-  <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
-       xmlns="http://www.w3.org/2000/svg">
-    <path
-      d="M20.52 3.48A11.82 11.82 0 0012.01 0C5.39 0 .01 5.38.01 12a11.9 11.9 0 001.6 5.95L0 24l6.2-1.63A11.95 11.95 0 0012.01 24C18.63 24 24 18.62 24 12a11.82 11.82 0 00-3.48-8.52z"
-      fill="currentColor"
-      opacity="0.9"
-    />
-    <path
-      d="M17.5 14.6c-.3-.15-1.8-.9-2.08-1s-.48-.15-.68.15-.78 1-.96 1.2-.35.23-.65.08a9.6 9.6 0 01-2.82-1.74 10.5 10.5 0 01-1.94-2.42c-.2-.35 0-.53.15-.68.13-.13.3-.35.45-.53.15-.18.2-.3.3-.5.1-.2.05-.38-.03-.53s-.68-1.65-.93-2.26c-.24-.58-.48-.5-.68-.5h-.58c-.2 0-.53.08-.8.38s-1.05 1.03-1.05 2.5 1.08 2.9 1.23 3.1c.15.2 2.12 3.24 5.14 4.54.72.3 1.28.48 1.72.62.72.23 1.38.2 1.9.12.58-.1 1.8-.73 2.05-1.43.25-.7.25-1.3.18-1.43-.08-.13-.28-.2-.58-.35z"
-      fill="currentColor"
-    />
-  </svg>
+  <!-- SVG -->
 </a>
-
-<script>
-  const navToggle = document.getElementById("navToggle");
-  const navMenu = document.getElementById("navMenu");
-  navToggle.onclick = () => navMenu.classList.toggle("open");
-</script>
-
-</body>
-</html>
-
-<!-- ================= MENSAJE FINAL ================= -->
-<section class="final-message">
-  <div class="container">
-    <div class="final-card">
-      <h3 class="final-slogan">“Reporta seguro, los buenos somos más.”</h3>
-
-      <p class="final-text">
-        Con tu ayuda, SKANO puede marcar la diferencia.
-        Cada reporte, cada mensaje y cada apoyo de la comunidad nos acerca a convertir
-        SKANO en la mejor aplicación para la búsqueda y recuperación de vehículos robados.
-      </p>
-
-      <p class="final-text subtle">
-        Porque cuando la tecnología y las personas se unen,
-        la seguridad se construye entre todos.
-      </p>
-    </div>
-  </div>
-</section>
 
 <!-- ================= PANEL LATERAL WEB SKANO ================= -->
 <div class="side-panel">
@@ -919,24 +895,19 @@
       🔐 Iniciar sesión Empresa
     </a>
 
-    <a href="#" class="side-btn">
-      📱 Descargar Android
-    </a>
-
-    <a href="#" class="side-btn">
-      🍎 Descargar iOS
-    </a>
+    <a href="#" class="side-btn">📱 Descargar Android</a>
+    <a href="#" class="side-btn">🍎 Descargar iOS</a>
   </div>
 </div>
 
-<!-- ================= JS ================= -->
+<!-- ================= JS NAV ================= -->
 <script>
   const navToggle = document.getElementById("navToggle");
   const navMenu = document.getElementById("navMenu");
-  navToggle.onclick = () => navMenu.classList.toggle("open");
+  if (navToggle && navMenu) {
+    navToggle.onclick = () => navMenu.classList.toggle("open");
+  }
 </script>
 
 </body>
 </html>
-
-
