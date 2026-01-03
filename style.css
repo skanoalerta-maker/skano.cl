@@ -1059,7 +1059,6 @@ body {
 .advanced-card::after {
   pointer-events: none !important;
 }
-
 /* ================= WHATSAPP FLOAT – SKANO PRO ================= */
 
 .whatsapp-float {
@@ -1067,59 +1066,40 @@ body {
   right: 26px;
   bottom: 26px;
 
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px; /* cuadrado pro */
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  /* Azul SKANO + glass */
   background: linear-gradient(
     145deg,
-    rgba(10, 108, 255, 0.95),
-    rgba(6, 22, 80, 0.95)
+    rgba(10, 108, 255, 0.9),
+    rgba(6, 22, 80, 0.9)
   );
 
   color: #eaf2ff;
-  font-size: 24px;
   text-decoration: none;
 
   z-index: 2147483647;
-  pointer-events: auto;
-
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(10px);
 
   box-shadow:
-    0 0 14px rgba(10, 108, 255, 0.35),
-    0 0 28px rgba(74, 242, 255, 0.25),
-    inset 0 0 10px rgba(255,255,255,0.08);
+    0 6px 18px rgba(10, 108, 255, 0.35),
+    inset 0 0 6px rgba(255,255,255,0.06);
 
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    background 0.18s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Hover elegante */
 .whatsapp-float:hover {
-  transform: translateY(-2px) scale(1.05);
+  transform: translateY(-2px);
   box-shadow:
-    0 0 22px rgba(74, 242, 255, 0.55),
-    0 0 44px rgba(10, 108, 255, 0.75);
+    0 10px 26px rgba(10, 108, 255, 0.45),
+    inset 0 0 8px rgba(255,255,255,0.08);
 }
 
-/* Mobile más discreto */
-@media (max-width: 720px) {
-  .whatsapp-float {
-    width: 52px;
-    height: 52px;
-    font-size: 22px;
-    right: 20px;
-    bottom: 20px;
-  }
-}
 /* ===========================
    MENSAJE FINAL COMUNIDAD
    =========================== */
