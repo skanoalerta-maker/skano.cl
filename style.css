@@ -1152,3 +1152,64 @@ body {
   margin-top: 10px;
   color: rgba(255, 255, 255, 0.75);
 }
+/* ===============================
+   PANEL LATERAL DERECHO SKANO
+   =============================== */
+
+.side-panel {
+  position: fixed;
+  top: 120px;
+  right: 16px;
+  width: 220px;
+  max-height: calc(100vh - 160px);
+  background: rgba(10, 20, 45, 0.75);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  box-shadow: 0 0 30px rgba(0, 140, 255, 0.25);
+  z-index: 999;
+  overflow-y: auto;
+}
+
+.side-panel-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.side-panel-content h4 {
+  color: #7dd3fc;
+  font-size: 14px;
+  text-align: center;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.side-btn {
+  display: block;
+  padding: 12px;
+  text-align: center;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.08);
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.25s ease;
+}
+
+.side-btn:hover {
+  background: rgba(0,140,255,0.25);
+  transform: translateY(-2px);
+}
+
+.side-btn.primary {
+  background: linear-gradient(135deg, #0ea5e9, #2563eb);
+  font-weight: 600;
+}
+
+/* Ocultar en móvil */
+@media (max-width: 900px) {
+  .side-panel {
+    display: none;
+  }
+}
