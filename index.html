@@ -808,6 +808,37 @@
     </div>
   </div>
 </section>
+<!-- ================= EMAILJS ================= -->
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+
+<script>
+  (function () {
+    emailjs.init("TU_PUBLIC_KEY");
+  })();
+</script>
+
+<script>
+  document
+    .getElementById("contactForm")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      emailjs.sendForm(
+        "TU_SERVICE_ID",
+        "TU_TEMPLATE_ID",
+        this
+      ).then(
+        function () {
+          alert("Mensaje enviado correctamente ✅");
+          document.getElementById("contactForm").reset();
+        },
+        function (error) {
+          alert("Error al enviar el mensaje ❌");
+          console.error(error);
+        }
+      );
+    });
+</script>
 
 <!-- ================= FOOTER ================= -->
 <footer class="footer">
