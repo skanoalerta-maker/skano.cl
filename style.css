@@ -1153,6 +1153,29 @@ body {
     display: none;
   }
 }
+/* Icono parquímetros con contorno reforzado */
+.parking-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 22px;
+  height: 22px;
+  margin-right: 6px;
+
+  border-radius: 4px;
+
+  /* CONTORNO OSCURO */
+  border: 2px solid rgba(2, 6, 23, 0.9);
+
+  /* FONDO SUAVE PARA QUE NO SE PIERDA */
+  background: rgba(255, 255, 255, 0.12);
+
+  /* Ajuste visual */
+  font-size: 14px;
+  line-height: 1;
+}
+
 /* ================= WHATSAPP FLOAT ================= */
 .whatsapp-float {
   position: fixed;
