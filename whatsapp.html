@@ -51,117 +51,129 @@
       font-size: 0.75rem;
       opacity: 0.75;
       margin-top: 12px;
+      text-align: center;
     }
   </style>
 </head>
+
 <body>
 
-  <!-- HEADER -->
-  <header class="main-header">
-    <div class="container header-inner">
-      <div class="header-left">
-        <img src="img/skano-logo.png" alt="Logo SKANO" class="header-logo-img" />
-        <span class="header-logo-text">SKANO</span>
+<!-- HEADER -->
+<header class="main-header">
+  <div class="container header-inner">
+    <div class="header-left">
+      <img src="img/skano-logo.png" alt="Logo SKANO" class="header-logo-img" />
+      <span class="header-logo-text">SKANO</span>
+    </div>
+  </div>
+</header>
+
+<!-- ASISTENTE -->
+<section class="section">
+  <div class="container center assistant-wrapper">
+
+    <div class="hero-icon">💬</div>
+    <h1 class="hero-title">Asistente virtual SKANO</h1>
+
+    <p class="section-lead">
+      Te ayudo a resolver dudas iniciales.<br>
+      Si es necesario, te derivaré a un asesor humano por WhatsApp.
+    </p>
+
+    <div class="chat-box" id="chat">
+      <div class="chat-msg bot">
+        👋 Hola, soy el asistente virtual de SKANO.<br><br>
+        Para ayudarte mejor, dime:
       </div>
     </div>
-  </header>
 
-  <!-- ASISTENTE -->
-  <section class="section">
-    <div class="container center assistant-wrapper">
-      <div class="hero-icon">💬</div>
+    <div class="assistant-options" id="options">
+      <button class="btn btn-ghost" onclick="reply('Soy dueño de un vehículo')">
+        🚗 Soy dueño de un vehículo
+      </button>
 
-      <h1 class="hero-title">Asistente virtual SKANO</h1>
+      <button class="btn btn-ghost" onclick="reply('Quiero reportar un vehículo sospechoso')">
+        📍 Quiero reportar un vehículo sospechoso
+      </button>
 
-      <p class="section-lead">
-        Te entrego orientación inicial.  
-        Si necesitas ayuda personalizada, te derivaré a WhatsApp.
+      <button class="btn btn-ghost" onclick="reply('Represento a una empresa')">
+        🏢 Represento a una empresa
+      </button>
+
+      <button class="btn btn-ghost" onclick="reply('Necesito hablar con una persona')">
+        👤 Necesito hablar con una persona
+      </button>
+    </div>
+
+    <p class="note">
+      SKANO nunca solicita claves, códigos ni datos sensibles por este medio.
+    </p>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-grid container">
+    <div class="footer-left">
+      <img src="img/skano-logo.png" alt="Logo SKANO" class="footer-logo" />
+      <p class="footer-slogan">“Reporta seguro, los buenos somos más.”</p>
+    </div>
+    <div class="footer-right">
+      <p class="footer-copy">
+        © 2025 SKANO – Todos los derechos reservados.
       </p>
-
-      <div class="chat-box" id="chat">
-        <div class="chat-msg bot">
-          👋 Hola, soy el asistente virtual de SKANO.<br>
-          ¿En qué te puedo ayudar?
-        </div>
-      </div>
-
-      <div class="assistant-options">
-        <button class="btn btn-ghost" onclick="reply('¿Qué es SKANO?')">
-          ¿Qué es SKANO?
-        </button>
-
-        <button class="btn btn-ghost" onclick="reply('¿Cómo funcionan las recompensas?')">
-          ¿Cómo funcionan las recompensas?
-        </button>
-
-        <button class="btn btn-ghost" onclick="reply('Quiero hablar con una persona')">
-          Quiero hablar con una persona
-        </button>
-      </div>
-
-      <p class="note">
-        Este asistente entrega información general.<br>
-        SKANO nunca solicita datos sensibles por este medio.
-      </p>
     </div>
-  </section>
+  </div>
+</footer>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="footer-grid container">
-      <div class="footer-left">
-        <img src="img/skano-logo.png" alt="Logo SKANO" class="footer-logo" />
-        <p class="footer-slogan">“Reporta seguro, los buenos somos más.”</p>
-      </div>
-      <div class="footer-right">
-        <p class="footer-copy">
-          © 2025 SKANO – Todos los derechos reservados.
-        </p>
-      </div>
-    </div>
-  </footer>
+<script>
+  const chat = document.getElementById("chat");
+  const options = document.getElementById("options");
 
-  <script>
-    const chat = document.getElementById("chat");
+  function addMessage(text, type) {
+    const msg = document.createElement("div");
+    msg.className = "chat-msg " + type;
+    msg.innerText = text;
+    chat.appendChild(msg);
+    chat.scrollTop = chat.scrollHeight;
+  }
 
-    function addMessage(text, type) {
-      const msg = document.createElement("div");
-      msg.className = "chat-msg " + type;
-      msg.innerText = text;
-      chat.appendChild(msg);
-      chat.scrollTop = chat.scrollHeight;
+  function reply(option) {
+    addMessage(option, "user");
+    options.style.display = "none";
+
+    let message = "";
+
+    if (option.includes("dueño")) {
+      message = "Hola SKANO, soy dueño de un vehículo y necesito orientación.";
     }
 
-    function reply(option) {
-      addMessage(option, "user");
-
-      if (option.includes("SKANO")) {
-        addMessage(
-          "SKANO es una plataforma comunitaria donde las personas pueden reportar vehículos sospechosos para ayudar a su recuperación.",
-          "bot"
-        );
-      }
-
-      if (option.includes("recompensas")) {
-        addMessage(
-          "Puedes obtener reconocimientos por reportes validados o por invitar amigos que participen de forma real en la comunidad.",
-          "bot"
-        );
-      }
-
-      if (option.includes("persona")) {
-        addMessage(
-          "Te derivaré a una persona del equipo SKANO para ayudarte mejor.",
-          "bot"
-        );
-
-        setTimeout(() => {
-          window.location.href =
-            "https://wa.me/56966703303 text=Hola%20SKANO,%20necesito%20ayuda%20personalizada";
-        }, 1500);
-      }
+    if (option.includes("reportar")) {
+      message = "Hola SKANO, quiero reportar un vehículo sospechoso.";
     }
-  </script>
+
+    if (option.includes("empresa")) {
+      message = "Hola SKANO, represento a una empresa y necesito información.";
+    }
+
+    if (option.includes("persona")) {
+      message = "Hola SKANO, necesito hablar con un asesor humano.";
+    }
+
+    addMessage(
+      "Gracias por la información. Te derivaré a un asesor del equipo SKANO.",
+      "bot"
+    );
+
+    setTimeout(() => {
+      window.location.href =
+        "https://wa.me/56966703303?text=" + encodeURIComponent(message);
+    }, 1500);
+  }
+</script>
 
 </body>
 </html>
+
+
