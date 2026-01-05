@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SKANO – Panel Parquímetros</title>
+
+  <!-- CSS GLOBAL -->
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="icon" type="image/png" href="/img/skano-logo.png" />
+</head>
+<body class="dashboard-page">
+
+  <!-- HEADER -->
+  <header class="dashboard-header">
+    <div class="header-left">
+      <img src="/img/skano-logo.png" alt="SKANO" class="logo-img" />
+      <span class="logo-text">SKANO</span>
+    </div>
+
+    <div class="header-right">
+      <span class="role-badge">Parquímetros</span>
+      <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <!-- CONTENIDO -->
+  <main class="dashboard-container">
+
+    <!-- BLOQUE PRINCIPAL -->
+    <section class="dashboard-card primary">
+      <h1>Escaneo de Patente</h1>
+      <p class="subtitle">
+        Ingresa o escanea una patente para verificar estado y generar un reporte.
+      </p>
+
+      <div class="scan-box">
+        <input
+          type="text"
+          id="plateInput"
+          placeholder="Ej: AB1234"
+          class="plate-input"
+        />
+
+        <button class="btn-primary" onclick="scanPlate()">
+          Escanear / Verificar
+        </button>
+      </div>
+    </section>
+
+    <!-- BLOQUES SECUNDARIOS -->
+    <section class="dashboard-grid">
+
+      <div class="dashboard-card">
+        <h2>Reportes recientes</h2>
+        <p class="muted">
+          Historial de reportes realizados desde este punto.
+        </p>
+
+        <ul class="simple-list" id="reportList">
+          <li>No hay reportes recientes</li>
+        </ul>
+      </div>
+
+      <div class="dashboard-card">
+        <h2>Estado de la cuenta</h2>
+        <p class="muted">
+          Licencia activa · Operador autorizado
+        </p>
+
+        <div class="status-ok">
+          ✔ Acceso habilitado
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- JS -->
+  <script>
+    function scanPlate() {
+      const plate = document.getElementById("plateInput").value.trim();
+
+      if (!plate) {
+        alert("Ingresa una patente válida");
+        return;
+      }
+
+      // ⚠️ Aquí irá la lógica real (API / Firebase)
+      alert("Verificando patente: " + plate);
+
+      // Simulación de reporte
+      const list = document.getElementById("reportList");
+      const li = document.createElement("li");
+      li.textContent = `Patente ${plate.toUpperCase()} verificada`;
+      list.prepend(li);
+
+      document.getElementById("plateInput").value = "";
+    }
+
+    function logout() {
+      // Limpiar sesión cuando exista auth real
+      window.location.href = "login.html";
+    }
+  </script>
+
+</body>
+</html>
+

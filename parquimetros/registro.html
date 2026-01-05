@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SKANO – Registro Parquímetros</title>
+
+  <!-- CSS GLOBAL -->
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="icon" type="image/png" href="/img/skano-logo.png" />
+</head>
+<body class="auth-page">
+
+  <!-- HEADER -->
+  <header class="auth-header">
+    <a href="/" class="logo">
+      <img src="/img/skano-logo.png" alt="SKANO" />
+      <span>SKANO</span>
+    </a>
+  </header>
+
+  <!-- CONTENEDOR REGISTRO -->
+  <main class="auth-container">
+    <section class="auth-card">
+
+      <h1>Crear cuenta Parquímetro</h1>
+      <p class="auth-subtitle">
+        Registro para operadores de estacionamientos y puntos de control autorizados.
+      </p>
+
+      <form id="registerForm">
+        <div class="form-group">
+          <label for="companyName">Nombre de la empresa / Municipalidad</label>
+          <input
+            type="text"
+            id="companyName"
+            name="companyName"
+            placeholder="Municipalidad de Ejemplo"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="rut">RUT Empresa</label>
+          <input
+            type="text"
+            id="rut"
+            name="rut"
+            placeholder="76.123.456-7"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Correo empresa</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="contacto@empresa.cl"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Teléfono de contacto</label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            placeholder="+56 9 1234 5678"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Mínimo 8 caracteres"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn-primary">
+          Crear cuenta
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <span>¿Ya tienes una cuenta?</span>
+        <a href="login.html">Iniciar sesión</a>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- JS -->
+  <script>
+    document.getElementById("registerForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      // ⚠️ Registro inicial (pendiente validación/admin o pago)
+      // Por ahora redirige al dashboard
+      window.location.href = "dashboard.html";
+    });
+  </script>
+
+</body>
+</html>
+
+
