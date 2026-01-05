@@ -1277,6 +1277,33 @@ body {
   font-size: 14px;
   line-height: 1;
 }
+/* ===============================
+   BOTÓN PARQUÍMETROS (AZUL + ICONO DESTACADO)
+   =============================== */
+
+.side-btn.parking {
+  background: linear-gradient(135deg, #0ea5e9, #2563eb);
+  font-weight: 600;
+}
+
+/* Icono P con contorno fuerte */
+.side-btn.parking .parking-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 22px;
+  height: 22px;
+  margin-right: 6px;
+
+  border-radius: 4px;
+  border: 2px solid rgba(2, 6, 23, 0.9);
+
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-size: 14px;
+  line-height: 1;
+}
 
 /* ================= WHATSAPP FLOAT ================= */
 .whatsapp-float {
