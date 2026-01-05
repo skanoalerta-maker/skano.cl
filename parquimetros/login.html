@@ -5,16 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SKANO – Acceso Parquímetros</title>
 
-  <!-- CSS GLOBAL -->
-  <link rel="stylesheet" href="/style.css" />
-  <link rel="icon" type="image/png" href="/img/skano-logo.png" />
+  <!-- CSS GLOBAL (RUTA CORRECTA PARA GITHUB PAGES) -->
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="icon" type="image/png" href="../img/skano-logo.png" />
 </head>
+
 <body class="auth-page">
 
   <!-- HEADER -->
   <header class="auth-header">
-    <a href="/" class="logo">
-      <img src="/img/skano-logo.png" alt="SKANO" />
+    <a href="../index.html" class="logo">
+      <img src="../img/skano-logo.png" alt="SKANO" />
       <span>SKANO</span>
     </a>
   </header>
@@ -51,7 +52,7 @@
           />
         </div>
 
-        <button type="submit" class="btn-primary">
+        <button type="submit" class="btn btn-primary full">
           Iniciar sesión
         </button>
       </form>
@@ -69,12 +70,12 @@
     document.getElementById("loginForm").addEventListener("submit", function (e) {
       e.preventDefault();
 
-      // ⚠️ Aquí irá luego la validación real (Firebase / API)
-      // Por ahora solo redirige al dashboard
+      // ⚠️ Login real se conecta después
       window.location.href = "dashboard.html";
     });
   </script>
 
 </body>
 </html>
+
 
