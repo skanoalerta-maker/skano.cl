@@ -4,64 +4,74 @@
   <meta charset="UTF-8" />
   <title>WEB SKANO · Acceso Empresas</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="../style.css" />
-  <link rel="icon" type="image/png" href="../img/skano-logo.png" />
+
+  <!-- CSS GLOBAL -->
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="icon" type="image/png" href="/img/skano-logo.png" />
 </head>
 
-<body>
+<body class="auth-page">
 
-<header class="main-header">
-  <div class="container header-inner">
-    <div class="header-left">
-      <img src="../img/skano-logo.png" class="header-logo-img" alt="SKANO" />
-      <span class="header-logo-text">SKANO</span>
-    </div>
-  </div>
+<!-- HEADER -->
+<header class="auth-header">
+  <a href="/" class="logo">
+    <img src="/img/skano-logo.png" alt="SKANO" />
+    <span>SKANO</span>
+  </a>
 </header>
 
-<section class="section">
-  <div class="container" style="max-width:420px">
+<!-- CONTENEDOR LOGIN -->
+<main class="auth-container">
+  <section class="auth-card">
 
-    <h2>Acceso Empresas</h2>
-    <p style="opacity:.7">
+    <h1>Acceso Empresas</h1>
+    <p class="auth-subtitle">
       Portal exclusivo para parquímetros y empresas con sistemas de lectura de patentes.
     </p>
 
-    <form id="companyLogin" class="advanced-card">
-
-      <div class="field">
+    <form id="companyLogin">
+      <div class="form-group">
         <label>Correo empresa</label>
-        <input type="email" placeholder="contacto@empresa.cl" required />
+        <input
+          type="email"
+          placeholder="contacto@empresa.cl"
+          required
+        />
       </div>
 
-      <div class="field">
+      <div class="form-group">
         <label>Contraseña</label>
-        <input type="password" placeholder="••••••••" required />
+        <input
+          type="password"
+          placeholder="••••••••"
+          required
+        />
       </div>
 
-      <button class="btn btn-primary full" type="submit">
+      <button type="submit" class="btn-primary">
         Iniciar sesión
       </button>
-
     </form>
 
-    <p style="margin-top:12px;font-size:13px;opacity:.65;text-align:center">
-      ¿No tienes acceso?<br />
-      <a href="solicitud.html" class="neon-text">
+    <div class="auth-footer">
+      <span>¿No tienes acceso?</span><br />
+      <a href="/empresas/solicitar-integracion.html">
         Solicitar integración para empresas nuevas
       </a>
-    </p>
+    </div>
 
-  </div>
-</section>
+  </section>
+</main>
 
+<!-- JS -->
 <script>
   document
     .getElementById("companyLogin")
     .addEventListener("submit", function (e) {
       e.preventDefault();
-      alert("Acceso empresa simulado ✅");
-      window.location.href = "dashboard.html";
+
+      // Simulación temporal de acceso
+      window.location.href = "/empresas/dashboard.html";
     });
 </script>
 
