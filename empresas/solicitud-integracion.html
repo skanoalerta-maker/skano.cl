@@ -11,6 +11,7 @@
 
 <body class="auth-page">
 
+  <!-- HEADER -->
   <header class="auth-header">
     <a href="../index.html" class="logo">
       <img src="../img/skano-logo.png" alt="SKANO" />
@@ -18,35 +19,130 @@
     </a>
   </header>
 
+  <!-- CONTENIDO -->
   <main class="auth-container">
     <section class="auth-card">
 
-      <h1>Solicitud de integración</h1>
+      <h1>Solicitud de integración empresarial</h1>
+
       <p class="auth-subtitle">
-        Completa este formulario para integrar tu empresa a la plataforma SKANO.
+        Este formulario permite al equipo SKANO validar tu empresa y habilitar el acceso
+        al Portal Empresas para la gestión de vehículos.
       </p>
 
-      <form>
+      <!-- FORMULARIO -->
+      <form id="companyRequestForm">
+
+        <!-- DATOS LEGALES -->
         <div class="form-group">
-          <label>Nombre empresa</label>
-          <input type="text" required />
+          <label>Razón social</label>
+          <input
+            type="text"
+            name="companyName"
+            placeholder="Empresa XYZ SpA"
+            required
+          />
         </div>
 
         <div class="form-group">
-          <label>Correo de contacto</label>
-          <input type="email" required />
+          <label>RUT empresa</label>
+          <input
+            type="text"
+            name="rut"
+            placeholder="76.123.456-7"
+            required
+          />
         </div>
 
+        <!-- CONTACTO -->
+        <div class="form-group">
+          <label>Nombre del contacto responsable</label>
+          <input
+            type="text"
+            name="contactName"
+            placeholder="Juan Pérez"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Correo corporativo de contacto</label>
+          <input
+            type="email"
+            name="email"
+            placeholder="contacto@empresa.cl"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Teléfono de contacto</label>
+          <input
+            type="tel"
+            name="contactPhone"
+            placeholder="+56 9 1234 5678"
+            required
+          />
+        </div>
+
+        <!-- UBICACIÓN -->
         <div class="form-group">
           <label>Ciudad / Región</label>
-          <input type="text" required />
+          <input
+            type="text"
+            name="region"
+            placeholder="Región Metropolitana"
+            required
+          />
         </div>
 
+        <!-- PERFIL OPERATIVO -->
+        <div class="form-group">
+          <label>Tipo de empresa</label>
+          <select name="systemType" required>
+            <option value="">Selecciona una opción</option>
+            <option value="fleet">Flota privada</option>
+            <option value="security">Empresa de seguridad</option>
+            <option value="municipality">Municipalidad</option>
+            <option value="other">Otra</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Cantidad aproximada de vehículos</label>
+          <select name="fleetSize" required>
+            <option value="">Selecciona una opción</option>
+            <option value="1-5">1 a 5 vehículos</option>
+            <option value="6-20">6 a 20 vehículos</option>
+            <option value="21-50">21 a 50 vehículos</option>
+            <option value="50+">Más de 50 vehículos</option>
+          </select>
+        </div>
+
+        <!-- USO -->
+        <div class="form-group">
+          <label>¿Para qué desea usar SKANO? (opcional)</label>
+          <textarea
+            name="useCase"
+            rows="3"
+            placeholder="Gestión de flota, control interno, recuperación de vehículos, etc."
+          ></textarea>
+        </div>
+
+        <!-- BOTÓN -->
         <button type="submit" class="btn btn-primary full">
           Enviar solicitud
         </button>
+
+        <!-- AVISO LEGAL -->
+        <p class="form-note">
+          El envío de esta solicitud no implica activación inmediata.
+          La información será revisada por el equipo SKANO.
+        </p>
+
       </form>
 
+      <!-- FOOTER -->
       <div class="auth-footer">
         <a href="login.html">← Volver al acceso empresas</a>
       </div>
@@ -56,3 +152,4 @@
 
 </body>
 </html>
+
