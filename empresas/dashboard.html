@@ -34,21 +34,11 @@
       <p><strong>Última sincronización:</strong> hace 2 minutos</p>
     </div>
 
-    <!-- ALERTAS DE VEHÍCULOS -->
+    <!-- ALERTAS DE VEHÍCULOS (mock por ahora) -->
     <div class="advanced-card alert-card">
       <h3>🚨 Alertas recientes</h3>
 
-      <!-- EJEMPLO DE ALERTA -->
-      <div class="alert-item">
-        <p><strong>Vehículo:</strong> AB-CD-12 · Toyota Hilux</p>
-        <p><strong>Evento:</strong> Vehículo reportado como encontrado</p>
-        <p><strong>Ubicación:</strong> Maipú, RM</p>
-        <p><strong>Fecha:</strong> 06/01/2026 · 14:32</p>
-        <a href="#" class="btn-small">Ver detalle</a>
-      </div>
-
-      <!-- Si no hay alertas -->
-      <!-- <p>No hay alertas activas.</p> -->
+      <p>No hay alertas activas.</p>
     </div>
 
     <!-- ALCANCE REAL -->
@@ -78,27 +68,91 @@
             <th>Acción</th>
           </tr>
         </thead>
-        <tbody>
 
-          <!-- VEHÍCULO EJEMPLO -->
+        <!-- 👇 ESTE TBODY AHORA ES DINÁMICO -->
+        <tbody id="fleetTableBody">
           <tr>
-            <td><img src="/img/vehicle-placeholder.jpg" class="vehicle-thumb" /></td>
-            <td>AB-CD-12</td>
-            <td>Toyota</td>
-            <td>Hilux</td>
-            <td>Activa</td>
-            <td>Protegido</td>
-            <td>
-              <a href="#" class="btn-small">Ver detalle</a>
-            </td>
+            <td colspan="7">Cargando vehículos...</td>
           </tr>
-
         </tbody>
+
       </table>
     </div>
 
   </div>
 </section>
+
+<!-- FIREBASE + LÓGICA -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    query,
+    where,
+    getDocs
+  } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  // 🔐 CONFIG FIREBASE (USA LA TUYA REAL)
+  const firebaseConfig = {
+    apiKey: "TU_API_KEY",
+    authDomain: "TU_PROJECT.firebaseapp.com",
+    projectId: "TU_PROJECT_ID",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // 🏢 EMPRESA ACTUAL (MOCK TEMPORAL)
+  const COMPANY_ID = "company_123";
+
+  const tableBody = document.getElementById("fleetTableBody");
+
+  async function loadFleet() {
+    tableBody.innerHTML = "";
+
+    const q = query(
+      collection(db, "company_vehicles"),
+      where("companyId", "==", COMPANY_ID)
+    );
+
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) {
+      tableBody.innerHTML = `
+        <tr>
+          <td colspan="7">No hay vehículos registrados.</td>
+        </tr>
+      `;
+      return;
+    }
+
+    snapshot.forEach((doc) => {
+      const v = doc.data();
+
+      tableBody.innerHTML += `
+        <tr>
+          <td>
+            <img
+              src="${v.vehicle_photo_url || '/img/vehicle-placeholder.jpg'}"
+              class="vehicle-thumb"
+            />
+          </td>
+          <td>${v.plate}</td>
+          <td>${v.brand}</td>
+          <td>${v.model}</td>
+          <td>${v.membership_active ? "Activa" : "Inactiva"}</td>
+          <td>${v.active ? "Protegido" : "Inactivo"}</td>
+          <td>
+            <a href="#" class="btn-small">Ver detalle</a>
+          </td>
+        </tr>
+      `;
+    });
+  }
+
+  loadFleet();
+</script>
 
 </body>
 </html>
