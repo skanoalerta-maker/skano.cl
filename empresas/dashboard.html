@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>WEB SKANO · Dashboard Empresa</title>
+  <title>SKANO · Dashboard Empresa</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- CSS GLOBAL -->
@@ -34,15 +34,67 @@
       <p><strong>Última sincronización:</strong> hace 2 minutos</p>
     </div>
 
+    <!-- ALERTAS DE VEHÍCULOS -->
+    <div class="advanced-card alert-card">
+      <h3>🚨 Alertas recientes</h3>
+
+      <!-- EJEMPLO DE ALERTA -->
+      <div class="alert-item">
+        <p><strong>Vehículo:</strong> AB-CD-12 · Toyota Hilux</p>
+        <p><strong>Evento:</strong> Vehículo reportado como encontrado</p>
+        <p><strong>Ubicación:</strong> Maipú, RM</p>
+        <p><strong>Fecha:</strong> 06/01/2026 · 14:32</p>
+        <a href="#" class="btn-small">Ver detalle</a>
+      </div>
+
+      <!-- Si no hay alertas -->
+      <!-- <p>No hay alertas activas.</p> -->
+    </div>
+
     <!-- ALCANCE REAL -->
     <div class="advanced-card">
       <h3>Alcance de este panel</h3>
       <ul>
         <li>✔ Administración de vehículos asociados a la empresa</li>
-        <li>✔ Visualización de eventos y alertas generadas por SKANO</li>
-        <li>✔ Acceso a reportes ciudadanos verificados</li>
-        <li>✔ Gestión centralizada de flota</li>
+        <li>✔ Visualización de datos y documentos de cada vehículo</li>
+        <li>✔ Recepción de alertas cuando un vehículo es encontrado</li>
+        <li>✔ Gestión de membresías por vehículo</li>
       </ul>
+    </div>
+
+    <!-- FLOTA -->
+    <div class="advanced-card">
+      <h3>Flota registrada</h3>
+
+      <table class="fleet-table">
+        <thead>
+          <tr>
+            <th>Foto</th>
+            <th>Patente</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Membresía</th>
+            <th>Estado</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- VEHÍCULO EJEMPLO -->
+          <tr>
+            <td><img src="/img/vehicle-placeholder.jpg" class="vehicle-thumb" /></td>
+            <td>AB-CD-12</td>
+            <td>Toyota</td>
+            <td>Hilux</td>
+            <td>Activa</td>
+            <td>Protegido</td>
+            <td>
+              <a href="#" class="btn-small">Ver detalle</a>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
     </div>
 
   </div>
@@ -50,6 +102,8 @@
 
 </body>
 </html>
+
+
 
 
 
