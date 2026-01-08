@@ -26,15 +26,16 @@
 
     <h1>Acceso Empresas</h1>
 
-    <!-- TEXTO DEFINITIVO (CONCEPTO CORRECTO) -->
     <p class="auth-subtitle">
       Portal de gestión para empresas que administran flotas de vehículos dentro de la plataforma SKANO.
     </p>
 
+    <!-- FORM LOGIN -->
     <form id="companyLogin">
       <div class="form-group">
         <label>Correo empresa</label>
         <input
+          id="companyEmail"
           type="email"
           placeholder="contacto@empresa.cl"
           required
@@ -44,19 +45,46 @@
       <div class="form-group">
         <label>Contraseña</label>
         <input
+          id="companyPassword"
           type="password"
           placeholder="••••••••"
           required
         />
       </div>
 
-      <button type="submit" class="btn-primary">
+      <button type="submit" class="btn btn-primary full" id="loginBtn">
         Iniciar sesión
       </button>
+
+      <p class="form-note" id="loginNote" style="margin-top:10px; display:none;">
+        Iniciando sesión…
+      </p>
     </form>
 
+    <!-- MENSAJE POST SUBMIT (UX) -->
+    <div id="loginSuccess" style="display:none;" class="success-box">
+      <h2>Acceso validado</h2>
+      <p>Redirigiendo al Panel Empresas…</p>
+    </div>
+
+    <!-- ERROR (SI QUIERES) -->
+    <div id="loginError" style="display:none;" class="success-box">
+      <h2>No fue posible ingresar</h2>
+      <p class="success-note">
+        Verifica tus datos. Si el problema continúa, contáctanos por WhatsApp.
+      </p>
+
+      <a
+        href="https://wa.me/56966703303"
+        target="_blank"
+        class="btn btn-primary full"
+      >
+        Contactar por WhatsApp
+      </a>
+    </div>
+
     <!-- LINK ÚNICO Y CORRECTO -->
-    <div class="auth-footer">
+    <div class="auth-footer" id="loginFooter">
       <span>¿No tienes acceso?</span><br />
       <a href="/empresas/solicitud-integracion.html">
         Solicitar integración para empresas nuevas
@@ -68,18 +96,48 @@
 
 <!-- JS -->
 <script>
-  document
-    .getElementById("companyLogin")
-    .addEventListener("submit", function (e) {
-      e.preventDefault();
+  const form = document.getElementById("companyLogin");
+  const loginBtn = document.getElementById("loginBtn");
+  const loginNote = document.getElementById("loginNote");
 
-      // Simulación temporal de acceso
-      window.location.href = "/empresas/dashboard.html";
-    });
+  const successBox = document.getElementById("loginSuccess");
+  const errorBox = document.getElementById("loginError");
+  const footer = document.getElementById("loginFooter");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    // UI: estado "cargando"
+    loginBtn.disabled = true;
+    loginBtn.textContent = "Ingresando…";
+    loginNote.style.display = "block";
+
+    // ✅ SIMULACIÓN (por ahora)
+    // Cuando conectes Firebase Auth, aquí haces el login real.
+    setTimeout(() => {
+      // Simula éxito:
+      form.style.display = "none";
+      footer.style.display = "none";
+      loginNote.style.display = "none";
+      successBox.style.display = "block";
+
+      setTimeout(() => {
+        window.location.href = "/empresas/dashboard.html";
+      }, 700);
+
+      // Si quisieras simular error, usa esto:
+      // form.style.display = "none";
+      // footer.style.display = "none";
+      // loginNote.style.display = "none";
+      // errorBox.style.display = "block";
+    }, 900);
+  });
 </script>
 
 </body>
 </html>
+
+
 
 
 
