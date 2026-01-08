@@ -163,7 +163,7 @@
     });
   </script>
 
-  <!-- ================= FIREBASE + FIRESTORE ================= -->
+  <!-- ================= FIREBASE + FIRESTORE (PROYECTO CORRECTO) ================= -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
     import {
@@ -173,13 +173,14 @@
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
+    // 🔴 IMPORTANTE: ESTE ES skano-app (NO skano-app-e734d)
     const firebaseConfig = {
-      apiKey: "AIzaSyAB9eiXvC5EifYp0P_ZxtI8HIwdVsPXTF4",
-      authDomain: "skano-app-e734d.firebaseapp.com",
-      projectId: "skano-app-e734d",
-      storageBucket: "skano-app-e734d.appspot.com",
-      messagingSenderId: "663221835822",
-      appId: "1:663221835822:web:339ba87801334f55b1e7bf"
+      apiKey: "TU_API_KEY_DE_SKANO_APP",
+      authDomain: "skano-app.firebaseapp.com",
+      projectId: "skano-app",
+      storageBucket: "skano-app.appspot.com",
+      messagingSenderId: "TU_MESSAGING_SENDER_ID",
+      appId: "TU_APP_ID_WEB"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -194,7 +195,16 @@
 
       try {
         await addDoc(collection(db, "company_requests"), {
-          ...data,
+          companyName: data.companyName,
+          rut: data.rut,
+          contactName: data.contactName,
+          email: data.email,
+          contactPhone: data.contactPhone,
+          region: data.region,
+          comuna: data.comuna,
+          systemType: data.systemType,
+          fleetSize: data.fleetSize,
+          useCase: data.useCase || "",
           status: "pending",
           reviewed: false,
           source: "web",
@@ -206,10 +216,11 @@
 
       } catch (err) {
         console.error(err);
-        alert("Error al enviar la solicitud.");
+        alert("Error al enviar la solicitud. Intenta nuevamente.");
       }
     });
   </script>
 
 </body>
 </html>
+
