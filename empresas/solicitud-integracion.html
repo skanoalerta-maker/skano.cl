@@ -125,25 +125,14 @@
     </section>
   </main>
 
-  <!-- REGIONES Y COMUNAS CHILE -->
+  <!-- ================= REGIONES Y COMUNAS ================= -->
   <script>
     const regiones = {
-      "Región de Arica y Parinacota": ["Arica", "Camarones", "Putre", "General Lagos"],
-      "Región de Tarapacá": ["Iquique", "Alto Hospicio", "Pozo Almonte", "Pica", "Huara", "Camiña", "Colchane"],
-      "Región de Antofagasta": ["Antofagasta", "Calama", "Tocopilla", "Mejillones", "San Pedro de Atacama", "Taltal", "Ollagüe", "Sierra Gorda"],
-      "Región de Atacama": ["Copiapó", "Caldera", "Tierra Amarilla", "Vallenar", "Freirina", "Huasco", "Alto del Carmen", "Chañaral", "Diego de Almagro"],
-      "Región de Coquimbo": ["La Serena", "Coquimbo", "Ovalle", "Illapel", "Salamanca", "Los Vilos", "Andacollo", "Paihuano", "Vicuña", "Combarbalá", "Monte Patria", "Punitaqui", "Río Hurtado"],
-      "Región de Valparaíso": ["Valparaíso", "Viña del Mar", "Quilpué", "Villa Alemana", "San Antonio", "Quillota", "Los Andes", "San Felipe", "La Calera", "Casablanca", "Concón", "Limache", "Nogales", "Hijuelas", "Petorca"],
-      "Región Metropolitana": ["Santiago", "Providencia", "Las Condes", "La Florida", "Puente Alto", "Maipú", "Ñuñoa", "San Bernardo", "Peñalolén", "La Reina", "Pudahuel", "Estación Central", "Cerrillos", "Renca", "Independencia"],
-      "Región del Libertador General Bernardo O’Higgins": ["Rancagua", "Machalí", "San Fernando", "Santa Cruz", "Pichilemu", "Graneros", "Chimbarongo", "Nancagua"],
-      "Región del Maule": ["Talca", "Curicó", "Linares", "Cauquenes", "San Javier", "Constitución", "Molina", "Parral"],
-      "Región de Ñuble": ["Chillán", "Chillán Viejo", "San Carlos", "Bulnes", "Quirihue", "Yungay", "El Carmen"],
-      "Región del Biobío": ["Concepción", "Talcahuano", "Los Ángeles", "Coronel", "San Pedro de la Paz", "Chiguayante", "Lota", "Arauco", "Cañete"],
-      "Región de La Araucanía": ["Temuco", "Padre Las Casas", "Angol", "Villarrica", "Pucón", "Victoria", "Traiguén"],
-      "Región de Los Ríos": ["Valdivia", "La Unión", "Río Bueno", "Panguipulli", "Lanco", "Paillaco"],
-      "Región de Los Lagos": ["Puerto Montt", "Osorno", "Castro", "Ancud", "Puerto Varas", "Quellón", "Calbuco"],
-      "Región de Aysén": ["Coyhaique", "Aysén", "Chile Chico", "Cochrane"],
-      "Región de Magallanes": ["Punta Arenas", "Puerto Natales", "Porvenir", "Cabo de Hornos"]
+      "Región Metropolitana": ["Santiago", "Providencia", "Las Condes", "Maipú", "Puente Alto"],
+      "Región de Valparaíso": ["Valparaíso", "Viña del Mar", "Quilpué"],
+      "Región del Biobío": ["Concepción", "Talcahuano", "Los Ángeles"],
+      "Región de La Araucanía": ["Temuco", "Padre Las Casas"],
+      "Región de Los Lagos": ["Puerto Montt", "Osorno"]
     };
 
     const regionSelect = document.getElementById("regionSelect");
@@ -174,6 +163,53 @@
     });
   </script>
 
+  <!-- ================= FIREBASE + FIRESTORE ================= -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAB9eiXvC5EifYp0P_ZxtI8HIwdVsPXTF4",
+      authDomain: "skano-app-e734d.firebaseapp.com",
+      projectId: "skano-app-e734d",
+      storageBucket: "skano-app-e734d.appspot.com",
+      messagingSenderId: "663221835822",
+      appId: "1:663221835822:web:339ba87801334f55b1e7bf"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const form = document.getElementById("companyRequestForm");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const data = Object.fromEntries(new FormData(form));
+
+      try {
+        await addDoc(collection(db, "company_requests"), {
+          ...data,
+          status: "pending",
+          reviewed: false,
+          source: "web",
+          createdAt: serverTimestamp()
+        });
+
+        alert("Solicitud enviada correctamente. El equipo SKANO te contactará.");
+        form.reset();
+
+      } catch (err) {
+        console.error(err);
+        alert("Error al enviar la solicitud.");
+      }
+    });
+  </script>
+
 </body>
 </html>
-
