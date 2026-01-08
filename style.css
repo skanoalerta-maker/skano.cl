@@ -1193,6 +1193,28 @@ body {
 .auth-footer a:hover {
   text-decoration: underline;
 }
+/* ===============================
+   SECCIONES FORMULARIO EMPRESAS
+   =============================== */
+
+.form-section {
+  margin: 26px 0 14px;
+  padding-bottom: 6px;
+
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+
+  color: #7dd3fc;
+
+  border-bottom: 1px solid rgba(125, 211, 252, 0.25);
+}
+
+/* Primer bloque no necesita tanto margen arriba */
+.form-section:first-of-type {
+  margin-top: 10px;
+}
 
 /* ===============================
    PANEL LATERAL DERECHO SKANO
