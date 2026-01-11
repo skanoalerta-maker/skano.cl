@@ -11,7 +11,7 @@
 
 <body class="auth-page">
 
-  <!-- HEADER -->
+  <!-- ================= HEADER ================= -->
   <header class="auth-header">
     <a href="../index.html" class="logo">
       <img src="../img/skano-logo.png" alt="SKANO" />
@@ -19,20 +19,20 @@
     </a>
   </header>
 
-  <!-- CONTENIDO -->
+  <!-- ================= CONTENIDO ================= -->
   <main class="auth-container">
     <section class="auth-card">
 
       <h1>Solicitud de integración empresarial</h1>
 
       <p class="auth-subtitle">
-        Este formulario permite al equipo SKANO validar tu empresa y habilitar el acceso
-        al Portal Empresas para la gestión de vehículos.
+        Este formulario permite al equipo SKANO validar tu empresa y habilitar
+        el acceso al Portal Empresas para la gestión de vehículos.
       </p>
 
       <form id="companyRequestForm">
 
-        <!-- DATOS LEGALES -->
+        <!-- ===== DATOS LEGALES ===== -->
         <div class="form-group">
           <label>Razón social</label>
           <input type="text" name="companyName" placeholder="Empresa XYZ SpA" required />
@@ -43,7 +43,7 @@
           <input type="text" name="rut" placeholder="76.123.456-7" required />
         </div>
 
-        <!-- CONTACTO -->
+        <!-- ===== CONTACTO ===== -->
         <div class="form-group">
           <label>Nombre del contacto responsable</label>
           <input type="text" name="contactName" placeholder="Juan Pérez" required />
@@ -59,7 +59,7 @@
           <input type="tel" name="contactPhone" placeholder="+56 9 1234 5678" required />
         </div>
 
-        <!-- UBICACIÓN -->
+        <!-- ===== UBICACIÓN ===== -->
         <div class="form-group">
           <label>Región</label>
           <select name="region" id="regionSelect" required>
@@ -74,7 +74,7 @@
           </select>
         </div>
 
-        <!-- PERFIL OPERATIVO -->
+        <!-- ===== PERFIL OPERATIVO ===== -->
         <div class="form-group">
           <label>Tipo de empresa</label>
           <select name="systemType" required>
@@ -97,7 +97,7 @@
           </select>
         </div>
 
-        <!-- USO -->
+        <!-- ===== USO ===== -->
         <div class="form-group">
           <label>¿Para qué desea usar SKANO? (opcional)</label>
           <textarea
@@ -163,7 +163,7 @@
     });
   </script>
 
-  <!-- ================= FIREBASE + FIRESTORE (PROYECTO CORRECTO) ================= -->
+  <!-- ================= FIREBASE / FIRESTORE ================= -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
     import {
@@ -173,7 +173,6 @@
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
-    // 🔴 IMPORTANTE: ESTE ES skano-app (NO skano-app-e734d)
     const firebaseConfig = {
       apiKey: "TU_API_KEY_DE_SKANO_APP",
       authDomain: "skano-app.firebaseapp.com",
@@ -211,8 +210,8 @@
           createdAt: serverTimestamp()
         });
 
-        alert("Solicitud enviada correctamente. El equipo SKANO te contactará.");
-        form.reset();
+        // 👉 REDIRECCIÓN CORRECTA
+        window.location.href = "solicitud-enviada.html";
 
       } catch (err) {
         console.error(err);
