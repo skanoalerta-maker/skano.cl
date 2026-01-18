@@ -781,19 +781,45 @@
 
   </div>
 </section>
-
 <!-- ================= CONTACTO ================= -->
 <section id="contacto" class="section">
   <div class="container">
     <h2 class="section-title">Contacto</h2>
 
+    <!-- 🔹 ELIMINACIÓN DE CUENTA (INFORMATIVO) -->
+    <div class="advanced-card info-card" style="margin-bottom:24px;">
+      <h3>🗑️ Eliminación de cuenta</h3>
+
+      <p>
+        Los usuarios pueden solicitar la eliminación de su cuenta y datos personales
+        conforme a la normativa vigente.
+      </p>
+
+      <p>
+        Por motivos de <strong>seguridad y control antifraude</strong>,
+        la eliminación de cuentas no se realiza de forma automática.
+      </p>
+
+      <button
+        type="button"
+        class="btn btn-ghost"
+        onclick="window.location.href='https://www.skano.cl/eliminar-cuenta.html'"
+      >
+        Ver cómo eliminar mi cuenta
+      </button>
+    </div>
+
+    <!-- 🔹 GRID CONTACTO -->
     <div class="contact-grid">
+
+      <!-- CORREOS -->
       <div class="advanced-card">
         <h3>📧 Correos oficiales</h3>
         <p><strong>Soporte:</strong> skano.oficial@gmail.com</p>
         <p><strong>Empresas:</strong> contacto@skano.cl</p>
       </div>
 
+      <!-- FORMULARIO -->
       <form class="advanced-card" id="contactForm">
         <div class="field">
           <label>Correo electrónico</label>
@@ -807,6 +833,7 @@
           Enviar mensaje
         </button>
       </form>
+
     </div>
   </div>
 </section>
