@@ -1344,6 +1344,7 @@ body {
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
   z-index: 9999;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
 }
 
 .whatsapp-float:hover {
@@ -1354,5 +1355,21 @@ body {
 .whatsapp-icon {
   width: 28px;
   height: 28px;
+  filter: brightness(0) invert(1); /* FUERZA ICONO BLANCO */
+}
+
+/* Ajuste móvil */
+@media (max-width: 480px) {
+  .whatsapp-float {
+    width: 48px;
+    height: 48px;
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .whatsapp-icon {
+    width: 24px;
+    height: 24px;
+  }
 }
 
