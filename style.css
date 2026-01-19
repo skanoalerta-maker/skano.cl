@@ -1326,25 +1326,33 @@ body {
   font-size: 14px;
   line-height: 1;
 }
+/* ===============================
+   BOTÓN WHATSAPP (VERDE + ICONO DESTACADO)
+   =============================== */
 
-/* ================= WHATSAPP FLOAT ================= */
 .whatsapp-float {
   position: fixed;
-  right: 26px;
-  bottom: 26px;
+  bottom: 22px;
+  right: 22px;
   width: 56px;
   height: 56px;
+  background-color: #25D366; /* Verde oficial WhatsApp */
   border-radius: 50%;
-  background: #25d366;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
   z-index: 9999;
-  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.08);
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.45);
 }
 
 .whatsapp-icon {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
 }
 
