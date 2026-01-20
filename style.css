@@ -1194,26 +1194,49 @@ body {
   text-decoration: underline;
 }
 /* ===============================
-   SECCIONES FORMULARIO EMPRESAS
+   FIX DEFINITIVO SELECTS (EMPRESAS / AUTH)
    =============================== */
 
-.form-section {
-  margin: 26px 0 14px;
-  padding-bottom: 6px;
+/* Select con mismo look que inputs */
+.field select,
+.form-group select {
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(2, 6, 24, 0.96);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--text-main);
+  font-size: 0.9rem;
+  outline: none;
 
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  /* elimina estilo nativo */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 
-  color: #7dd3fc;
-
-  border-bottom: 1px solid rgba(125, 211, 252, 0.25);
+  /* espacio para flecha */
+  padding-right: 42px;
 }
 
-/* Primer bloque no necesita tanto margen arriba */
-.form-section:first-of-type {
-  margin-top: 10px;
+/* Foco igual que inputs */
+.field select:focus,
+.form-group select:focus {
+  border-color: rgba(10,108,255,0.8);
+  box-shadow: 0 0 0 3px rgba(10,108,255,0.15);
+}
+
+/* Opciones del dropdown */
+.field select option,
+.form-group select option {
+  background: #020617;
+  color: white;
+}
+
+/* Estado deshabilitado (ej: comuna) */
+.field select:disabled {
+  background: rgba(2, 6, 24, 0.6);
+  color: rgba(255,255,255,0.45);
+  cursor: not-allowed;
+  opacity: 1;
 }
 
 /* ===============================
