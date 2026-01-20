@@ -1194,16 +1194,22 @@ body {
   text-decoration: underline;
 }
 /* ===============================
-   FIX DEFINITIVO SELECTS (EMPRESAS / AUTH)
+   FIX SELECTS – FORMULARIO EMPRESAS
    =============================== */
 
-/* Select con mismo look que inputs */
-.field select,
+.form-group {
+  position: relative;
+}
+
 .form-group select {
+  width: 100%;
   padding: 10px 12px;
+  padding-right: 42px;
+
   border-radius: 14px;
   background: rgba(2, 6, 24, 0.96);
   border: 1px solid rgba(255,255,255,0.12);
+
   color: var(--text-main);
   font-size: 0.9rem;
   outline: none;
@@ -1212,32 +1218,42 @@ body {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-
-  /* espacio para flecha */
-  padding-right: 42px;
 }
 
-/* Foco igual que inputs */
-.field select:focus,
+/* foco igual a input */
 .form-group select:focus {
   border-color: rgba(10,108,255,0.8);
   box-shadow: 0 0 0 3px rgba(10,108,255,0.15);
 }
 
-/* Opciones del dropdown */
-.field select option,
+/* opciones del dropdown */
 .form-group select option {
   background: #020617;
-  color: white;
+  color: #ffffff;
 }
 
-/* Estado deshabilitado (ej: comuna) */
-.field select:disabled {
+/* select deshabilitado (Comuna) */
+.form-group select:disabled {
   background: rgba(2, 6, 24, 0.6);
   color: rgba(255,255,255,0.45);
   cursor: not-allowed;
   opacity: 1;
 }
+
+/* flecha custom (misma para todos los selects) */
+.form-group::after {
+  content: "";
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  border-right: 2px solid rgba(255,255,255,0.6);
+  border-bottom: 2px solid rgba(255,255,255,0.6);
+  transform: translateY(-50%) rotate(45deg);
+  pointer-events: none;
+}
+
 
 /* ===============================
    PANEL LATERAL DERECHO SKANO
