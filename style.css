@@ -1411,4 +1411,12 @@ body {
     height: 24px;
   }
 }
-
+/* ===== BOTONES DESHABILITADOS ===== */
+.btn-disabled,
+.side-btn.disabled {
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.55);
+  cursor: not-allowed;
+  pointer-events: none;
+  border: 1px dashed rgba(255,255,255,0.2);
+}
