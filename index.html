@@ -17,19 +17,18 @@
       <span class="header-logo-text">SKANO</span>
     </div>
 
-<nav class="nav-menu" id="navMenu">
-  <a href="#inicio">Inicio</a>
-  <a href="#que-es">Qué es</a>
-  <a href="#seguridad">Seguridad</a>
-  <a href="#app">App</a>
-  <a href="#portal">Portal Web</a>
-  <a href="#documentos">Documentos</a>
-  <a href="#planes">Planes</a>
-  <a href="#terminos">Términos y condiciones</a>
-  <a href="#recompensas">Recompensas</a>
-  <a href="#contacto">Contacto</a>
-</nav>
-
+    <nav class="nav-menu" id="navMenu">
+      <a href="#inicio">Inicio</a>
+      <a href="#que-es">Qué es</a>
+      <a href="#seguridad">Seguridad</a>
+      <a href="#app">App</a>
+      <a href="#portal">Portal Web</a>
+      <a href="#documentos">Documentos</a>
+      <a href="#planes">Planes</a>
+      <a href="#terminos">Términos y condiciones</a>
+      <a href="#recompensas">Recompensas</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
 
     <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">☰</button>
   </div>
@@ -37,12 +36,15 @@
 
 <!-- ================= HERO ================= -->
 <section id="inicio" class="hero">
+  <div class="hero-bg-image"></div>
   <div class="hero-bg-orbit"></div>
   <div class="hero-bg-grid"></div>
   <div class="hero-gradient"></div>
+  <div class="hero-glow glow-1"></div>
+  <div class="hero-glow glow-2"></div>
 
   <div class="hero-grid container">
-    <div class="hero-left">
+    <div class="hero-left reveal">
       <p class="hero-pill">Seguridad ciudadana · Tecnología · Comunidad</p>
 
       <h1 class="hero-title">
@@ -57,7 +59,6 @@
         que protege tanto al reportante como al dueño del vehículo.
       </p>
 
-      <!-- BOTONES PRINCIPALES -->
       <div class="hero-buttons">
         <span class="btn btn-disabled">🍎 iOS: Próximamente</span>
         <a href="#que-es" class="btn btn-ghost">ℹ️ Cómo funciona SKANO</a>
@@ -82,7 +83,7 @@
       </div>
     </div>
 
-    <div class="hero-right">
+    <div class="hero-right reveal reveal-delay-2">
       <div class="glass-card hero-card">
         <p class="hero-card-label">Vista previa app SKANO</p>
 
@@ -106,16 +107,16 @@
 <!-- ================= QUE ES ================= -->
 <section id="que-es" class="section">
   <div class="container">
-    <h2 class="section-title">¿Qué es SKANO?</h2>
+    <h2 class="section-title reveal">¿Qué es SKANO?</h2>
 
-    <p class="section-lead">
+    <p class="section-lead reveal">
       SKANO es una plataforma tecnológica de seguridad ciudadana que conecta a la comunidad
       con dueños de vehículos robados o clonados, permitiendo reportes seguros,
       verificados y protegidos mediante tecnología antifraude y validación humana.
     </p>
 
     <div class="features-grid">
-      <div class="advanced-card">
+      <div class="advanced-card reveal">
         <h3>🔍 Reportes ciudadanos verificados</h3>
         <p>
           Cualquier persona puede reportar una patente sospechosa de forma gratuita.
@@ -124,7 +125,7 @@
         </p>
       </div>
 
-      <div class="advanced-card">
+      <div class="advanced-card reveal">
         <h3>🛡️ Seguridad y anonimato real</h3>
         <p>
           La identidad del reportante nunca es visible para el dueño del vehículo.
@@ -132,7 +133,7 @@
         </p>
       </div>
 
-      <div class="advanced-card">
+      <div class="advanced-card reveal">
         <h3>🏆 Incentivos reales</h3>
         <p>
           Los reportes válidos generan <strong>copas</strong> que se transforman
@@ -146,13 +147,10 @@
 <!-- ================= SEGURIDAD ================= -->
 <section id="seguridad" class="section section-alt">
   <div class="container">
-
-    <h2 class="section-title">Seguridad y sistema antifraude</h2>
+    <h2 class="section-title reveal">Seguridad y sistema antifraude</h2>
 
     <div class="security-grid">
-
-      <!-- PIN + SELFIE -->
-      <div class="advanced-card">
+      <div class="advanced-card reveal">
         <div class="icon-wrap">🔐</div>
         <h3>PIN + Selfie</h3>
         <p>
@@ -163,8 +161,7 @@
         </p>
       </div>
 
-      <!-- UBICACIÓN -->
-      <div class="advanced-card">
+      <div class="advanced-card reveal">
         <div class="icon-wrap">📍</div>
         <h3>Ubicación controlada</h3>
         <p>
@@ -174,8 +171,7 @@
         </p>
       </div>
 
-      <!-- ANTIFRAUDE -->
-      <div class="advanced-card">
+      <div class="advanced-card reveal">
         <div class="icon-wrap">🛡️</div>
         <h3>Antifraude automático</h3>
         <p>
@@ -185,8 +181,7 @@
         </p>
       </div>
 
-      <!-- ANONIMATO -->
-      <div class="advanced-card">
+      <div class="advanced-card reveal">
         <div class="icon-wrap">🙈</div>
         <h3>Anonimato</h3>
         <p>
@@ -195,7 +190,6 @@
           identificable del usuario que reporta.
         </p>
       </div>
-
     </div>
   </div>
 </section>
@@ -203,18 +197,15 @@
 <!-- ================= QUE ES LA APP ================= -->
 <section id="app" class="section section-alt">
   <div class="container">
-
-    <h2 class="section-title">¿Qué es la app SKANO?</h2>
-    <p class="section-lead">
+    <h2 class="section-title reveal">¿Qué es la app SKANO?</h2>
+    <p class="section-lead reveal">
       SKANO es una aplicación móvil que permite a la comunidad
       <strong>detectar, reportar y validar vehículos robados</strong>
       de forma segura, anónima y con recompensas reales.
     </p>
 
     <div class="features-grid">
-
-      <!-- ===== REPORTAR ===== -->
-      <div class="advanced-card">
+      <div class="advanced-card reveal">
         <h3>📸 Reportar vehículos sospechosos</h3>
         <p>
           Cualquier persona puede usar la app para reportar una patente
@@ -231,8 +222,7 @@
         </p>
       </div>
 
-      <!-- ===== VALIDACIÓN ===== -->
-      <div class="advanced-card">
+      <div class="advanced-card reveal">
         <h3>🛡️ Validación y control antifraude</h3>
         <p>
           SKANO utiliza controles automáticos y revisión interna
@@ -244,8 +234,7 @@
         </p>
       </div>
 
-      <!-- ===== ALERTAS ===== -->
-      <div class="advanced-card">
+      <div class="advanced-card reveal">
         <h3>🚨 Alertas para dueños y empresas</h3>
         <p>
           Los dueños de vehículos y empresas con planes activos
@@ -256,8 +245,7 @@
         </p>
       </div>
 
-      <!-- ===== RECOMPENSAS ===== -->
-      <div class="advanced-card">
+      <div class="advanced-card reveal">
         <h3>🏆 Recompensas reales</h3>
         <p>
           Los reportes válidos generan <strong>copas</strong> que permiten
@@ -268,26 +256,24 @@
           por referidos con reportes verificados.
         </p>
       </div>
-
     </div>
 
-    <p class="section-lead" style="margin-top:24px;font-size:0.85rem;">
+    <p class="section-lead reveal" style="margin-top:24px;font-size:0.85rem;">
       ✔ SKANO no rastrea personas
       <br>
       ✔ No controla ni bloquea vehículos
       <br>
       ✔ Actúa como intermediario seguro entre la comunidad y los dueños
     </p>
-
   </div>
 </section>
+
 <!-- ================= PORTAL WEB (PARQUÍMETROS) ================= -->
 <section id="portal" class="section section-alt">
   <div class="container">
+    <h2 class="section-title reveal">Portal Web SKANO (Parquímetros)</h2>
 
-    <h2 class="section-title">Portal Web SKANO (Parquímetros)</h2>
-
-    <p class="section-lead">
+    <p class="section-lead reveal">
       Un panel profesional para parquímetros y estacionamientos que permite
       <strong>consultar patentes</strong> y recibir <strong>alertas verificadas</strong>
       cuando un vehículo robado es detectado en tu recinto.
@@ -296,9 +282,8 @@
       el portal es <strong>informativo</strong> y opera con trazabilidad y control.
     </p>
 
-    <!-- ====== BLOQUE SUPERIOR (qué hace / para quién) ====== -->
     <div class="portal-top">
-      <div class="advanced-card portal-hero">
+      <div class="advanced-card portal-hero reveal">
         <div class="icon-wrap">🅿️</div>
         <h3>Diseñado para parquímetros y estacionamientos</h3>
         <p>
@@ -313,7 +298,7 @@
         </div>
       </div>
 
-      <div class="advanced-card portal-hero">
+      <div class="advanced-card portal-hero reveal">
         <div class="icon-wrap">🧩</div>
         <h3>Integración flexible</h3>
         <p>
@@ -331,10 +316,8 @@
       </div>
     </div>
 
-    <!-- ====== GRILLA PRINCIPAL (features) ====== -->
     <div class="portal-grid">
-
-      <div class="advanced-card portal-card">
+      <div class="advanced-card portal-card reveal">
         <div class="portal-minihead">
           <span class="portal-emoji">🔎</span>
           <span class="portal-title">Consulta de patentes</span>
@@ -350,7 +333,7 @@
         </ul>
       </div>
 
-      <div class="advanced-card portal-card">
+      <div class="advanced-card portal-card reveal">
         <div class="portal-minihead">
           <span class="portal-emoji">🚨</span>
           <span class="portal-title">Alertas verificadas</span>
@@ -366,7 +349,7 @@
         </ul>
       </div>
 
-      <div class="advanced-card portal-card">
+      <div class="advanced-card portal-card reveal">
         <div class="portal-minihead">
           <span class="portal-emoji">📍</span>
           <span class="portal-title">Ubicación controlada</span>
@@ -382,7 +365,7 @@
         </ul>
       </div>
 
-      <div class="advanced-card portal-card">
+      <div class="advanced-card portal-card reveal">
         <div class="portal-minihead">
           <span class="portal-emoji">👥</span>
           <span class="portal-title">Roles y control interno</span>
@@ -397,11 +380,9 @@
           <li>✔ Acceso restringido</li>
         </ul>
       </div>
-
     </div>
 
-    <!-- ====== REGLAS / DISCLAIMER (sin botones) ====== -->
-    <div class="advanced-card portal-rules">
+    <div class="advanced-card portal-rules reveal">
       <h3>⚠️ Reglas obligatorias de uso</h3>
       <ul class="portal-list">
         <li>✔ El portal es <strong>informativo</strong> y no autoriza acciones directas.</li>
@@ -415,24 +396,21 @@
         No reemplaza denuncias ni procedimientos oficiales.
       </p>
     </div>
-
   </div>
 </section>
 
 <!-- ================= DOCUMENTOS ================= -->
 <section id="documentos" class="section section-alt">
   <div class="container docs-container">
+    <h2 class="section-title reveal">Documentos y verificación en SKANO</h2>
 
-    <h2 class="section-title">Documentos y verificación en SKANO</h2>
-
-    <p class="section-lead">
+    <p class="section-lead reveal">
       Para proteger a la comunidad y evitar fraudes, SKANO exige validación
       obligatoria de identidad y propiedad.
       <strong>Sin documentos válidos no existen reportes ni alertas.</strong>
     </p>
 
-    <!-- ===== REQUISITOS USUARIO ===== -->
-    <div class="docs-intro">
+    <div class="docs-intro reveal">
       <h3>✅ Requisitos para registrarse y validarse como usuario</h3>
 
       <ul class="doc-list highlight">
@@ -449,10 +427,8 @@
       </p>
     </div>
 
-    <!-- ===== DOCUMENTOS (2 COLUMNAS) ===== -->
     <div class="documents-grid">
-
-      <div class="document-card">
+      <div class="document-card advanced-card reveal">
         <h3>👤 Documentos del usuario</h3>
         <p>Validan que la persona es real, responsable y trazable.</p>
 
@@ -467,7 +443,7 @@
         </p>
       </div>
 
-      <div class="document-card">
+      <div class="document-card advanced-card reveal">
         <h3>🚗 Documentos del vehículo</h3>
         <p>Solo el dueño legal puede registrar un vehículo.</p>
 
@@ -481,11 +457,9 @@
           ❌ No se aceptan cartas de poder ni terceros.
         </p>
       </div>
-
     </div>
 
-    <!-- ================= REGLAS CLAVE ================= -->
-    <div class="advanced-card" style="margin-top:30px;">
+    <div class="advanced-card reveal" style="margin-top:30px;">
       <h3>⚠️ Reglas obligatorias del sistema</h3>
 
       <ul class="doc-list">
@@ -501,8 +475,7 @@
       </p>
     </div>
 
-    <!-- ================= AYUDA DOCUMENTOS ================= -->
-    <div class="advanced-card" style="margin-top:30px;">
+    <div class="advanced-card reveal" style="margin-top:30px;">
       <h3>🤝 ¿Problemas para subir documentos?</h3>
       <p>
         Si tienes errores en la app o dificultades para completar la verificación,
@@ -517,25 +490,21 @@
         Tiempo de respuesta estimado: 10 a 30 minutos en horario hábil.
       </p>
     </div>
-
   </div>
 </section>
 
 <!-- ================= PLANES ================= -->
 <section id="planes" class="section">
   <div class="container">
-
-    <h2 class="section-title">Planes SKANO</h2>
-    <p class="section-lead">
+    <h2 class="section-title reveal">Planes SKANO</h2>
+    <p class="section-lead reveal">
       Reportar vehículos es <strong>100% gratuito</strong>.
       Los planes aplican solo para dueños y empresas que desean
       <strong>recibir alertas verificadas</strong>.
     </p>
 
     <div class="plans-grid">
-
-      <!-- ===== PLAN DUEÑO ===== -->
-      <div class="plan-card advanced-card">
+      <div class="plan-card advanced-card reveal">
         <span class="plan-badge">Dueños</span>
 
         <h3>Plan Dueño</h3>
@@ -557,8 +526,7 @@
         </p>
       </div>
 
-      <!-- ===== PLAN EMPRESAS ===== -->
-      <div class="plan-card advanced-card">
+      <div class="plan-card advanced-card reveal">
         <span class="plan-badge ghost">Empresas</span>
 
         <h3>Plan Empresas / Flotas</h3>
@@ -579,34 +547,31 @@
           Plan diseñado para flotas y empresas
         </p>
       </div>
-
     </div>
 
-    <p class="section-lead" style="margin-top:24px;font-size:0.85rem;">
+    <p class="section-lead reveal" style="margin-top:24px;font-size:0.85rem;">
       ✔ No existe permanencia
       <br>
       ✔ Cada vehículo se activa individualmente
       <br>
       ✔ SKANO no bloquea ni controla vehículos
     </p>
-
   </div>
 </section>
+
 <!-- ================= TERMINOS Y CONDICIONES ================= -->
 <section id="terminos" class="section section-alt">
   <div class="container narrow">
+    <h2 class="section-title reveal">Términos y condiciones de uso</h2>
 
-    <h2 class="section-title">Términos y condiciones de uso</h2>
-
-    <p class="section-lead">
+    <p class="section-lead reveal">
       El uso de la aplicación móvil SKANO y del portal web implica la aceptación
-      expresa de los siguientes términos y condiciones.  
+      expresa de los siguientes términos y condiciones.
       Estos aplican a usuarios, dueños de vehículos, parquímetros,
       estacionamientos y operadores asociados.
     </p>
 
-    <!-- ===== USO GENERAL ===== -->
-    <div class="advanced-card" style="margin-bottom:32px;">
+    <div class="advanced-card reveal" style="margin-bottom:32px;">
       <h3>📱 Uso de la aplicación y plataforma web</h3>
 
       <ul class="doc-list">
@@ -623,8 +588,7 @@
       </p>
     </div>
 
-    <!-- ===== USUARIOS ===== -->
-    <div class="advanced-card" style="margin-bottom:32px;">
+    <div class="advanced-card reveal" style="margin-bottom:32px;">
       <h3>👤 Condiciones para usuarios de la app</h3>
 
       <ul class="doc-list">
@@ -640,8 +604,7 @@
       </p>
     </div>
 
-    <!-- ===== PARQUIMETROS Y ESTACIONAMIENTOS ===== -->
-    <div class="advanced-card" style="margin-bottom:32px;">
+    <div class="advanced-card reveal" style="margin-bottom:32px;">
       <h3>🅿️ Parquímetros y estacionamientos</h3>
 
       <p>
@@ -663,8 +626,7 @@
       </p>
     </div>
 
-    <!-- ===== RESPONSABILIDAD ===== -->
-    <div class="advanced-card">
+    <div class="advanced-card reveal">
       <h3>⚠️ Limitación de responsabilidad</h3>
 
       <ul class="doc-list">
@@ -678,16 +640,14 @@
         Al utilizar SKANO, el usuario acepta estas condiciones en su totalidad.
       </p>
     </div>
-
   </div>
 </section>
 
 <!-- ================= RECOMPENSAS ================= -->
 <section id="recompensas" class="section section-alt">
   <div class="container">
-
-    <h2 class="section-title">Sistema de recompensas</h2>
-    <p class="section-lead">
+    <h2 class="section-title reveal">Sistema de recompensas</h2>
+    <p class="section-lead reveal">
       En SKANO existen <strong>dos formas reales de generar ingresos</strong>:
       <br>
       🏆 reportando vehículos robados correctamente
@@ -695,9 +655,8 @@
       🥇 compartiendo SKANO por WhatsApp
     </p>
 
-    <!-- ====== BLOQUE REPORTES (COPAS) ====== -->
     <div class="rewards-explain">
-      <div class="advanced-card">
+      <div class="advanced-card reveal">
         <h3>🏆 Copas por reportes validados</h3>
         <p>
           Las <strong>copas</strong> se obtienen cuando un usuario reporta correctamente
@@ -710,34 +669,33 @@
     </div>
 
     <div class="rewards-grid">
-      <div class="reward-card advanced-card">
+      <div class="reward-card advanced-card reveal">
         <h3>🏆 Bronce</h3>
         <p>0 – 5 copas</p>
         <strong>$50.000</strong>
       </div>
 
-      <div class="reward-card advanced-card">
+      <div class="reward-card advanced-card reveal">
         <h3>🏆 Plata</h3>
         <p>6 – 10 copas</p>
         <strong>$75.000</strong>
       </div>
 
-      <div class="reward-card advanced-card">
+      <div class="reward-card advanced-card reveal">
         <h3>🏆 Oro</h3>
         <p>11 – 30 copas</p>
         <strong>$100.000</strong>
       </div>
 
-      <div class="reward-card advanced-card">
+      <div class="reward-card advanced-card reveal">
         <h3>🏆 Elite</h3>
         <p>31 – 50 copas</p>
         <strong>$150.000</strong>
       </div>
     </div>
 
-    <!-- ====== BLOQUE COMPARTIR (MEDALLAS) ====== -->
     <div class="rewards-explain" style="margin-top:40px;">
-      <div class="advanced-card">
+      <div class="advanced-card reveal">
         <h3>🥇 Medallas por compartir SKANO</h3>
         <p>
           Las <strong>medallas</strong> se obtienen al <strong>compartir SKANO por WhatsApp</strong>.
@@ -752,42 +710,41 @@
     </div>
 
     <div class="rewards-grid">
-      <div class="reward-card advanced-card">
+      <div class="reward-card advanced-card reveal">
         <h3>🥇 Medalla Bronce</h3>
         <p>5 usuarios con reportes validados</p>
         <strong>$50.000</strong>
       </div>
 
-      <div class="reward-card advanced-card">
+      <div class="reward-card advanced-card reveal">
         <h3>🥇 Medalla Plata</h3>
         <p>7 usuarios con reportes validados</p>
         <strong>$75.000</strong>
       </div>
 
-      <div class="reward-card advanced-card">
+      <div class="reward-card advanced-card reveal">
         <h3>🥇 Medalla Oro</h3>
         <p>10 usuarios con reportes validados</p>
         <strong>$100.000</strong>
       </div>
     </div>
 
-    <p class="section-lead" style="margin-top:24px;font-size:0.85rem;">
+    <p class="section-lead reveal" style="margin-top:24px;font-size:0.85rem;">
       ✔ Los usuarios pueden invitar a cuantas personas quieran
       <br>
       ✔ Solo se paga una vez por grupo o cadena de difusión
       <br>
       ✔ Todos los pagos se realizan tras validación antifraude
     </p>
-
   </div>
 </section>
+
 <!-- ================= CONTACTO ================= -->
 <section id="contacto" class="section">
   <div class="container">
-    <h2 class="section-title">Contacto</h2>
+    <h2 class="section-title reveal">Contacto</h2>
 
-    <!-- 🔹 ELIMINACIÓN DE CUENTA (INFORMATIVO) -->
-    <div class="advanced-card info-card" style="margin-bottom:24px;">
+    <div class="advanced-card info-card reveal" style="margin-bottom:24px;">
       <h3>🗑️ Eliminación de cuenta</h3>
 
       <p>
@@ -807,7 +764,6 @@
         (reportes, recompensas y auditoría).
       </p>
 
-      <!-- BOTÓN QUE ABRE GMAIL WEB -->
       <a
         href="https://mail.google.com/mail/?view=cm&fs=1&to=skano.oficial@gmail.com&su=Solicitud%20de%20eliminación%20de%20cuenta%20SKANO&body=Hola%20equipo%20SKANO,%0D%0A%0D%0ASolicito%20la%20eliminación%20de%20mi%20cuenta%20y%20datos%20personales.%0D%0A%0D%0ANombre%20completo:%0D%0ACorreo%20registrado%20en%20SKANO:%0D%0A%0D%0AGracias."
         target="_blank"
@@ -818,18 +774,14 @@
       </a>
     </div>
 
-    <!-- 🔹 GRID CONTACTO -->
     <div class="contact-grid">
-
-      <!-- CORREOS OFICIALES -->
-      <div class="advanced-card">
+      <div class="advanced-card reveal">
         <h3>📧 Correos oficiales</h3>
         <p><strong>Soporte:</strong> skano.oficial@gmail.com</p>
         <p><strong>Empresas:</strong> contacto@skano.cl</p>
       </div>
 
-      <!-- FORMULARIO DE CONTACTO -->
-      <form class="advanced-card" id="contactForm">
+      <form class="advanced-card reveal" id="contactForm">
         <div class="field">
           <label>Correo electrónico</label>
           <input type="email" name="user_email" required />
@@ -844,10 +796,10 @@
           Enviar mensaje
         </button>
       </form>
-
     </div>
   </div>
 </section>
+
 <!-- ================= EMAILJS ================= -->
 <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
 <script>
@@ -881,7 +833,7 @@
 <!-- ================= MENSAJE FINAL ================= -->
 <section class="final-message">
   <div class="container">
-    <div class="final-card">
+    <div class="final-card reveal">
       <h3 class="final-slogan">“Reporta seguro, los buenos somos más.”</h3>
 
       <p class="final-text">
@@ -910,27 +862,23 @@
     </div>
   </div>
 </footer>
-  
+
 <!-- ================= PANEL LATERAL WEB SKANO ================= -->
 <div class="side-panel">
   <div class="side-panel-content">
     <h4>WEB SKANO</h4>
 
-    <!-- EMPRESAS -->
     <a href="/empresas/login.html" class="side-btn primary">
       🔐 Iniciar sesión Empresa
     </a>
 
-    <!-- PARQUÍMETROS -->
-    <a href="/parquimetros/login.html" class="side-btn primary">
+    <a href="/parquimetros/login.html" class="side-btn primary parking">
       <span class="parking-icon">🅿️</span>
       Iniciar sesión Parquímetros
     </a>
 
-    <!-- APPS -->
     <a href="#" class="side-btn">📱 Descargar Android</a>
     <span class="side-btn disabled">🍎 iOS: Próximamente</span>
-
   </div>
 </div>
 
@@ -954,6 +902,23 @@
   if (navToggle && navMenu) {
     navToggle.onclick = () => navMenu.classList.toggle("open");
   }
+</script>
+
+<!-- ================= REVEAL ON SCROLL ================= -->
+<script>
+  const revealElements = document.querySelectorAll('.reveal');
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, {
+    threshold: 0.14
+  });
+
+  revealElements.forEach((el) => revealObserver.observe(el));
 </script>
 
 </body>
