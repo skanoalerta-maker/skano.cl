@@ -6,34 +6,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
-    body {
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
       font-family: Arial, sans-serif;
+    }
+
+    body {
       background: #020617;
       color: white;
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100vh;
-      text-align: center;
+      padding: 20px;
     }
 
     .box {
-      max-width: 600px;
+      max-width: 650px;
+      width: 100%;
       padding: 30px;
       border-radius: 20px;
-      background: rgba(10, 20, 50, 0.8);
-      box-shadow: 0 0 30px rgba(0,150,255,0.3);
+      background: rgba(10, 20, 50, 0.85);
+      box-shadow: 0 0 30px rgba(0,150,255,0.25);
+      text-align: center;
     }
 
     h1 {
-      font-size: 28px;
+      font-size: 30px;
       margin-bottom: 15px;
     }
 
     p {
       color: #cbd5f5;
       line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .highlight {
+      color: #38bdf8;
+      font-weight: bold;
     }
 
     .btn {
@@ -45,37 +58,53 @@
       color: white;
       text-decoration: none;
       font-weight: bold;
+      transition: 0.3s;
     }
 
     .btn:hover {
       background: #0284c7;
     }
+
+    .back {
+      display: block;
+      margin-top: 20px;
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 14px;
+    }
   </style>
 </head>
+
 <body>
 
   <div class="box">
     <h1>Eliminar cuenta SKANO</h1>
 
     <p>
-      Si deseas eliminar tu cuenta y todos los datos asociados, puedes solicitarlo enviando un correo electrónico.
+      Si deseas eliminar tu cuenta de SKANO, puedes solicitarlo enviando un correo electrónico.
     </p>
 
     <p>
-      📧 Correo: <strong>skano.oficial@gmail.com</strong><br>
-      📝 Asunto: <strong>Eliminación de cuenta SKANO</strong><br><br>
-      Debes indicar el correo asociado a tu cuenta.
+      📧 Correo: <span class="highlight">skano.oficial@gmail.com</span><br>
+      📝 Asunto: <span class="highlight">Eliminación de cuenta SKANO</span>
     </p>
 
     <p>
-      ⏳ Tiempo de procesamiento: hasta 60 días corridos.<br>
-      🔒 Se eliminarán datos personales, reportes y actividad.<br>
-      ⚠ Algunos datos pueden mantenerse por motivos legales o de seguridad.
+      Debes indicar el correo asociado a tu cuenta para poder procesar la solicitud correctamente.
     </p>
 
-    <a class="btn" href="mailto:skano.oficial@gmail.com?subject=Eliminación%20de%20cuenta%20SKANO">
-      Solicitar eliminación
+    <p>
+      ⏳ Tiempo de procesamiento: hasta <strong>60 días corridos</strong><br>
+      🔒 Se eliminarán: datos personales, reportes y actividad en la app<br>
+      ⚠ Algunos datos pueden conservarse por motivos legales o de seguridad
+    </p>
+
+    <a class="btn"
+       href="mailto:skano.oficial@gmail.com?subject=Eliminación%20de%20cuenta%20SKANO">
+      Solicitar eliminación por correo
     </a>
+
+    <a href="index.html" class="back">← Volver a inicio</a>
   </div>
 
 </body>
