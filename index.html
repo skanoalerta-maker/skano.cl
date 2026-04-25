@@ -700,6 +700,425 @@
       }
     }
 
+  
+/* =========================================================
+   PATCH FINAL SKANO - NO ELIMINA ESTRUCTURA
+   Se agrega al final para respetar todo el archivo original:
+   1) Fondo de seguridad visible + movimiento real.
+   2) Todas las casillas/tarjetas con movimiento suave.
+   3) Menú superior con scroll horizontal en escritorio.
+   4) Galería mantiene imágenes completas con fondo difuso.
+   ========================================================= */
+
+/* Header: no amontonar, permitir desplazamiento horizontal */
+.main-header{
+  background: rgba(3, 8, 22, 0.88) !important;
+  box-shadow: 0 14px 42px rgba(0,0,0,.30) !important;
+}
+
+.header-inner{
+  gap: 14px !important;
+}
+
+.header-left{
+  flex: 0 0 auto !important;
+}
+
+.header-logo-img{
+  width: 38px !important;
+  height: 38px !important;
+  filter: drop-shadow(0 0 16px rgba(0,207,255,.30)) !important;
+}
+
+.header-logo-text{
+  color:#2d8cff !important;
+  font-weight:900 !important;
+  letter-spacing:.13em !important;
+  white-space:nowrap !important;
+}
+
+.nav-menu{
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  white-space: nowrap !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  gap: clamp(10px, 1vw, 17px) !important;
+  padding: 10px 4px !important;
+  scroll-behavior: smooth !important;
+}
+
+.nav-menu::-webkit-scrollbar{
+  display:none !important;
+}
+
+.nav-menu a{
+  flex: 0 0 auto !important;
+  font-size: clamp(.72rem, .78vw, .92rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: .075em !important;
+  text-transform: uppercase !important;
+}
+
+.nav-menu a:hover{
+  color:#00cfff !important;
+}
+
+/* Galería: imagen completa + fondo difuso detrás */
+.photo-showcase{
+  position: relative !important;
+  overflow: hidden !important;
+  padding: 90px 0 96px !important;
+  background:
+    radial-gradient(circle at 18% 14%, rgba(0,207,255,.18), transparent 26%),
+    radial-gradient(circle at 88% 18%, rgba(45,125,255,.13), transparent 25%),
+    linear-gradient(180deg, rgba(3,10,28,.98), rgba(4,14,40,.99)) !important;
+}
+
+.photo-showcase::before{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  background:
+    linear-gradient(90deg, rgba(0,207,255,.055) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(0,207,255,.035) 1px, transparent 1px) !important;
+  background-size:54px 54px !important;
+  opacity:.16 !important;
+  pointer-events:none !important;
+}
+
+.photo-showcase-head{
+  position:relative !important;
+  z-index:2 !important;
+}
+
+.photo-showcase-head h2{
+  font-size: clamp(2rem, 4vw, 3.25rem) !important;
+  letter-spacing:-.04em !important;
+  text-shadow: 0 18px 44px rgba(0,0,0,.42) !important;
+}
+
+.photo-slider{
+  z-index:2 !important;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%) !important;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%) !important;
+}
+
+.photo-track{
+  animation: skanoSlide 58s linear infinite !important;
+  gap: 24px !important;
+}
+
+.photo-card{
+  width: clamp(280px, 22vw, 430px) !important;
+  height: 315px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  border-radius:30px !important;
+  background:rgba(255,255,255,.045) !important;
+  border:1px solid rgba(255,255,255,.14) !important;
+  box-shadow:0 24px 78px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+
+.photo-card .photo-bg{
+  position:absolute !important;
+  inset:0 !important;
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+  filter: blur(18px) brightness(.42) saturate(1.20) !important;
+  transform: scale(1.18) !important;
+  opacity:.88 !important;
+}
+
+.photo-card .photo-main{
+  position:relative !important;
+  z-index:1 !important;
+  width:100% !important;
+  height:100% !important;
+  max-width:100% !important;
+  max-height:100% !important;
+  object-fit:contain !important;
+  padding:10px !important;
+  filter:drop-shadow(0 20px 38px rgba(0,0,0,.55)) !important;
+  transform:none !important;
+  transition: transform .45s ease !important;
+}
+
+.photo-card:hover .photo-main{
+  transform: scale(1.035) !important;
+}
+
+.photo-card::after{
+  z-index:2 !important;
+  background:linear-gradient(180deg, transparent 46%, rgba(0,0,0,.78)) !important;
+  pointer-events:none !important;
+}
+
+.photo-label{
+  z-index:3 !important;
+  font-weight:900 !important;
+  text-shadow:0 8px 24px rgba(0,0,0,.60) !important;
+}
+
+/* Seguridad: fondo visible, vivo y detrás del contenido */
+.seguridad-bg{
+  position:relative !important;
+  overflow:hidden !important;
+  isolation:isolate !important;
+  background:#020817 !important;
+  padding-top: 96px !important;
+  padding-bottom: 105px !important;
+  min-height: 720px !important;
+}
+
+.seguridad-bg::before{
+  content:"" !important;
+  position:absolute !important;
+  inset:-55px !important;
+  background:
+    linear-gradient(180deg, rgba(2,8,23,.46), rgba(2,8,23,.78)),
+    linear-gradient(90deg, rgba(2,8,23,.70), rgba(2,8,23,.26) 48%, rgba(2,8,23,.78)),
+    url('/img/bg-seguridad.jpg') center center / cover no-repeat !important;
+  filter: blur(3px) brightness(.88) saturate(1.28) !important;
+  transform: scale(1.08) translate3d(-12px, -8px, 0) !important;
+  animation: seguridadMotionFinal 18s ease-in-out infinite alternate !important;
+  z-index:0 !important;
+  pointer-events:none !important;
+}
+
+.seguridad-bg::after{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  background:
+    radial-gradient(circle at 18% 26%, rgba(0,207,255,.22), transparent 28%),
+    radial-gradient(circle at 82% 18%, rgba(45,125,255,.14), transparent 24%),
+    linear-gradient(180deg, rgba(2,8,23,.08), rgba(2,8,23,.50)) !important;
+  z-index:1 !important;
+  pointer-events:none !important;
+}
+
+.seguridad-bg > .container{
+  position:relative !important;
+  z-index:2 !important;
+}
+
+@keyframes seguridadMotionFinal{
+  0%{
+    transform: scale(1.08) translate3d(-22px, -12px, 0);
+    background-position: 43% 50%;
+  }
+  50%{
+    transform: scale(1.13) translate3d(8px, 6px, 0);
+    background-position: 50% 47%;
+  }
+  100%{
+    transform: scale(1.18) translate3d(24px, 12px, 0);
+    background-position: 58% 44%;
+  }
+}
+
+.seguridad-bg .section-title{
+  text-shadow:0 18px 60px rgba(0,0,0,.65) !important;
+}
+
+/* Movimiento suave para TODAS las casillas */
+.advanced-card,
+.portal-card,
+.portal-hero,
+.portal-rules,
+.document-card,
+.plan-card,
+.reward-card,
+.info-card,
+.seo-content-card,
+.final-card,
+.hero-card{
+  position: relative !important;
+  overflow: hidden !important;
+  will-change: transform !important;
+  animation: skanoCardFloat 7.5s ease-in-out infinite !important;
+}
+
+.advanced-card:nth-child(2n),
+.portal-card:nth-child(2n),
+.reward-card:nth-child(2n),
+.plan-card:nth-child(2n){
+  animation-delay: -1.8s !important;
+}
+
+.advanced-card:nth-child(3n),
+.portal-card:nth-child(3n),
+.reward-card:nth-child(3n){
+  animation-delay: -3.2s !important;
+}
+
+@keyframes skanoCardFloat{
+  0%, 100%{
+    transform: translateY(0);
+  }
+  50%{
+    transform: translateY(-8px);
+  }
+}
+
+.advanced-card::after,
+.portal-card::after,
+.portal-hero::after,
+.document-card::after,
+.plan-card::after,
+.reward-card::after,
+.info-card::after,
+.seo-content-card::after,
+.final-card::after{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  background:
+    linear-gradient(120deg, transparent 0%, rgba(0,207,255,.09) 46%, transparent 58%) !important;
+  transform: translateX(-120%) !important;
+  animation: skanoCardShine 8.5s ease-in-out infinite !important;
+  pointer-events:none !important;
+  z-index:0 !important;
+}
+
+.advanced-card > *,
+.portal-card > *,
+.portal-hero > *,
+.document-card > *,
+.plan-card > *,
+.reward-card > *,
+.info-card > *,
+.seo-content-card > *,
+.final-card > *{
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+@keyframes skanoCardShine{
+  0%, 70%{
+    transform: translateX(-120%);
+    opacity:0;
+  }
+  78%{
+    opacity:.55;
+  }
+  100%{
+    transform: translateX(120%);
+    opacity:0;
+  }
+}
+
+/* Pausar movimiento al pasar mouse para que se pueda leer cómodo */
+.advanced-card:hover,
+.portal-card:hover,
+.portal-hero:hover,
+.portal-rules:hover,
+.document-card:hover,
+.plan-card:hover,
+.reward-card:hover,
+.info-card:hover,
+.seo-content-card:hover,
+.final-card:hover,
+.hero-card:hover{
+  animation-play-state: paused !important;
+  transform: translateY(-8px) !important;
+}
+
+/* Responsive */
+@media (max-width: 1180px){
+  .nav-toggle{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+  }
+
+  .nav-menu{
+    position:absolute !important;
+    top:100% !important;
+    left:14px !important;
+    right:14px !important;
+    display:none !important;
+    flex-direction:column !important;
+    align-items:flex-start !important;
+    gap:0 !important;
+    padding:14px !important;
+    border-radius:20px !important;
+    background:rgba(3,8,22,.97) !important;
+    border:1px solid rgba(255,255,255,.10) !important;
+    box-shadow:0 24px 70px rgba(0,0,0,.45) !important;
+    overflow:visible !important;
+    white-space:normal !important;
+  }
+
+  .nav-menu.open{
+    display:flex !important;
+  }
+
+  .nav-menu a{
+    width:100% !important;
+    padding:12px 10px !important;
+    font-size:.86rem !important;
+    border-bottom:1px solid rgba(255,255,255,.06) !important;
+  }
+}
+
+@media (max-width: 980px){
+  .photo-card{
+    width:min(300px, 78vw) !important;
+    height:260px !important;
+  }
+
+  .seguridad-bg::before{
+    filter: blur(4px) brightness(.62) saturate(1.14) !important;
+  }
+
+  .advanced-card,
+  .portal-card,
+  .portal-hero,
+  .portal-rules,
+  .document-card,
+  .plan-card,
+  .reward-card,
+  .info-card,
+  .seo-content-card,
+  .final-card,
+  .hero-card{
+    animation-duration: 9s !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .photo-track,
+  .seguridad-bg::before,
+  .advanced-card,
+  .portal-card,
+  .portal-hero,
+  .portal-rules,
+  .document-card,
+  .plan-card,
+  .reward-card,
+  .info-card,
+  .seo-content-card,
+  .final-card,
+  .hero-card,
+  .advanced-card::after,
+  .portal-card::after,
+  .portal-hero::after,
+  .document-card::after,
+  .plan-card::after,
+  .reward-card::after,
+  .info-card::after,
+  .seo-content-card::after,
+  .final-card::after{
+    animation: none !important;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -1730,4 +2149,3 @@
 
 </body>
 </html>
-
