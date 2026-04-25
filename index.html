@@ -4,24 +4,49 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>SKANO | App para encontrar y reportar vehículos robados en Chile</title>
-  <meta name="description" content="SKANO es una app chilena para encontrar, reportar y recibir alertas de vehículos robados en tiempo real. Seguridad, validación antifraude y comunidad en una sola plataforma." />
-  <meta name="keywords" content="SKANO, app vehículos robados Chile, autos robados Chile, reportar vehículo robado, encontrar autos robados, alertas vehículos robados" />
+  <title>SKANO | App para buscar autos robados en Chile</title>
+  <meta name="description" content="SKANO es una app chilena para buscar autos robados, verificar patentes, reportar vehículos sospechosos y recibir alertas de vehículos robados en tiempo real." />
+  <meta name="keywords" content="SKANO, app autos robados Chile, buscar autos robados Chile, vehículos robados Chile, consultar patente robada, reportar vehículo robado, encontrar autos robados, alertas vehículos robados" />
   <meta name="robots" content="index, follow" />
+  <meta name="author" content="SKANO Chile" />
+  <meta name="geo.region" content="CL" />
+  <meta name="geo.placename" content="Chile" />
   <link rel="canonical" href="https://skano.cl/" />
 
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="SKANO | App para encontrar y reportar vehículos robados en Chile" />
-  <meta property="og:description" content="Plataforma chilena para reportar y recibir alertas de vehículos robados con ayuda de la comunidad y validación antifraude." />
+  <meta property="og:title" content="SKANO | App para buscar autos robados en Chile" />
+  <meta property="og:description" content="App chilena para buscar autos robados, verificar patentes y recibir alertas de vehículos robados en tiempo real con ayuda de la comunidad." />
   <meta property="og:url" content="https://skano.cl/" />
   <meta property="og:image" content="https://skano.cl/img/hero-autos-robados-bg.png" />
   <meta property="og:site_name" content="SKANO" />
   <meta property="og:locale" content="es_CL" />
 
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="SKANO | App para encontrar y reportar vehículos robados en Chile" />
-  <meta name="twitter:description" content="App chilena para encontrar, reportar y recibir alertas de vehículos robados en tiempo real." />
+  <meta name="twitter:title" content="SKANO | App para buscar autos robados en Chile" />
+  <meta name="twitter:description" content="Busca autos robados en Chile, verifica patentes y reporta vehículos sospechosos con SKANO." />
   <meta name="twitter:image" content="https://skano.cl/img/hero-autos-robados-bg.png" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "SKANO",
+    "applicationCategory": "SecurityApplication",
+    "operatingSystem": "Android",
+    "description": "SKANO es una app chilena para buscar autos robados, verificar patentes, reportar vehículos sospechosos y recibir alertas de vehículos robados en tiempo real.",
+    "url": "https://skano.cl/",
+    "downloadUrl": "https://play.google.com/store/apps/details?id=cl.skano.app",
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "CLP",
+      "price": "16990"
+    },
+    "areaServed": {
+      "@type": "Country",
+      "name": "Chile"
+    }
+  }
+  </script>
 
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" type="image/png" href="img/skano-logo.png" />
@@ -108,9 +133,7 @@
     .hero-bg-grid,
     .hero-bg-orbit,
     .hero-gradient,
-    .hero-glow{
-      z-index: 1;
-    }
+    .hero-glow{ z-index: 1; }
 
     .hero::after{
       content: "";
@@ -123,26 +146,15 @@
       z-index: 1;
     }
 
-    .hero-grid{
-      position: relative;
-      z-index: 2;
-    }
-
-    .hero-left{
-      position: relative;
-      z-index: 3;
-    }
+    .hero-grid{ position: relative; z-index: 2; }
+    .hero-left{ position: relative; z-index: 3; }
 
     .hero-title,
     .hero-text,
     .hero-note,
-    .hero-pill{
-      text-shadow: 0 6px 28px rgba(0,0,0,.32);
-    }
+    .hero-pill{ text-shadow: 0 6px 28px rgba(0,0,0,.32); }
 
-    .hero-title{
-      max-width: 820px;
-    }
+    .hero-title{ max-width: 820px; }
 
     .hero-text{
       max-width: 780px;
@@ -172,9 +184,7 @@
       border-radius: 20px;
     }
 
-    .side-panel{
-      z-index: 4;
-    }
+    .side-panel{ z-index: 4; }
 
     .side-panel-content{
       background: linear-gradient(180deg, rgba(3,16,45,.80), rgba(3,16,45,.68));
@@ -188,37 +198,31 @@
       transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
     }
 
-    .btn:hover{
-      transform: translateY(-1px);
-    }
+    .btn:hover{ transform: translateY(-1px); }
+    .btn-primary{ box-shadow: 0 14px 34px rgba(45, 125, 255, 0.30); }
+    .btn-ghost{ border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.04); }
 
-    .btn-primary{
-      box-shadow: 0 14px 34px rgba(45, 125, 255, 0.30);
-    }
-
-    .btn-ghost{
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.04);
-    }
-
-    .seo-link-box{
-      margin-top: 18px;
-    }
+    .seo-link-box{ margin-top: 18px; }
 
     .seo-link-box a{
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      color: #8fc2ff;
+      color: #00cfff;
       text-decoration: none;
-      font-weight: 600;
-      font-size: 0.95rem;
-      opacity: 0.92;
+      font-weight: 800;
+      font-size: 1.12rem;
+      opacity: 1;
+      padding: 12px 16px;
+      border-radius: 14px;
+      background: rgba(0, 207, 255, 0.10);
+      border: 1px solid rgba(0, 207, 255, 0.24);
+      box-shadow: 0 10px 28px rgba(0, 207, 255, 0.12);
     }
 
     .seo-link-box a:hover{
       color: #ffffff;
-      opacity: 1;
+      border-color: rgba(255,255,255,0.35);
     }
 
     .advanced-card{
@@ -238,16 +242,155 @@
     .section-lead,
     .portal-list,
     .doc-list,
-    .plan-list{
-      color: rgba(255,255,255,0.82);
+    .plan-list{ color: rgba(255,255,255,0.82); }
+
+    .section-title{ letter-spacing: -0.02em; }
+    .section-lead{ line-height: 1.8; }
+
+    .photo-showcase{
+      position: relative;
+      overflow: hidden;
+      padding: 78px 0;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(0,207,255,.12), transparent 25%),
+        linear-gradient(180deg, rgba(3,10,28,.96), rgba(4,14,40,.98));
+      border-top: 1px solid rgba(255,255,255,.06);
+      border-bottom: 1px solid rgba(255,255,255,.06);
     }
 
-    .section-title{
-      letter-spacing: -0.02em;
+    .photo-showcase-head{
+      max-width: 900px;
+      margin: 0 auto 34px;
+      text-align: center;
+      padding: 0 20px;
     }
 
-    .section-lead{
+    .photo-showcase-head h2{
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.08;
+      margin: 0 0 14px;
+      color: #ffffff;
+    }
+
+    .photo-showcase-head p{
+      max-width: 760px;
+      margin: 0 auto;
+      color: rgba(255,255,255,.78);
       line-height: 1.8;
+      font-size: 1rem;
+    }
+
+    .photo-slider{
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+      mask-image: linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+    }
+
+    .photo-track{
+      display: flex;
+      gap: 22px;
+      width: max-content;
+      animation: skanoSlide 34s linear infinite;
+      padding: 10px 0;
+    }
+
+    .photo-slider:hover .photo-track{
+      animation-play-state: paused;
+    }
+
+    .photo-card{
+      width: min(380px, 82vw);
+      height: 250px;
+      flex: 0 0 auto;
+      position: relative;
+      overflow: hidden;
+      border-radius: 26px;
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
+      background: rgba(255,255,255,.06);
+    }
+
+    .photo-card img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(1.02) contrast(1.06);
+      transform: scale(1.02);
+    }
+
+    .photo-card::after{
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,.76));
+    }
+
+    .photo-label{
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 16px;
+      z-index: 2;
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      text-shadow: 0 8px 24px rgba(0,0,0,.55);
+    }
+
+    .photo-label span{
+      display: block;
+      margin-top: 4px;
+      font-size: .86rem;
+      font-weight: 600;
+      color: rgba(255,255,255,.74);
+    }
+
+    @keyframes skanoSlide{
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .seo-content-section{
+      padding: 76px 20px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(0,207,255,.10), transparent 25%),
+        linear-gradient(180deg, rgba(3,10,28,.96), rgba(4,14,40,.98));
+      border-top: 1px solid rgba(255,255,255,.06);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    .seo-content-card{
+      max-width: 980px;
+      margin: auto;
+      border-radius: 26px;
+      padding: 36px;
+      background: linear-gradient(180deg, rgba(8,18,45,.86), rgba(8,18,45,.66));
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 20px 60px rgba(0,0,0,.24);
+    }
+
+    .seo-content-card h2{
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.1;
+      margin: 0 0 18px;
+      color: #ffffff;
+    }
+
+    .seo-content-card p{
+      color: rgba(255,255,255,.82);
+      line-height: 1.85;
+      font-size: 1.02rem;
+    }
+
+    .seo-content-card a{
+      display: inline-flex;
+      margin-top: 14px;
+      color: #00cfff;
+      font-weight: 800;
+      text-decoration: none;
     }
 
     .footer{
@@ -256,14 +399,10 @@
     }
 
     .footer-slogan,
-    .footer-copy{
-      color: rgba(255,255,255,0.72);
-    }
+    .footer-copy{ color: rgba(255,255,255,0.72); }
 
     @media (max-width: 980px){
-      .hero{
-        min-height: auto;
-      }
+      .hero{ min-height: auto; }
 
       .hero-bg-image{
         background:
@@ -271,13 +410,9 @@
           url('img/hero-autos-robados-bg.png') center center / cover no-repeat;
       }
 
-      .header-inner{
-        min-height: 72px;
-      }
-
-      .nav-menu{
-        gap: 12px;
-      }
+      .header-inner{ min-height: 72px; }
+      .nav-menu{ gap: 12px; }
+      .photo-card{ height: 220px; }
     }
   </style>
 </head>
@@ -296,6 +431,7 @@
       <a href="#que-es">Qué es</a>
       <a href="#seguridad">Seguridad</a>
       <a href="#app">App</a>
+      <a href="#galeria">Galería</a>
       <a href="#portal">Portal Web</a>
       <a href="#documentos">Documentos</a>
       <a href="#planes">Planes</a>
@@ -323,12 +459,13 @@
       <p class="hero-pill">Seguridad ciudadana · Tecnología · Comunidad</p>
 
       <h1 class="hero-title">
-        SKANO: alerta comunitaria para vehículos robados en Chile
-        <span class="hero-title-highlight">segura, validada y en tiempo real</span>
+        App para buscar autos robados en Chile en tiempo real
+        <span class="hero-title-highlight">con ayuda de la comunidad</span>
       </h1>
 
       <p class="hero-text">
-        Reporta patentes sospechosas de forma segura, recibe alertas verificadas y ayuda a encontrar vehículos robados con el respaldo de un sistema antifraude, validación por PIN y selfie en tiempo real.
+        SKANO es una app en Chile para buscar autos robados, verificar patentes y reportar vehículos sospechosos en tiempo real.
+        La comunidad ayuda a encontrar vehículos robados de forma segura mediante validación antifraude, PIN y selfie.
       </p>
 
       <div class="hero-buttons">
@@ -341,7 +478,7 @@
       </a>
 
       <div class="seo-link-box">
-        <a href="app-para-autos-robados-en-chile.html">Conoce cómo funciona nuestra página especial para búsqueda de autos robados en Chile</a>
+        <a href="app-para-autos-robados-en-chile.html">🔍 Buscar autos robados en Chile</a>
       </div>
 
       <div class="hero-note">
@@ -364,10 +501,10 @@
 
         <div class="hero-mockups">
           <div class="phone-frame">
-            <img src="img/app-mapa-reportar.png" alt="App SKANO - mapa y reportes" />
+            <img src="img/app-mapa-reportar.png" alt="App SKANO para buscar autos robados en Chile desde el mapa" />
           </div>
           <div class="phone-frame phone-dark">
-            <img src="img/app-perfil-recompensas.png" alt="App SKANO - perfil y recompensas" />
+            <img src="img/app-perfil-recompensas.png" alt="App SKANO con perfil, reportes y recompensas" />
           </div>
         </div>
 
@@ -451,8 +588,7 @@
         <h3>Antifraude automático</h3>
         <p>
           El sistema detecta patrones sospechosos, abuso del sistema o intentos
-          de manipulación.
-          Las cuentas que incumplen las reglas se bloquean automáticamente.
+          de manipulación. Las cuentas que incumplen las reglas se bloquean automáticamente.
         </p>
       </div>
 
@@ -483,8 +619,7 @@
       <div class="advanced-card reveal">
         <h3>📸 Reportar vehículos sospechosos</h3>
         <p>
-          Cualquier persona puede usar la app para reportar una patente
-          sospechosa.
+          Cualquier persona puede usar la app para reportar una patente sospechosa.
           Para que el reporte sea válido, la app solicita:
         </p>
         <ul class="mini-list">
@@ -492,43 +627,34 @@
           <li>✔ Selfie en tiempo real</li>
           <li>✔ Ubicación solo al momento del reporte</li>
         </ul>
-        <p>
-          Esto evita fraudes, bots y reportes falsos.
-        </p>
+        <p>Esto evita fraudes, bots y reportes falsos.</p>
       </div>
 
       <div class="advanced-card reveal">
         <h3>🛡️ Validación y control antifraude</h3>
         <p>
-          SKANO utiliza controles automáticos y revisión interna
-          para validar cada reporte antes de considerarlo legítimo.
+          SKANO utiliza controles automáticos y revisión interna para validar cada reporte
+          antes de considerarlo legítimo.
         </p>
-        <p>
-          Los reportes falsos o abusivos generan bloqueos automáticos
-          de la cuenta.
-        </p>
+        <p>Los reportes falsos o abusivos generan bloqueos automáticos de la cuenta.</p>
       </div>
 
       <div class="advanced-card reveal">
         <h3>🚨 Alertas para dueños y empresas</h3>
         <p>
-          Los dueños de vehículos y empresas con planes activos
-          reciben alertas <strong>solo cuando un reporte es validado</strong>.
+          Los dueños de vehículos y empresas con planes activos reciben alertas
+          <strong>solo cuando un reporte es validado</strong>.
         </p>
-        <p>
-          La identidad del reportante <strong>nunca se comparte</strong>.
-        </p>
+        <p>La identidad del reportante <strong>nunca se comparte</strong>.</p>
       </div>
 
       <div class="advanced-card reveal">
         <h3>🏆 Recompensas reales</h3>
         <p>
-          Los reportes válidos generan <strong>copas</strong> que permiten
-          acceder a recompensas económicas.
+          Los reportes válidos generan <strong>copas</strong> que permiten acceder a recompensas económicas.
         </p>
         <p>
-          Además, compartir la app genera <strong>medallas</strong>
-          por referidos con reportes verificados.
+          Además, compartir la app genera <strong>medallas</strong> por referidos con reportes verificados.
         </p>
       </div>
     </div>
@@ -540,6 +666,95 @@
       <br>
       ✔ Actúa como intermediario seguro entre la comunidad y los dueños
     </p>
+  </div>
+</section>
+
+<!-- ================= GALERÍA PROFESIONAL CON FOTOS EN MOVIMIENTO ================= -->
+<section id="galeria" class="photo-showcase">
+  <div class="photo-showcase-head reveal">
+    <h2>SKANO en terreno: comunidad, tecnología y búsqueda activa</h2>
+    <p>
+      Agrega aquí tus imágenes reales o generadas para mostrar vehículos estacionados,
+      seguridad ciudadana, fiscalización, uso de la app y presencia en terreno.
+    </p>
+  </div>
+
+  <!--
+    IMPORTANTE:
+    Sube tus fotos a la carpeta /img/ con estos nombres:
+    img/galeria-1.jpg
+    img/galeria-2.jpg
+    img/galeria-3.jpg
+    img/galeria-4.jpg
+    img/galeria-5.jpg
+    img/galeria-6.jpg
+
+    Si tus imágenes tienen otros nombres, cambia SOLO el src="...".
+    La segunda mitad de imágenes está repetida para que el movimiento sea infinito y fluido.
+  -->
+
+  <div class="photo-slider" aria-label="Galería de imágenes SKANO en movimiento">
+    <div class="photo-track">
+      <article class="photo-card">
+        <img src="img/galeria-1.jpg" alt="SKANO búsqueda de autos robados en Chile" />
+        <div class="photo-label">Búsqueda comunitaria <span>Autos robados en Chile</span></div>
+      </article>
+
+      <article class="photo-card">
+        <img src="img/galeria-2.jpg" alt="Verificación de patentes con SKANO" />
+        <div class="photo-label">Verificación de patentes <span>Consulta rápida y segura</span></div>
+      </article>
+
+      <article class="photo-card">
+        <img src="img/galeria-3.jpg" alt="Vehículos estacionados y reporte comunitario" />
+        <div class="photo-label">Vehículos estacionados <span>El punto clave para detectar</span></div>
+      </article>
+
+      <article class="photo-card">
+        <img src="img/galeria-4.jpg" alt="Seguridad ciudadana y apoyo tecnológico" />
+        <div class="photo-label">Seguridad ciudadana <span>Tecnología + comunidad</span></div>
+      </article>
+
+      <article class="photo-card">
+        <img src="img/galeria-5.jpg" alt="Alertas de vehículos robados en tiempo real" />
+        <div class="photo-label">Alertas en tiempo real <span>Reportes verificados</span></div>
+      </article>
+
+      <article class="photo-card">
+        <img src="img/galeria-6.jpg" alt="App SKANO para encontrar vehículos robados" />
+        <div class="photo-label">App SKANO <span>Reporta seguro</span></div>
+      </article>
+
+      <article class="photo-card">
+        <img src="img/galeria-1.jpg" alt="SKANO búsqueda de autos robados en Chile" />
+        <div class="photo-label">Búsqueda comunitaria <span>Autos robados en Chile</span></div>
+      </article>
+
+      <article class="photo-card">
+        <img src="img/galeria-2.jpg" alt="Verificación de patentes con SKANO" />
+        <div class="photo-label">Verificación de patentes <span>Consulta rápida y segura</span></div>
+      </article>
+
+      <article class="photo-card">
+        <img src="img/galeria-3.jpg" alt="Vehículos estacionados y reporte comunitario" />
+        <div class="photo-label">Vehículos estacionados <span>El punto clave para detectar</span></div>
+      </article>
+
+      <article class="photo-card">
+        <img src="img/galeria-4.jpg" alt="Seguridad ciudadana y apoyo tecnológico" />
+        <div class="photo-label">Seguridad ciudadana <span>Tecnología + comunidad</span></div>
+      </article>
+
+      <article class="photo-card">
+        <img src="img/galeria-5.jpg" alt="Alertas de vehículos robados en tiempo real" />
+        <div class="photo-label">Alertas en tiempo real <span>Reportes verificados</span></div>
+      </article>
+
+      <article class="photo-card">
+        <img src="img/galeria-6.jpg" alt="App SKANO para encontrar vehículos robados" />
+        <div class="photo-label">App SKANO <span>Reporta seguro</span></div>
+      </article>
+    </div>
   </div>
 </section>
 
@@ -713,9 +928,7 @@
           <li>🔐 PIN de seguridad</li>
         </ul>
 
-        <p class="small">
-          La identidad del usuario nunca se comparte.
-        </p>
+        <p class="small">La identidad del usuario nunca se comparte.</p>
       </div>
 
       <div class="document-card advanced-card reveal">
@@ -728,9 +941,7 @@
           <li>🚔 Constancia policial (en caso de robo)</li>
         </ul>
 
-        <p class="small">
-          ❌ No se aceptan cartas de poder ni terceros.
-        </p>
+        <p class="small">❌ No se aceptan cartas de poder ni terceros.</p>
       </div>
     </div>
 
@@ -796,9 +1007,7 @@
           💳 Pagar con Mercado Pago
         </button>
 
-        <p class="plan-note">
-          Pago seguro procesado por Mercado Pago
-        </p>
+        <p class="plan-note">Pago seguro procesado por Mercado Pago</p>
       </div>
 
       <div class="plan-card advanced-card reveal">
@@ -814,13 +1023,9 @@
           <li>✔ Soporte especializado</li>
         </ul>
 
-        <a href="#contacto" class="btn btn-ghost full">
-          💼 Contactar ventas
-        </a>
+        <a href="#contacto" class="btn btn-ghost full">💼 Contactar ventas</a>
 
-        <p class="plan-note">
-          Plan diseñado para flotas y empresas
-        </p>
+        <p class="plan-note">Plan diseñado para flotas y empresas</p>
       </div>
     </div>
 
@@ -857,10 +1062,7 @@
         <li>✔ El uso indebido del sistema puede derivar en bloqueo permanente.</li>
       </ul>
 
-      <p class="small">
-        SKANO actúa únicamente como intermediario tecnológico con trazabilidad
-        y controles antifraude.
-      </p>
+      <p class="small">SKANO actúa únicamente como intermediario tecnológico con trazabilidad y controles antifraude.</p>
     </div>
 
     <div class="advanced-card reveal" style="margin-bottom:32px;">
@@ -874,9 +1076,7 @@
         <li>✔ El sistema de recompensas está sujeto a validación antifraude.</li>
       </ul>
 
-      <p class="small">
-        SKANO se reserva el derecho de suspender cuentas que incumplan estas reglas.
-      </p>
+      <p class="small">SKANO se reserva el derecho de suspender cuentas que incumplan estas reglas.</p>
     </div>
 
     <div class="advanced-card reveal" style="margin-bottom:32px;">
@@ -895,10 +1095,7 @@
         <li>✔ Cumplir la normativa legal vigente.</li>
       </ul>
 
-      <p class="small">
-        SKANO no se responsabiliza por decisiones operativas tomadas
-        fuera del alcance de la plataforma.
-      </p>
+      <p class="small">SKANO no se responsabiliza por decisiones operativas tomadas fuera del alcance de la plataforma.</p>
     </div>
 
     <div class="advanced-card reveal">
@@ -911,9 +1108,7 @@
         <li>✔ El usuario es responsable del uso que haga de la plataforma.</li>
       </ul>
 
-      <p class="small">
-        Al utilizar SKANO, el usuario acepta estas condiciones en su totalidad.
-      </p>
+      <p class="small">Al utilizar SKANO, el usuario acepta estas condiciones en su totalidad.</p>
     </div>
   </div>
 </section>
@@ -975,11 +1170,9 @@
         <p>
           Las <strong>medallas</strong> se obtienen al <strong>compartir SKANO por WhatsApp</strong>.
           <br><br>
-          Cuando una persona invita a otros usuarios y esos usuarios
-          realizan <strong>reportes válidos</strong>, se genera una recompensa.
+          Cuando una persona invita a otros usuarios y esos usuarios realizan <strong>reportes válidos</strong>, se genera una recompensa.
           <br><br>
-          ⚠️ <strong>El pago se realiza solo a la PRIMERA persona</strong>
-          que compartió el enlace en ese grupo o contacto.
+          ⚠️ <strong>El pago se realiza solo a la PRIMERA persona</strong> que compartió el enlace en ese grupo o contacto.
         </p>
       </div>
     </div>
@@ -1011,6 +1204,28 @@
       <br>
       ✔ Todos los pagos se realizan tras validación antifraude
     </p>
+  </div>
+</section>
+
+<!-- ================= BLOQUE SEO FINAL ================= -->
+<section class="seo-content-section">
+  <div class="seo-content-card reveal">
+    <h2>Buscar autos robados en Chile con SKANO</h2>
+
+    <p>
+      Si necesitas buscar autos robados en Chile, SKANO permite verificar patentes,
+      recibir alertas en tiempo real y reportar vehículos sospechosos de forma segura.
+      La plataforma está pensada para apoyar a la comunidad, dueños de vehículos,
+      empresas, estacionamientos y parquímetros.
+    </p>
+
+    <p>
+      Con SKANO puedes consultar vehículos robados en Chile desde tu celular,
+      revisar información relevante de una patente y participar en una red colaborativa
+      que ayuda a encontrar autos robados mediante reportes verificados.
+    </p>
+
+    <a href="app-para-autos-robados-en-chile.html">Ver página especial para buscar autos robados en Chile →</a>
   </div>
 </section>
 
@@ -1132,6 +1347,7 @@
     </div>
     <div>
       <p class="footer-copy">© 2025 SKANO – Todos los derechos reservados.</p>
+      <p class="footer-copy"><a href="app-para-autos-robados-en-chile.html">Buscar autos robados en Chile</a></p>
     </div>
   </div>
 </footer>
@@ -1158,16 +1374,8 @@
 </div>
 
 <!-- ================= WHATSAPP FLOAT ================= -->
-<a
-  href="whatsapp.html"
-  class="whatsapp-float"
-  aria-label="Asistente WhatsApp SKANO"
->
-  <img
-    src="img/whatsapp-icon.svg"
-    alt="WhatsApp"
-    class="whatsapp-icon"
-  />
+<a href="whatsapp.html" class="whatsapp-float" aria-label="Asistente WhatsApp SKANO">
+  <img src="img/whatsapp-icon.svg" alt="WhatsApp" class="whatsapp-icon" />
 </a>
 
 <!-- ================= JS NAV ================= -->
