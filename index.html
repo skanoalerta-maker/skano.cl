@@ -1877,6 +1877,94 @@ html,body{max-width:100%;overflow-x:hidden!important;background:#020817!importan
 @media(max-width:980px){.container{width:min(100% - 28px,1180px)!important}.hero{min-height:auto!important;padding:38px 0 78px!important}.hero-bg-image{background:linear-gradient(180deg,rgba(2,8,23,.72) 0%,rgba(2,8,23,.68) 38%,rgba(2,8,23,.92) 100%),url('img/hero-autos-robados-bg.png') center top/cover no-repeat!important;filter:brightness(1.08) contrast(1.12) saturate(1.16)!important}.hero-title{font-size:clamp(2.55rem,12vw,4.4rem)!important;letter-spacing:-.066em!important}.hero-text{font-size:1rem!important}.hero-actions-wow{flex-direction:column!important;align-items:stretch!important}.hero-actions-wow a{width:100%!important}.hero-proof{grid-template-columns:1fr!important}.hero-right{min-height:430px!important}.hero-device-stage{min-height:430px!important}.app-phone-wow{width:202px!important;height:410px!important}.app-phone-wow.secondary{display:none!important}.floating-alert-card{left:8px!important;top:42px!important;width:172px!important;padding:12px!important}.floating-mini-card{right:6px!important;top:8px!important;width:146px!important;padding:11px!important}.hero-scroll-cue{display:none!important}.skano-mobile-cta{display:block!important}.whatsapp-float{bottom:88px!important}}
 @media(max-width:560px){.header-logo-img{width:32px!important;height:32px!important}.header-logo-text{font-size:.98rem!important}.hero-pill{font-size:.66rem!important;padding:8px 10px!important}.hero-title{font-size:clamp(2.25rem,14vw,3.5rem)!important}.hero-proof-item{min-height:auto!important}.app-phone-wow{width:188px!important;height:382px!important}.floating-alert-card,.floating-mini-card{display:none!important}.photo-card{width:min(292px,82vw)!important;height:258px!important}}
 @keyframes skanoPulseGlow{0%,100%{transform:scale(.96);opacity:.70}50%{transform:scale(1.05);opacity:1}}
+
+/* =========================================================
+   FIX DEFINITIVO SKANO - FONDO SEGURIDAD VISIBLE
+   Este bloque queda al final para anular cualquier display:none anterior.
+   Mantiene diseño responsive y deja el panel flotante visible en escritorio.
+   ========================================================= */
+
+.seguridad-bg{
+  position: relative !important;
+  overflow: hidden !important;
+  isolation: isolate !important;
+  background: #020817 !important;
+  min-height: 720px !important;
+}
+
+.seguridad-bg::before{
+  display: block !important;
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background:
+    linear-gradient(180deg, rgba(2,8,23,.30), rgba(2,8,23,.58)),
+    linear-gradient(90deg, rgba(2,8,23,.46), rgba(2,8,23,.14) 48%, rgba(2,8,23,.52)),
+    url('img/bg-seguridad.jpg') center center / cover no-repeat !important;
+  filter: brightness(1.07) contrast(1.10) saturate(1.18) !important;
+  transform: scale(1.02) !important;
+  animation: seguridadMotionVisible 24s ease-in-out infinite alternate !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+}
+
+.seguridad-bg::after{
+  display: block !important;
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  background:
+    radial-gradient(circle at 18% 26%, rgba(0,207,255,.16), transparent 30%),
+    radial-gradient(circle at 82% 18%, rgba(45,125,255,.12), transparent 28%),
+    linear-gradient(180deg, rgba(2,8,23,.04), rgba(2,8,23,.34)) !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+}
+
+.seguridad-bg > .container,
+.seguridad-bg > *:not(style){
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+@keyframes seguridadMotionVisible{
+  0%{
+    transform: scale(1.02) translate3d(-10px, -6px, 0);
+    background-position: 45% 50%;
+  }
+  100%{
+    transform: scale(1.08) translate3d(12px, 6px, 0);
+    background-position: 56% 46%;
+  }
+}
+
+.seguridad-bg .advanced-card{
+  background: linear-gradient(180deg, rgba(5,16,42,.68), rgba(4,11,31,.52)) !important;
+  border: 1px solid rgba(0,207,255,.24) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  box-shadow: 0 24px 70px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.07) !important;
+}
+
+/* Panel flotante: visible en escritorio, oculto en móvil/tablet para no tapar contenido */
+.side-panel{
+  display: block !important;
+  z-index: 9000 !important;
+}
+
+@media (max-width: 980px){
+  .seguridad-bg::before{
+    background:
+      linear-gradient(180deg, rgba(2,8,23,.42), rgba(2,8,23,.68)),
+      url('img/bg-seguridad.jpg') center center / cover no-repeat !important;
+    filter: brightness(.98) contrast(1.08) saturate(1.10) !important;
+  }
+
+  .side-panel{
+    display: none !important;
+  }
+}
+
   </style>
 </head>
 <body>
