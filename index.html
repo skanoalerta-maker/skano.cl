@@ -1735,15 +1735,6 @@ html, body{
 .seguridad-bg{
   background:#020817 !important;
 }
-
-.seguridad-bg::before{
-  display:none !important;
-}
-
-.seguridad-bg::after{
-  display:none !important;
-}
-
 .skano-mobile-cta{
   display:none;
   position:fixed;
@@ -1965,6 +1956,131 @@ html,body{max-width:100%;overflow-x:hidden!important;background:#020817!importan
   }
 }
 
+  
+
+/* =========================================================
+   SKANO TOP WORLD FINAL PATCH
+   Fondo global visible + sección seguridad corregida
+   Orden visual: ¿Qué es SKANO? antes de galería
+   ========================================================= */
+
+html,
+body{
+  max-width:100% !important;
+  overflow-x:hidden !important;
+  background:
+    linear-gradient(180deg, rgba(2,8,23,.52), rgba(2,8,23,.76)),
+    url('img/bg-seguridad.jpg') center center / cover fixed no-repeat !important;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(0,207,255,.12), transparent 30%),
+    radial-gradient(circle at 82% 22%, rgba(45,125,255,.10), transparent 28%);
+}
+
+.section,
+.section-alt,
+.photo-showcase,
+.seo-content-section,
+.final-message,
+.footer{
+  background: transparent !important;
+}
+
+.seguridad-bg{
+  position:relative !important;
+  overflow:hidden !important;
+  isolation:isolate !important;
+  background: transparent !important;
+}
+
+.seguridad-bg::before{
+  content:"" !important;
+  display:block !important;
+  position:absolute !important;
+  inset:-40px !important;
+  background:
+    linear-gradient(180deg, rgba(2,8,23,.28), rgba(2,8,23,.56)),
+    linear-gradient(90deg, rgba(2,8,23,.50), rgba(2,8,23,.14) 50%, rgba(2,8,23,.52)),
+    url('img/bg-seguridad.jpg') center center / cover no-repeat !important;
+  filter: brightness(1.08) contrast(1.10) saturate(1.18) !important;
+  transform: scale(1.04) !important;
+  animation: seguridadMotionTop 28s ease-in-out infinite alternate !important;
+  z-index:0 !important;
+  pointer-events:none !important;
+  opacity:1 !important;
+}
+
+.seguridad-bg::after{
+  content:"" !important;
+  display:block !important;
+  position:absolute !important;
+  inset:0 !important;
+  background:
+    radial-gradient(circle at 18% 26%, rgba(0,207,255,.20), transparent 30%),
+    radial-gradient(circle at 82% 18%, rgba(45,125,255,.14), transparent 28%),
+    linear-gradient(180deg, rgba(2,8,23,.10), rgba(2,8,23,.48)) !important;
+  z-index:1 !important;
+  pointer-events:none !important;
+  opacity:1 !important;
+}
+
+.seguridad-bg > .container{
+  position:relative !important;
+  z-index:2 !important;
+}
+
+@keyframes seguridadMotionTop{
+  0%{ transform:scale(1.04) translate3d(-16px,-8px,0); background-position:44% 50%; }
+  50%{ transform:scale(1.08) translate3d(8px,4px,0); background-position:50% 47%; }
+  100%{ transform:scale(1.12) translate3d(18px,10px,0); background-position:58% 44%; }
+}
+
+.advanced-card,
+.portal-card,
+.portal-hero,
+.portal-rules,
+.document-card,
+.plan-card,
+.reward-card,
+.info-card,
+.seo-content-card,
+.final-card,
+.hero-proof-item,
+.floating-alert-card,
+.floating-mini-card{
+  background: linear-gradient(180deg, rgba(7,18,45,.76), rgba(4,12,32,.60)) !important;
+  border:1px solid rgba(115,169,255,.16) !important;
+  box-shadow:0 24px 70px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.06) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+}
+
+.photo-showcase-pro{
+  margin-top:0 !important;
+  border-top:1px solid rgba(255,255,255,.08) !important;
+  border-bottom:1px solid rgba(255,255,255,.08) !important;
+}
+
+@media (max-width: 980px){
+  html,
+  body{
+    background:
+      linear-gradient(180deg, rgba(2,8,23,.62), rgba(2,8,23,.82)),
+      url('img/bg-seguridad.jpg') center center / cover fixed no-repeat !important;
+  }
+
+  .seguridad-bg::before{
+    filter: brightness(.95) contrast(1.06) saturate(1.12) !important;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -1979,8 +2095,8 @@ html,body{max-width:100%;overflow-x:hidden!important;background:#020817!importan
 
     <nav class="nav-menu" id="navMenu">
       <a href="#inicio">Inicio</a>
-      <a href="#galeria">Galería</a>
       <a href="#que-es">Qué es</a>
+      <a href="#galeria">Galería</a>
       <a href="#seguridad">Seguridad</a>
       <a href="#app">App</a>
       <a href="#portal">Portal Web</a>
@@ -2073,6 +2189,48 @@ html,body{max-width:100%;overflow-x:hidden!important;background:#020817!importan
 
   <div class="hero-scroll-cue">Desliza para conocer SKANO</div>
 </section>
+
+<!-- ================= QUE ES ================= -->
+<section id="que-es" class="section">
+  <div class="container">
+    <h2 class="section-title reveal">¿Qué es SKANO?</h2>
+
+    <p class="section-lead reveal">
+      SKANO es una plataforma tecnológica de seguridad ciudadana que conecta a la comunidad
+      con dueños de vehículos robados o clonados, permitiendo reportes seguros,
+      verificados y protegidos mediante tecnología antifraude y validación humana.
+    </p>
+
+    <div class="features-grid">
+      <div class="advanced-card reveal">
+        <h3>🔍 Reportes ciudadanos verificados</h3>
+        <p>
+          Cualquier persona puede reportar una patente sospechosa de forma gratuita.
+          Para que un reporte sea válido, SKANO exige PIN, selfie en tiempo real
+          y controles automáticos.
+        </p>
+      </div>
+
+      <div class="advanced-card reveal">
+        <h3>🛡️ Seguridad y anonimato real</h3>
+        <p>
+          La identidad del reportante nunca es visible para el dueño del vehículo.
+          SKANO actúa como intermediario seguro.
+        </p>
+      </div>
+
+      <div class="advanced-card reveal">
+        <h3>🏆 Incentivos reales</h3>
+        <p>
+          Los reportes válidos generan <strong>copas</strong> que se transforman
+          en recompensas económicas. Compartir SKANO suma <strong>medallas</strong>.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
 
 <!-- ================= GALERÍA PROFESIONAL CON 8 FOTOS EN MOVIMIENTO ================= -->
 <section id="galeria" class="photo-showcase photo-showcase-pro">
@@ -2190,46 +2348,6 @@ html,body{max-width:100%;overflow-x:hidden!important;background:#020817!importan
         <img class="photo-main" src="img/galeria-8.jpg" alt="Completa tu registro en SKANO" />
         <div class="photo-label">Completa tu registro <span>Verificación obligatoria</span></div>
       </article>
-    </div>
-  </div>
-</section>
-
-<!-- ================= QUE ES ================= -->
-<section id="que-es" class="section">
-  <div class="container">
-    <h2 class="section-title reveal">¿Qué es SKANO?</h2>
-
-    <p class="section-lead reveal">
-      SKANO es una plataforma tecnológica de seguridad ciudadana que conecta a la comunidad
-      con dueños de vehículos robados o clonados, permitiendo reportes seguros,
-      verificados y protegidos mediante tecnología antifraude y validación humana.
-    </p>
-
-    <div class="features-grid">
-      <div class="advanced-card reveal">
-        <h3>🔍 Reportes ciudadanos verificados</h3>
-        <p>
-          Cualquier persona puede reportar una patente sospechosa de forma gratuita.
-          Para que un reporte sea válido, SKANO exige PIN, selfie en tiempo real
-          y controles automáticos.
-        </p>
-      </div>
-
-      <div class="advanced-card reveal">
-        <h3>🛡️ Seguridad y anonimato real</h3>
-        <p>
-          La identidad del reportante nunca es visible para el dueño del vehículo.
-          SKANO actúa como intermediario seguro.
-        </p>
-      </div>
-
-      <div class="advanced-card reveal">
-        <h3>🏆 Incentivos reales</h3>
-        <p>
-          Los reportes válidos generan <strong>copas</strong> que se transforman
-          en recompensas económicas. Compartir SKANO suma <strong>medallas</strong>.
-        </p>
-      </div>
     </div>
   </div>
 </section>
