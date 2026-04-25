@@ -1289,25 +1289,583 @@
 
   
 /* =========================================================
-   SKANO PREMIUM APP WEBSITE PATCH - HERO ÚNICO + SECCIONES PRO
+   SKANO WOW VISUAL PATCH - HERO APP PREMIUM / SIN PANEL LATERAL
    ========================================================= */
-:root{--sk-bg:#020817;--sk-panel:rgba(5,16,42,.72);--sk-line:rgba(80,160,255,.18);--sk-blue:#157cff;--sk-cyan:#00d5ff;--sk-text:#f7fbff;--sk-muted:rgba(230,240,255,.76)}
-html{scroll-behavior:smooth}
-body{background:radial-gradient(circle at 16% 8%,rgba(0,117,255,.16),transparent 26%),radial-gradient(circle at 86% 22%,rgba(0,214,255,.10),transparent 28%),linear-gradient(180deg,#020817 0%,#030b1d 45%,#020817 100%)!important;color:var(--sk-text)!important}
-body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;background:linear-gradient(90deg,rgba(0,213,255,.025) 1px,transparent 1px),linear-gradient(180deg,rgba(0,213,255,.018) 1px,transparent 1px);background-size:72px 72px;opacity:.38}
-body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(circle at 50% 0%,rgba(0,126,255,.12),transparent 38%)}
-.main-header{background:rgba(2,8,23,.82)!important;border-bottom:1px solid rgba(99,172,255,.13)!important;box-shadow:0 18px 52px rgba(0,0,0,.34)!important}
-.header-inner{max-width:1500px!important;margin:0 auto!important;padding-inline:22px!important}.header-logo-img{width:34px!important;height:34px!important;border-radius:9px!important}.header-logo-text{color:#2d8cff!important;font-size:1.08rem!important;font-weight:950!important;letter-spacing:.18em!important}.nav-menu a{color:rgba(255,255,255,.82)!important;font-size:.80rem!important;font-weight:900!important;letter-spacing:.075em!important;text-transform:uppercase!important}.nav-menu a:hover{color:var(--sk-cyan)!important}
-.hero{min-height:calc(100vh - 76px)!important;background:#020817!important}.hero-bg-image{opacity:1!important;filter:saturate(1.05) contrast(1.10) brightness(.92)!important;transform:scale(1.01)!important;background:linear-gradient(90deg,rgba(2,8,23,.92) 0%,rgba(2,8,23,.72) 32%,rgba(2,8,23,.42) 63%,rgba(2,8,23,.78) 100%),linear-gradient(180deg,rgba(2,8,23,.18) 0%,rgba(2,8,23,.32) 52%,rgba(2,8,23,.88) 100%),url('img/hero-autos-robados-bg.png') center center/cover no-repeat!important}.hero::after{background:radial-gradient(circle at 26% 28%,rgba(0,213,255,.12),transparent 26%),radial-gradient(circle at 78% 22%,rgba(21,124,255,.13),transparent 30%)!important}
-.hero-grid.container{max-width:1380px!important;min-height:calc(100vh - 76px)!important;padding-top:54px!important;padding-bottom:54px!important;display:grid!important;grid-template-columns:minmax(0,1.05fr) minmax(360px,.78fr)!important;align-items:center!important;gap:54px!important}.hero-pill{display:inline-flex!important;padding:10px 16px!important;border-radius:999px!important;background:rgba(5,18,48,.64)!important;border:1px solid rgba(90,167,255,.28)!important;color:rgba(235,244,255,.86)!important;box-shadow:0 18px 44px rgba(0,0,0,.22)!important}.hero-title{font-size:clamp(2.7rem,5.2vw,5.3rem)!important;line-height:.98!important;max-width:860px!important;letter-spacing:-.055em!important;margin-top:18px!important;text-wrap:balance!important}.hero-title-highlight{display:block!important;margin-top:10px!important;background:linear-gradient(90deg,#4de6ff 0%,#157cff 58%,#66a7ff 100%)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}.hero-text{max-width:760px!important;color:rgba(238,246,255,.86)!important;font-size:1.07rem!important;line-height:1.78!important}.hero-buttons{gap:12px!important;flex-wrap:wrap!important}
-.btn,.side-btn,.btn-help{border-radius:16px!important}.btn-primary,.side-btn.primary,.side-btn.parking{background:linear-gradient(135deg,#23d4ff 0%,#157cff 58%,#2156ff 100%)!important;color:#fff!important;border:1px solid rgba(255,255,255,.14)!important;box-shadow:0 18px 46px rgba(21,124,255,.30)!important}.btn-primary:hover,.side-btn:hover,.btn-help:hover{transform:translateY(-2px)!important;box-shadow:0 24px 58px rgba(21,124,255,.38)!important}.seo-link-box a{color:#4de6ff!important;background:rgba(0,213,255,.105)!important;border:1px solid rgba(0,213,255,.32)!important}.hero-help-box{max-width:720px!important;background:linear-gradient(180deg,rgba(5,16,42,.64),rgba(4,13,34,.50))!important;border:1px solid rgba(255,255,255,.08)!important}.hero-card{border-radius:30px!important;background:linear-gradient(180deg,rgba(7,20,52,.70),rgba(4,12,32,.50))!important;border:1px solid rgba(96,174,255,.16)!important;box-shadow:0 28px 85px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.08)!important}.phone-frame{border-color:rgba(90,167,255,.20)!important}
-.side-panel{right:28px!important;top:118px!important;z-index:20!important}.side-panel-content{width:250px!important;padding:20px!important;border-radius:26px!important;background:linear-gradient(180deg,rgba(5,16,42,.86),rgba(4,12,34,.72))!important;border:1px solid rgba(86,164,255,.22)!important;box-shadow:0 28px 90px rgba(0,0,0,.46),inset 0 1px 0 rgba(255,255,255,.08)!important}.side-panel-content h4{margin-bottom:16px!important;font-size:.88rem!important;color:#fff!important}.side-btn{min-height:52px!important;font-weight:900!important}
-.section,.section-alt,.seo-content-section,.photo-showcase{position:relative!important;background:radial-gradient(circle at 15% 0%,rgba(0,213,255,.07),transparent 30%),linear-gradient(180deg,rgba(3,10,28,.98),rgba(4,12,32,.98))!important;border-top:1px solid rgba(255,255,255,.055)!important;border-bottom:1px solid rgba(255,255,255,.045)!important}.section-alt{background:radial-gradient(circle at 82% 0%,rgba(21,124,255,.09),transparent 30%),linear-gradient(180deg,rgba(4,13,34,.98),rgba(2,9,26,.99))!important}.seguridad-bg{background:radial-gradient(circle at 18% 16%,rgba(0,213,255,.10),transparent 28%),radial-gradient(circle at 82% 10%,rgba(21,124,255,.10),transparent 28%),linear-gradient(180deg,rgba(4,13,34,.98),rgba(2,9,26,.99))!important;min-height:auto!important}.seguridad-bg::before{display:none!important;content:none!important}.seguridad-bg::after{z-index:0!important;background:linear-gradient(90deg,rgba(0,213,255,.035) 1px,transparent 1px),linear-gradient(180deg,rgba(0,213,255,.022) 1px,transparent 1px)!important;background-size:64px 64px!important;opacity:.42!important}.section>.container,.section-alt>.container,.photo-showcase>*,.seo-content-section>*{position:relative!important;z-index:2!important}.section-title{font-size:clamp(2rem,4.2vw,3.7rem)!important;line-height:1.05!important;letter-spacing:-.05em!important;margin-bottom:18px!important;text-align:center!important;text-wrap:balance!important}.section-lead{max-width:900px!important;margin-left:auto!important;margin-right:auto!important;color:var(--sk-muted)!important;font-size:1.05rem!important;line-height:1.82!important;text-align:center!important}
-.advanced-card,.portal-card,.portal-hero,.portal-rules,.document-card,.plan-card,.reward-card,.info-card,.seo-content-card,.final-card{border-radius:28px!important;background:linear-gradient(180deg,rgba(8,24,60,.78),rgba(4,13,34,.58))!important;border:1px solid rgba(91,171,255,.16)!important;box-shadow:0 22px 70px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.065)!important;backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important;animation:none!important;transition:transform .24s ease,border-color .24s ease,box-shadow .24s ease!important}.advanced-card:hover,.portal-card:hover,.portal-hero:hover,.document-card:hover,.plan-card:hover,.reward-card:hover,.info-card:hover,.seo-content-card:hover,.final-card:hover{transform:translateY(-6px)!important;border-color:rgba(0,213,255,.32)!important;box-shadow:0 30px 88px rgba(0,0,0,.42),0 0 36px rgba(0,160,255,.08),inset 0 1px 0 rgba(255,255,255,.08)!important}.advanced-card::after,.portal-card::after,.portal-hero::after,.document-card::after,.plan-card::after,.reward-card::after,.info-card::after,.seo-content-card::after,.final-card::after{animation:none!important;opacity:0!important}.icon-wrap,.portal-emoji{box-shadow:0 0 32px rgba(0,213,255,.14)!important}
-.photo-showcase-pro{background:radial-gradient(circle at 18% 12%,rgba(0,213,255,.13),transparent 28%),radial-gradient(circle at 88% 20%,rgba(21,124,255,.12),transparent 32%),linear-gradient(180deg,rgba(2,8,23,.99),rgba(3,11,30,.99))!important}.photo-showcase-pro::before{opacity:.12!important}.gallery-kicker{color:#4de6ff!important}.gallery-flow span{background:linear-gradient(180deg,rgba(8,24,60,.82),rgba(5,14,40,.64))!important;border-color:rgba(0,213,255,.22)!important}.photo-showcase-pro .photo-card{height:370px!important;border-radius:34px!important;border-color:rgba(100,184,255,.20)!important;box-shadow:0 30px 90px rgba(0,0,0,.50),inset 0 1px 0 rgba(255,255,255,.08)!important}.photo-showcase-pro .photo-main{padding:9px!important}.photo-showcase-pro .photo-label{background:linear-gradient(180deg,rgba(2,9,26,.84),rgba(2,9,26,.66))!important;border-color:rgba(255,255,255,.13)!important;box-shadow:0 18px 44px rgba(0,0,0,.35)!important}.footer{background:linear-gradient(180deg,rgba(3,10,28,.98),rgba(1,5,15,1))!important}
-@media(max-width:1280px){.side-panel{display:none!important}.hero-grid.container{grid-template-columns:1fr!important;gap:34px!important;padding-inline:24px!important}.hero-right{max-width:640px!important}}
-@media(max-width:980px){.hero{min-height:auto!important}.hero-bg-image{background:linear-gradient(180deg,rgba(2,8,23,.92) 0%,rgba(2,8,23,.72) 38%,rgba(2,8,23,.92) 100%),url('img/hero-autos-robados-bg.png') center center/cover no-repeat!important}.hero-grid.container{min-height:auto!important;padding-top:44px!important;padding-bottom:62px!important}.hero-title{font-size:clamp(2.35rem,11vw,4rem)!important}.hero-text{font-size:1rem!important}.section,.section-alt{padding-top:70px!important;padding-bottom:70px!important}.photo-showcase-pro .photo-card{height:300px!important}}
-@media(max-width:560px){.header-inner{padding-inline:14px!important}.hero-buttons,.hero-left .btn-primary{width:100%!important}.btn{justify-content:center!important}.hero-help-box{font-size:.92rem!important}.photo-showcase-pro .photo-card{height:266px!important}}
+
+html, body{
+  max-width:100%;
+  overflow-x:hidden !important;
+  background:#020817 !important;
+}
+
+.side-panel{
+  display:none !important;
+}
+
+.main-header{
+  background: rgba(2, 8, 23, .72) !important;
+  border-bottom: 1px solid rgba(255,255,255,.08) !important;
+  box-shadow: 0 18px 60px rgba(0,0,0,.34) !important;
+}
+
+.header-inner{
+  max-width:1180px;
+  margin:0 auto;
+}
+
+.nav-menu a{
+  color:rgba(255,255,255,.72) !important;
+  font-size:.78rem !important;
+}
+
+.nav-menu a:hover{
+  color:#ffffff !important;
+}
+
+.hero{
+  min-height: calc(100vh - 78px) !important;
+  display:flex;
+  align-items:center;
+  padding: 42px 0 56px;
+  background:
+    radial-gradient(circle at 14% 18%, rgba(0,207,255,.20), transparent 30%),
+    radial-gradient(circle at 80% 16%, rgba(45,125,255,.18), transparent 27%),
+    linear-gradient(135deg, #020817 0%, #03112f 48%, #020817 100%) !important;
+}
+
+.hero-bg-image{
+  background:
+    linear-gradient(90deg, rgba(2,8,23,.96) 0%, rgba(2,8,23,.82) 36%, rgba(2,8,23,.38) 72%, rgba(2,8,23,.70) 100%),
+    linear-gradient(180deg, rgba(2,8,23,.16), rgba(2,8,23,.92)),
+    url('img/hero-autos-robados-bg.png') center center / cover no-repeat !important;
+  opacity:1 !important;
+  filter: saturate(1.05) contrast(1.08) brightness(.98) !important;
+  transform:scale(1.01) !important;
+}
+
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:
+    linear-gradient(90deg, rgba(0,207,255,.050) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(0,207,255,.040) 1px, transparent 1px);
+  background-size: 72px 72px;
+  opacity:.42;
+  mask-image: linear-gradient(180deg, #000 0%, transparent 88%);
+  pointer-events:none;
+}
+
+.hero::after{
+  content:"" !important;
+  position:absolute !important;
+  inset:auto 0 0 0 !important;
+  height:180px !important;
+  z-index:1 !important;
+  background:linear-gradient(180deg, transparent, #020817 92%) !important;
+  pointer-events:none !important;
+}
+
+.hero-grid{
+  width:100%;
+  max-width:1180px !important;
+  display:grid !important;
+  grid-template-columns: minmax(0, 1.04fr) minmax(320px, .78fr) !important;
+  gap: clamp(28px, 5vw, 72px) !important;
+  align-items:center !important;
+}
+
+.hero-left{
+  max-width:720px !important;
+}
+
+.hero-pill{
+  display:inline-flex !important;
+  align-items:center !important;
+  gap:8px !important;
+  margin-bottom:18px !important;
+  padding:10px 14px !important;
+  border-radius:999px !important;
+  color:#dff7ff !important;
+  background:rgba(0,207,255,.10) !important;
+  border:1px solid rgba(0,207,255,.26) !important;
+  box-shadow: 0 18px 54px rgba(0,207,255,.10) !important;
+  font-weight:900 !important;
+  letter-spacing:.10em !important;
+  text-transform:uppercase !important;
+  font-size:.76rem !important;
+}
+
+.hero-pill::before{
+  content:"●";
+  color:#00e5ff;
+  text-shadow:0 0 20px rgba(0,229,255,.95);
+  font-size:.68rem;
+}
+
+.hero-title{
+  max-width:780px !important;
+  margin:0 !important;
+  font-size: clamp(2.72rem, 6vw, 5.85rem) !important;
+  line-height:.94 !important;
+  letter-spacing:-.075em !important;
+  color:#ffffff !important;
+  text-shadow: 0 22px 70px rgba(0,0,0,.58) !important;
+}
+
+.hero-title-highlight{
+  display:block !important;
+  margin-top:10px !important;
+  background: linear-gradient(90deg, #00d5ff 0%, #5ea8ff 38%, #ffffff 100%) !important;
+  -webkit-background-clip:text !important;
+  background-clip:text !important;
+  color:transparent !important;
+}
+
+.hero-text{
+  max-width:690px !important;
+  margin-top:24px !important;
+  font-size: clamp(1.03rem, 1.4vw, 1.22rem) !important;
+  line-height:1.72 !important;
+  color:rgba(255,255,255,.82) !important;
+}
+
+.hero-actions-wow{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  align-items:center;
+  margin-top:30px;
+}
+
+.hero-actions-wow .download-main{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:58px;
+  padding:0 24px;
+  border-radius:18px;
+  color:#ffffff;
+  text-decoration:none;
+  font-weight:950;
+  letter-spacing:-.01em;
+  background:linear-gradient(135deg, #0b7cff, #00cfff);
+  box-shadow:0 24px 60px rgba(0,132,255,.36), inset 0 1px 0 rgba(255,255,255,.28);
+  border:1px solid rgba(255,255,255,.18);
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+
+.hero-actions-wow .download-main:hover{
+  transform:translateY(-2px);
+  box-shadow:0 30px 78px rgba(0,132,255,.42), inset 0 1px 0 rgba(255,255,255,.30);
+}
+
+.hero-actions-wow .demo-secondary{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:58px;
+  padding:0 22px;
+  border-radius:18px;
+  color:#ffffff;
+  text-decoration:none;
+  font-weight:850;
+  background:rgba(255,255,255,.065);
+  border:1px solid rgba(255,255,255,.16);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+
+.hero-proof{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap:12px;
+  max-width:660px;
+  margin-top:26px;
+}
+
+.hero-proof-item{
+  padding:16px 14px;
+  border-radius:20px;
+  background:rgba(255,255,255,.055);
+  border:1px solid rgba(255,255,255,.11);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow:0 16px 48px rgba(0,0,0,.24);
+}
+
+.hero-proof-item strong{
+  display:block;
+  color:#ffffff;
+  font-size:1.04rem;
+  line-height:1.15;
+  letter-spacing:-.02em;
+}
+
+.hero-proof-item span{
+  display:block;
+  margin-top:5px;
+  color:rgba(255,255,255,.62);
+  font-size:.78rem;
+  line-height:1.35;
+}
+
+.hero-note,
+.hero-help-box,
+.seo-link-box,
+.hero-buttons{
+  display:none !important;
+}
+
+.hero-right{
+  position:relative !important;
+  min-height:560px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.hero-device-stage{
+  position:relative;
+  width:min(430px, 100%);
+  min-height:560px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.hero-device-stage::before{
+  content:"";
+  position:absolute;
+  width:430px;
+  height:430px;
+  border-radius:999px;
+  background:
+    radial-gradient(circle, rgba(0,207,255,.24), rgba(45,125,255,.10) 45%, transparent 70%);
+  filter:blur(10px);
+  animation:skanoPulseGlow 5s ease-in-out infinite;
+}
+
+@keyframes skanoPulseGlow{
+  0%,100%{ transform:scale(.96); opacity:.70; }
+  50%{ transform:scale(1.05); opacity:1; }
+}
+
+.app-phone-wow{
+  position:relative;
+  z-index:2;
+  width:238px;
+  height:484px;
+  border-radius:38px;
+  padding:10px;
+  background:linear-gradient(160deg, rgba(255,255,255,.22), rgba(255,255,255,.03));
+  border:1px solid rgba(255,255,255,.24);
+  box-shadow:
+    0 42px 120px rgba(0,0,0,.58),
+    0 0 60px rgba(0,207,255,.18),
+    inset 0 1px 0 rgba(255,255,255,.20);
+  transform: rotate(-3deg);
+}
+
+.app-phone-wow img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:30px;
+  display:block;
+}
+
+.phone-notch-wow{
+  position:absolute;
+  top:18px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:4;
+  width:82px;
+  height:22px;
+  border-radius:999px;
+  background:rgba(2,8,23,.88);
+}
+
+.app-phone-wow.secondary{
+  position:absolute;
+  z-index:1;
+  width:190px;
+  height:390px;
+  right:-26px;
+  bottom:38px;
+  opacity:.72;
+  transform:rotate(8deg);
+  filter:saturate(.96) brightness(.82);
+}
+
+.floating-alert-card{
+  position:absolute;
+  z-index:5;
+  left:0;
+  top:82px;
+  width:230px;
+  padding:15px 16px;
+  border-radius:22px;
+  background:linear-gradient(180deg, rgba(7,21,55,.86), rgba(4,13,36,.74));
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 28px 86px rgba(0,0,0,.46);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+
+.floating-alert-card .tag{
+  display:inline-flex;
+  margin-bottom:8px;
+  padding:6px 9px;
+  border-radius:999px;
+  color:#fff;
+  background:rgba(255,45,45,.18);
+  border:1px solid rgba(255,45,45,.28);
+  font-weight:900;
+  font-size:.70rem;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.floating-alert-card strong{
+  display:block;
+  color:#fff;
+  font-size:1rem;
+  line-height:1.2;
+}
+
+.floating-alert-card span{
+  display:block;
+  margin-top:6px;
+  color:rgba(255,255,255,.66);
+  font-size:.80rem;
+}
+
+.floating-mini-card{
+  position:absolute;
+  z-index:5;
+  right:0;
+  top:34px;
+  width:190px;
+  padding:14px;
+  border-radius:20px;
+  background:rgba(2,12,34,.78);
+  border:1px solid rgba(0,207,255,.20);
+  box-shadow:0 22px 70px rgba(0,0,0,.40), 0 0 34px rgba(0,207,255,.10);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+
+.floating-mini-card strong{
+  display:block;
+  color:#fff;
+  font-size:.94rem;
+}
+
+.floating-mini-card span{
+  color:#00d5ff;
+  font-size:.78rem;
+  font-weight:800;
+}
+
+.hero-scroll-cue{
+  position:absolute;
+  left:50%;
+  bottom:20px;
+  z-index:4;
+  transform:translateX(-50%);
+  color:rgba(255,255,255,.58);
+  font-size:.78rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+
+.section,
+.section-alt{
+  background:#020817 !important;
+  border-top:1px solid rgba(255,255,255,.055);
+}
+
+.section:nth-of-type(even){
+  background:linear-gradient(180deg, #020817, #03102b) !important;
+}
+
+.advanced-card{
+  background:
+    linear-gradient(180deg, rgba(8,22,55,.78), rgba(5,13,34,.66)) !important;
+  border:1px solid rgba(115,169,255,.12) !important;
+  box-shadow:0 24px 70px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.05) !important;
+}
+
+.advanced-card,
+.portal-card,
+.portal-hero,
+.portal-rules,
+.document-card,
+.plan-card,
+.reward-card,
+.info-card,
+.seo-content-card,
+.final-card,
+.hero-card{
+  animation:none !important;
+}
+
+.advanced-card::after,
+.portal-card::after,
+.portal-hero::after,
+.document-card::after,
+.plan-card::after,
+.reward-card::after,
+.info-card::after,
+.seo-content-card::after,
+.final-card::after{
+  animation:none !important;
+  display:none !important;
+}
+
+.photo-showcase{
+  background:
+    radial-gradient(circle at 18% 14%, rgba(0,207,255,.12), transparent 25%),
+    linear-gradient(180deg, #020817, #030d26) !important;
+}
+
+.seguridad-bg{
+  background:#020817 !important;
+}
+
+.seguridad-bg::before{
+  display:none !important;
+}
+
+.seguridad-bg::after{
+  display:none !important;
+}
+
+.skano-mobile-cta{
+  display:none;
+  position:fixed;
+  left:14px;
+  right:14px;
+  bottom:14px;
+  z-index:10000;
+  padding:10px;
+  border-radius:22px;
+  background:rgba(2,8,23,.88);
+  border:1px solid rgba(255,255,255,.13);
+  box-shadow:0 22px 70px rgba(0,0,0,.45);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+}
+
+.skano-mobile-cta a{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:52px;
+  border-radius:16px;
+  color:#fff;
+  text-decoration:none;
+  font-weight:950;
+  background:linear-gradient(135deg, #0b7cff, #00cfff);
+}
+
+@media (max-width: 980px){
+  .hero{
+    padding: 34px 0 70px !important;
+    min-height:auto !important;
+  }
+
+  .hero-grid{
+    grid-template-columns:1fr !important;
+    gap:32px !important;
+  }
+
+  .hero-title{
+    font-size: clamp(2.45rem, 12vw, 4.4rem) !important;
+  }
+
+  .hero-proof{
+    grid-template-columns:1fr !important;
+  }
+
+  .hero-right{
+    min-height:460px;
+  }
+
+  .hero-device-stage{
+    min-height:460px;
+  }
+
+  .floating-alert-card{
+    left:8px;
+    top:58px;
+    width:200px;
+  }
+
+  .floating-mini-card{
+    right:6px;
+    top:10px;
+    width:168px;
+  }
+
+  .app-phone-wow{
+    width:218px;
+    height:444px;
+  }
+
+  .app-phone-wow.secondary{
+    width:164px;
+    height:334px;
+    right:0;
+  }
+
+  .skano-mobile-cta{
+    display:block;
+  }
+}
+
+@media (max-width: 560px){
+  .hero-actions-wow{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .hero-actions-wow a{
+    width:100%;
+  }
+
+  .hero-right{
+    min-height:430px;
+  }
+
+  .app-phone-wow{
+    width:196px;
+    height:398px;
+  }
+
+  .app-phone-wow.secondary{
+    display:none;
+  }
+
+  .floating-alert-card{
+    top:42px;
+    width:172px;
+    padding:12px;
+  }
+
+  .floating-mini-card{
+    top:8px;
+    width:146px;
+    padding:11px;
+  }
+
+  .hero-scroll-cue{
+    display:none;
+  }
+}
 
   </style>
 </head>
@@ -1351,64 +1909,71 @@ body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;bac
 
   <div class="hero-grid container">
     <div class="hero-left reveal">
-      <p class="hero-pill">Seguridad ciudadana · Tecnología · Comunidad</p>
+      <p class="hero-pill">App chilena de seguridad colaborativa</p>
 
       <h1 class="hero-title">
-        App para buscar autos robados en Chile en tiempo real
-        <span class="hero-title-highlight">con ayuda de la comunidad</span>
+        Detecta vehículos robados
+        <span class="hero-title-highlight">en tiempo real</span>
       </h1>
 
       <p class="hero-text">
-        SKANO es una app en Chile para buscar autos robados, verificar patentes y reportar vehículos sospechosos en tiempo real.
-        La comunidad ayuda a encontrar vehículos robados de forma segura mediante validación antifraude, PIN y selfie.
+        SKANO permite buscar patentes, validar encargos por robo y reportar avistamientos
+        con protocolo seguro, ubicación controlada, PIN y selfie. Una red ciudadana para ayudar
+        a encontrar vehículos robados en Chile.
       </p>
 
-      <div class="hero-buttons">
-        <span class="btn btn-disabled">🍎 iOS: Próximamente</span>
-        <a href="#que-es" class="btn btn-ghost">ℹ️ Cómo funciona SKANO</a>
-      </div>
-
-      <a href="https://play.google.com/store/apps/details?id=cl.skano.app" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-        📱 Descargar app Android
-      </a>
-
-      <div class="seo-link-box">
-        <a href="app-para-autos-robados-en-chile.html">🔍 Buscar autos robados en Chile</a>
-      </div>
-
-      <div class="hero-note">
-        <span>✔ Reportar es 100% gratuito para la comunidad</span>
-        <span>✔ No vendemos protección, solo facilitamos reportes verificados</span>
-      </div>
-
-      <div class="hero-help-box">
-        ¿Problemas al subir documentos?
-        <br />
-        <a href="mailto:skano.oficial@gmail.com" class="btn-help">
-          Enviar documentos a un asesor
+      <div class="hero-actions-wow">
+        <a href="https://play.google.com/store/apps/details?id=cl.skano.app" target="_blank" rel="noopener noreferrer" class="download-main">
+          📱 Descargar SKANO para Android
         </a>
+        <a href="#galeria" class="demo-secondary">
+          Ver cómo funciona
+        </a>
+      </div>
+
+      <div class="hero-proof" aria-label="Beneficios principales de SKANO">
+        <div class="hero-proof-item">
+          <strong>Buscar patente</strong>
+          <span>Consulta rápida desde la app.</span>
+        </div>
+        <div class="hero-proof-item">
+          <strong>Reportar seguro</strong>
+          <span>PIN, selfie y ubicación protegida.</span>
+        </div>
+        <div class="hero-proof-item">
+          <strong>Comunidad activa</strong>
+          <span>Más ojos ayudando en terreno.</span>
+        </div>
       </div>
     </div>
 
     <div class="hero-right reveal reveal-delay-2">
-      <div class="glass-card hero-card">
-        <p class="hero-card-label">Vista previa app SKANO</p>
-
-        <div class="hero-mockups">
-          <div class="phone-frame">
-            <img src="img/app-mapa-reportar.png" alt="App SKANO para buscar autos robados en Chile desde el mapa" />
-          </div>
-          <div class="phone-frame phone-dark">
-            <img src="img/app-perfil-recompensas.png" alt="App SKANO con perfil, reportes y recompensas" />
-          </div>
+      <div class="hero-device-stage" aria-label="Vista destacada de la app SKANO">
+        <div class="floating-mini-card">
+          <strong>Consulta por patente</strong>
+          <span>Resultado en segundos</span>
         </div>
 
-        <p class="hero-card-foot">
-          Alertas en tiempo real · Reportes verificados · Identidad protegida
-        </p>
+        <div class="floating-alert-card">
+          <div class="tag">Alerta activa</div>
+          <strong>Vehículo con encargo detectado</strong>
+          <span>Reporte protegido para evitar uso indebido.</span>
+        </div>
+
+        <div class="app-phone-wow secondary">
+          <span class="phone-notch-wow"></span>
+          <img src="img/app-perfil-recompensas.png" alt="Perfil, reportes y recompensas en SKANO" />
+        </div>
+
+        <div class="app-phone-wow">
+          <span class="phone-notch-wow"></span>
+          <img src="img/app-mapa-reportar.png" alt="Mapa y reporte de vehículos robados en SKANO" />
+        </div>
       </div>
     </div>
   </div>
+
+  <div class="hero-scroll-cue">Desliza para conocer SKANO</div>
 </section>
 
 <!-- ================= GALERÍA PROFESIONAL CON 8 FOTOS EN MOVIMIENTO ================= -->
@@ -2329,6 +2894,13 @@ body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;bac
 
   revealElements.forEach((el) => revealObserver.observe(el));
 </script>
+
+
+<div class="skano-mobile-cta">
+  <a href="https://play.google.com/store/apps/details?id=cl.skano.app" target="_blank" rel="noopener noreferrer">
+    📱 Descargar SKANO
+  </a>
+</div>
 
 </body>
 </html>
