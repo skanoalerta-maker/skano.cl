@@ -52,68 +52,112 @@
   <link rel="icon" type="image/png" href="img/skano-logo.png" />
 
   <style>
+    :root{
+      --skano-bg:#020817;
+      --skano-panel:#06142f;
+      --skano-panel-2:#081a3a;
+      --skano-card:rgba(7,18,49,.64);
+      --skano-border:rgba(0,207,255,.22);
+      --skano-blue:#2d7dff;
+      --skano-cyan:#00cfff;
+      --skano-text:#ffffff;
+      --skano-muted:rgba(255,255,255,.74);
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      background:#020817;
+      overflow-x:hidden;
+    }
+
+    /* ================= HEADER PRO RESPONSIVE ================= */
     .main-header{
       position: sticky;
       top: 0;
       z-index: 1000;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      background: rgba(4, 12, 30, 0.72);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: rgba(3, 8, 22, 0.82);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      box-shadow: 0 12px 40px rgba(0,0,0,.24);
     }
 
     .header-inner{
-      min-height: 78px;
+      min-height: 74px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 24px;
+      gap: 18px;
     }
 
     .header-left{
       display: inline-flex;
       align-items: center;
-      gap: 12px;
+      gap: 11px;
+      flex: 0 0 auto;
     }
 
     .header-logo-img{
-      width: 42px;
-      height: 42px;
+      width: 39px;
+      height: 39px;
       object-fit: contain;
+      filter: drop-shadow(0 0 18px rgba(0,207,255,.28));
     }
 
     .header-logo-text{
-      font-size: 1.15rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
+      font-size: 1.08rem;
+      font-weight: 900;
+      letter-spacing: 0.13em;
+      color:#2d8cff;
     }
 
     .nav-menu{
       display: flex;
       align-items: center;
-      gap: 18px;
+      justify-content:flex-end;
+      gap: clamp(8px, 1vw, 15px);
+      flex: 1 1 auto;
+      min-width:0;
     }
 
     .nav-menu a{
-      color: rgba(255,255,255,0.88);
+      color: rgba(255,255,255,0.84);
       text-decoration: none;
-      font-size: 0.96rem;
-      font-weight: 500;
-      transition: color .2s ease, opacity .2s ease;
+      font-size: clamp(.68rem, .72vw, .88rem);
+      font-weight: 800;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      white-space:nowrap;
+      transition: color .2s ease, opacity .2s ease, transform .2s ease;
     }
 
     .nav-menu a:hover{
-      color: #8fc2ff;
+      color: #00cfff;
+      transform: translateY(-1px);
     }
 
+    .nav-toggle{
+      display:none;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.06);
+      color:#fff;
+      border-radius:12px;
+      padding:10px 12px;
+      cursor:pointer;
+    }
+
+    /* ================= HERO ================= */
     .hero{
       position: relative;
       overflow: hidden;
       min-height: 100vh;
       isolation: isolate;
       background:
-        radial-gradient(circle at 12% 20%, rgba(28,110,255,.22), transparent 30%),
-        radial-gradient(circle at 88% 18%, rgba(0,211,255,.14), transparent 26%),
+        radial-gradient(circle at 12% 20%, rgba(28,110,255,.25), transparent 30%),
+        radial-gradient(circle at 88% 18%, rgba(0,211,255,.16), transparent 26%),
         linear-gradient(135deg, rgba(2,12,34,.96) 0%, rgba(2,16,48,.94) 45%, rgba(1,20,55,.95) 100%);
     }
 
@@ -121,13 +165,19 @@
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(90deg, rgba(2,12,34,.88) 0%, rgba(2,12,34,.80) 26%, rgba(2,12,34,.56) 52%, rgba(2,12,34,.80) 100%),
-        linear-gradient(180deg, rgba(2,12,34,.12) 0%, rgba(2,12,34,.22) 100%),
+        linear-gradient(90deg, rgba(2,12,34,.90) 0%, rgba(2,12,34,.80) 30%, rgba(2,12,34,.58) 58%, rgba(2,12,34,.82) 100%),
+        linear-gradient(180deg, rgba(2,12,34,.10) 0%, rgba(2,12,34,.42) 100%),
         url('img/hero-autos-robados-bg.png') center center / cover no-repeat;
-      transform: scale(1.02);
+      transform: scale(1.04);
       z-index: 0;
       opacity: 1;
-      filter: saturate(0.95) contrast(1.05);
+      filter: saturate(1.04) contrast(1.08);
+      animation: heroSlowMove 24s ease-in-out infinite alternate;
+    }
+
+    @keyframes heroSlowMove{
+      0%{ transform: scale(1.04) translate3d(-8px,0,0); }
+      100%{ transform: scale(1.10) translate3d(14px,-8px,0); }
     }
 
     .hero-bg-grid,
@@ -140,8 +190,9 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(circle at 25% 35%, rgba(0,153,255,.10), transparent 22%),
-        radial-gradient(circle at 78% 22%, rgba(0,209,255,.08), transparent 18%);
+        radial-gradient(circle at 25% 35%, rgba(0,153,255,.11), transparent 22%),
+        radial-gradient(circle at 78% 22%, rgba(0,209,255,.10), transparent 18%),
+        linear-gradient(180deg, transparent 0%, rgba(2,8,23,.80) 100%);
       pointer-events: none;
       z-index: 1;
     }
@@ -152,9 +203,20 @@
     .hero-title,
     .hero-text,
     .hero-note,
-    .hero-pill{ text-shadow: 0 6px 28px rgba(0,0,0,.32); }
+    .hero-pill{ text-shadow: 0 6px 28px rgba(0,0,0,.38); }
 
-    .hero-title{ max-width: 820px; }
+    .hero-title{
+      max-width: 860px;
+      letter-spacing:-.055em;
+    }
+
+    .hero-title-highlight{
+      background: linear-gradient(90deg,#00d5ff,#2d7dff,#7bdcff);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      filter: drop-shadow(0 0 18px rgba(0,207,255,.15));
+    }
 
     .hero-text{
       max-width: 780px;
@@ -166,40 +228,36 @@
     .hero-help-box,
     .hero-card,
     .side-panel-content{
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
     }
 
     .hero-card{
-      background: linear-gradient(180deg, rgba(7,18,49,.76), rgba(7,18,49,.58));
-      border: 1px solid rgba(114,167,255,.10);
-      box-shadow: 0 16px 60px rgba(0,0,0,.28);
-      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(7,18,49,.78), rgba(7,18,49,.54));
+      border: 1px solid rgba(0,207,255,.16);
+      box-shadow: 0 24px 80px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.05);
+      border-radius: 28px;
+    }
+
+    .hero-card img{
+      object-fit:contain;
     }
 
     .hero-help-box{
-      background: linear-gradient(180deg, rgba(4,14,42,.68), rgba(4,14,42,.52));
-      border: 1px solid rgba(255,255,255,.06);
-      box-shadow: 0 12px 40px rgba(0,0,0,.18);
+      background: linear-gradient(180deg, rgba(4,14,42,.72), rgba(4,14,42,.52));
+      border: 1px solid rgba(255,255,255,.07);
+      box-shadow: 0 12px 40px rgba(0,0,0,.20);
       border-radius: 20px;
-    }
-
-    .side-panel{ z-index: 4; }
-
-    .side-panel-content{
-      background: linear-gradient(180deg, rgba(3,16,45,.80), rgba(3,16,45,.68));
-      border: 1px solid rgba(113,161,255,.10);
-      box-shadow: 0 20px 70px rgba(0,0,0,.30);
     }
 
     .btn{
       border-radius: 14px;
-      font-weight: 700;
+      font-weight: 800;
       transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
     }
 
     .btn:hover{ transform: translateY(-1px); }
-    .btn-primary{ box-shadow: 0 14px 34px rgba(45, 125, 255, 0.30); }
+    .btn-primary{ box-shadow: 0 16px 42px rgba(45, 125, 255, 0.34); }
     .btn-ghost{ border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.04); }
 
     .seo-link-box{ margin-top: 18px; }
@@ -210,14 +268,14 @@
       gap: 8px;
       color: #00cfff;
       text-decoration: none;
-      font-weight: 800;
+      font-weight: 900;
       font-size: 1.12rem;
       opacity: 1;
-      padding: 12px 16px;
-      border-radius: 14px;
-      background: rgba(0, 207, 255, 0.10);
-      border: 1px solid rgba(0, 207, 255, 0.24);
-      box-shadow: 0 10px 28px rgba(0, 207, 255, 0.12);
+      padding: 13px 18px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(0, 207, 255, 0.15), rgba(45,125,255,.08));
+      border: 1px solid rgba(0, 207, 255, 0.30);
+      box-shadow: 0 12px 32px rgba(0, 207, 255, 0.15);
     }
 
     .seo-link-box a:hover{
@@ -225,6 +283,7 @@
       border-color: rgba(255,255,255,0.35);
     }
 
+    /* ================= CARD BASE ================= */
     .advanced-card{
       border: 1px solid rgba(255,255,255,0.07);
       background: linear-gradient(180deg, rgba(8,18,45,.82), rgba(8,18,45,.62));
@@ -233,10 +292,7 @@
       padding: 28px;
     }
 
-    .advanced-card h3{
-      margin-bottom: 12px;
-      font-size: 1.15rem;
-    }
+    .advanced-card h3{ margin-bottom: 12px; font-size: 1.15rem; }
 
     .advanced-card p,
     .section-lead,
@@ -244,32 +300,47 @@
     .doc-list,
     .plan-list{ color: rgba(255,255,255,0.82); }
 
-    .section-title{ letter-spacing: -0.02em; }
+    .section-title{ letter-spacing: -0.035em; }
     .section-lead{ line-height: 1.8; }
 
+    /* ================= GALERÍA PRO: IMAGEN COMPLETA + FONDO DIFUSO ================= */
     .photo-showcase{
       position: relative;
       overflow: hidden;
-      padding: 78px 0;
+      padding: 82px 0 92px;
       background:
-        radial-gradient(circle at 20% 20%, rgba(0,207,255,.12), transparent 25%),
-        linear-gradient(180deg, rgba(3,10,28,.96), rgba(4,14,40,.98));
+        radial-gradient(circle at 18% 16%, rgba(0,207,255,.16), transparent 25%),
+        radial-gradient(circle at 82% 10%, rgba(45,125,255,.12), transparent 24%),
+        linear-gradient(180deg, rgba(3,10,28,.98), rgba(4,14,40,.99));
       border-top: 1px solid rgba(255,255,255,.06);
       border-bottom: 1px solid rgba(255,255,255,.06);
     }
 
+    .photo-showcase::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: linear-gradient(90deg, rgba(0,207,255,.06) 1px, transparent 1px), linear-gradient(180deg, rgba(0,207,255,.04) 1px, transparent 1px);
+      background-size: 54px 54px;
+      opacity:.14;
+      pointer-events:none;
+    }
+
     .photo-showcase-head{
+      position:relative;
       max-width: 900px;
       margin: 0 auto 34px;
       text-align: center;
       padding: 0 20px;
+      z-index:1;
     }
 
     .photo-showcase-head h2{
-      font-size: clamp(2rem, 4vw, 3rem);
+      font-size: clamp(2rem, 4vw, 3.2rem);
       line-height: 1.08;
       margin: 0 0 14px;
       color: #ffffff;
+      letter-spacing:-.04em;
     }
 
     .photo-showcase-head p{
@@ -284,48 +355,70 @@
       width: 100%;
       overflow: hidden;
       position: relative;
-      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
-      mask-image: linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 7%, #000 93%, transparent 100%);
+      mask-image: linear-gradient(90deg, transparent 0%, #000 7%, #000 93%, transparent 100%);
+      z-index:1;
     }
 
     .photo-track{
       display: flex;
-      gap: 22px;
+      gap: 24px;
       width: max-content;
-      animation: skanoSlide 34s linear infinite;
-      padding: 10px 0;
+      animation: skanoSlide 58s linear infinite;
+      padding: 12px 0;
     }
 
-    .photo-slider:hover .photo-track{
-      animation-play-state: paused;
-    }
+    .photo-slider:hover .photo-track{ animation-play-state: paused; }
 
     .photo-card{
-      width: min(380px, 82vw);
-      height: 250px;
+      width: clamp(260px, 22vw, 420px);
+      height: 310px;
       flex: 0 0 auto;
       position: relative;
       overflow: hidden;
-      border-radius: 26px;
-      border: 1px solid rgba(255,255,255,.12);
-      box-shadow: 0 20px 60px rgba(0,0,0,.35);
-      background: rgba(255,255,255,.06);
+      border-radius: 30px;
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 24px 78px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.06);
+      background: rgba(255,255,255,.045);
+      display:flex;
+      align-items:center;
+      justify-content:center;
     }
 
-    .photo-card img{
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      filter: saturate(1.02) contrast(1.06);
-      transform: scale(1.02);
+    .photo-card .photo-bg{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      filter: blur(18px) brightness(.42) saturate(1.20);
+      transform: scale(1.18);
+      opacity:.88;
     }
+
+    .photo-card .photo-main{
+      position:relative;
+      z-index:1;
+      max-width:100%;
+      max-height:100%;
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
+      padding: 10px;
+      filter: drop-shadow(0 20px 38px rgba(0,0,0,.55));
+      transition: transform .5s ease;
+    }
+
+    .photo-card:hover .photo-main{ transform: scale(1.035); }
 
     .photo-card::after{
       content: "";
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,.76));
+      z-index:2;
+      background: linear-gradient(180deg, transparent 46%, rgba(0,0,0,.78));
+      pointer-events:none;
     }
 
     .photo-label{
@@ -333,24 +426,108 @@
       left: 18px;
       right: 18px;
       bottom: 16px;
-      z-index: 2;
+      z-index: 3;
       color: #fff;
-      font-weight: 800;
+      font-weight: 900;
       letter-spacing: -0.01em;
-      text-shadow: 0 8px 24px rgba(0,0,0,.55);
+      text-shadow: 0 8px 24px rgba(0,0,0,.60);
     }
 
     .photo-label span{
       display: block;
       margin-top: 4px;
       font-size: .86rem;
-      font-weight: 600;
-      color: rgba(255,255,255,.74);
+      font-weight: 650;
+      color: rgba(255,255,255,.76);
     }
 
     @keyframes skanoSlide{
       from { transform: translateX(0); }
       to { transform: translateX(-50%); }
+    }
+
+    /* ================= SEGURIDAD CON FONDO EN MOVIMIENTO ================= */
+    .seguridad-bg{
+      position:relative;
+      overflow:hidden;
+      isolation:isolate;
+      padding-top: 96px;
+      padding-bottom: 105px;
+      background:#020817;
+    }
+
+    .seguridad-bg::before{
+      content:"";
+      position:absolute;
+      inset:-44px;
+      background:
+        linear-gradient(180deg, rgba(2,8,23,.78), rgba(2,8,23,.95)),
+        linear-gradient(90deg, rgba(2,8,23,.92), rgba(2,8,23,.55) 46%, rgba(2,8,23,.95)),
+        url('img/bg-seguridad.jpg') center center / cover no-repeat;
+      filter: blur(7px) brightness(.58) saturate(1.18);
+      transform: scale(1.10);
+      animation: seguridadMotion 24s ease-in-out infinite alternate;
+      z-index:-3;
+    }
+
+    .seguridad-bg::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 24% 24%, rgba(0,207,255,.20), transparent 28%),
+        radial-gradient(circle at 82% 18%, rgba(45,125,255,.14), transparent 24%),
+        linear-gradient(180deg, rgba(2,8,23,.25), rgba(2,8,23,.80));
+      z-index:-2;
+      pointer-events:none;
+    }
+
+    @keyframes seguridadMotion{
+      0%{ transform: scale(1.12) translate3d(-16px, -10px, 0); background-position:center center; }
+      100%{ transform: scale(1.20) translate3d(18px, 10px, 0); background-position:55% 45%; }
+    }
+
+    .seguridad-bg .section-title{
+      text-shadow: 0 18px 60px rgba(0,0,0,.55);
+    }
+
+    .seguridad-bg .advanced-card{
+      position:relative;
+      overflow:hidden;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: linear-gradient(180deg, rgba(5,16,42,.68), rgba(4,11,31,.50));
+      border: 1px solid rgba(0,207,255,.20);
+      box-shadow: 0 24px 70px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.06);
+    }
+
+    .seguridad-bg .advanced-card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: radial-gradient(circle at 12% 10%, rgba(0,207,255,.14), transparent 32%);
+      opacity:.9;
+      pointer-events:none;
+    }
+
+    .seguridad-bg .advanced-card > *{
+      position:relative;
+      z-index:1;
+    }
+
+    /* ================= PANEL DERECHO RESPONSIVE ================= */
+    .side-panel{ z-index: 4; }
+
+    .side-panel-content{
+      background: linear-gradient(180deg, rgba(3,16,45,.84), rgba(3,16,45,.70));
+      border: 1px solid rgba(0,207,255,.13);
+      box-shadow: 0 20px 70px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.04);
+    }
+
+    @media (max-width: 1280px){
+      .side-panel{
+        display:none;
+      }
     }
 
     .seo-content-section{
@@ -401,6 +578,45 @@
     .footer-slogan,
     .footer-copy{ color: rgba(255,255,255,0.72); }
 
+    @media (max-width: 1080px){
+      .header-inner{
+        min-height:70px;
+      }
+
+      .nav-toggle{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+      }
+
+      .nav-menu{
+        position:absolute;
+        top:100%;
+        left:14px;
+        right:14px;
+        display:none;
+        flex-direction:column;
+        align-items:flex-start;
+        gap:0;
+        padding:14px;
+        border-radius:20px;
+        background:rgba(3,8,22,.96);
+        border:1px solid rgba(255,255,255,.10);
+        box-shadow:0 24px 70px rgba(0,0,0,.45);
+      }
+
+      .nav-menu.open{
+        display:flex;
+      }
+
+      .nav-menu a{
+        width:100%;
+        padding:12px 10px;
+        font-size:.86rem;
+        border-bottom:1px solid rgba(255,255,255,.06);
+      }
+    }
+
     @media (max-width: 980px){
       .hero{ min-height: auto; }
 
@@ -411,8 +627,8 @@
       }
 
       .header-inner{ min-height: 72px; }
-      .nav-menu{ gap: 12px; }
-      .photo-card{ height: 220px; }
+      .photo-card{ width: min(300px, 78vw); height: 260px; }
+      .seguridad-bg::before{ filter: blur(5px) brightness(.45) saturate(1.1); }
     }
   </style>
 </head>
@@ -428,10 +644,10 @@
 
     <nav class="nav-menu" id="navMenu">
       <a href="#inicio">Inicio</a>
+      <a href="#galeria">Galería</a>
       <a href="#que-es">Qué es</a>
       <a href="#seguridad">Seguridad</a>
       <a href="#app">App</a>
-      <a href="#galeria">Galería</a>
       <a href="#portal">Portal Web</a>
       <a href="#documentos">Documentos</a>
       <a href="#planes">Planes</a>
@@ -516,6 +732,53 @@
   </div>
 </section>
 
+<!-- ================= GALERÍA PROFESIONAL CON 8 FOTOS EN MOVIMIENTO ================= -->
+<section id="galeria" class="photo-showcase">
+  <div class="photo-showcase-head reveal">
+    <h2>SKANO en terreno: comunidad, tecnología y búsqueda activa</h2>
+    <p>
+      Vehículos estacionados, calles reales, seguridad ciudadana y uso de la app: una experiencia visual pensada para mostrar que SKANO opera donde realmente ocurre la búsqueda.
+    </p>
+  </div>
+
+  <!--
+    SUBE TUS 8 IMÁGENES A /img/ CON ESTOS NOMBRES:
+    img/galeria-1.jpg
+    img/galeria-2.jpg
+    img/galeria-3.jpg
+    img/galeria-4.jpg
+    img/galeria-5.jpg
+    img/galeria-6.jpg
+    img/galeria-7.jpg
+    img/galeria-8.jpg
+
+    IMPORTANTE:
+    Cada imagen aparece completa. El fondo borroso detrás usa la misma imagen.
+  -->
+
+  <div class="photo-slider" aria-label="Galería de imágenes SKANO en movimiento">
+    <div class="photo-track">
+      <article class="photo-card"><img class="photo-bg" src="img/galeria-1.jpg" alt="" aria-hidden="true" /><img class="photo-main" src="img/galeria-1.jpg" alt="SKANO búsqueda de autos robados en Chile" /><div class="photo-label">Búsqueda comunitaria <span>Autos robados en Chile</span></div></article>
+      <article class="photo-card"><img class="photo-bg" src="img/galeria-2.jpg" alt="" aria-hidden="true" /><img class="photo-main" src="img/galeria-2.jpg" alt="Verificación de patentes con SKANO" /><div class="photo-label">Verificación de patentes <span>Consulta rápida y segura</span></div></article>
+      <article class="photo-card"><img class="photo-bg" src="img/galeria-3.jpg" alt="" aria-hidden="true" /><img class="photo-main" src="img/galeria-3.jpg" alt="Vehículos estacionados y reporte comunitario" /><div class="photo-label">Vehículos estacionados <span>El punto clave para detectar</span></div></article>
+      <article class="photo-card"><img class="photo-bg" src="img/galeria-4.jpg" alt="" aria-hidden="true" /><img class="photo-main" src="img/galeria-4.jpg" alt="Seguridad ciudadana y apoyo tecnológico" /><div class="photo-label">Seguridad ciudadana <span>Tecnología + comunidad</span></div></article>
+      <article class="photo-card"><img class="photo-bg" src="img/galeria-5.jpg" alt="" aria-hidden="true" /><img class="photo-main" src="img/galeria-5.jpg" alt="Alertas de vehículos robados en tiempo real" /><div class="photo-label">Alertas en tiempo real <span>Reportes verificados</span></div></article>
+      <article class="photo-card"><img class="photo-bg" src="img/galeria-6.jpg" alt="" aria-hidden="true" /><img class="photo-main" src="img/galeria-6.jpg" alt="App SKANO para encontrar vehículos robados" /><div class="photo-label">App SKANO <span>Reporta seguro</span></div></article>
+      <article class="photo-card"><img class="photo-bg" src="img/galeria-7.jpg" alt="" aria-hidden="true" /><img class="photo-main" src="img/galeria-7.jpg" alt="SKANO en calles de Chile" /><div class="photo-label">Calles reales <span>Presencia en terreno</span></div></article>
+      <article class="photo-card"><img class="photo-bg" src="img/galeria-8.jpg" alt="" aria-hidden="true" /><img class="photo-main" src="img/galeria-8.jpg" alt="Comunidad SKANO colaborando" /><div class="photo-label">Comunidad activa <span>Los buenos somos más</span></div></article>
+
+      <article class="photo-card"><img class="photo-bg" src="img/galeria-1.jpg" alt="" aria-hidden="true" /><img class="photo-main" src="img/galeria-1.jpg" alt="SKANO búsqueda de autos robados en Chile" /><div class="photo-label">Búsqueda comunitaria <span>Autos robados en Chile</span></div></article>
+      <article class="photo-card"><img class="photo-bg" src="img/galeria-2.jpg" alt="" aria-hidden="true" /><img class="photo-main" src="img/galeria-2.jpg" alt="Verificación de patentes con SKANO" /><div class="photo-label">Verificación de patentes <span>Consulta rápida y segura</span></div></article>
+      <article class="photo-card"><img class="photo-bg" src="img/galeria-3.jpg" alt="" aria-hidden="true" /><img class="photo-main" src="img/galeria-3.jpg" alt="Vehículos estacionados y reporte comunitario" /><div class="photo-label">Vehículos estacionados <span>El punto clave para detectar</span></div></article>
+      <article class="photo-card"><img class="photo-bg" src="img/galeria-4.jpg" alt="" aria-hidden="true" /><img class="photo-main" src="img/galeria-4.jpg" alt="Seguridad ciudadana y apoyo tecnológico" /><div class="photo-label">Seguridad ciudadana <span>Tecnología + comunidad</span></div></article>
+      <article class="photo-card"><img class="photo-bg" src="img/galeria-5.jpg" alt="" aria-hidden="true" /><img class="photo-main" src="img/galeria-5.jpg" alt="Alertas de vehículos robados en tiempo real" /><div class="photo-label">Alertas en tiempo real <span>Reportes verificados</span></div></article>
+      <article class="photo-card"><img class="photo-bg" src="img/galeria-6.jpg" alt="" aria-hidden="true" /><img class="photo-main" src="img/galeria-6.jpg" alt="App SKANO para encontrar vehículos robados" /><div class="photo-label">App SKANO <span>Reporta seguro</span></div></article>
+      <article class="photo-card"><img class="photo-bg" src="img/galeria-7.jpg" alt="" aria-hidden="true" /><img class="photo-main" src="img/galeria-7.jpg" alt="SKANO en calles de Chile" /><div class="photo-label">Calles reales <span>Presencia en terreno</span></div></article>
+      <article class="photo-card"><img class="photo-bg" src="img/galeria-8.jpg" alt="" aria-hidden="true" /><img class="photo-main" src="img/galeria-8.jpg" alt="Comunidad SKANO colaborando" /><div class="photo-label">Comunidad activa <span>Los buenos somos más</span></div></article>
+    </div>
+  </div>
+</section>
+
 <!-- ================= QUE ES ================= -->
 <section id="que-es" class="section">
   <div class="container">
@@ -528,79 +791,23 @@
     </p>
 
     <div class="features-grid">
-      <div class="advanced-card reveal">
-        <h3>🔍 Reportes ciudadanos verificados</h3>
-        <p>
-          Cualquier persona puede reportar una patente sospechosa de forma gratuita.
-          Para que un reporte sea válido, SKANO exige PIN, selfie en tiempo real
-          y controles automáticos.
-        </p>
-      </div>
-
-      <div class="advanced-card reveal">
-        <h3>🛡️ Seguridad y anonimato real</h3>
-        <p>
-          La identidad del reportante nunca es visible para el dueño del vehículo.
-          SKANO actúa como intermediario seguro.
-        </p>
-      </div>
-
-      <div class="advanced-card reveal">
-        <h3>🏆 Incentivos reales</h3>
-        <p>
-          Los reportes válidos generan <strong>copas</strong> que se transforman
-          en recompensas económicas. Compartir SKANO suma <strong>medallas</strong>.
-        </p>
-      </div>
+      <div class="advanced-card reveal"><h3>🔍 Reportes ciudadanos verificados</h3><p>Cualquier persona puede reportar una patente sospechosa de forma gratuita. Para que un reporte sea válido, SKANO exige PIN, selfie en tiempo real y controles automáticos.</p></div>
+      <div class="advanced-card reveal"><h3>🛡️ Seguridad y anonimato real</h3><p>La identidad del reportante nunca es visible para el dueño del vehículo. SKANO actúa como intermediario seguro.</p></div>
+      <div class="advanced-card reveal"><h3>🏆 Incentivos reales</h3><p>Los reportes válidos generan <strong>copas</strong> que se transforman en recompensas económicas. Compartir SKANO suma <strong>medallas</strong>.</p></div>
     </div>
   </div>
 </section>
 
 <!-- ================= SEGURIDAD ================= -->
-<section id="seguridad" class="section section-alt">
+<section id="seguridad" class="section section-alt seguridad-bg">
   <div class="container">
     <h2 class="section-title reveal">Seguridad y sistema antifraude</h2>
 
     <div class="security-grid">
-      <div class="advanced-card reveal">
-        <div class="icon-wrap">🔐</div>
-        <h3>PIN + Selfie</h3>
-        <p>
-          Cada reporte válido exige un <strong>PIN personal</strong> y una
-          <strong>selfie en tiempo real</strong>.
-          Esto confirma que quien reporta es una persona real y evita bots,
-          fraudes, automatizaciones y reportes falsos.
-        </p>
-      </div>
-
-      <div class="advanced-card reveal">
-        <div class="icon-wrap">📍</div>
-        <h3>Ubicación controlada</h3>
-        <p>
-          La ubicación se registra <strong>solo al momento exacto del reporte</strong>.
-          SKANO no rastrea personas, no guarda recorridos y no hace seguimiento
-          permanente.
-        </p>
-      </div>
-
-      <div class="advanced-card reveal">
-        <div class="icon-wrap">🛡️</div>
-        <h3>Antifraude automático</h3>
-        <p>
-          El sistema detecta patrones sospechosos, abuso del sistema o intentos
-          de manipulación. Las cuentas que incumplen las reglas se bloquean automáticamente.
-        </p>
-      </div>
-
-      <div class="advanced-card reveal">
-        <div class="icon-wrap">🙈</div>
-        <h3>Anonimato</h3>
-        <p>
-          El reportante <strong>nunca queda expuesto</strong>.
-          El dueño del vehículo no recibe datos personales ni información
-          identificable del usuario que reporta.
-        </p>
-      </div>
+      <div class="advanced-card reveal"><div class="icon-wrap">🔐</div><h3>PIN + Selfie</h3><p>Cada reporte válido exige un <strong>PIN personal</strong> y una <strong>selfie en tiempo real</strong>. Esto confirma que quien reporta es una persona real y evita bots, fraudes, automatizaciones y reportes falsos.</p></div>
+      <div class="advanced-card reveal"><div class="icon-wrap">📍</div><h3>Ubicación controlada</h3><p>La ubicación se registra <strong>solo al momento exacto del reporte</strong>. SKANO no rastrea personas, no guarda recorridos y no hace seguimiento permanente.</p></div>
+      <div class="advanced-card reveal"><div class="icon-wrap">🛡️</div><h3>Antifraude automático</h3><p>El sistema detecta patrones sospechosos, abuso del sistema o intentos de manipulación. Las cuentas que incumplen las reglas se bloquean automáticamente.</p></div>
+      <div class="advanced-card reveal"><div class="icon-wrap">🙈</div><h3>Anonimato</h3><p>El reportante <strong>nunca queda expuesto</strong>. El dueño del vehículo no recibe datos personales ni información identificable del usuario que reporta.</p></div>
     </div>
   </div>
 </section>
@@ -609,152 +816,16 @@
 <section id="app" class="section section-alt">
   <div class="container">
     <h2 class="section-title reveal">¿Qué es la app SKANO?</h2>
-    <p class="section-lead reveal">
-      SKANO es una aplicación móvil que permite a la comunidad
-      <strong>detectar, reportar y validar vehículos robados</strong>
-      de forma segura, anónima y con recompensas reales.
-    </p>
+    <p class="section-lead reveal">SKANO es una aplicación móvil que permite a la comunidad <strong>detectar, reportar y validar vehículos robados</strong> de forma segura, anónima y con recompensas reales.</p>
 
     <div class="features-grid">
-      <div class="advanced-card reveal">
-        <h3>📸 Reportar vehículos sospechosos</h3>
-        <p>
-          Cualquier persona puede usar la app para reportar una patente sospechosa.
-          Para que el reporte sea válido, la app solicita:
-        </p>
-        <ul class="mini-list">
-          <li>✔ PIN de seguridad</li>
-          <li>✔ Selfie en tiempo real</li>
-          <li>✔ Ubicación solo al momento del reporte</li>
-        </ul>
-        <p>Esto evita fraudes, bots y reportes falsos.</p>
-      </div>
-
-      <div class="advanced-card reveal">
-        <h3>🛡️ Validación y control antifraude</h3>
-        <p>
-          SKANO utiliza controles automáticos y revisión interna para validar cada reporte
-          antes de considerarlo legítimo.
-        </p>
-        <p>Los reportes falsos o abusivos generan bloqueos automáticos de la cuenta.</p>
-      </div>
-
-      <div class="advanced-card reveal">
-        <h3>🚨 Alertas para dueños y empresas</h3>
-        <p>
-          Los dueños de vehículos y empresas con planes activos reciben alertas
-          <strong>solo cuando un reporte es validado</strong>.
-        </p>
-        <p>La identidad del reportante <strong>nunca se comparte</strong>.</p>
-      </div>
-
-      <div class="advanced-card reveal">
-        <h3>🏆 Recompensas reales</h3>
-        <p>
-          Los reportes válidos generan <strong>copas</strong> que permiten acceder a recompensas económicas.
-        </p>
-        <p>
-          Además, compartir la app genera <strong>medallas</strong> por referidos con reportes verificados.
-        </p>
-      </div>
+      <div class="advanced-card reveal"><h3>📸 Reportar vehículos sospechosos</h3><p>Cualquier persona puede usar la app para reportar una patente sospechosa. Para que el reporte sea válido, la app solicita:</p><ul class="mini-list"><li>✔ PIN de seguridad</li><li>✔ Selfie en tiempo real</li><li>✔ Ubicación solo al momento del reporte</li></ul><p>Esto evita fraudes, bots y reportes falsos.</p></div>
+      <div class="advanced-card reveal"><h3>🛡️ Validación y control antifraude</h3><p>SKANO utiliza controles automáticos y revisión interna para validar cada reporte antes de considerarlo legítimo.</p><p>Los reportes falsos o abusivos generan bloqueos automáticos de la cuenta.</p></div>
+      <div class="advanced-card reveal"><h3>🚨 Alertas para dueños y empresas</h3><p>Los dueños de vehículos y empresas con planes activos reciben alertas <strong>solo cuando un reporte es validado</strong>.</p><p>La identidad del reportante <strong>nunca se comparte</strong>.</p></div>
+      <div class="advanced-card reveal"><h3>🏆 Recompensas reales</h3><p>Los reportes válidos generan <strong>copas</strong> que permiten acceder a recompensas económicas.</p><p>Además, compartir la app genera <strong>medallas</strong> por referidos con reportes verificados.</p></div>
     </div>
 
-    <p class="section-lead reveal" style="margin-top:24px;font-size:0.85rem;">
-      ✔ SKANO no rastrea personas
-      <br>
-      ✔ No controla ni bloquea vehículos
-      <br>
-      ✔ Actúa como intermediario seguro entre la comunidad y los dueños
-    </p>
-  </div>
-</section>
-
-<!-- ================= GALERÍA PROFESIONAL CON FOTOS EN MOVIMIENTO ================= -->
-<section id="galeria" class="photo-showcase">
-  <div class="photo-showcase-head reveal">
-    <h2>SKANO en terreno: comunidad, tecnología y búsqueda activa</h2>
-    <p>
-      Agrega aquí tus imágenes reales o generadas para mostrar vehículos estacionados,
-      seguridad ciudadana, fiscalización, uso de la app y presencia en terreno.
-    </p>
-  </div>
-
-  <!--
-    IMPORTANTE:
-    Sube tus fotos a la carpeta /img/ con estos nombres:
-    img/galeria-1.jpg
-    img/galeria-2.jpg
-    img/galeria-3.jpg
-    img/galeria-4.jpg
-    img/galeria-5.jpg
-    img/galeria-6.jpg
-
-    Si tus imágenes tienen otros nombres, cambia SOLO el src="...".
-    La segunda mitad de imágenes está repetida para que el movimiento sea infinito y fluido.
-  -->
-
-  <div class="photo-slider" aria-label="Galería de imágenes SKANO en movimiento">
-    <div class="photo-track">
-      <article class="photo-card">
-        <img src="img/galeria-1.jpg" alt="SKANO búsqueda de autos robados en Chile" />
-        <div class="photo-label">Búsqueda comunitaria <span>Autos robados en Chile</span></div>
-      </article>
-
-      <article class="photo-card">
-        <img src="img/galeria-2.jpg" alt="Verificación de patentes con SKANO" />
-        <div class="photo-label">Verificación de patentes <span>Consulta rápida y segura</span></div>
-      </article>
-
-      <article class="photo-card">
-        <img src="img/galeria-3.jpg" alt="Vehículos estacionados y reporte comunitario" />
-        <div class="photo-label">Vehículos estacionados <span>El punto clave para detectar</span></div>
-      </article>
-
-      <article class="photo-card">
-        <img src="img/galeria-4.jpg" alt="Seguridad ciudadana y apoyo tecnológico" />
-        <div class="photo-label">Seguridad ciudadana <span>Tecnología + comunidad</span></div>
-      </article>
-
-      <article class="photo-card">
-        <img src="img/galeria-5.jpg" alt="Alertas de vehículos robados en tiempo real" />
-        <div class="photo-label">Alertas en tiempo real <span>Reportes verificados</span></div>
-      </article>
-
-      <article class="photo-card">
-        <img src="img/galeria-6.jpg" alt="App SKANO para encontrar vehículos robados" />
-        <div class="photo-label">App SKANO <span>Reporta seguro</span></div>
-      </article>
-
-      <article class="photo-card">
-        <img src="img/galeria-1.jpg" alt="SKANO búsqueda de autos robados en Chile" />
-        <div class="photo-label">Búsqueda comunitaria <span>Autos robados en Chile</span></div>
-      </article>
-
-      <article class="photo-card">
-        <img src="img/galeria-2.jpg" alt="Verificación de patentes con SKANO" />
-        <div class="photo-label">Verificación de patentes <span>Consulta rápida y segura</span></div>
-      </article>
-
-      <article class="photo-card">
-        <img src="img/galeria-3.jpg" alt="Vehículos estacionados y reporte comunitario" />
-        <div class="photo-label">Vehículos estacionados <span>El punto clave para detectar</span></div>
-      </article>
-
-      <article class="photo-card">
-        <img src="img/galeria-4.jpg" alt="Seguridad ciudadana y apoyo tecnológico" />
-        <div class="photo-label">Seguridad ciudadana <span>Tecnología + comunidad</span></div>
-      </article>
-
-      <article class="photo-card">
-        <img src="img/galeria-5.jpg" alt="Alertas de vehículos robados en tiempo real" />
-        <div class="photo-label">Alertas en tiempo real <span>Reportes verificados</span></div>
-      </article>
-
-      <article class="photo-card">
-        <img src="img/galeria-6.jpg" alt="App SKANO para encontrar vehículos robados" />
-        <div class="photo-label">App SKANO <span>Reporta seguro</span></div>
-      </article>
-    </div>
+    <p class="section-lead reveal" style="margin-top:24px;font-size:0.85rem;">✔ SKANO no rastrea personas<br>✔ No controla ni bloquea vehículos<br>✔ Actúa como intermediario seguro entre la comunidad y los dueños</p>
   </div>
 </section>
 
@@ -762,130 +833,21 @@
 <section id="portal" class="section section-alt">
   <div class="container">
     <h2 class="section-title reveal">Portal Web SKANO (Parquímetros)</h2>
-
-    <p class="section-lead reveal">
-      Un panel profesional para parquímetros y estacionamientos que permite
-      <strong>consultar patentes</strong> y recibir <strong>alertas verificadas</strong>
-      cuando un vehículo robado es detectado en tu recinto.
-      <br><br>
-      <strong>SKANO no entrega datos personales</strong> y no autoriza acciones directas:
-      el portal es <strong>informativo</strong> y opera con trazabilidad y control.
-    </p>
+    <p class="section-lead reveal">Un panel profesional para parquímetros y estacionamientos que permite <strong>consultar patentes</strong> y recibir <strong>alertas verificadas</strong> cuando un vehículo robado es detectado en tu recinto.<br><br><strong>SKANO no entrega datos personales</strong> y no autoriza acciones directas: el portal es <strong>informativo</strong> y opera con trazabilidad y control.</p>
 
     <div class="portal-top">
-      <div class="advanced-card portal-hero reveal">
-        <div class="icon-wrap">🅿️</div>
-        <h3>Diseñado para parquímetros y estacionamientos</h3>
-        <p>
-          Ideal para operadores que necesitan una herramienta rápida, discreta y segura
-          para detectar vehículos con encargo, sin exponerse y sin intervenir.
-        </p>
-
-        <div class="portal-tags">
-          <span class="portal-tag">✅ Alertas verificadas</span>
-          <span class="portal-tag">✅ Sin datos personales</span>
-          <span class="portal-tag">✅ Auditoría y trazabilidad</span>
-        </div>
-      </div>
-
-      <div class="advanced-card portal-hero reveal">
-        <div class="icon-wrap">🧩</div>
-        <h3>Integración flexible</h3>
-        <p>
-          La operación puede ser <strong>manual</strong> (ingreso de patente) o
-          <strong>semi-automática</strong> (lector/cámara en etapa posterior).
-          <br><br>
-          El sistema está pensado para crecer por módulos, manteniendo el control antifraude.
-        </p>
-
-        <div class="portal-tags">
-          <span class="portal-tag">🧠 Roles por usuario</span>
-          <span class="portal-tag">🔐 Acceso restringido</span>
-          <span class="portal-tag">📍 Ubicación controlada</span>
-        </div>
-      </div>
+      <div class="advanced-card portal-hero reveal"><div class="icon-wrap">🅿️</div><h3>Diseñado para parquímetros y estacionamientos</h3><p>Ideal para operadores que necesitan una herramienta rápida, discreta y segura para detectar vehículos con encargo, sin exponerse y sin intervenir.</p><div class="portal-tags"><span class="portal-tag">✅ Alertas verificadas</span><span class="portal-tag">✅ Sin datos personales</span><span class="portal-tag">✅ Auditoría y trazabilidad</span></div></div>
+      <div class="advanced-card portal-hero reveal"><div class="icon-wrap">🧩</div><h3>Integración flexible</h3><p>La operación puede ser <strong>manual</strong> (ingreso de patente) o <strong>semi-automática</strong> (lector/cámara en etapa posterior).<br><br>El sistema está pensado para crecer por módulos, manteniendo el control antifraude.</p><div class="portal-tags"><span class="portal-tag">🧠 Roles por usuario</span><span class="portal-tag">🔐 Acceso restringido</span><span class="portal-tag">📍 Ubicación controlada</span></div></div>
     </div>
 
     <div class="portal-grid">
-      <div class="advanced-card portal-card reveal">
-        <div class="portal-minihead">
-          <span class="portal-emoji">🔎</span>
-          <span class="portal-title">Consulta de patentes</span>
-        </div>
-        <p>
-          Ingreso rápido de patente para verificar si existe un encargo activo en SKANO.
-          Respuesta clara: <strong>Sin encargo</strong> o <strong>Vehículo con encargo</strong>.
-        </p>
-        <ul class="portal-list">
-          <li>✔ Búsqueda manual por patente</li>
-          <li>✔ Resultado inmediato</li>
-          <li>✔ Sin exposición de identidad</li>
-        </ul>
-      </div>
-
-      <div class="advanced-card portal-card reveal">
-        <div class="portal-minihead">
-          <span class="portal-emoji">🚨</span>
-          <span class="portal-title">Alertas verificadas</span>
-        </div>
-        <p>
-          El portal muestra alertas solo cuando existe un estado válido (encargo activo verificado).
-          Esto reduce falsos positivos y evita abuso del sistema.
-        </p>
-        <ul class="portal-list">
-          <li>✔ Alertas en tiempo real</li>
-          <li>✔ Control antifraude</li>
-          <li>✔ Historial de alertas</li>
-        </ul>
-      </div>
-
-      <div class="advanced-card portal-card reveal">
-        <div class="portal-minihead">
-          <span class="portal-emoji">📍</span>
-          <span class="portal-title">Ubicación controlada</span>
-        </div>
-        <p>
-          La ubicación se registra solo como referencia del <strong>recinto</strong> y el
-          <strong>momento</strong>. SKANO no rastrea recorridos ni realiza seguimiento permanente.
-        </p>
-        <ul class="portal-list">
-          <li>✔ Solo evento (hora/recinto)</li>
-          <li>✔ Sin tracking de personas</li>
-          <li>✔ Enfoque de privacidad</li>
-        </ul>
-      </div>
-
-      <div class="advanced-card portal-card reveal">
-        <div class="portal-minihead">
-          <span class="portal-emoji">👥</span>
-          <span class="portal-title">Roles y control interno</span>
-        </div>
-        <p>
-          La empresa administra accesos por rol. Operadores solo consultan y reciben alertas,
-          sin permisos administrativos ni exportación masiva.
-        </p>
-        <ul class="portal-list">
-          <li>✔ Operador / Administrador</li>
-          <li>✔ Logs y auditoría</li>
-          <li>✔ Acceso restringido</li>
-        </ul>
-      </div>
+      <div class="advanced-card portal-card reveal"><div class="portal-minihead"><span class="portal-emoji">🔎</span><span class="portal-title">Consulta de patentes</span></div><p>Ingreso rápido de patente para verificar si existe un encargo activo en SKANO. Respuesta clara: <strong>Sin encargo</strong> o <strong>Vehículo con encargo</strong>.</p><ul class="portal-list"><li>✔ Búsqueda manual por patente</li><li>✔ Resultado inmediato</li><li>✔ Sin exposición de identidad</li></ul></div>
+      <div class="advanced-card portal-card reveal"><div class="portal-minihead"><span class="portal-emoji">🚨</span><span class="portal-title">Alertas verificadas</span></div><p>El portal muestra alertas solo cuando existe un estado válido (encargo activo verificado). Esto reduce falsos positivos y evita abuso del sistema.</p><ul class="portal-list"><li>✔ Alertas en tiempo real</li><li>✔ Control antifraude</li><li>✔ Historial de alertas</li></ul></div>
+      <div class="advanced-card portal-card reveal"><div class="portal-minihead"><span class="portal-emoji">📍</span><span class="portal-title">Ubicación controlada</span></div><p>La ubicación se registra solo como referencia del <strong>recinto</strong> y el <strong>momento</strong>. SKANO no rastrea recorridos ni realiza seguimiento permanente.</p><ul class="portal-list"><li>✔ Solo evento (hora/recinto)</li><li>✔ Sin tracking de personas</li><li>✔ Enfoque de privacidad</li></ul></div>
+      <div class="advanced-card portal-card reveal"><div class="portal-minihead"><span class="portal-emoji">👥</span><span class="portal-title">Roles y control interno</span></div><p>La empresa administra accesos por rol. Operadores solo consultan y reciben alertas, sin permisos administrativos ni exportación masiva.</p><ul class="portal-list"><li>✔ Operador / Administrador</li><li>✔ Logs y auditoría</li><li>✔ Acceso restringido</li></ul></div>
     </div>
 
-    <div class="advanced-card portal-rules reveal">
-      <h3>⚠️ Reglas obligatorias de uso</h3>
-      <ul class="portal-list">
-        <li>✔ El portal es <strong>informativo</strong> y no autoriza acciones directas.</li>
-        <li>✔ No se expone identidad del reportante ni del dueño del vehículo.</li>
-        <li>✔ Toda detección debe seguir protocolos internos y vías oficiales (Carabineros / PDI).</li>
-        <li>✔ Uso indebido o abuso del sistema puede implicar bloqueo del acceso.</li>
-      </ul>
-
-      <p class="small">
-        SKANO funciona como plataforma de apoyo con trazabilidad y control antifraude.
-        No reemplaza denuncias ni procedimientos oficiales.
-      </p>
-    </div>
+    <div class="advanced-card portal-rules reveal"><h3>⚠️ Reglas obligatorias de uso</h3><ul class="portal-list"><li>✔ El portal es <strong>informativo</strong> y no autoriza acciones directas.</li><li>✔ No se expone identidad del reportante ni del dueño del vehículo.</li><li>✔ Toda detección debe seguir protocolos internos y vías oficiales (Carabineros / PDI).</li><li>✔ Uso indebido o abuso del sistema puede implicar bloqueo del acceso.</li></ul><p class="small">SKANO funciona como plataforma de apoyo con trazabilidad y control antifraude. No reemplaza denuncias ni procedimientos oficiales.</p></div>
   </div>
 </section>
 
@@ -893,89 +855,17 @@
 <section id="documentos" class="section section-alt">
   <div class="container docs-container">
     <h2 class="section-title reveal">Documentos y verificación en SKANO</h2>
+    <p class="section-lead reveal">Para proteger a la comunidad y evitar fraudes, SKANO exige validación obligatoria de identidad y propiedad. <strong>Sin documentos válidos no existen reportes ni alertas.</strong></p>
 
-    <p class="section-lead reveal">
-      Para proteger a la comunidad y evitar fraudes, SKANO exige validación
-      obligatoria de identidad y propiedad.
-      <strong>Sin documentos válidos no existen reportes ni alertas.</strong>
-    </p>
-
-    <div class="docs-intro reveal">
-      <h3>✅ Requisitos para registrarse y validarse como usuario</h3>
-
-      <ul class="doc-list highlight">
-        <li>✔ Registro con correo electrónico válido</li>
-        <li>✔ Cédula de identidad vigente</li>
-        <li>✔ Creación de un PIN de seguridad personal</li>
-        <li>✔ Selfie en tiempo real (no fotos ni videos)</li>
-        <li>✔ Aceptación de términos, políticas y protocolos SKANO</li>
-      </ul>
-
-      <p class="small">
-        Solo los usuarios correctamente validados pueden realizar reportes
-        y acceder a recompensas.
-      </p>
-    </div>
+    <div class="docs-intro reveal"><h3>✅ Requisitos para registrarse y validarse como usuario</h3><ul class="doc-list highlight"><li>✔ Registro con correo electrónico válido</li><li>✔ Cédula de identidad vigente</li><li>✔ Creación de un PIN de seguridad personal</li><li>✔ Selfie en tiempo real (no fotos ni videos)</li><li>✔ Aceptación de términos, políticas y protocolos SKANO</li></ul><p class="small">Solo los usuarios correctamente validados pueden realizar reportes y acceder a recompensas.</p></div>
 
     <div class="documents-grid">
-      <div class="document-card advanced-card reveal">
-        <h3>👤 Documentos del usuario</h3>
-        <p>Validan que la persona es real, responsable y trazable.</p>
-
-        <ul class="doc-list">
-          <li>🪪 Cédula de identidad vigente</li>
-          <li>🤳 Selfie en tiempo real</li>
-          <li>🔐 PIN de seguridad</li>
-        </ul>
-
-        <p class="small">La identidad del usuario nunca se comparte.</p>
-      </div>
-
-      <div class="document-card advanced-card reveal">
-        <h3>🚗 Documentos del vehículo</h3>
-        <p>Solo el dueño legal puede registrar un vehículo.</p>
-
-        <ul class="doc-list">
-          <li>📄 Padrón del vehículo</li>
-          <li>🧾 Permiso de circulación</li>
-          <li>🚔 Constancia policial (en caso de robo)</li>
-        </ul>
-
-        <p class="small">❌ No se aceptan cartas de poder ni terceros.</p>
-      </div>
+      <div class="document-card advanced-card reveal"><h3>👤 Documentos del usuario</h3><p>Validan que la persona es real, responsable y trazable.</p><ul class="doc-list"><li>🪪 Cédula de identidad vigente</li><li>🤳 Selfie en tiempo real</li><li>🔐 PIN de seguridad</li></ul><p class="small">La identidad del usuario nunca se comparte.</p></div>
+      <div class="document-card advanced-card reveal"><h3>🚗 Documentos del vehículo</h3><p>Solo el dueño legal puede registrar un vehículo.</p><ul class="doc-list"><li>📄 Padrón del vehículo</li><li>🧾 Permiso de circulación</li><li>🚔 Constancia policial (en caso de robo)</li></ul><p class="small">❌ No se aceptan cartas de poder ni terceros.</p></div>
     </div>
 
-    <div class="advanced-card reveal" style="margin-top:30px;">
-      <h3>⚠️ Reglas obligatorias del sistema</h3>
-
-      <ul class="doc-list">
-        <li>✔ Solo los <strong>dueños del vehículo</strong> pueden registrar un vehículo robado.</li>
-        <li>✔ Los reportes ciudadanos pasan siempre por <strong>PIN + selfie + protocolos establecidos</strong>.</li>
-        <li>✔ Los reportes sin validación <strong>no generan alertas ni recompensas</strong>.</li>
-        <li>✔ El uso indebido del sistema implica bloqueo automático de la cuenta.</li>
-      </ul>
-
-      <p class="small">
-        SKANO no reemplaza denuncias oficiales ante Carabineros o PDI.
-        Es una plataforma de apoyo comunitario con trazabilidad y control.
-      </p>
-    </div>
-
-    <div class="advanced-card reveal" style="margin-top:30px;">
-      <h3>🤝 ¿Problemas para subir documentos?</h3>
-      <p>
-        Si tienes errores en la app o dificultades para completar la verificación,
-        puedes enviar tu documentación directamente a un asesor.
-      </p>
-
-      <a href="mailto:skano.oficial@gmail.com" class="btn btn-primary">
-        Enviar documentos a un asesor
-      </a>
-
-      <p class="small" style="margin-top:10px;">
-        Tiempo de respuesta estimado: 10 a 30 minutos en horario hábil.
-      </p>
-    </div>
+    <div class="advanced-card reveal" style="margin-top:30px;"><h3>⚠️ Reglas obligatorias del sistema</h3><ul class="doc-list"><li>✔ Solo los <strong>dueños del vehículo</strong> pueden registrar un vehículo robado.</li><li>✔ Los reportes ciudadanos pasan siempre por <strong>PIN + selfie + protocolos establecidos</strong>.</li><li>✔ Los reportes sin validación <strong>no generan alertas ni recompensas</strong>.</li><li>✔ El uso indebido del sistema implica bloqueo automático de la cuenta.</li></ul><p class="small">SKANO no reemplaza denuncias oficiales ante Carabineros o PDI. Es una plataforma de apoyo comunitario con trazabilidad y control.</p></div>
+    <div class="advanced-card reveal" style="margin-top:30px;"><h3>🤝 ¿Problemas para subir documentos?</h3><p>Si tienes errores en la app o dificultades para completar la verificación, puedes enviar tu documentación directamente a un asesor.</p><a href="mailto:skano.oficial@gmail.com" class="btn btn-primary">Enviar documentos a un asesor</a><p class="small" style="margin-top:10px;">Tiempo de respuesta estimado: 10 a 30 minutos en horario hábil.</p></div>
   </div>
 </section>
 
@@ -983,59 +873,14 @@
 <section id="planes" class="section">
   <div class="container">
     <h2 class="section-title reveal">Planes SKANO</h2>
-    <p class="section-lead reveal">
-      Reportar vehículos es <strong>100% gratuito</strong>.
-      Los planes aplican solo para dueños y empresas que desean
-      <strong>recibir alertas verificadas</strong>.
-    </p>
+    <p class="section-lead reveal">Reportar vehículos es <strong>100% gratuito</strong>. Los planes aplican solo para dueños y empresas que desean <strong>recibir alertas verificadas</strong>.</p>
 
     <div class="plans-grid">
-      <div class="plan-card advanced-card reveal">
-        <span class="plan-badge">Dueños</span>
-
-        <h3>Plan Dueño</h3>
-        <p class="price">$16.990 <span>/ por vehículo</span></p>
-
-        <ul class="plan-list">
-          <li>✔ Recepción de reportes verificados</li>
-          <li>✔ Alertas en tiempo real</li>
-          <li>✔ Identidad del reportante protegida</li>
-          <li>✔ Acceso al sistema de recompensas</li>
-        </ul>
-
-        <button class="btn btn-primary full" type="button">
-          💳 Pagar con Mercado Pago
-        </button>
-
-        <p class="plan-note">Pago seguro procesado por Mercado Pago</p>
-      </div>
-
-      <div class="plan-card advanced-card reveal">
-        <span class="plan-badge ghost">Empresas</span>
-
-        <h3>Plan Empresas / Flotas</h3>
-        <p class="price">Precio a convenir</p>
-
-        <ul class="plan-list">
-          <li>✔ Gestión de múltiples vehículos</li>
-          <li>✔ Portal web administrativo</li>
-          <li>✔ Reportes centralizados</li>
-          <li>✔ Soporte especializado</li>
-        </ul>
-
-        <a href="#contacto" class="btn btn-ghost full">💼 Contactar ventas</a>
-
-        <p class="plan-note">Plan diseñado para flotas y empresas</p>
-      </div>
+      <div class="plan-card advanced-card reveal"><span class="plan-badge">Dueños</span><h3>Plan Dueño</h3><p class="price">$16.990 <span>/ por vehículo</span></p><ul class="plan-list"><li>✔ Recepción de reportes verificados</li><li>✔ Alertas en tiempo real</li><li>✔ Identidad del reportante protegida</li><li>✔ Acceso al sistema de recompensas</li></ul><button class="btn btn-primary full" type="button">💳 Pagar con Mercado Pago</button><p class="plan-note">Pago seguro procesado por Mercado Pago</p></div>
+      <div class="plan-card advanced-card reveal"><span class="plan-badge ghost">Empresas</span><h3>Plan Empresas / Flotas</h3><p class="price">Precio a convenir</p><ul class="plan-list"><li>✔ Gestión de múltiples vehículos</li><li>✔ Portal web administrativo</li><li>✔ Reportes centralizados</li><li>✔ Soporte especializado</li></ul><a href="#contacto" class="btn btn-ghost full">💼 Contactar ventas</a><p class="plan-note">Plan diseñado para flotas y empresas</p></div>
     </div>
 
-    <p class="section-lead reveal" style="margin-top:24px;font-size:0.85rem;">
-      ✔ No existe permanencia
-      <br>
-      ✔ Cada vehículo se activa individualmente
-      <br>
-      ✔ SKANO no bloquea ni controla vehículos
-    </p>
+    <p class="section-lead reveal" style="margin-top:24px;font-size:0.85rem;">✔ No existe permanencia<br>✔ Cada vehículo se activa individualmente<br>✔ SKANO no bloquea ni controla vehículos</p>
   </div>
 </section>
 
@@ -1043,73 +888,12 @@
 <section id="terminos" class="section section-alt">
   <div class="container narrow">
     <h2 class="section-title reveal">Términos y condiciones de uso</h2>
+    <p class="section-lead reveal">El uso de la aplicación móvil SKANO y del portal web implica la aceptación expresa de los siguientes términos y condiciones. Estos aplican a usuarios, dueños de vehículos, parquímetros, estacionamientos y operadores asociados.</p>
 
-    <p class="section-lead reveal">
-      El uso de la aplicación móvil SKANO y del portal web implica la aceptación
-      expresa de los siguientes términos y condiciones.
-      Estos aplican a usuarios, dueños de vehículos, parquímetros,
-      estacionamientos y operadores asociados.
-    </p>
-
-    <div class="advanced-card reveal" style="margin-bottom:32px;">
-      <h3>📱 Uso de la aplicación y plataforma web</h3>
-
-      <ul class="doc-list">
-        <li>✔ SKANO es una plataforma tecnológica de apoyo comunitario.</li>
-        <li>✔ No reemplaza denuncias oficiales ante Carabineros o PDI.</li>
-        <li>✔ No realiza persecución, recuperación ni bloqueo de vehículos.</li>
-        <li>✔ La información entregada depende de reportes ciudadanos validados.</li>
-        <li>✔ El uso indebido del sistema puede derivar en bloqueo permanente.</li>
-      </ul>
-
-      <p class="small">SKANO actúa únicamente como intermediario tecnológico con trazabilidad y controles antifraude.</p>
-    </div>
-
-    <div class="advanced-card reveal" style="margin-bottom:32px;">
-      <h3>👤 Condiciones para usuarios de la app</h3>
-
-      <ul class="doc-list">
-        <li>✔ Todo usuario debe validar su identidad (PIN + selfie).</li>
-        <li>✔ Los reportes falsos o maliciosos están estrictamente prohibidos.</li>
-        <li>✔ Los reportes pasan por validación automática y protocolos internos.</li>
-        <li>✔ El anonimato del reportante está garantizado.</li>
-        <li>✔ El sistema de recompensas está sujeto a validación antifraude.</li>
-      </ul>
-
-      <p class="small">SKANO se reserva el derecho de suspender cuentas que incumplan estas reglas.</p>
-    </div>
-
-    <div class="advanced-card reveal" style="margin-bottom:32px;">
-      <h3>🅿️ Parquímetros y estacionamientos</h3>
-
-      <p>
-        Los parquímetros, estacionamientos y operadores que utilicen
-        el portal web SKANO aceptan las siguientes condiciones:
-      </p>
-
-      <ul class="doc-list">
-        <li>✔ Uso exclusivo como herramienta de alerta y consulta.</li>
-        <li>✔ No realizar acciones directas contra personas o vehículos.</li>
-        <li>✔ Respetar la confidencialidad de los datos entregados.</li>
-        <li>✔ No divulgar información fuera del sistema SKANO.</li>
-        <li>✔ Cumplir la normativa legal vigente.</li>
-      </ul>
-
-      <p class="small">SKANO no se responsabiliza por decisiones operativas tomadas fuera del alcance de la plataforma.</p>
-    </div>
-
-    <div class="advanced-card reveal">
-      <h3>⚠️ Limitación de responsabilidad</h3>
-
-      <ul class="doc-list">
-        <li>✔ SKANO no garantiza recuperación de vehículos.</li>
-        <li>✔ No se responsabiliza por daños, pérdidas o perjuicios indirectos.</li>
-        <li>✔ La información es de carácter referencial.</li>
-        <li>✔ El usuario es responsable del uso que haga de la plataforma.</li>
-      </ul>
-
-      <p class="small">Al utilizar SKANO, el usuario acepta estas condiciones en su totalidad.</p>
-    </div>
+    <div class="advanced-card reveal" style="margin-bottom:32px;"><h3>📱 Uso de la aplicación y plataforma web</h3><ul class="doc-list"><li>✔ SKANO es una plataforma tecnológica de apoyo comunitario.</li><li>✔ No reemplaza denuncias oficiales ante Carabineros o PDI.</li><li>✔ No realiza persecución, recuperación ni bloqueo de vehículos.</li><li>✔ La información entregada depende de reportes ciudadanos validados.</li><li>✔ El uso indebido del sistema puede derivar en bloqueo permanente.</li></ul><p class="small">SKANO actúa únicamente como intermediario tecnológico con trazabilidad y controles antifraude.</p></div>
+    <div class="advanced-card reveal" style="margin-bottom:32px;"><h3>👤 Condiciones para usuarios de la app</h3><ul class="doc-list"><li>✔ Todo usuario debe validar su identidad (PIN + selfie).</li><li>✔ Los reportes falsos o maliciosos están estrictamente prohibidos.</li><li>✔ Los reportes pasan por validación automática y protocolos internos.</li><li>✔ El anonimato del reportante está garantizado.</li><li>✔ El sistema de recompensas está sujeto a validación antifraude.</li></ul><p class="small">SKANO se reserva el derecho de suspender cuentas que incumplan estas reglas.</p></div>
+    <div class="advanced-card reveal" style="margin-bottom:32px;"><h3>🅿️ Parquímetros y estacionamientos</h3><p>Los parquímetros, estacionamientos y operadores que utilicen el portal web SKANO aceptan las siguientes condiciones:</p><ul class="doc-list"><li>✔ Uso exclusivo como herramienta de alerta y consulta.</li><li>✔ No realizar acciones directas contra personas o vehículos.</li><li>✔ Respetar la confidencialidad de los datos entregados.</li><li>✔ No divulgar información fuera del sistema SKANO.</li><li>✔ Cumplir la normativa legal vigente.</li></ul><p class="small">SKANO no se responsabiliza por decisiones operativas tomadas fuera del alcance de la plataforma.</p></div>
+    <div class="advanced-card reveal"><h3>⚠️ Limitación de responsabilidad</h3><ul class="doc-list"><li>✔ SKANO no garantiza recuperación de vehículos.</li><li>✔ No se responsabiliza por daños, pérdidas o perjuicios indirectos.</li><li>✔ La información es de carácter referencial.</li><li>✔ El usuario es responsable del uso que haga de la plataforma.</li></ul><p class="small">Al utilizar SKANO, el usuario acepta estas condiciones en su totalidad.</p></div>
   </div>
 </section>
 
@@ -1117,93 +901,13 @@
 <section id="recompensas" class="section section-alt">
   <div class="container">
     <h2 class="section-title reveal">Sistema de recompensas</h2>
-    <p class="section-lead reveal">
-      En SKANO existen <strong>dos formas reales de generar ingresos</strong>:
-      <br>
-      🏆 reportando vehículos robados correctamente
-      <br>
-      🥇 compartiendo SKANO por WhatsApp
-    </p>
+    <p class="section-lead reveal">En SKANO existen <strong>dos formas reales de generar ingresos</strong>:<br>🏆 reportando vehículos robados correctamente<br>🥇 compartiendo SKANO por WhatsApp</p>
 
-    <div class="rewards-explain">
-      <div class="advanced-card reveal">
-        <h3>🏆 Copas por reportes validados</h3>
-        <p>
-          Las <strong>copas</strong> se obtienen cuando un usuario reporta correctamente
-          un vehículo robado y el reporte es <strong>validado por el sistema y el dueño</strong>.
-          <br><br>
-          Cada reporte válido suma copas. Al alcanzar ciertos rangos,
-          el usuario puede <strong>retirar dinero real</strong>.
-        </p>
-      </div>
-    </div>
-
-    <div class="rewards-grid">
-      <div class="reward-card advanced-card reveal">
-        <h3>🏆 Bronce</h3>
-        <p>0 – 5 copas</p>
-        <strong>$50.000</strong>
-      </div>
-
-      <div class="reward-card advanced-card reveal">
-        <h3>🏆 Plata</h3>
-        <p>6 – 10 copas</p>
-        <strong>$75.000</strong>
-      </div>
-
-      <div class="reward-card advanced-card reveal">
-        <h3>🏆 Oro</h3>
-        <p>11 – 30 copas</p>
-        <strong>$100.000</strong>
-      </div>
-
-      <div class="reward-card advanced-card reveal">
-        <h3>🏆 Elite</h3>
-        <p>31 – 50 copas</p>
-        <strong>$150.000</strong>
-      </div>
-    </div>
-
-    <div class="rewards-explain" style="margin-top:40px;">
-      <div class="advanced-card reveal">
-        <h3>🥇 Medallas por compartir SKANO</h3>
-        <p>
-          Las <strong>medallas</strong> se obtienen al <strong>compartir SKANO por WhatsApp</strong>.
-          <br><br>
-          Cuando una persona invita a otros usuarios y esos usuarios realizan <strong>reportes válidos</strong>, se genera una recompensa.
-          <br><br>
-          ⚠️ <strong>El pago se realiza solo a la PRIMERA persona</strong> que compartió el enlace en ese grupo o contacto.
-        </p>
-      </div>
-    </div>
-
-    <div class="rewards-grid">
-      <div class="reward-card advanced-card reveal">
-        <h3>🥇 Medalla Bronce</h3>
-        <p>5 usuarios con reportes validados</p>
-        <strong>$50.000</strong>
-      </div>
-
-      <div class="reward-card advanced-card reveal">
-        <h3>🥇 Medalla Plata</h3>
-        <p>7 usuarios con reportes validados</p>
-        <strong>$75.000</strong>
-      </div>
-
-      <div class="reward-card advanced-card reveal">
-        <h3>🥇 Medalla Oro</h3>
-        <p>10 usuarios con reportes validados</p>
-        <strong>$100.000</strong>
-      </div>
-    </div>
-
-    <p class="section-lead reveal" style="margin-top:24px;font-size:0.85rem;">
-      ✔ Los usuarios pueden invitar a cuantas personas quieran
-      <br>
-      ✔ Solo se paga una vez por grupo o cadena de difusión
-      <br>
-      ✔ Todos los pagos se realizan tras validación antifraude
-    </p>
+    <div class="rewards-explain"><div class="advanced-card reveal"><h3>🏆 Copas por reportes validados</h3><p>Las <strong>copas</strong> se obtienen cuando un usuario reporta correctamente un vehículo robado y el reporte es <strong>validado por el sistema y el dueño</strong>.<br><br>Cada reporte válido suma copas. Al alcanzar ciertos rangos, el usuario puede <strong>retirar dinero real</strong>.</p></div></div>
+    <div class="rewards-grid"><div class="reward-card advanced-card reveal"><h3>🏆 Bronce</h3><p>0 – 5 copas</p><strong>$50.000</strong></div><div class="reward-card advanced-card reveal"><h3>🏆 Plata</h3><p>6 – 10 copas</p><strong>$75.000</strong></div><div class="reward-card advanced-card reveal"><h3>🏆 Oro</h3><p>11 – 30 copas</p><strong>$100.000</strong></div><div class="reward-card advanced-card reveal"><h3>🏆 Elite</h3><p>31 – 50 copas</p><strong>$150.000</strong></div></div>
+    <div class="rewards-explain" style="margin-top:40px;"><div class="advanced-card reveal"><h3>🥇 Medallas por compartir SKANO</h3><p>Las <strong>medallas</strong> se obtienen al <strong>compartir SKANO por WhatsApp</strong>.<br><br>Cuando una persona invita a otros usuarios y esos usuarios realizan <strong>reportes válidos</strong>, se genera una recompensa.<br><br>⚠️ <strong>El pago se realiza solo a la PRIMERA persona</strong> que compartió el enlace en ese grupo o contacto.</p></div></div>
+    <div class="rewards-grid"><div class="reward-card advanced-card reveal"><h3>🥇 Medalla Bronce</h3><p>5 usuarios con reportes validados</p><strong>$50.000</strong></div><div class="reward-card advanced-card reveal"><h3>🥇 Medalla Plata</h3><p>7 usuarios con reportes validados</p><strong>$75.000</strong></div><div class="reward-card advanced-card reveal"><h3>🥇 Medalla Oro</h3><p>10 usuarios con reportes validados</p><strong>$100.000</strong></div></div>
+    <p class="section-lead reveal" style="margin-top:24px;font-size:0.85rem;">✔ Los usuarios pueden invitar a cuantas personas quieran<br>✔ Solo se paga una vez por grupo o cadena de difusión<br>✔ Todos los pagos se realizan tras validación antifraude</p>
   </div>
 </section>
 
@@ -1211,20 +915,8 @@
 <section class="seo-content-section">
   <div class="seo-content-card reveal">
     <h2>Buscar autos robados en Chile con SKANO</h2>
-
-    <p>
-      Si necesitas buscar autos robados en Chile, SKANO permite verificar patentes,
-      recibir alertas en tiempo real y reportar vehículos sospechosos de forma segura.
-      La plataforma está pensada para apoyar a la comunidad, dueños de vehículos,
-      empresas, estacionamientos y parquímetros.
-    </p>
-
-    <p>
-      Con SKANO puedes consultar vehículos robados en Chile desde tu celular,
-      revisar información relevante de una patente y participar en una red colaborativa
-      que ayuda a encontrar autos robados mediante reportes verificados.
-    </p>
-
+    <p>Si necesitas buscar autos robados en Chile, SKANO permite verificar patentes, recibir alertas en tiempo real y reportar vehículos sospechosos de forma segura. La plataforma está pensada para apoyar a la comunidad, dueños de vehículos, empresas, estacionamientos y parquímetros.</p>
+    <p>Con SKANO puedes consultar vehículos robados en Chile desde tu celular, revisar información relevante de una patente y participar en una red colaborativa que ayuda a encontrar autos robados mediante reportes verificados.</p>
     <a href="app-para-autos-robados-en-chile.html">Ver página especial para buscar autos robados en Chile →</a>
   </div>
 </section>
@@ -1233,87 +925,26 @@
 <section id="contacto" class="section">
   <div class="container">
     <h2 class="section-title reveal">Contacto</h2>
-
-    <div class="advanced-card info-card reveal" style="margin-bottom:24px;">
-      <h3>🗑️ Eliminación de cuenta</h3>
-
-      <p>
-        Los usuarios pueden solicitar la eliminación de su cuenta y datos personales
-        conforme a la normativa vigente.
-      </p>
-
-      <p>
-        Por motivos de <strong>seguridad y control antifraude</strong>,
-        la eliminación de cuentas no se realiza de forma automática.
-      </p>
-
-      <p class="small">
-        ⏱ El proceso de eliminación puede demorar hasta
-        <strong>60 días corridos</strong>, periodo en el cual se verificará
-        la identidad del solicitante y se cerrarán procesos asociados
-        (reportes, recompensas y auditoría).
-      </p>
-
-      <a
-        href="mailto:skano.oficial@gmail.com?subject=Eliminación%20de%20cuenta%20SKANO&body=Hola%20equipo%20SKANO,%0D%0A%0D%0ASolicito%20la%20eliminación%20de%20mi%20cuenta%20y%20datos%20personales.%0D%0A%0D%0ANombre%20completo:%0D%0ACorreo%20registrado%20en%20SKANO:%0D%0A%0D%0AGracias."
-        class="btn btn-ghost"
-      >
-        Solicitar eliminación por correo
-      </a>
-    </div>
-
-    <div class="contact-grid">
-      <div class="advanced-card reveal">
-        <h3>📧 Correos oficiales</h3>
-        <p><strong>Soporte:</strong> skano.oficial@gmail.com</p>
-        <p><strong>Empresas:</strong> contacto@skano.cl</p>
-      </div>
-
-      <form class="advanced-card reveal" id="contactForm">
-        <div class="field">
-          <label>Correo electrónico</label>
-          <input type="email" name="user_email" required />
-        </div>
-
-        <div class="field">
-          <label>Mensaje</label>
-          <textarea name="message" rows="4" required></textarea>
-        </div>
-
-        <button class="btn btn-primary full" type="submit">
-          Enviar mensaje
-        </button>
-      </form>
-    </div>
+    <div class="advanced-card info-card reveal" style="margin-bottom:24px;"><h3>🗑️ Eliminación de cuenta</h3><p>Los usuarios pueden solicitar la eliminación de su cuenta y datos personales conforme a la normativa vigente.</p><p>Por motivos de <strong>seguridad y control antifraude</strong>, la eliminación de cuentas no se realiza de forma automática.</p><p class="small">⏱ El proceso de eliminación puede demorar hasta <strong>60 días corridos</strong>, periodo en el cual se verificará la identidad del solicitante y se cerrarán procesos asociados (reportes, recompensas y auditoría).</p><a href="mailto:skano.oficial@gmail.com?subject=Eliminación%20de%20cuenta%20SKANO&body=Hola%20equipo%20SKANO,%0D%0A%0D%0ASolicito%20la%20eliminación%20de%20mi%20cuenta%20y%20datos%20personales.%0D%0A%0D%0ANombre%20completo:%0D%0ACorreo%20registrado%20en%20SKANO:%0D%0A%0D%0AGracias." class="btn btn-ghost">Solicitar eliminación por correo</a></div>
+    <div class="contact-grid"><div class="advanced-card reveal"><h3>📧 Correos oficiales</h3><p><strong>Soporte:</strong> skano.oficial@gmail.com</p><p><strong>Empresas:</strong> contacto@skano.cl</p></div><form class="advanced-card reveal" id="contactForm"><div class="field"><label>Correo electrónico</label><input type="email" name="user_email" required /></div><div class="field"><label>Mensaje</label><textarea name="message" rows="4" required></textarea></div><button class="btn btn-primary full" type="submit">Enviar mensaje</button></form></div>
   </div>
 </section>
 
 <!-- ================= EMAILJS ================= -->
 <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
 <script>
-  (function () {
-    emailjs.init("TU_PUBLIC_KEY");
-  })();
-
+  (function () { emailjs.init("TU_PUBLIC_KEY"); })();
   const form = document.getElementById("contactForm");
   if (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-
-      emailjs.sendForm(
-        "TU_SERVICE_ID",
-        "TU_TEMPLATE_ID",
-        this
-      ).then(
-        function () {
-          alert("Mensaje enviado correctamente ✅");
-          form.reset();
-        },
-        function (error) {
-          alert("Error al enviar el mensaje ❌");
-          console.error(error);
-        }
-      );
+      emailjs.sendForm("TU_SERVICE_ID", "TU_TEMPLATE_ID", this).then(function () {
+        alert("Mensaje enviado correctamente ✅");
+        form.reset();
+      }, function (error) {
+        alert("Error al enviar el mensaje ❌");
+        console.error(error);
+      });
     });
   }
 </script>
@@ -1323,17 +954,8 @@
   <div class="container">
     <div class="final-card reveal">
       <h3 class="final-slogan">“Reporta seguro, los buenos somos más.”</h3>
-
-      <p class="final-text">
-        Con tu ayuda, SKANO puede marcar la diferencia.
-        Cada reporte, cada mensaje y cada apoyo de la comunidad nos acerca a convertir
-        SKANO en la mejor aplicación para la búsqueda y recuperación de vehículos robados.
-      </p>
-
-      <p class="final-text subtle">
-        Porque cuando la tecnología y las personas se unen,
-        la seguridad se construye entre todos.
-      </p>
+      <p class="final-text">Con tu ayuda, SKANO puede marcar la diferencia. Cada reporte, cada mensaje y cada apoyo de la comunidad nos acerca a convertir SKANO en la mejor aplicación para la búsqueda y recuperación de vehículos robados.</p>
+      <p class="final-text subtle">Porque cuando la tecnología y las personas se unen, la seguridad se construye entre todos.</p>
     </div>
   </div>
 </section>
@@ -1341,14 +963,8 @@
 <!-- ================= FOOTER ================= -->
 <footer class="footer">
   <div class="container footer-grid">
-    <div>
-      <img src="img/skano-logo.png" class="footer-logo" alt="Logo SKANO" />
-      <p class="footer-slogan">“Reporta seguro, los buenos somos más.”</p>
-    </div>
-    <div>
-      <p class="footer-copy">© 2025 SKANO – Todos los derechos reservados.</p>
-      <p class="footer-copy"><a href="app-para-autos-robados-en-chile.html">Buscar autos robados en Chile</a></p>
-    </div>
+    <div><img src="img/skano-logo.png" class="footer-logo" alt="Logo SKANO" /><p class="footer-slogan">“Reporta seguro, los buenos somos más.”</p></div>
+    <div><p class="footer-copy">© 2025 SKANO – Todos los derechos reservados.</p><p class="footer-copy"><a href="app-para-autos-robados-en-chile.html">Buscar autos robados en Chile</a></p></div>
   </div>
 </footer>
 
@@ -1356,53 +972,34 @@
 <div class="side-panel">
   <div class="side-panel-content">
     <h4>WEB SKANO</h4>
-
-    <a href="/empresas/login.html" class="side-btn primary">
-      🔐 Iniciar sesión Empresa
-    </a>
-
-    <a href="/parquimetros/login.html" class="side-btn primary parking">
-      <span class="parking-icon">🅿️</span>
-      Iniciar sesión Parquímetros
-    </a>
-
-    <a href="https://play.google.com/store/apps/details?id=cl.skano.app" target="_blank" rel="noopener noreferrer" class="side-btn">
-      📱 Descargar Android
-    </a>
+    <a href="/empresas/login.html" class="side-btn primary">🔐 Iniciar sesión Empresa</a>
+    <a href="/parquimetros/login.html" class="side-btn primary parking"><span class="parking-icon">🅿️</span> Iniciar sesión Parquímetros</a>
+    <a href="https://play.google.com/store/apps/details?id=cl.skano.app" target="_blank" rel="noopener noreferrer" class="side-btn">📱 Descargar Android</a>
     <span class="side-btn disabled">🍎 iOS: Próximamente</span>
   </div>
 </div>
 
 <!-- ================= WHATSAPP FLOAT ================= -->
-<a href="whatsapp.html" class="whatsapp-float" aria-label="Asistente WhatsApp SKANO">
-  <img src="img/whatsapp-icon.svg" alt="WhatsApp" class="whatsapp-icon" />
-</a>
+<a href="whatsapp.html" class="whatsapp-float" aria-label="Asistente WhatsApp SKANO"><img src="img/whatsapp-icon.svg" alt="WhatsApp" class="whatsapp-icon" /></a>
 
 <!-- ================= JS NAV ================= -->
 <script>
   const navToggle = document.getElementById("navToggle");
   const navMenu = document.getElementById("navMenu");
-  if (navToggle && navMenu) {
-    navToggle.onclick = () => navMenu.classList.toggle("open");
-  }
+  if (navToggle && navMenu) { navToggle.onclick = () => navMenu.classList.toggle("open"); }
 </script>
 
 <!-- ================= REVEAL ON SCROLL ================= -->
 <script>
   const revealElements = document.querySelectorAll('.reveal');
-
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
+      if (entry.isIntersecting) entry.target.classList.add('visible');
     });
-  }, {
-    threshold: 0.14
-  });
-
+  }, { threshold: 0.14 });
   revealElements.forEach((el) => revealObserver.observe(el));
 </script>
 
 </body>
 </html>
+
