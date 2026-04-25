@@ -1119,6 +1119,174 @@
   }
 }
 
+  
+/* =========================================================
+   MEJORA PRO GALERÍA SKANO - TEXTOS EXACTOS + PANEL FLOTANTE
+   ========================================================= */
+
+.photo-showcase-pro{
+  padding-top: 96px !important;
+  padding-bottom: 104px !important;
+}
+
+.photo-showcase-pro .gallery-kicker{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 14px;
+  padding:9px 14px;
+  border-radius:999px;
+  color:#00cfff;
+  font-size:.82rem;
+  font-weight:900;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  background:rgba(0,207,255,.10);
+  border:1px solid rgba(0,207,255,.28);
+  box-shadow:0 14px 34px rgba(0,207,255,.10);
+}
+
+.photo-showcase-pro .photo-showcase-head h2{
+  max-width:980px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.gallery-flow{
+  position:relative;
+  z-index:2;
+  max-width:940px;
+  margin: 0 auto 34px;
+  padding: 0 20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.gallery-flow span{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:36px;
+  padding:9px 14px;
+  border-radius:999px;
+  color:rgba(255,255,255,.90);
+  font-size:.86rem;
+  font-weight:900;
+  background:linear-gradient(180deg, rgba(8,24,60,.80), rgba(5,14,40,.62));
+  border:1px solid rgba(58,140,255,.28);
+  box-shadow:0 12px 30px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.07);
+}
+
+.photo-showcase-pro .photo-track{
+  animation-duration: 72s !important;
+}
+
+.photo-showcase-pro .photo-card{
+  width: clamp(300px, 24vw, 460px) !important;
+  height: 348px !important;
+  border-color: rgba(64,151,255,.22) !important;
+  background:
+    radial-gradient(circle at 50% 10%, rgba(0,207,255,.10), transparent 34%),
+    rgba(255,255,255,.045) !important;
+}
+
+.photo-showcase-pro .photo-card.alert-card{
+  border-color: rgba(255,58,58,.26) !important;
+  box-shadow:0 24px 78px rgba(0,0,0,.45), 0 0 34px rgba(255,35,35,.08), inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+
+.photo-showcase-pro .photo-card.success-card{
+  border-color: rgba(45,255,142,.24) !important;
+  box-shadow:0 24px 78px rgba(0,0,0,.45), 0 0 34px rgba(45,255,142,.08), inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+
+.photo-showcase-pro .photo-main{
+  padding: 8px !important;
+}
+
+.photo-showcase-pro .photo-label{
+  left:16px !important;
+  right:16px !important;
+  bottom:14px !important;
+  padding:12px 14px !important;
+  border-radius:18px !important;
+  background:linear-gradient(180deg, rgba(2,10,28,.78), rgba(2,10,28,.62)) !important;
+  border:1px solid rgba(255,255,255,.12) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  font-size: clamp(.95rem, 1.1vw, 1.14rem) !important;
+  line-height:1.12 !important;
+  text-transform: uppercase !important;
+  letter-spacing:.01em !important;
+}
+
+.photo-showcase-pro .photo-label span{
+  margin-top:5px !important;
+  color:#2d8cff !important;
+  font-size: clamp(.78rem, .86vw, .95rem) !important;
+  text-transform:none !important;
+  letter-spacing:0 !important;
+}
+
+.side-panel-content{
+  border-color: rgba(45,140,255,.24) !important;
+  box-shadow: 0 24px 80px rgba(0,0,0,.42), 0 0 38px rgba(0,119,255,.10) !important;
+}
+
+.side-panel-content h4{
+  color:#ffffff !important;
+  letter-spacing:.10em !important;
+  text-transform:uppercase !important;
+}
+
+.side-btn.primary,
+.side-btn.parking{
+  box-shadow: 0 14px 34px rgba(45,125,255,.26) !important;
+}
+
+@media (max-width: 980px){
+  .photo-showcase-pro{
+    padding-top: 72px !important;
+    padding-bottom: 80px !important;
+  }
+
+  .photo-showcase-pro .photo-card{
+    width:min(330px, 82vw) !important;
+    height: 292px !important;
+  }
+
+  .gallery-flow{
+    justify-content:flex-start;
+    overflow-x:auto;
+    flex-wrap:nowrap;
+    -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 88%, transparent 100%);
+    mask-image: linear-gradient(90deg, #000 0%, #000 88%, transparent 100%);
+  }
+
+  .gallery-flow span{
+    flex:0 0 auto;
+  }
+}
+
+@media (max-width: 560px){
+  .photo-showcase-pro .photo-card{
+    width:min(292px, 82vw) !important;
+    height: 258px !important;
+  }
+
+  .photo-showcase-pro .photo-label{
+    font-size:.86rem !important;
+    padding:10px 12px !important;
+  }
+
+  .photo-showcase-pro .photo-label span{
+    font-size:.74rem !important;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -1222,98 +1390,121 @@
 </section>
 
 <!-- ================= GALERÍA PROFESIONAL CON 8 FOTOS EN MOVIMIENTO ================= -->
-<section id="galeria" class="photo-showcase">
+<section id="galeria" class="photo-showcase photo-showcase-pro">
   <div class="photo-showcase-head reveal">
+    <p class="gallery-kicker">Flujo real de uso · SKANO</p>
     <h2>Así funciona SKANO en tiempo real</h2>
     <p>
-      Desde la verificación hasta el reporte, SKANO permite detectar,
-      validar y reportar vehículos robados con seguridad y respaldo real.
+      Verifica una patente, confirma si existe encargo activo, reporta con selfie,
+      declaración jurada, protocolo y ubicación segura. Todo conectado con la comunidad.
     </p>
   </div>
 
-  <div class="photo-slider">
+  <div class="gallery-flow reveal" aria-label="Resumen del flujo SKANO">
+    <span>1. Verifica</span>
+    <span>2. Reporta</span>
+    <span>3. Valida</span>
+    <span>4. Ubica</span>
+    <span>5. Ayuda</span>
+  </div>
+
+  <div class="photo-slider" aria-label="Galería de imágenes SKANO en movimiento">
     <div class="photo-track">
-
-      <!-- 1 -->
-      <article class="photo-card">
-        <img class="photo-bg" src="img/galeria-1.jpg" />
-        <img class="photo-main" src="img/galeria-1.jpg" />
-        <div class="photo-label">
-          Detecta vehículos robados
-          <span>En tiempo real</span>
-        </div>
+      <article class="photo-card alert-card">
+        <img class="photo-bg" src="img/galeria-1.jpg" alt="" aria-hidden="true" />
+        <img class="photo-main" src="img/galeria-1.jpg" alt="Detecta vehículos robados en tiempo real con SKANO" />
+        <div class="photo-label">Detecta vehículos robados <span>En tiempo real</span></div>
       </article>
 
-      <!-- 2 -->
       <article class="photo-card">
-        <img class="photo-bg" src="img/galeria-2.jpg" />
-        <img class="photo-main" src="img/galeria-2.jpg" />
-        <div class="photo-label">
-          Reporta vehículos
-          <span>En segundos</span>
-        </div>
+        <img class="photo-bg" src="img/galeria-2.jpg" alt="" aria-hidden="true" />
+        <img class="photo-main" src="img/galeria-2.jpg" alt="Reporta vehículos en segundos con SKANO" />
+        <div class="photo-label">Reporta vehículos <span>En segundos</span></div>
       </article>
 
-      <!-- 3 -->
       <article class="photo-card">
-        <img class="photo-bg" src="img/galeria-3.jpg" />
-        <img class="photo-main" src="img/galeria-3.jpg" />
-        <div class="photo-label">
-          Reporta con responsabilidad
-          <span>Información veraz, comunidad segura</span>
-        </div>
+        <img class="photo-bg" src="img/galeria-3.jpg" alt="" aria-hidden="true" />
+        <img class="photo-main" src="img/galeria-3.jpg" alt="Reporta con responsabilidad en SKANO" />
+        <div class="photo-label">Reporta con responsabilidad <span>Información veraz, comunidad segura</span></div>
       </article>
 
-      <!-- 4 -->
       <article class="photo-card">
-        <img class="photo-bg" src="img/galeria-4.jpg" />
-        <img class="photo-main" src="img/galeria-4.jpg" />
-        <div class="photo-label">
-          Sigue el protocolo
-          <span>Verificación real</span>
-        </div>
+        <img class="photo-bg" src="img/galeria-4.jpg" alt="" aria-hidden="true" />
+        <img class="photo-main" src="img/galeria-4.jpg" alt="Sigue el protocolo de verificación real en SKANO" />
+        <div class="photo-label">Sigue el protocolo <span>Verificación real</span></div>
       </article>
 
-      <!-- 5 -->
       <article class="photo-card">
-        <img class="photo-bg" src="img/galeria-5.jpg" />
-        <img class="photo-main" src="img/galeria-5.jpg" />
-        <div class="photo-label">
-          Completa tu cuenta
-          <span>Activa para reportar vehículos</span>
-        </div>
+        <img class="photo-bg" src="img/galeria-5.jpg" alt="" aria-hidden="true" />
+        <img class="photo-main" src="img/galeria-5.jpg" alt="Completa tu cuenta en SKANO" />
+        <div class="photo-label">Completa tu cuenta <span>Activa para reportar vehículos</span></div>
       </article>
 
-      <!-- 6 -->
       <article class="photo-card">
-        <img class="photo-bg" src="img/galeria-6.jpg" />
-        <img class="photo-main" src="img/galeria-6.jpg" />
-        <div class="photo-label">
-          Encuentra vehículos robados
-          <span>En Chile con la comunidad</span>
-        </div>
+        <img class="photo-bg" src="img/galeria-6.jpg" alt="" aria-hidden="true" />
+        <img class="photo-main" src="img/galeria-6.jpg" alt="Encuentra vehículos robados en Chile con SKANO" />
+        <div class="photo-label">Encuentra vehículos robados <span>En Chile con la comunidad</span></div>
       </article>
 
-      <!-- 7 -->
-      <article class="photo-card">
-        <img class="photo-bg" src="img/galeria-7.jpg" />
-        <img class="photo-main" src="img/galeria-7.jpg" />
-        <div class="photo-label">
-          Verifica vehículos
-          <span>En segundos</span>
-        </div>
+      <article class="photo-card success-card">
+        <img class="photo-bg" src="img/galeria-7.jpg" alt="" aria-hidden="true" />
+        <img class="photo-main" src="img/galeria-7.jpg" alt="Verifica vehículos en segundos con SKANO" />
+        <div class="photo-label">Verifica vehículos <span>En segundos</span></div>
       </article>
 
-      <!-- 8 -->
       <article class="photo-card">
-        <img class="photo-bg" src="img/galeria-8.jpg" />
-        <img class="photo-main" src="img/galeria-8.jpg" />
-        <div class="photo-label">
-          Completa tu registro
-          <span>Verificación obligatoria</span>
-        </div>
+        <img class="photo-bg" src="img/galeria-8.jpg" alt="" aria-hidden="true" />
+        <img class="photo-main" src="img/galeria-8.jpg" alt="Completa tu registro en SKANO" />
+        <div class="photo-label">Completa tu registro <span>Verificación obligatoria</span></div>
       </article>
 
+      <article class="photo-card alert-card">
+        <img class="photo-bg" src="img/galeria-1.jpg" alt="" aria-hidden="true" />
+        <img class="photo-main" src="img/galeria-1.jpg" alt="Detecta vehículos robados en tiempo real con SKANO" />
+        <div class="photo-label">Detecta vehículos robados <span>En tiempo real</span></div>
+      </article>
+
+      <article class="photo-card">
+        <img class="photo-bg" src="img/galeria-2.jpg" alt="" aria-hidden="true" />
+        <img class="photo-main" src="img/galeria-2.jpg" alt="Reporta vehículos en segundos con SKANO" />
+        <div class="photo-label">Reporta vehículos <span>En segundos</span></div>
+      </article>
+
+      <article class="photo-card">
+        <img class="photo-bg" src="img/galeria-3.jpg" alt="" aria-hidden="true" />
+        <img class="photo-main" src="img/galeria-3.jpg" alt="Reporta con responsabilidad en SKANO" />
+        <div class="photo-label">Reporta con responsabilidad <span>Información veraz, comunidad segura</span></div>
+      </article>
+
+      <article class="photo-card">
+        <img class="photo-bg" src="img/galeria-4.jpg" alt="" aria-hidden="true" />
+        <img class="photo-main" src="img/galeria-4.jpg" alt="Sigue el protocolo de verificación real en SKANO" />
+        <div class="photo-label">Sigue el protocolo <span>Verificación real</span></div>
+      </article>
+
+      <article class="photo-card">
+        <img class="photo-bg" src="img/galeria-5.jpg" alt="" aria-hidden="true" />
+        <img class="photo-main" src="img/galeria-5.jpg" alt="Completa tu cuenta en SKANO" />
+        <div class="photo-label">Completa tu cuenta <span>Activa para reportar vehículos</span></div>
+      </article>
+
+      <article class="photo-card">
+        <img class="photo-bg" src="img/galeria-6.jpg" alt="" aria-hidden="true" />
+        <img class="photo-main" src="img/galeria-6.jpg" alt="Encuentra vehículos robados en Chile con SKANO" />
+        <div class="photo-label">Encuentra vehículos robados <span>En Chile con la comunidad</span></div>
+      </article>
+
+      <article class="photo-card success-card">
+        <img class="photo-bg" src="img/galeria-7.jpg" alt="" aria-hidden="true" />
+        <img class="photo-main" src="img/galeria-7.jpg" alt="Verifica vehículos en segundos con SKANO" />
+        <div class="photo-label">Verifica vehículos <span>En segundos</span></div>
+      </article>
+
+      <article class="photo-card">
+        <img class="photo-bg" src="img/galeria-8.jpg" alt="" aria-hidden="true" />
+        <img class="photo-main" src="img/galeria-8.jpg" alt="Completa tu registro en SKANO" />
+        <div class="photo-label">Completa tu registro <span>Verificación obligatoria</span></div>
+      </article>
     </div>
   </div>
 </section>
