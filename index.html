@@ -1530,11 +1530,12 @@ html, body{
   position:relative;
   width:min(430px, 100%);
   min-height:560px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
 
+  display:flex;
+  align-items:flex-end; /* 👈 baja el teléfono */
+  justify-content:center;
+  padding-bottom:20px;
+}
 .hero-device-stage::before{
   content:"";
   position:absolute;
@@ -1565,7 +1566,7 @@ html, body{
     0 42px 120px rgba(0,0,0,.58),
     0 0 60px rgba(0,207,255,.18),
     inset 0 1px 0 rgba(255,255,255,.20);
-  transform: rotate(-3deg);
+  transform: rotate(-3deg) translateY(20px); /* 👈 lo baja un poco */
 }
 
 .app-phone-wow img{
@@ -1603,16 +1604,25 @@ html, body{
 .floating-alert-card{
   position:absolute;
   z-index:5;
-  left:0;
-  top:82px;
-  width:230px;
-  padding:15px 16px;
+
+  /* 👇 CAMBIO CLAVE */
+  left:-40px;      /* lo sacamos del centro */
+  top:140px;       /* lo bajamos para que no choque */
+
+  width:220px;     /* un poco más compacto */
+  padding:14px 15px;
+
   border-radius:22px;
+
   background:linear-gradient(180deg, rgba(7,21,55,.86), rgba(4,13,36,.74));
   border:1px solid rgba(255,255,255,.14);
   box-shadow:0 28px 86px rgba(0,0,0,.46);
+
   backdrop-filter:blur(16px);
   -webkit-backdrop-filter:blur(16px);
+
+  /* 👇 mejora visual */
+  transform: scale(0.95);
 }
 
 .floating-alert-card .tag{
