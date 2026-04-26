@@ -2080,7 +2080,27 @@ body::before{
     filter: brightness(.95) contrast(1.06) saturate(1.12) !important;
   }
 }
+/* === FIX FINAL HERO: IMAGEN MÁS VISIBLE === */
+.hero-bg-image{
+  background:
+    linear-gradient(90deg, rgba(2,8,23,.62) 0%, rgba(2,8,23,.38) 32%, rgba(2,8,23,.08) 58%, rgba(2,8,23,.24) 100%),
+    linear-gradient(180deg, rgba(2,8,23,.00) 0%, rgba(2,8,23,.10) 60%, rgba(2,8,23,.62) 100%),
+    url('img/hero-autos-robados-bg.png') center center / cover no-repeat !important;
 
+  opacity: 1 !important;
+  filter: brightness(1.32) contrast(1.16) saturate(1.22) !important;
+  transform: scale(1.01) !important;
+}
+
+/* baja un poco la capa azul de encima */
+.hero::before{
+  opacity: .55 !important;
+}
+
+/* baja el oscurecimiento inferior */
+.hero::after{
+  background: linear-gradient(180deg, transparent 0%, rgba(2,8,23,.72) 92%) !important;
+}
   </style>
 </head>
 <body>
