@@ -10,17 +10,17 @@
 
   <style>
     .assistant-wrapper {
-      max-width: 560px;
+      max-width: 620px;
       margin: 0 auto;
     }
 
     .chat-box {
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px;
+      border-radius: 20px;
       padding: 20px;
       margin-top: 20px;
-      max-height: 420px;
+      max-height: 460px;
       overflow-y: auto;
       box-shadow: 0 10px 30px rgba(0,0,0,0.18);
     }
@@ -31,7 +31,7 @@
       font-size: 0.96rem;
       padding: 12px 14px;
       border-radius: 14px;
-      max-width: 88%;
+      max-width: 90%;
       white-space: pre-line;
     }
 
@@ -45,7 +45,6 @@
       color: #ffffff;
       background: rgba(255,255,255,0.08);
       border: 1px solid rgba(255,255,255,0.08);
-      text-align: left;
       margin-left: auto;
     }
 
@@ -59,6 +58,33 @@
       width: 100%;
       margin: 0;
       cursor: pointer;
+    }
+
+    .assistant-input-row {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .assistant-input-row input {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      padding: 13px 16px;
+      outline: none;
+    }
+
+    .assistant-input-row input::placeholder {
+      color: rgba(255,255,255,0.55);
+    }
+
+    .assistant-input-row button {
+      border-radius: 999px;
+      padding: 13px 18px;
+      cursor: pointer;
+      border: none;
     }
 
     .note {
@@ -90,25 +116,19 @@
       text-align: center;
     }
 
-    /* 🔥 BOTÓN WHATSAPP PRO */
     .whatsapp-pro {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 12px;
-
       width: 100%;
       padding: 14px 20px;
-
       border-radius: 999px;
       text-decoration: none;
-
       background: #25d366;
       color: #fff;
-
-      font-weight: 700;
+      font-weight: 800;
       font-size: 16px;
-
       box-shadow: 0 12px 30px rgba(37, 211, 102, 0.35);
       transition: all 0.25s ease;
     }
@@ -138,10 +158,11 @@
       filter: invert(56%) sepia(94%) saturate(363%) hue-rotate(93deg);
     }
 
-    .wa-text {
-      letter-spacing: 0.2px;
+    @media (max-width: 600px) {
+      .assistant-input-row {
+        flex-direction: column;
+      }
     }
-
   </style>
 </head>
 
@@ -163,24 +184,29 @@
     <h1 class="hero-title">Asistente virtual SKANO</h1>
 
     <p class="section-lead">
-      Te ayudo a resolver dudas iniciales.<br>
-      Si es necesario, te derivaré por WhatsApp con el contexto correcto.
+      Resuelvo dudas rápidas sobre SKANO.<br>
+      Si tu caso necesita ayuda humana, te derivo por WhatsApp con el contexto.
     </p>
 
     <div class="chat-box" id="chat">
       <div class="chat-msg bot">
 👋 Hola, soy el asistente virtual de SKANO.
 
-Puedo orientarte según tu caso. Para comenzar, selecciona una opción:
+Puedo responder dudas frecuentes o derivarte al equipo si tu caso necesita atención personalizada.
       </div>
     </div>
 
     <div class="assistant-options" id="options"></div>
 
+    <div class="assistant-input-row">
+      <input id="userInput" type="text" placeholder="Escribe tu duda aquí..." />
+      <button class="btn btn-primary" onclick="handleFreeQuestion()">Enviar</button>
+    </div>
+
     <div class="assistant-actions" id="actions">
       <a id="waLink" class="whatsapp-pro" href="#" target="_blank" rel="noopener">
         <span class="wa-icon"></span>
-        <span class="wa-text">WhatsApp</span>
+        <span>Hablar por WhatsApp</span>
       </a>
 
       <button class="btn btn-ghost" onclick="restartAssistant()">
@@ -189,7 +215,7 @@ Puedo orientarte según tu caso. Para comenzar, selecciona una opción:
     </div>
 
     <p class="note">
-      SKANO nunca solicita claves, códigos ni datos sensibles por este medio.
+      SKANO nunca solicita claves, códigos ni datos bancarios por este medio.
     </p>
 
   </div>
@@ -216,10 +242,11 @@ Puedo orientarte según tu caso. Para comenzar, selecciona una opción:
   const options = document.getElementById("options");
   const actions = document.getElementById("actions");
   const waLink = document.getElementById("waLink");
+  const userInput = document.getElementById("userInput");
 
   let state = {
-    flow: null,
-    answers: {}
+    lastTopic: "Consulta general",
+    needsHuman: false
   };
 
   function addMessage(text, type = "bot") {
@@ -230,7 +257,7 @@ Puedo orientarte según tu caso. Para comenzar, selecciona una opción:
     chat.scrollTop = chat.scrollHeight;
   }
 
-  function addTyping(callback, delay = 700) {
+  function addTyping(callback, delay = 500) {
     const typing = document.createElement("div");
     typing.className = "chat-msg bot typing";
     typing.textContent = "Escribiendo...";
@@ -251,78 +278,244 @@ Puedo orientarte según tu caso. Para comenzar, selecciona una opción:
       const button = document.createElement("button");
       button.className = "btn btn-ghost";
       button.textContent = btn.label;
-      button.onclick = () => btn.onClick();
+      button.onclick = btn.onClick;
       options.appendChild(button);
     });
   }
 
   function startAssistant() {
-    state = { flow: null, answers: {} };
-
     renderButtons([
-      {
-        label: "🚗 Soy dueño de un vehículo",
-        onClick: () => chooseMainFlow("owner", "Soy dueño de un vehículo")
-      },
-      {
-        label: "📍 Quiero reportar un vehículo sospechoso",
-        onClick: () => chooseMainFlow("report", "Quiero reportar un vehículo sospechoso")
-      },
-      {
-        label: "🏢 Represento a una empresa",
-        onClick: () => chooseMainFlow("company", "Represento a una empresa")
-      },
-      {
-        label: "👤 Necesito hablar con una persona",
-        onClick: () => chooseMainFlow("human", "Necesito hablar con una persona")
-      }
+      { label: "🚗 ¿Cómo funciona SKANO?", onClick: () => answerFAQ("funciona") },
+      { label: "💰 ¿Cuánto cuesta?", onClick: () => answerFAQ("precio") },
+      { label: "🎁 Quiero subir mi vehículo robado gratis", onClick: () => needHuman("Subir vehículo robado gratis") },
+      { label: "📍 ¿Cómo reporto un vehículo?", onClick: () => answerFAQ("reportar") },
+      { label: "🏢 Soy empresa o municipio", onClick: () => needHuman("Consulta empresa o municipio") },
+      { label: "👤 Hablar con una persona", onClick: () => needHuman("Solicita atención humana") }
     ]);
   }
 
-  function chooseMainFlow(flow, label) {
-    state.flow = flow;
-    addMessage(label, "user");
+  function answerFAQ(type) {
+    actions.classList.remove("show");
+
+    const answers = {
+      funciona:
+`SKANO ayuda a detectar vehículos robados mediante reportes comunitarios.
+
+El dueño registra su vehículo robado en la app y otros usuarios pueden reportar si lo ven estacionado o ubicado en algún sector.
+
+La idea es aumentar la cantidad de personas mirando y reportando de forma segura.`,
+
+      precio:
+`Actualmente SKANO puede ofrecer activaciones gratuitas en casos seleccionados mientras la app está creciendo.
+
+El valor normal de activación/membresía puede ser de $16.990, pero en esta etapa el equipo SKANO puede apoyar ciertos casos sin costo inicial.
+
+Si el caso necesita activación especial, te derivo a WhatsApp.`,
+
+      reportar:
+`Para reportar un vehículo, debes usar la app SKANO.
+
+El flujo correcto es:
+1. Revisar o ingresar la patente.
+2. Confirmar si aparece como vehículo con encargo.
+3. Seguir el protocolo dentro de la app.
+4. No exponerte ni intervenir físicamente.
+
+Si hay riesgo, siempre debes priorizar tu seguridad y contactar a Carabineros.`,
+
+      recompensa:
+`SKANO puede entregar recompensa al usuario que ayude a encontrar un vehículo, pero solo cuando el reporte sea válido y el caso avance correctamente.
+
+La recompensa no se paga por simples comentarios o información incompleta, sino por un hallazgo real y verificable.`,
+
+      carabineros:
+`SKANO no reemplaza a Carabineros.
+
+SKANO funciona como una herramienta de apoyo comunitario para aumentar la detección y entregar información útil, pero ante un delito o riesgo siempre corresponde contactar a Carabineros.`
+    };
+
+    addMessage(getButtonLabel(type), "user");
 
     addTyping(() => {
-      if (flow === "owner") {
-        addMessage("Entiendo. ¿Qué necesitas hacer?");
-        renderButtons([
-          { label: "Registrar mi vehículo en SKANO", onClick: () => finish("Registro de vehículo") },
-          { label: "Consultar membresía o protección", onClick: () => finish("Consulta membresía") },
-          { label: "Recibí un reporte y necesito ayuda", onClick: () => finish("Ayuda reporte") },
-          { label: "Otra consulta", onClick: () => finish("Otra consulta") }
-        ]);
+      addMessage(answers[type] || "Puedo ayudarte con dudas generales sobre SKANO.");
+      renderButtons([
+        { label: "Tengo otra duda", onClick: () => restartAssistant(false) },
+        { label: "Esto no resolvió mi duda", onClick: () => needHuman("La respuesta automática no resolvió la duda") },
+        { label: "Hablar con SKANO por WhatsApp", onClick: () => needHuman("Solicita contacto por WhatsApp") }
+      ]);
+    });
+  }
+
+  function getButtonLabel(type) {
+    const labels = {
+      funciona: "¿Cómo funciona SKANO?",
+      precio: "¿Cuánto cuesta?",
+      reportar: "¿Cómo reporto un vehículo?",
+      recompensa: "¿Cómo funciona la recompensa?",
+      carabineros: "¿SKANO reemplaza a Carabineros?"
+    };
+
+    return labels[type] || "Consulta";
+  }
+
+  function handleFreeQuestion() {
+    const text = userInput.value.trim();
+    if (!text) return;
+
+    addMessage(text, "user");
+    userInput.value = "";
+
+    const normalized = normalize(text);
+    state.lastTopic = text;
+
+    addTyping(() => {
+      if (containsAny(normalized, ["precio", "cuesta", "valor", "pagar", "membresia", "membresía", "16990", "16.990"])) {
+        addMessage(
+`El valor normal de activación puede ser de $16.990, pero SKANO está ofreciendo apoyo inicial en ciertos casos mientras la app crece.
+
+Si quieres activar un vehículo robado gratis o revisar tu caso, te puedo derivar al equipo.`
+        );
+        showSolvedOrHuman("Consulta por precio o membresía");
+        return;
       }
+
+      if (containsAny(normalized, ["gratis", "subir", "registrar", "vehiculo robado", "auto robado", "moto robada", "camion robado"])) {
+        addMessage(
+`Sí, SKANO puede revisar casos para subir vehículos robados sin costo inicial en esta etapa.
+
+Como eso requiere revisar tu caso, te voy a derivar al equipo por WhatsApp con el contexto.`
+        );
+        needHuman("Quiere subir o registrar vehículo robado gratis");
+        return;
+      }
+
+      if (containsAny(normalized, ["reportar", "reporte", "vi", "encontre", "encontré", "patente", "sospechoso", "sospechosa"])) {
+        addMessage(
+`Para reportar correctamente debes hacerlo desde la app SKANO y seguir el protocolo.
+
+No te expongas, no enfrentes a nadie y si hay riesgo contacta a Carabineros.
+
+Si el caso es concreto, te derivo al equipo para orientarte.`
+        );
+        showSolvedOrHuman("Consulta sobre reporte de vehículo");
+        return;
+      }
+
+      if (containsAny(normalized, ["carabinero", "carabineros", "policia", "policía", "133", "comisaria", "comisaría"])) {
+        addMessage(
+`SKANO no reemplaza a Carabineros.
+
+Si hay riesgo, delito en curso o una situación urgente, debes contactar al 133 o dirigirte a la comisaría correspondiente.
+
+SKANO puede apoyar con detección, información y reportes comunitarios.`
+        );
+        showSolvedOrHuman("Consulta sobre Carabineros o emergencia");
+        return;
+      }
+
+      if (containsAny(normalized, ["empresa", "municipio", "municipalidad", "flota", "seguridad ciudadana", "convenio", "alianza"])) {
+        addMessage(
+`Las consultas de empresas, municipios, seguridad ciudadana o flotas necesitan revisión directa del equipo SKANO.
+
+Te derivo por WhatsApp para que llegue con contexto comercial.`
+        );
+        needHuman("Consulta empresa, municipio, alianza o flota");
+        return;
+      }
+
+      if (containsAny(normalized, ["recompensa", "50000", "50.000", "premio", "pago"])) {
+        addMessage(
+`La recompensa aplica cuando existe un hallazgo real y verificable, siguiendo el protocolo de SKANO.
+
+No se paga por información incompleta o comentarios, sino por reportes válidos que ayuden efectivamente al caso.`
+        );
+        showSolvedOrHuman("Consulta sobre recompensa");
+        return;
+      }
+
+      addMessage(
+`No tengo una respuesta segura para esa duda.
+
+Para evitar darte información incorrecta, te puedo derivar directamente al equipo SKANO por WhatsApp con tu consulta escrita.`
+      );
+      needHuman("Duda no resuelta por asistente: " + text);
     });
   }
 
-  function finish(topic) {
-    state.answers.topic = topic;
-    addMessage(topic, "user");
+  function showSolvedOrHuman(topic) {
+    state.lastTopic = topic;
+
+    renderButtons([
+      { label: "Sí, quedó claro", onClick: () => addTyping(() => addMessage("Perfecto. Me alegra haber ayudado 🙌")) },
+      { label: "No, quiero hablar con alguien", onClick: () => needHuman(topic) },
+      { label: "Tengo otra duda", onClick: () => restartAssistant(false) }
+    ]);
+  }
+
+  function needHuman(topic) {
+    state.lastTopic = topic;
+    state.needsHuman = true;
 
     addTyping(() => {
-      addMessage("Te derivaré a WhatsApp con el contexto.");
-      buildWhatsAppLink();
+      addMessage(
+`Este caso necesita atención del equipo SKANO.
+
+Presiona el botón de WhatsApp y se enviará tu consulta con el contexto para que no tengas que explicar todo de nuevo.`
+      );
+
+      buildWhatsAppLink(topic);
+      options.innerHTML = "";
+      actions.classList.add("show");
     });
   }
 
-  function buildWhatsAppLink() {
-    const message = `Hola SKANO, necesito ayuda.\nMotivo: ${state.answers.topic}`;
+  function buildWhatsAppLink(topic) {
+    const message =
+`Hola SKANO, necesito ayuda con esta consulta.
+
+Motivo: ${topic}
+
+El asistente virtual no pudo resolver completamente mi caso o requiere atención humana.`;
+
     const url = `https://wa.me/${SKANO_PHONE}?text=${encodeURIComponent(message)}`;
     waLink.href = url;
-    actions.classList.add("show");
   }
 
-  function restartAssistant() {
-    chat.innerHTML = `
-      <div class="chat-msg bot">
+  function normalize(text) {
+    return text
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+  }
+
+  function containsAny(text, words) {
+    return words.some(word => text.includes(normalize(word)));
+  }
+
+  function restartAssistant(clearChat = true) {
+    actions.classList.remove("show");
+    options.innerHTML = "";
+
+    if (clearChat) {
+      chat.innerHTML = `
+        <div class="chat-msg bot">
 👋 Hola, soy el asistente virtual de SKANO.
 
-Selecciona una opción:
-      </div>
-    `;
+Puedo responder dudas frecuentes o derivarte al equipo si tu caso necesita atención personalizada.
+        </div>
+      `;
+    } else {
+      addMessage("Perfecto, elige otra opción o escribe tu nueva duda.");
+    }
+
     startAssistant();
   }
+
+  userInput.addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+      handleFreeQuestion();
+    }
+  });
 
   startAssistant();
 </script>
