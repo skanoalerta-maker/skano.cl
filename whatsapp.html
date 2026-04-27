@@ -89,12 +89,64 @@
       width: 100%;
       text-align: center;
     }
+
+    /* 🔥 BOTÓN WHATSAPP PRO */
+    .whatsapp-pro {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+
+      width: 100%;
+      padding: 14px 20px;
+
+      border-radius: 999px;
+      text-decoration: none;
+
+      background: #25d366;
+      color: #fff;
+
+      font-weight: 700;
+      font-size: 16px;
+
+      box-shadow: 0 12px 30px rgba(37, 211, 102, 0.35);
+      transition: all 0.25s ease;
+    }
+
+    .whatsapp-pro:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 18px 40px rgba(37, 211, 102, 0.5);
+    }
+
+    .wa-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .wa-icon::before {
+      content: "";
+      width: 20px;
+      height: 20px;
+      background: url("https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/whatsapp.svg") no-repeat center;
+      background-size: contain;
+      filter: invert(56%) sepia(94%) saturate(363%) hue-rotate(93deg);
+    }
+
+    .wa-text {
+      letter-spacing: 0.2px;
+    }
+
   </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
 <header class="main-header">
   <div class="container header-inner">
     <div class="header-left">
@@ -104,7 +156,6 @@
   </div>
 </header>
 
-<!-- ASISTENTE -->
 <section class="section">
   <div class="container center assistant-wrapper">
 
@@ -127,9 +178,11 @@ Puedo orientarte según tu caso. Para comenzar, selecciona una opción:
     <div class="assistant-options" id="options"></div>
 
     <div class="assistant-actions" id="actions">
-      <a id="waLink" class="btn btn-primary" href="#" target="_blank" rel="noopener">
-        Abrir WhatsApp
+      <a id="waLink" class="whatsapp-pro" href="#" target="_blank" rel="noopener">
+        <span class="wa-icon"></span>
+        <span class="wa-text">WhatsApp</span>
       </a>
+
       <button class="btn btn-ghost" onclick="restartAssistant()">
         Volver a empezar
       </button>
@@ -142,7 +195,6 @@ Puedo orientarte según tu caso. Para comenzar, selecciona una opción:
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer class="footer">
   <div class="footer-grid container">
     <div class="footer-left">
@@ -235,183 +287,30 @@ Puedo orientarte según tu caso. Para comenzar, selecciona una opción:
       if (flow === "owner") {
         addMessage("Entiendo. ¿Qué necesitas hacer?");
         renderButtons([
-          {
-            label: "Registrar mi vehículo en SKANO",
-            onClick: () => finishOwner("Registro de vehículo")
-          },
-          {
-            label: "Consultar membresía o protección",
-            onClick: () => finishOwner("Consulta sobre membresía o activación")
-          },
-          {
-            label: "Recibí un reporte y necesito ayuda",
-            onClick: () => finishOwner("Ayuda por reporte recibido")
-          },
-          {
-            label: "Tengo otra consulta",
-            onClick: () => finishOwner("Otra consulta como dueño")
-          }
-        ]);
-      }
-
-      if (flow === "report") {
-        addMessage("Perfecto. Antes de derivarte, indícame cuál se acerca más a tu situación:");
-        renderButtons([
-          {
-            label: "Vi un vehículo sospechoso",
-            onClick: () => finishReport("Vi un vehículo sospechoso")
-          },
-          {
-            label: "Creo que puede ser un vehículo robado",
-            onClick: () => finishReport("Posible vehículo robado")
-          },
-          {
-            label: "Necesito orientación antes de reportar",
-            onClick: () => finishReport("Necesita orientación antes de reportar")
-          }
-        ]);
-      }
-
-      if (flow === "company") {
-        addMessage("Entendido. ¿Tu consulta está relacionada con qué área?");
-        renderButtons([
-          {
-            label: "Flota de vehículos",
-            onClick: () => finishCompany("Consulta por flota de vehículos")
-          },
-          {
-            label: "Alianza comercial con SKANO",
-            onClick: () => finishCompany("Consulta por alianza comercial")
-          },
-          {
-            label: "Municipio / institución / operación",
-            onClick: () => finishCompany("Consulta institucional u operativa")
-          },
-          {
-            label: "Otra consulta empresarial",
-            onClick: () => finishCompany("Otra consulta empresarial")
-          }
-        ]);
-      }
-
-      if (flow === "human") {
-        addMessage("Claro. ¿Sobre qué tema necesitas hablar con una persona?");
-        renderButtons([
-          {
-            label: "Soporte general",
-            onClick: () => finishHuman("Soporte general")
-          },
-          {
-            label: "Tema comercial",
-            onClick: () => finishHuman("Tema comercial")
-          },
-          {
-            label: "Urgente",
-            onClick: () => finishHuman("Atención urgente")
-          }
+          { label: "Registrar mi vehículo en SKANO", onClick: () => finish("Registro de vehículo") },
+          { label: "Consultar membresía o protección", onClick: () => finish("Consulta membresía") },
+          { label: "Recibí un reporte y necesito ayuda", onClick: () => finish("Ayuda reporte") },
+          { label: "Otra consulta", onClick: () => finish("Otra consulta") }
         ]);
       }
     });
   }
 
-  function finishOwner(topic) {
+  function finish(topic) {
     state.answers.topic = topic;
     addMessage(topic, "user");
 
     addTyping(() => {
-      addMessage(
-        "Gracias. Ya tengo el contexto para derivarte correctamente a WhatsApp."
-      );
-      buildWhatsAppLink();
-    });
-  }
-
-  function finishReport(topic) {
-    state.answers.topic = topic;
-    addMessage(topic, "user");
-
-    addTyping(() => {
-      addMessage(
-        "Importante: si se trata de una situación de riesgo inmediato, prioriza tu seguridad y contacta a emergencias si corresponde.\n\nAhora te derivaré con el equipo SKANO."
-      );
-      buildWhatsAppLink();
-    });
-  }
-
-  function finishCompany(topic) {
-    state.answers.topic = topic;
-    addMessage(topic, "user");
-
-    addTyping(() => {
-      addMessage(
-        "Perfecto. Prepararé una derivación con enfoque comercial/empresarial para el equipo SKANO."
-      );
-      buildWhatsAppLink();
-    });
-  }
-
-  function finishHuman(topic) {
-    state.answers.topic = topic;
-    addMessage(topic, "user");
-
-    addTyping(() => {
-      addMessage(
-        "Entendido. Te derivaré a una persona del equipo SKANO con el motivo de contacto."
-      );
+      addMessage("Te derivaré a WhatsApp con el contexto.");
       buildWhatsAppLink();
     });
   }
 
   function buildWhatsAppLink() {
-    const flow = state.flow;
-    const topic = state.answers.topic || "Consulta general";
-
-    let message = "";
-
-    if (flow === "owner") {
-      message =
-`Hola SKANO, soy dueño de un vehículo.
-
-Motivo: ${topic}
-
-Necesito orientación y apoyo por favor.`;
-    }
-
-    if (flow === "report") {
-      message =
-`Hola SKANO, quiero reportar una situación.
-
-Caso: ${topic}
-
-Necesito orientación para continuar de forma correcta.`;
-    }
-
-    if (flow === "company") {
-      message =
-`Hola SKANO, represento a una empresa.
-
-Motivo: ${topic}
-
-Quisiera recibir información y orientación del equipo comercial.`;
-    }
-
-    if (flow === "human") {
-      message =
-`Hola SKANO, necesito hablar con una persona.
-
-Motivo: ${topic}
-
-Quedo atento a apoyo del equipo.`;
-    }
-
+    const message = `Hola SKANO, necesito ayuda.\nMotivo: ${state.answers.topic}`;
     const url = `https://wa.me/${SKANO_PHONE}?text=${encodeURIComponent(message)}`;
     waLink.href = url;
     actions.classList.add("show");
-    options.innerHTML = "";
-
-    setTimeout(() => {
-      window.location.href = url;
-    }, 1400);
   }
 
   function restartAssistant() {
@@ -419,7 +318,7 @@ Quedo atento a apoyo del equipo.`;
       <div class="chat-msg bot">
 👋 Hola, soy el asistente virtual de SKANO.
 
-Puedo orientarte según tu caso. Para comenzar, selecciona una opción:
+Selecciona una opción:
       </div>
     `;
     startAssistant();
@@ -430,4 +329,3 @@ Puedo orientarte según tu caso. Para comenzar, selecciona una opción:
 
 </body>
 </html>
-
