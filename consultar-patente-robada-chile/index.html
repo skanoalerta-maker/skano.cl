@@ -560,93 +560,167 @@
     .float.dark span{color:#00d7ff;font-weight:820}
 
 
-    /* ===== PANEL WEB SKANO AJUSTADO FINAL ===== */
+    /* =========================================================
+       PANEL WEB SKANO - IGUAL AL INDEX PRINCIPAL
+       Este bloque controla SOLO el panel flotante:
+       Empresa / Parquímetros / Android / iOS.
+       Si después quieres moverlo, cambia right/bottom.
+       Si quieres cambiar tamaño, cambia width en .hero-access-box.
+       ========================================================= */
+
     .hero-access-panel{
       position:absolute;
-      right:-115px;
-      bottom:-6px;
-      z-index:25;
-      transform:scale(.78);
+      right:-108px;
+      bottom:10px;
+      z-index:30;
       transform-origin:bottom right;
-      animation:panelFloat 6s ease-in-out infinite;
+      animation:panelFloatExact 7s ease-in-out infinite;
+      pointer-events:auto;
     }
 
     .hero-access-box{
-      width:245px;
-      padding:24px 20px;
-      border-radius:32px;
-      background:linear-gradient(180deg,rgba(5,14,35,.96),rgba(3,10,25,.94));
-      border:1px solid rgba(0,215,255,.15);
-      box-shadow:0 28px 80px rgba(0,0,0,.48),0 0 45px rgba(0,140,255,.10);
-      backdrop-filter:blur(18px);
+      width:218px;
+      box-sizing:border-box;
+      overflow:hidden;
+      padding:18px;
+      border-radius:24px;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(5,18,50,.78),
+          rgba(3,10,31,.72)
+        );
+
+      border:1px solid rgba(80,150,255,.24);
+
+      box-shadow:
+        0 24px 80px rgba(0,0,0,.44),
+        0 0 38px rgba(0,119,255,.10);
+
+      backdrop-filter:blur(16px);
+      -webkit-backdrop-filter:blur(16px);
     }
 
     .hero-access-box h3{
-      color:white;
+      margin:0 0 14px;
+      color:#fff;
       text-align:center;
-      font-size:1.18rem;
+      font-size:.86rem;
       font-weight:950;
-      letter-spacing:.11em;
-      margin-bottom:20px;
+      letter-spacing:.12em;
+      text-transform:uppercase;
     }
 
     .hero-access-btn{
       width:100%;
-      min-height:64px;
-      border-radius:20px;
+      max-width:100%;
+      min-height:48px;
+
+      box-sizing:border-box;
+
       display:flex;
       align-items:center;
       justify-content:center;
+      gap:8px;
+
+      margin-top:10px;
+      margin-bottom:0;
+      padding:10px 12px;
+
+      border-radius:15px;
+
+      color:#fff;
       text-align:center;
-      padding:14px;
-      margin-bottom:14px;
-      font-size:.95rem;
+      text-decoration:none;
+
+      font-size:.82rem;
+      line-height:1.25;
       font-weight:900;
-      line-height:1.1;
-      transition:.25s ease;
+
+      white-space:normal;
+      overflow-wrap:break-word;
+
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.10);
+
+      box-shadow:none;
+
       position:relative;
       overflow:hidden;
+
+      transition:
+        transform .22s ease,
+        border-color .22s ease,
+        box-shadow .22s ease,
+        background .22s ease;
     }
 
-    .hero-access-btn:hover{ transform:translateY(-3px); }
+    .hero-access-btn:hover{
+      transform:translateY(-2px);
+      border-color:rgba(0,207,255,.30);
+      box-shadow:0 14px 34px rgba(45,125,255,.20);
+    }
 
     .hero-access-btn::after{
       content:"";
       position:absolute;
       inset:0;
-      background:linear-gradient(120deg,transparent,rgba(255,255,255,.15),transparent);
+      background:
+        linear-gradient(
+          120deg,
+          transparent 0%,
+          rgba(255,255,255,.14) 45%,
+          transparent 60%
+        );
       transform:translateX(-140%);
-      transition:.6s;
+      transition:.65s ease;
+      pointer-events:none;
     }
 
-    .hero-access-btn:hover::after{ transform:translateX(140%); }
+    .hero-access-btn:hover::after{
+      transform:translateX(140%);
+    }
 
     .hero-access-btn.company,
     .hero-access-btn.parking{
-      color:white;
-      background:linear-gradient(135deg,#0a7dff,#16d4ff);
-      box-shadow:0 18px 38px rgba(0,140,255,.24);
+      color:#fff;
+      background:linear-gradient(135deg,#0b7cff,#00cfff);
+      border-color:rgba(255,255,255,.16);
+      box-shadow:0 14px 34px rgba(45,125,255,.26);
     }
 
     .hero-access-btn.android{
-      color:white;
-      background:linear-gradient(180deg,rgba(28,38,60,.95),rgba(18,25,42,.92));
-      border:1px solid rgba(255,255,255,.08);
+      color:#fff;
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.10);
     }
 
-    .hero-access-btn.ios{
-      color:rgba(255,255,255,.52);
-      background:linear-gradient(180deg,rgba(18,24,40,.72),rgba(10,15,28,.65));
-      border:1px dashed rgba(255,255,255,.10);
+    .hero-access-btn.ios,
+    .hero-access-btn.disabled{
+      opacity:.72;
+      color:rgba(255,255,255,.74);
+      border-style:dashed;
+      pointer-events:none;
+      background:rgba(255,255,255,.045);
     }
 
-    .hero-access-btn.disabled{ pointer-events:none; }
+    @keyframes panelFloatExact{
+      0%,100%{
+        transform:translate3d(0,0,0);
+      }
 
-    @keyframes panelFloat{
-      0%,100%{ transform:scale(.78) translate(0,0); }
-      25%{ transform:scale(.78) translate(-10px,-4px); }
-      50%{ transform:scale(.78) translate(-18px,0); }
-      75%{ transform:scale(.78) translate(-10px,5px); }
+      25%{
+        transform:translate3d(-6px,-5px,0);
+      }
+
+      50%{
+        transform:translate3d(-12px,0,0);
+      }
+
+      75%{
+        transform:translate3d(-6px,5px,0);
+      }
     }
 
     /* SECTIONS */
@@ -914,7 +988,10 @@
     }
 
 
-    /* ===== RESPONSIVE PANEL WEB SKANO FINAL ===== */
+    /* =========================================================
+       RESPONSIVE PANEL WEB SKANO
+       En tablet/celular el panel deja de flotar al lado y baja ordenado.
+       ========================================================= */
     @media(max-width:1120px){
       .hero-access-panel{
         position:relative;
@@ -935,13 +1012,13 @@
     @media(max-width:650px){
       .hero-access-box{
         max-width:100%;
-        padding:22px 18px;
-        border-radius:26px;
+        padding:18px;
+        border-radius:24px;
       }
 
       .hero-access-btn{
-        min-height:60px;
-        font-size:.92rem;
+        min-height:48px;
+        font-size:.82rem;
       }
     }
   </style>
@@ -1034,7 +1111,10 @@
             </div>
           </div>
 
-          <!-- PANEL WEB SKANO -->
+          <!-- =========================================================
+               PANEL WEB SKANO - IGUAL AL INDEX PRINCIPAL
+               Cambia los links aquí si después necesitas editar accesos.
+               ========================================================= -->
           <div class="hero-access-panel reveal">
             <div class="hero-access-box">
               <h3>WEB SKANO</h3>
