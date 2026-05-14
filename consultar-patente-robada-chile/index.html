@@ -1,405 +1,752 @@
-# consultar-patente-robada-chile.html
-
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
   <title>Consultar Patente Robada Chile | SKANO</title>
-  <meta name="description" content="Consulta patentes y detecta vehículos con encargo por robo en Chile utilizando SKANO. Plataforma chilena de seguridad colaborativa." />
-  <meta name="keywords" content="consultar patente robada chile, autos robados chile, detectar vehiculos robados, app autos robados, SKANO" />
 
-  <meta property="og:title" content="Consultar Patente Robada Chile | SKANO" />
-  <meta property="og:description" content="Detecta vehículos con encargo por robo en Chile utilizando SKANO." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://skano.cl/consultar-patente-robada-chile.html" />
-  <meta property="og:image" content="https://skano.cl/img/og-skano.jpg" />
+  <meta name="description" content="Consulta patentes de vehículos robados en Chile con SKANO. Plataforma chilena de seguridad colaborativa y reportes en tiempo real." />
 
-  <link rel="icon" href="img/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Inter',sans-serif;
     }
 
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: #020617;
-      color: white;
-      overflow-x: hidden;
-      line-height: 1.6;
+    body{
+      background:#05070d;
+      color:white;
+      overflow-x:hidden;
     }
 
-    a {
-      text-decoration: none;
+    a{
+      text-decoration:none;
     }
 
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 80px 24px;
+    .bg{
+      position:fixed;
+      inset:0;
+      z-index:-2;
+
       background:
-        linear-gradient(rgba(2,6,23,.86), rgba(2,6,23,.95)),
-        url('img/bg-seguridad.jpg') center/cover no-repeat;
-      position: relative;
+      radial-gradient(circle at top left, rgba(0,174,255,.14), transparent 30%),
+      radial-gradient(circle at bottom right, rgba(255,0,76,.08), transparent 30%),
+      linear-gradient(180deg,#05070d 0%, #07111d 100%);
     }
 
-    .hero-content {
-      max-width: 1200px;
-      width: 100%;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 60px;
-      align-items: center;
+    .hero-bg{
+      position:absolute;
+      inset:0;
+      z-index:-1;
+      opacity:.12;
+      background:url('../img/bg-seguridad.jpg') center/cover no-repeat;
+      filter:blur(2px);
     }
 
-    .tag {
-      display: inline-block;
-      padding: 10px 18px;
-      border-radius: 999px;
-      background: rgba(37,99,235,.18);
-      border: 1px solid rgba(96,165,250,.4);
-      color: #93c5fd;
-      margin-bottom: 24px;
-      font-size: 14px;
-      letter-spacing: .5px;
+    header{
+      position:fixed;
+      top:0;
+      width:100%;
+      z-index:1000;
+
+      backdrop-filter:blur(18px);
+
+      background:rgba(5,7,13,.82);
+
+      border-bottom:1px solid rgba(255,255,255,.06);
     }
 
-    h1 {
-      font-size: clamp(48px, 7vw, 88px);
-      line-height: .95;
-      margin-bottom: 24px;
-      font-weight: 900;
+    .nav{
+      max-width:1400px;
+      margin:auto;
+      padding:18px 28px;
+
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
     }
 
-    .blue {
-      color: #38bdf8;
+    .logo{
+      display:flex;
+      align-items:center;
+      gap:14px;
+
+      font-weight:800;
+      font-size:1.3rem;
+      letter-spacing:.5px;
     }
 
-    .hero p {
-      color: #cbd5e1;
-      font-size: 18px;
-      max-width: 620px;
-      margin-bottom: 34px;
+    .logo img{
+      width:44px;
+      height:44px;
+      border-radius:12px;
+      box-shadow:0 0 24px rgba(0,174,255,.35);
     }
 
-    .buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
+    .menu{
+      display:flex;
+      align-items:center;
+      gap:14px;
     }
 
-    .btn {
-      padding: 16px 28px;
-      border-radius: 14px;
-      font-weight: 700;
-      transition: .3s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+    .menu a{
+      color:white;
+      opacity:.75;
+      font-size:.95rem;
+      transition:.2s;
     }
 
-    .btn-primary {
-      background: linear-gradient(90deg, #0ea5e9, #2563eb);
-      color: white;
-      box-shadow: 0 0 35px rgba(37,99,235,.4);
+    .menu a:hover{
+      opacity:1;
+      color:#00b7ff;
     }
 
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 45px rgba(56,189,248,.55);
+    .btn-menu{
+      padding:12px 18px;
+      border-radius:14px;
+
+      border:1px solid rgba(255,255,255,.08);
+
+      background:rgba(255,255,255,.04);
+
+      color:white;
+      font-weight:700;
     }
 
-    .btn-secondary {
-      border: 1px solid rgba(255,255,255,.15);
-      background: rgba(255,255,255,.05);
-      color: white;
+    .hero{
+      min-height:100vh;
+
+      display:flex;
+      align-items:center;
+
+      padding:130px 28px 80px;
+
+      position:relative;
     }
 
-    .phone {
-      width: 100%;
-      max-width: 440px;
-      margin: auto;
-      filter: drop-shadow(0 0 45px rgba(14,165,233,.35));
+    .hero-content{
+      width:100%;
+      max-width:1400px;
+      margin:auto;
+
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+
+      gap:60px;
+      align-items:center;
     }
 
-    section {
-      padding: 100px 24px;
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+
+      padding:14px 22px;
+
+      border-radius:999px;
+
+      background:rgba(0,174,255,.08);
+
+      border:1px solid rgba(0,174,255,.24);
+
+      color:#84dfff;
+
+      margin-bottom:28px;
+
+      font-size:.95rem;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: auto;
+    h1{
+      font-size:clamp(3.5rem,8vw,7rem);
+      line-height:.95;
+      font-weight:900;
+
+      margin-bottom:28px;
     }
 
-    .section-title {
-      font-size: 42px;
-      margin-bottom: 20px;
-      font-weight: 800;
+    h1 span{
+      color:#00b7ff;
+      text-shadow:0 0 28px rgba(0,174,255,.38);
     }
 
-    .section-text {
-      color: #cbd5e1;
-      max-width: 760px;
-      margin-bottom: 50px;
-      font-size: 18px;
+    .hero p{
+      font-size:1.18rem;
+      line-height:1.9;
+      color:rgba(255,255,255,.74);
+
+      max-width:720px;
+
+      margin-bottom:42px;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 24px;
+    .buttons{
+      display:flex;
+      gap:18px;
+      flex-wrap:wrap;
     }
 
-    .card {
-      background: rgba(15,23,42,.7);
-      border: 1px solid rgba(255,255,255,.06);
-      border-radius: 24px;
-      padding: 30px;
-      backdrop-filter: blur(14px);
-      transition: .3s ease;
+    .btn{
+      padding:18px 28px;
+      border-radius:18px;
+      font-weight:800;
+
+      transition:.25s ease;
     }
 
-    .card:hover {
-      transform: translateY(-6px);
-      border-color: rgba(56,189,248,.4);
-      box-shadow: 0 0 35px rgba(14,165,233,.12);
+    .btn-primary{
+      background:linear-gradient(135deg,#00b7ff,#005eff);
+
+      color:white;
+
+      box-shadow:0 0 30px rgba(0,174,255,.32);
     }
 
-    .card h3 {
-      margin-bottom: 14px;
-      font-size: 24px;
+    .btn-primary:hover{
+      transform:translateY(-4px);
     }
 
-    .card p {
-      color: #cbd5e1;
+    .btn-secondary{
+      background:rgba(255,255,255,.04);
+
+      border:1px solid rgba(255,255,255,.08);
+
+      color:white;
     }
 
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 22px;
-      margin-top: 40px;
+    .hero-right{
+      position:relative;
+
+      display:flex;
+      justify-content:center;
+      align-items:center;
     }
 
-    .step {
-      background: rgba(15,23,42,.72);
-      padding: 28px;
-      border-radius: 22px;
-      border: 1px solid rgba(255,255,255,.05);
+    .phone{
+      width:100%;
+      max-width:420px;
+
+      filter:drop-shadow(0 0 40px rgba(0,174,255,.28));
     }
 
-    .step-number {
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
-      background: linear-gradient(90deg, #0ea5e9, #2563eb);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      margin-bottom: 18px;
-      font-size: 20px;
+    .floating-card{
+      position:absolute;
+
+      right:-30px;
+      top:70px;
+
+      background:rgba(10,16,28,.92);
+
+      border:1px solid rgba(255,255,255,.08);
+
+      padding:22px;
+
+      border-radius:22px;
+
+      width:260px;
+
+      backdrop-filter:blur(18px);
+
+      box-shadow:0 0 35px rgba(0,174,255,.08);
     }
 
-    .cta {
-      text-align: center;
-      background: linear-gradient(180deg, rgba(14,165,233,.12), rgba(37,99,235,.08));
-      border-top: 1px solid rgba(255,255,255,.05);
-      border-bottom: 1px solid rgba(255,255,255,.05);
+    .floating-card small{
+      color:#ff4d6d;
+      font-weight:700;
+      letter-spacing:.4px;
     }
 
-    .cta h2 {
-      font-size: 52px;
-      margin-bottom: 20px;
+    .floating-card h3{
+      margin-top:10px;
+      margin-bottom:10px;
+      font-size:1.1rem;
     }
 
-    footer {
-      padding: 50px 24px;
-      text-align: center;
-      color: #94a3b8;
-      font-size: 14px;
-      border-top: 1px solid rgba(255,255,255,.05);
+    .floating-card p{
+      font-size:.9rem;
+      line-height:1.6;
+      color:rgba(255,255,255,.72);
     }
 
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 58px;
+    section{
+      padding:120px 28px;
+    }
+
+    .container{
+      max-width:1400px;
+      margin:auto;
+    }
+
+    .section-title{
+      text-align:center;
+      font-size:clamp(2.3rem,4vw,4rem);
+      font-weight:900;
+
+      margin-bottom:22px;
+    }
+
+    .section-sub{
+      text-align:center;
+
+      max-width:900px;
+
+      margin:auto auto 70px;
+
+      line-height:1.9;
+
+      color:rgba(255,255,255,.72);
+
+      font-size:1.08rem;
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:24px;
+    }
+
+    .card{
+      background:rgba(255,255,255,.03);
+
+      border:1px solid rgba(255,255,255,.06);
+
+      border-radius:28px;
+
+      padding:36px;
+
+      transition:.25s;
+
+      backdrop-filter:blur(12px);
+    }
+
+    .card:hover{
+      transform:translateY(-8px);
+
+      border-color:rgba(0,174,255,.3);
+
+      box-shadow:0 0 40px rgba(0,174,255,.08);
+    }
+
+    .card-icon{
+      font-size:2rem;
+      margin-bottom:18px;
+    }
+
+    .card h3{
+      margin-bottom:14px;
+      font-size:1.4rem;
+    }
+
+    .card p{
+      color:rgba(255,255,255,.7);
+      line-height:1.8;
+    }
+
+    .video-section{
+      background:rgba(255,255,255,.02);
+
+      border-top:1px solid rgba(255,255,255,.06);
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+
+    .videos{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+      gap:24px;
+    }
+
+    .video-card{
+      height:240px;
+
+      border-radius:26px;
+
+      overflow:hidden;
+
+      position:relative;
+
+      background:url('../img/bg-seguridad.jpg') center/cover no-repeat;
+    }
+
+    .video-card::after{
+      content:'▶';
+
+      position:absolute;
+      inset:0;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
+      font-size:4rem;
+
+      background:rgba(0,0,0,.35);
+
+      color:white;
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:24px;
+      margin-top:60px;
+    }
+
+    .stat{
+      text-align:center;
+
+      padding:40px 24px;
+
+      border-radius:24px;
+
+      background:rgba(255,255,255,.03);
+
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    .stat h2{
+      font-size:3rem;
+      color:#00b7ff;
+
+      margin-bottom:12px;
+    }
+
+    .stat p{
+      color:rgba(255,255,255,.7);
+    }
+
+    .cta{
+      text-align:center;
+    }
+
+    .cta-box{
+      padding:80px 40px;
+
+      border-radius:34px;
+
+      background:
+      linear-gradient(135deg,
+      rgba(0,174,255,.12),
+      rgba(0,94,255,.08));
+
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    .cta h2{
+      font-size:clamp(2.5rem,4vw,4rem);
+      margin-bottom:24px;
+    }
+
+    .cta p{
+      max-width:800px;
+      margin:auto auto 40px;
+
+      line-height:1.9;
+
+      color:rgba(255,255,255,.74);
+    }
+
+    footer{
+      padding:60px 24px;
+
+      border-top:1px solid rgba(255,255,255,.06);
+
+      text-align:center;
+
+      color:rgba(255,255,255,.55);
+    }
+
+    @media(max-width:980px){
+
+      .hero-content{
+        grid-template-columns:1fr;
       }
 
-      .section-title {
-        font-size: 34px;
+      .hero{
+        text-align:center;
       }
 
-      .cta h2 {
-        font-size: 38px;
+      .buttons{
+        justify-content:center;
       }
+
+      .floating-card{
+        position:relative;
+        right:auto;
+        top:auto;
+        margin-top:20px;
+      }
+
+      .hero-right{
+        flex-direction:column;
+      }
+
+      .menu{
+        display:none;
+      }
+
     }
+
   </style>
+
 </head>
 <body>
 
-  <section class="hero">
-    <div class="hero-content">
+<div class="bg"></div>
 
-      <div>
-        <span class="tag">🚨 APP CHILENA DE SEGURIDAD COLABORATIVA</span>
+<header>
 
-        <h1>
-          Consulta una <span class="blue">patente robada</span><br>
-          en Chile
-        </h1>
+  <div class="nav">
+
+    <div class="logo">
+      <img src="../img/logo.png" alt="SKANO">
+      <span>SKANO</span>
+    </div>
+
+    <div class="menu">
+      <a href="#">Inicio</a>
+      <a href="#">Cómo funciona</a>
+      <a href="#">Seguridad</a>
+      <a href="#">Empresas</a>
+
+      <a href="https://play.google.com/store/apps/details?id=cl.skano.app" class="btn-menu">
+        Descargar App
+      </a>
+    </div>
+
+  </div>
+
+</header>
+
+<section class="hero">
+
+  <div class="hero-bg"></div>
+
+  <div class="hero-content">
+
+    <div>
+
+      <div class="tag">
+        🚨 APP CHILENA DE SEGURIDAD COLABORATIVA
+      </div>
+
+      <h1>
+        Consulta una
+        <span>patente robada</span>
+        en Chile
+      </h1>
+
+      <p>
+        SKANO permite detectar vehículos con encargo por robo,
+        validar patentes y reportar avistamientos desde el celular.
+        Una plataforma chilena enfocada en seguridad colaborativa,
+        alertas en tiempo real y prevención vehicular.
+      </p>
+
+      <div class="buttons">
+
+        <a href="https://play.google.com/store/apps/details?id=cl.skano.app" class="btn btn-primary">
+          Descargar SKANO
+        </a>
+
+        <a href="https://skano.cl" class="btn btn-secondary">
+          Sitio principal
+        </a>
+
+      </div>
+
+    </div>
+
+    <div class="hero-right">
+
+      <img src="../img/mockup.png" class="phone">
+
+      <div class="floating-card">
+
+        <small>ALERTA ACTIVA</small>
+
+        <h3>
+          Vehículo con encargo detectado
+        </h3>
 
         <p>
-          SKANO permite detectar vehículos con encargo por robo,
-          validar patentes y reportar avistamientos desde el celular.
-          Una plataforma chilena enfocada en seguridad colaborativa.
+          Reporte protegido para evitar uso indebido y generar alertas preventivas.
         </p>
 
-        <div class="buttons">
-          <a href="https://play.google.com/store/apps/details?id=cl.skano.app" class="btn btn-primary">
-            Descargar SKANO
-          </a>
-
-          <a href="index.html" class="btn btn-secondary">
-            Volver al inicio
-          </a>
-        </div>
-      </div>
-
-      <div>
-        <img src="img/mockup-skano.png" alt="SKANO App" class="phone">
       </div>
 
     </div>
-  </section>
 
-  <section>
-    <div class="container">
+  </div>
 
-      <h2 class="section-title">
-        ¿Cómo funciona SKANO?
-      </h2>
+</section>
 
-      <p class="section-text">
-        SKANO fue creada para ayudar a detectar vehículos robados mediante una comunidad activa.
-        La plataforma permite verificar patentes, generar alertas y colaborar de forma segura.
-      </p>
+<section>
 
-      <div class="steps">
+  <div class="container">
 
-        <div class="step">
-          <div class="step-number">1</div>
-          <h3>Ingresa patente</h3>
-          <p>Consulta rápidamente un vehículo desde la aplicación.</p>
-        </div>
+    <h2 class="section-title">
+      ¿Cómo funciona SKANO?
+    </h2>
 
-        <div class="step">
-          <div class="step-number">2</div>
-          <h3>Validación</h3>
-          <p>SKANO verifica información y estados del vehículo.</p>
-        </div>
+    <p class="section-sub">
+      SKANO busca aumentar las posibilidades de detectar vehículos robados mediante colaboración ciudadana y tecnología móvil.
+    </p>
 
-        <div class="step">
-          <div class="step-number">3</div>
-          <h3>Reporte seguro</h3>
-          <p>El usuario puede reportar sin confrontación directa.</p>
-        </div>
+    <div class="cards">
 
-        <div class="step">
-          <div class="step-number">4</div>
-          <h3>Alerta</h3>
-          <p>El sistema puede generar avisos y notificaciones.</p>
-        </div>
+      <div class="card">
+
+        <div class="card-icon">📱</div>
+
+        <h3>Consulta rápida</h3>
+
+        <p>
+          Ingresa una patente desde tu celular y verifica información asociada al vehículo.
+        </p>
 
       </div>
 
-    </div>
-  </section>
+      <div class="card">
 
-  <section>
-    <div class="container">
+        <div class="card-icon">🚨</div>
 
-      <h2 class="section-title">
-        ¿Por qué usar una app para detectar autos robados?
-      </h2>
+        <h3>Reportes protegidos</h3>
 
-      <p class="section-text">
-        En Chile el robo de vehículos sigue aumentando y muchas veces los vehículos permanecen estacionados o escondidos durante horas.
-        SKANO busca aumentar las posibilidades de detección utilizando más ojos observando en terreno.
-      </p>
+        <p>
+          El sistema permite generar reportes seguros con validación y geolocalización.
+        </p>
 
-      <div class="grid">
+      </div>
 
-        <div class="card">
-          <h3>📍 Comunidad activa</h3>
-          <p>Más personas observando significa más posibilidades de detectar vehículos robados.</p>
-        </div>
+      <div class="card">
 
-        <div class="card">
-          <h3>🛡️ Reporte protegido</h3>
-          <p>La plataforma incorpora medidas de seguridad y validación de identidad.</p>
-        </div>
+        <div class="card-icon">🛡️</div>
 
-        <div class="card">
-          <h3>📲 Tecnología móvil</h3>
-          <p>Todo funciona directamente desde el celular y en tiempo real.</p>
-        </div>
+        <h3>Protocolos de seguridad</h3>
+
+        <p>
+          La plataforma recomienda no confrontar y prioriza seguridad del usuario.
+        </p>
+
+      </div>
+
+      <div class="card">
+
+        <div class="card-icon">🏙️</div>
+
+        <h3>Integración empresas</h3>
+
+        <p>
+          Arquitectura preparada para estacionamientos, parquímetros y sistemas LPR.
+        </p>
 
       </div>
 
     </div>
-  </section>
 
-  <section class="cta">
-    <div class="container">
+  </div>
+
+</section>
+
+<section class="video-section">
+
+  <div class="container">
+
+    <h2 class="section-title">
+      Plataforma de seguridad colaborativa
+    </h2>
+
+    <p class="section-sub">
+      Tecnología enfocada en aumentar la detección preventiva de vehículos robados en Chile.
+    </p>
+
+    <div class="videos">
+
+      <div class="video-card"></div>
+      <div class="video-card"></div>
+      <div class="video-card"></div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<section>
+
+  <div class="container">
+
+    <h2 class="section-title">
+      Seguridad vehicular en tiempo real
+    </h2>
+
+    <p class="section-sub">
+      SKANO está diseñada para funcionar como una red de observación colaborativa enfocada en prevención y reportes.
+    </p>
+
+    <div class="stats">
+
+      <div class="stat">
+        <h2>Chile</h2>
+        <p>Aplicación chilena</p>
+      </div>
+
+      <div class="stat">
+        <h2>24/7</h2>
+        <p>Reportes disponibles</p>
+      </div>
+
+      <div class="stat">
+        <h2>Android</h2>
+        <p>Disponible en Google Play</p>
+      </div>
+
+      <div class="stat">
+        <h2>Tiempo Real</h2>
+        <p>Alertas preventivas</p>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<section class="cta">
+
+  <div class="container">
+
+    <div class="cta-box">
 
       <h2>
-        Descarga SKANO y ayuda a detectar vehículos robados
+        Descarga SKANO
       </h2>
 
-      <p class="section-text" style="margin:auto auto 40px auto;">
-        Plataforma chilena enfocada en seguridad colaborativa y detección preventiva.
+      <p>
+        Comienza a utilizar la plataforma y ayuda a detectar vehículos robados en Chile.
       </p>
 
       <a href="https://play.google.com/store/apps/details?id=cl.skano.app" class="btn btn-primary">
-        Descargar para Android
+        Descargar desde Google Play
       </a>
 
     </div>
-  </section>
 
-  <footer>
-    © 2026 SKANO · Seguridad colaborativa en Chile · www.skano.cl
-  </footer>
+  </div>
+
+</section>
+
+<footer>
+  © 2026 SKANO · Plataforma chilena de seguridad colaborativa.
+</footer>
 
 </body>
 </html>
-```
-
-## Qué mejora esta nueva página
-
-* Mucho más limpia visualmente.
-* Más enfocada en SEO.
-* Menos texto defensivo.
-* Más sensación startup/premium.
-* Mejor lectura en celular.
-* Más clara para Google.
-* Más enfocada en conversión.
-
-## Próximo paso recomendado
-
-Crear después:
-
-* buscar-autos-robados-chile.html
-* detectar-autos-robados.html
-* seguridad-estacionamientos.html
-* reportar-auto-robado.html
-
-manteniendo la misma estética premium.
