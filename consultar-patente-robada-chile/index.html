@@ -51,12 +51,29 @@
     }
     a{text-decoration:none;color:inherit}
     img{display:block;max-width:100%}
-    .container{width:min(1220px,calc(100% - 40px));margin-inline:auto}
+    .container{width:min(1240px,calc(100% - 40px));margin-inline:auto}
 
     .grain{
       position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.035;
       background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.86' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
+
+    /* ====== REVEAL / SCROLL PROFESSIONAL ====== */
+    .reveal{
+      opacity:0;
+      transform:translateY(52px) scale(.985);
+      filter:blur(8px);
+      transition:opacity .9s cubic-bezier(.2,.8,.2,1), transform .9s cubic-bezier(.2,.8,.2,1), filter .9s cubic-bezier(.2,.8,.2,1);
+      transition-delay:var(--delay,0s);
+    }
+    .reveal.show{
+      opacity:1;
+      transform:translateY(0) scale(1);
+      filter:blur(0);
+    }
+    .reveal-left{transform:translateX(-70px) scale(.985)}
+    .reveal-right{transform:translateX(70px) scale(.985)}
+    .reveal-left.show,.reveal-right.show{transform:translateX(0) scale(1)}
 
     .topbar{
       position:fixed;top:0;left:0;right:0;z-index:5000;
@@ -87,7 +104,7 @@
     .nav-btn.blue{background:linear-gradient(135deg,var(--blue),var(--cyan));box-shadow:0 14px 34px rgba(0,151,255,.32)}
     .menu-btn{display:none;border:0;background:rgba(255,255,255,.10);color:#fff;border-radius:12px;padding:11px 13px;font-size:1.08rem}
 
-    /* HERO: split visual tipo plataforma premium */
+    /* HERO */
     .hero{
       position:relative;min-height:100vh;overflow:hidden;isolation:isolate;
       padding:82px 0 0;
@@ -99,6 +116,8 @@
         linear-gradient(90deg,rgba(255,255,255,.96) 0%,rgba(255,255,255,.88) 35%,rgba(255,255,255,.18) 58%,rgba(0,8,20,.78) 100%),
         url('../img/hero-autos-robados-bg.png') center/cover no-repeat;
       filter:brightness(1.14) contrast(1.1) saturate(1.14);
+      transform:scale(1.04);
+      animation:bgDrift 22s ease-in-out infinite alternate;
     }
     .hero-split{
       position:absolute;right:-8vw;top:82px;bottom:0;width:60vw;z-index:1;
@@ -114,6 +133,7 @@
         linear-gradient(90deg,rgba(0,215,255,.060) 1px,transparent 1px),
         linear-gradient(180deg,rgba(0,215,255,.045) 1px,transparent 1px);
       background-size:auto,auto,58px 58px,58px 58px;
+      animation:gridMove 16s linear infinite;
     }
     .hero-flow-lines{
       position:absolute;inset:82px 0 0;z-index:2;pointer-events:none;opacity:.45;
@@ -123,8 +143,8 @@
       mask-image:linear-gradient(90deg,transparent 0%,#000 45%,#000 100%);
     }
     .hero-wave{
-      position:absolute;left:0;right:0;bottom:-1px;z-index:4;height:170px;background:#f3f9ff;
-      clip-path:polygon(0 52%,9% 45%,19% 55%,31% 40%,43% 53%,56% 38%,70% 51%,84% 34%,100% 47%,100% 100%,0 100%);
+      position:absolute;left:0;right:0;bottom:-1px;z-index:4;height:180px;background:#f3f9ff;
+      clip-path:polygon(0 52%,8% 46%,19% 55%,32% 39%,44% 53%,57% 37%,70% 51%,84% 34%,100% 46%,100% 100%,0 100%);
     }
     .hero-inner{
       position:relative;z-index:3;
@@ -248,7 +268,7 @@
     /* SECTIONS */
     section{position:relative}
     .section-light{
-      position:relative;padding:100px 0 125px;background:#f3f9ff;overflow:hidden;
+      position:relative;padding:105px 0 130px;background:#f3f9ff;overflow:hidden;
     }
     .section-light::before{
       content:"";position:absolute;inset:0;opacity:.9;pointer-events:none;
@@ -261,7 +281,7 @@
       padding-top:135px;padding-bottom:160px;margin-top:-1px;
     }
     .section-dark{
-      position:relative;color:white;padding:125px 0 155px;
+      position:relative;color:white;padding:130px 0 160px;
       background:linear-gradient(135deg,#061426,#071f3c);
       clip-path:polygon(0 7%,100% 0,100% 93%,0 100%);
       overflow:hidden;
@@ -274,9 +294,10 @@
         linear-gradient(90deg,rgba(0,215,255,.045) 1px,transparent 1px),
         linear-gradient(180deg,rgba(0,215,255,.035) 1px,transparent 1px);
       background-size:auto,auto,60px 60px,60px 60px;
+      animation:gridMove 20s linear infinite;
     }
     .section-dark .container,.section-light .container{position:relative;z-index:2}
-    .head{text-align:center;max-width:900px;margin:0 auto 56px}
+    .head{text-align:center;max-width:930px;margin:0 auto 60px}
     .kicker{color:#007bff;font-weight:950;text-transform:uppercase;letter-spacing:.14em;font-size:.82rem;margin-bottom:13px}
     .section-dark .kicker{color:#00d7ff}
     .title{font-size:clamp(2.45rem,4.8vw,4.8rem);line-height:1;letter-spacing:-.065em;font-weight:950}
@@ -288,14 +309,89 @@
       position:relative;overflow:hidden;min-height:270px;border-radius:31px;
       background:rgba(255,255,255,.84);border:1px solid rgba(4,29,64,.10);
       box-shadow:var(--shadow);padding:26px;transition:.24s;
-      animation:softFloat 8s ease-in-out infinite;
     }
-    .step:nth-child(2){animation-delay:-1.5s}.step:nth-child(3){animation-delay:-3s}.step:nth-child(4){animation-delay:-4.5s}
     .step::before{content:"";position:absolute;right:-45px;top:-45px;width:135px;height:135px;border-radius:999px;background:rgba(0,215,255,.13)}
     .step:hover{transform:translateY(-9px)}
     .num{width:50px;height:50px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,var(--blue),var(--cyan));color:white;font-weight:950;box-shadow:0 18px 36px rgba(0,139,255,.24);margin-bottom:36px}
     .step h3{font-size:1.26rem;margin-bottom:10px}
     .step p{color:#607086;line-height:1.66;font-weight:560}
+
+    /* SERVICE SECTION */
+    .services-section{
+      position:relative;
+      padding:140px 0 160px;
+      overflow:hidden;
+      color:white;
+      background:
+        linear-gradient(180deg,rgba(2,7,18,.92),rgba(5,8,13,.98)),
+        url('../img/bg-seguridad.jpg') center/cover no-repeat;
+    }
+    .services-section::before{
+      content:"";position:absolute;inset:0;
+      background:
+        radial-gradient(circle at 15% 20%,rgba(0,215,255,.17),transparent 28%),
+        radial-gradient(circle at 85% 70%,rgba(255,106,0,.16),transparent 30%),
+        linear-gradient(90deg,rgba(0,215,255,.04) 1px,transparent 1px),
+        linear-gradient(180deg,rgba(0,215,255,.03) 1px,transparent 1px);
+      background-size:auto,auto,60px 60px,60px 60px;
+      animation:gridMove 18s linear infinite;
+    }
+    .services-grid{
+      position:relative;z-index:2;
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:22px;
+    }
+    .service-card{
+      min-height:250px;
+      border-radius:30px;
+      padding:30px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.045));
+      border:1px solid rgba(255,255,255,.13);
+      box-shadow:0 36px 110px rgba(0,0,0,.34);
+      backdrop-filter:blur(16px);
+      position:relative;
+      overflow:hidden;
+      transition:.28s ease;
+    }
+    .service-card:hover{
+      transform:translateY(-10px) scale(1.015);
+      border-color:rgba(0,215,255,.36);
+      box-shadow:0 42px 130px rgba(0,140,255,.20);
+    }
+    .service-card::after{
+      content:"";
+      position:absolute;inset:-1px;
+      background:linear-gradient(120deg,transparent,rgba(0,215,255,.16),transparent);
+      transform:translateX(-140%);
+      transition:.65s ease;
+    }
+    .service-card:hover::after{transform:translateX(140%)}
+    .service-icon{
+      width:86px;height:86px;border-radius:28px;
+      display:grid;place-items:center;
+      background:linear-gradient(135deg,rgba(0,139,255,.22),rgba(0,215,255,.10));
+      border:1px solid rgba(0,215,255,.28);
+      box-shadow:0 24px 60px rgba(0,215,255,.16);
+      font-size:2.5rem;
+      margin-bottom:24px;
+      position:relative;z-index:1;
+    }
+    .service-card h3{
+      position:relative;z-index:1;
+      font-size:1.28rem;
+      margin-bottom:12px;
+      line-height:1.15;
+    }
+    .service-card p{
+      position:relative;z-index:1;
+      color:rgba(255,255,255,.72);
+      line-height:1.7;
+      font-weight:560;
+    }
 
     .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
     .glass-card{
@@ -304,9 +400,7 @@
       border:1px solid rgba(255,255,255,.15);
       box-shadow:0 32px 90px rgba(0,0,0,.24);
       backdrop-filter:blur(16px);
-      animation:softFloat 8s ease-in-out infinite;
     }
-    .glass-card:nth-child(2){animation-delay:-2s}.glass-card:nth-child(3){animation-delay:-4s}
     .glass-card::after{
       content:"";position:absolute;inset:0;pointer-events:none;
       background:linear-gradient(120deg,transparent,rgba(0,215,255,.10),transparent);
@@ -339,7 +433,7 @@
     }
 
     .gallery{
-      position:relative;color:white;padding:118px 0 145px;
+      position:relative;color:white;padding:120px 0 150px;
       background:linear-gradient(180deg,rgba(3,10,28,.96),rgba(4,14,40,.99));
       overflow:hidden;clip-path:polygon(0 0,100% 7%,100% 100%,0 92%);
     }
@@ -351,6 +445,7 @@
         linear-gradient(90deg,rgba(0,207,255,.055) 1px,transparent 1px),
         linear-gradient(180deg,rgba(0,207,255,.035) 1px,transparent 1px);
       background-size:auto,auto,54px 54px,54px 54px;
+      animation:gridMove 24s linear infinite;
     }
     .gallery .head{position:relative;z-index:2}
     .flow{position:relative;z-index:2;max-width:940px;margin:0 auto 34px;padding:0 20px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px}
@@ -381,12 +476,14 @@
     .mobile-cta{display:none;position:fixed;left:14px;right:14px;bottom:14px;z-index:6000;background:rgba(2,8,23,.88);border:1px solid rgba(255,255,255,.13);box-shadow:0 22px 70px rgba(0,0,0,.45);border-radius:22px;padding:10px;backdrop-filter:blur(18px)}
     .mobile-cta a{display:flex;align-items:center;justify-content:center;min-height:52px;border-radius:16px;color:#fff;text-decoration:none;font-weight:950;background:linear-gradient(135deg,#0b7cff,#00cfff)}
 
+    @keyframes bgDrift{0%{transform:scale(1.04) translateX(0)}100%{transform:scale(1.08) translateX(-16px)}}
     @keyframes softFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
     @keyframes cardFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
     @keyframes deviceFloat{0%,100%{transform:perspective(1100px) rotateY(-8deg) rotateX(3deg) translateY(0)}50%{transform:perspective(1100px) rotateY(-6deg) rotateX(3deg) translateY(-14px)}}
     @keyframes pulse{0%,100%{transform:scale(.92);opacity:.82}50%{transform:scale(1.05);opacity:1}}
     @keyframes shine{0%,70%{transform:translateX(-120%);opacity:0}78%{opacity:.55}100%{transform:translateX(120%);opacity:0}}
     @keyframes skanoSlide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    @keyframes gridMove{0%{background-position:0 0,0 0,0 0,0 0}100%{background-position:0 0,0 0,120px 0,0 120px}}
 
     @media(max-width:1120px){
       .navlinks,.nav-actions{display:none}.menu-btn{display:block}
@@ -396,7 +493,7 @@
       .hero-bg{background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(255,255,255,.86)),url('../img/hero-autos-robados-bg.png') center/cover no-repeat}
       .hero-inner,.register-box,.footer-grid{grid-template-columns:1fr}
       .visual{min-height:470px}
-      .steps,.cards{grid-template-columns:repeat(2,1fr)}
+      .steps,.cards,.services-grid{grid-template-columns:repeat(2,1fr)}
       .socials{justify-content:flex-start}
     }
     @media(max-width:650px){
@@ -406,11 +503,11 @@
       h1{font-size:clamp(2.7rem,15vw,4.45rem)}
       .hero-copy{font-size:1rem}
       .actions{flex-direction:column}.btn{width:100%}
-      .proof,.steps,.cards{grid-template-columns:1fr}
+      .proof,.steps,.cards,.services-grid{grid-template-columns:1fr}
       .surveillance{width:96%;border-radius:28px}
       .float{display:none}
       .visual{min-height:340px}
-      .section-light,.section-dark,.gallery{clip-path:none;padding:76px 0}
+      .section-light,.section-dark,.gallery,.services-section{clip-path:none;padding:76px 0}
       .register-content{padding:34px 23px}
       .register-visual{min-height:340px}
       .photo-card{width:min(292px,82vw);height:258px}
@@ -418,7 +515,8 @@
       .footer-bottom{padding-bottom:74px}
     }
     @media(prefers-reduced-motion:reduce){
-      .proof-card,.step,.glass-card,.surveillance,.float,.photo-track{animation:none!important}
+      .proof-card,.step,.glass-card,.surveillance,.float,.photo-track,.hero-bg,.section-dark::before,.gallery::before,.services-section::before{animation:none!important}
+      .reveal,.reveal-left,.reveal-right{opacity:1!important;transform:none!important;filter:none!important}
     }
   </style>
 </head>
@@ -436,6 +534,7 @@
       <nav class="navlinks" id="navlinks">
         <a href="#inicio">Inicio</a>
         <a href="#funciona">Flujo</a>
+        <a href="#servicios">Servicios</a>
         <a href="#registro">Subir vehículo</a>
         <a href="#seguridad">Seguridad</a>
         <a href="#galeria">Galería</a>
@@ -458,7 +557,7 @@
       <div class="hero-flow-lines"></div>
 
       <div class="container hero-inner">
-        <div>
+        <div class="reveal reveal-left">
           <div class="eyebrow">🚨 Consulta de patente robada en Chile</div>
           <h1>Detecta autos robados <span class="blue-gradient">con SKANO</span></h1>
 
@@ -479,7 +578,7 @@
           </div>
         </div>
 
-        <div class="visual" aria-label="Visual SKANO detección vehicular">
+        <div class="visual reveal reveal-right" aria-label="Visual SKANO detección vehicular">
           <div class="float dark"><div class="tag">Consulta</div><strong>Resultado en segundos</strong><span>Patente validada y alerta visible</span></div>
           <div class="float white"><div class="tag">Alerta activa</div><strong>Vehículo con encargo detectado</strong><span>Reporte protegido para evitar uso indebido.</span></div>
 
@@ -505,40 +604,100 @@
 
     <section class="section-light wave-top" id="funciona">
       <div class="container">
-        <div class="head">
+        <div class="head reveal">
           <div class="kicker">Flujo SKANO</div>
           <h2 class="title">De una patente a una alerta útil</h2>
           <p class="lead">Una experiencia clara: consultar, validar, reportar y avisar, siempre con protocolo seguro y sin exposición innecesaria.</p>
         </div>
 
         <div class="steps">
-          <article class="step"><div class="num">1</div><h3>Consulta patente</h3><p>El usuario ingresa una patente desde la app para revisar si existe información asociada.</p></article>
-          <article class="step"><div class="num">2</div><h3>Valida encargo</h3><p>SKANO revisa el estado del vehículo y evita reportes cuando no corresponde.</p></article>
-          <article class="step"><div class="num">3</div><h3>Reporte protegido</h3><p>El reporte exige protocolo seguro, ubicación, PIN y selfie para reducir abuso.</p></article>
-          <article class="step"><div class="num">4</div><h3>Alerta al dueño</h3><p>El dueño recibe información útil sin exponer datos personales del reportante.</p></article>
+          <article class="step reveal" style="--delay:.05s"><div class="num">1</div><h3>Consulta patente</h3><p>El usuario ingresa una patente desde la app para revisar si existe información asociada.</p></article>
+          <article class="step reveal" style="--delay:.14s"><div class="num">2</div><h3>Valida encargo</h3><p>SKANO revisa el estado del vehículo y evita reportes cuando no corresponde.</p></article>
+          <article class="step reveal" style="--delay:.23s"><div class="num">3</div><h3>Reporte protegido</h3><p>El reporte exige protocolo seguro, ubicación, PIN y selfie para reducir abuso.</p></article>
+          <article class="step reveal" style="--delay:.32s"><div class="num">4</div><h3>Alerta al dueño</h3><p>El dueño recibe información útil sin exponer datos personales del reportante.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="services-section" id="servicios">
+      <div class="container">
+        <div class="head reveal">
+          <div class="kicker">Servicios SKANO</div>
+          <h2 class="title">Una plataforma para detectar, alertar y proteger</h2>
+          <p class="lead">No basta con mostrar información: SKANO ordena el proceso completo para que la comunidad pueda actuar de forma segura.</p>
+        </div>
+
+        <div class="services-grid">
+          <article class="service-card reveal" style="--delay:.05s">
+            <div>
+              <div class="service-icon">🚗</div>
+              <h3>Detección de vehículos robados</h3>
+              <p>Consulta de patentes y validación de información asociada a vehículos reportados.</p>
+            </div>
+          </article>
+
+          <article class="service-card reveal" style="--delay:.13s">
+            <div>
+              <div class="service-icon">📍</div>
+              <h3>Reportes con geolocalización</h3>
+              <p>Registro de ubicación controlada al momento del reporte para entregar datos útiles.</p>
+            </div>
+          </article>
+
+          <article class="service-card reveal" style="--delay:.21s">
+            <div>
+              <div class="service-icon">🔐</div>
+              <h3>Validación con PIN y selfie</h3>
+              <p>Capas de seguridad para reducir reportes falsos y proteger el flujo operativo.</p>
+            </div>
+          </article>
+
+          <article class="service-card reveal" style="--delay:.05s">
+            <div>
+              <div class="service-icon">🏢</div>
+              <h3>Portal empresas y parquímetros</h3>
+              <p>Arquitectura preparada para espacios de alto tránsito, malls y estacionamientos.</p>
+            </div>
+          </article>
+
+          <article class="service-card reveal" style="--delay:.13s">
+            <div>
+              <div class="service-icon">🚨</div>
+              <h3>Alertas preventivas</h3>
+              <p>Notificaciones útiles para dueños, reportantes y administración del sistema.</p>
+            </div>
+          </article>
+
+          <article class="service-card reveal" style="--delay:.21s">
+            <div>
+              <div class="service-icon">📊</div>
+              <h3>Historial y trazabilidad</h3>
+              <p>Registro ordenado del proceso para revisión, auditoría y seguimiento responsable.</p>
+            </div>
+          </article>
         </div>
       </div>
     </section>
 
     <section class="section-dark" id="seguridad">
       <div class="container">
-        <div class="head">
+        <div class="head reveal">
           <div class="kicker">Seguridad real</div>
           <h2 class="title">No es solo una app. Es un protocolo.</h2>
           <p class="lead">SKANO no reemplaza a las autoridades ni promueve confrontación. Ordena la información, protege al reportante y ayuda al dueño a recibir alertas útiles.</p>
         </div>
 
         <div class="cards">
-          <div class="glass-card"><div class="icon">🔐</div><h3>PIN + selfie</h3><p>Cada reporte válido exige validación personal para confirmar que quien reporta es una persona real.</p></div>
-          <div class="glass-card"><div class="icon">📍</div><h3>Ubicación controlada</h3><p>La ubicación se registra solo al momento del reporte. SKANO no rastrea personas ni recorridos.</p></div>
-          <div class="glass-card"><div class="icon">🙈</div><h3>Anonimato protegido</h3><p>El dueño recibe información útil sin ver datos personales del reportante.</p></div>
+          <div class="glass-card reveal" style="--delay:.05s"><div class="icon">🔐</div><h3>PIN + selfie</h3><p>Cada reporte válido exige validación personal para confirmar que quien reporta es una persona real.</p></div>
+          <div class="glass-card reveal" style="--delay:.15s"><div class="icon">📍</div><h3>Ubicación controlada</h3><p>La ubicación se registra solo al momento del reporte. SKANO no rastrea personas ni recorridos.</p></div>
+          <div class="glass-card reveal" style="--delay:.25s"><div class="icon">🙈</div><h3>Anonimato protegido</h3><p>El dueño recibe información útil sin ver datos personales del reportante.</p></div>
         </div>
       </div>
     </section>
 
     <section class="section-light" id="registro">
       <div class="container">
-        <div class="register-box">
+        <div class="register-box reveal">
           <div class="register-content">
             <div class="kicker">Dueños de vehículos</div>
             <h2>Sube tu vehículo robado y activa la red SKANO</h2>
@@ -554,17 +713,17 @@
     </section>
 
     <section class="gallery" id="galeria">
-      <div class="head">
+      <div class="head reveal">
         <div class="kicker">Flujo real de uso · SKANO</div>
         <h2 class="title">Así funciona SKANO en terreno</h2>
         <p class="lead">Verifica una patente, confirma si existe encargo activo, reporta con selfie, declaración jurada, protocolo y ubicación segura.</p>
       </div>
 
-      <div class="flow">
+      <div class="flow reveal">
         <span>1. Verifica</span><span>2. Reporta</span><span>3. Valida</span><span>4. Ubica</span><span>5. Ayuda</span>
       </div>
 
-      <div class="photo-slider" aria-label="Galería de imágenes SKANO en movimiento">
+      <div class="photo-slider reveal" aria-label="Galería de imágenes SKANO en movimiento">
         <div class="photo-track">
           <article class="photo-card"><img class="photo-bg" src="../img/galeria-1.jpg" alt=""><img class="photo-main" src="../img/galeria-1.jpg" alt="Detecta vehículos robados"><div class="photo-label">Detecta vehículos robados <span>En tiempo real</span></div></article>
           <article class="photo-card"><img class="photo-bg" src="../img/galeria-2.jpg" alt=""><img class="photo-main" src="../img/galeria-2.jpg" alt="Reporta vehículos"><div class="photo-label">Reporta vehículos <span>En segundos</span></div></article>
@@ -574,6 +733,7 @@
           <article class="photo-card"><img class="photo-bg" src="../img/galeria-6.jpg" alt=""><img class="photo-main" src="../img/galeria-6.jpg" alt="Comunidad"><div class="photo-label">Encuentra vehículos robados <span>En Chile con la comunidad</span></div></article>
           <article class="photo-card"><img class="photo-bg" src="../img/galeria-7.jpg" alt=""><img class="photo-main" src="../img/galeria-7.jpg" alt="Verifica"><div class="photo-label">Verifica vehículos <span>En segundos</span></div></article>
           <article class="photo-card"><img class="photo-bg" src="../img/galeria-8.jpg" alt=""><img class="photo-main" src="../img/galeria-8.jpg" alt="Registro"><div class="photo-label">Completa tu registro <span>Verificación obligatoria</span></div></article>
+
           <article class="photo-card"><img class="photo-bg" src="../img/galeria-1.jpg" alt=""><img class="photo-main" src="../img/galeria-1.jpg" alt="Detecta vehículos robados"><div class="photo-label">Detecta vehículos robados <span>En tiempo real</span></div></article>
           <article class="photo-card"><img class="photo-bg" src="../img/galeria-2.jpg" alt=""><img class="photo-main" src="../img/galeria-2.jpg" alt="Reporta vehículos"><div class="photo-label">Reporta vehículos <span>En segundos</span></div></article>
           <article class="photo-card"><img class="photo-bg" src="../img/galeria-3.jpg" alt=""><img class="photo-main" src="../img/galeria-3.jpg" alt="Responsabilidad"><div class="photo-label">Reporta con responsabilidad <span>Comunidad segura</span></div></article>
@@ -588,7 +748,7 @@
 
     <section class="section-light" id="descarga">
       <div class="container">
-        <div class="register-box">
+        <div class="register-box reveal">
           <div class="register-content">
             <div class="kicker">Descarga SKANO</div>
             <h2>Más personas observando, más posibilidades de recuperar</h2>
@@ -606,7 +766,7 @@
 
   <footer class="social-footer">
     <div class="container footer-grid">
-      <div>
+      <div class="reveal">
         <div class="footer-brand">
           <img src="../img/skano-logo.png" alt="SKANO">
           <span>SKANO</span>
@@ -614,7 +774,7 @@
         <p class="footer-text">Reporta seguro, los buenos somos más. Plataforma chilena de seguridad colaborativa para consultar patentes, registrar vehículos robados y recibir alertas verificadas.</p>
       </div>
 
-      <div class="socials" aria-label="Redes sociales SKANO">
+      <div class="socials reveal" aria-label="Redes sociales SKANO">
         <a class="social" href="https://www.tiktok.com/@skanooficial" target="_blank" rel="noopener" title="TikTok">♪</a>
         <a class="social" href="https://www.instagram.com/skano.oficial" target="_blank" rel="noopener" title="Instagram">◎</a>
         <a class="social" href="https://www.facebook.com/" target="_blank" rel="noopener" title="Facebook">f</a>
@@ -642,6 +802,21 @@
     if(menuBtn && navlinks){
       menuBtn.addEventListener("click", () => navlinks.classList.toggle("open"));
     }
+
+    const revealItems = document.querySelectorAll(".reveal");
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add("show");
+        }
+      });
+    }, {
+      threshold: 0.14,
+      rootMargin: "0px 0px -80px 0px"
+    });
+
+    revealItems.forEach(item => revealObserver.observe(item));
   </script>
 </body>
 </html>
+
