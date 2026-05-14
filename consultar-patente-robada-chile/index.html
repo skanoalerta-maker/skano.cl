@@ -1,1 +1,405 @@
-sassa
+# consultar-patente-robada-chile.html
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Consultar Patente Robada Chile | SKANO</title>
+  <meta name="description" content="Consulta patentes y detecta vehículos con encargo por robo en Chile utilizando SKANO. Plataforma chilena de seguridad colaborativa." />
+  <meta name="keywords" content="consultar patente robada chile, autos robados chile, detectar vehiculos robados, app autos robados, SKANO" />
+
+  <meta property="og:title" content="Consultar Patente Robada Chile | SKANO" />
+  <meta property="og:description" content="Detecta vehículos con encargo por robo en Chile utilizando SKANO." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://skano.cl/consultar-patente-robada-chile.html" />
+  <meta property="og:image" content="https://skano.cl/img/og-skano.jpg" />
+
+  <link rel="icon" href="img/logo.png" />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #020617;
+      color: white;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 24px;
+      background:
+        linear-gradient(rgba(2,6,23,.86), rgba(2,6,23,.95)),
+        url('img/bg-seguridad.jpg') center/cover no-repeat;
+      position: relative;
+    }
+
+    .hero-content {
+      max-width: 1200px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 60px;
+      align-items: center;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: rgba(37,99,235,.18);
+      border: 1px solid rgba(96,165,250,.4);
+      color: #93c5fd;
+      margin-bottom: 24px;
+      font-size: 14px;
+      letter-spacing: .5px;
+    }
+
+    h1 {
+      font-size: clamp(48px, 7vw, 88px);
+      line-height: .95;
+      margin-bottom: 24px;
+      font-weight: 900;
+    }
+
+    .blue {
+      color: #38bdf8;
+    }
+
+    .hero p {
+      color: #cbd5e1;
+      font-size: 18px;
+      max-width: 620px;
+      margin-bottom: 34px;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .btn {
+      padding: 16px 28px;
+      border-radius: 14px;
+      font-weight: 700;
+      transition: .3s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, #0ea5e9, #2563eb);
+      color: white;
+      box-shadow: 0 0 35px rgba(37,99,235,.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 45px rgba(56,189,248,.55);
+    }
+
+    .btn-secondary {
+      border: 1px solid rgba(255,255,255,.15);
+      background: rgba(255,255,255,.05);
+      color: white;
+    }
+
+    .phone {
+      width: 100%;
+      max-width: 440px;
+      margin: auto;
+      filter: drop-shadow(0 0 45px rgba(14,165,233,.35));
+    }
+
+    section {
+      padding: 100px 24px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .section-title {
+      font-size: 42px;
+      margin-bottom: 20px;
+      font-weight: 800;
+    }
+
+    .section-text {
+      color: #cbd5e1;
+      max-width: 760px;
+      margin-bottom: 50px;
+      font-size: 18px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: rgba(15,23,42,.7);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 24px;
+      padding: 30px;
+      backdrop-filter: blur(14px);
+      transition: .3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(56,189,248,.4);
+      box-shadow: 0 0 35px rgba(14,165,233,.12);
+    }
+
+    .card h3 {
+      margin-bottom: 14px;
+      font-size: 24px;
+    }
+
+    .card p {
+      color: #cbd5e1;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 22px;
+      margin-top: 40px;
+    }
+
+    .step {
+      background: rgba(15,23,42,.72);
+      padding: 28px;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.05);
+    }
+
+    .step-number {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: linear-gradient(90deg, #0ea5e9, #2563eb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      margin-bottom: 18px;
+      font-size: 20px;
+    }
+
+    .cta {
+      text-align: center;
+      background: linear-gradient(180deg, rgba(14,165,233,.12), rgba(37,99,235,.08));
+      border-top: 1px solid rgba(255,255,255,.05);
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+
+    .cta h2 {
+      font-size: 52px;
+      margin-bottom: 20px;
+    }
+
+    footer {
+      padding: 50px 24px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 14px;
+      border-top: 1px solid rgba(255,255,255,.05);
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 58px;
+      }
+
+      .section-title {
+        font-size: 34px;
+      }
+
+      .cta h2 {
+        font-size: 38px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="hero">
+    <div class="hero-content">
+
+      <div>
+        <span class="tag">🚨 APP CHILENA DE SEGURIDAD COLABORATIVA</span>
+
+        <h1>
+          Consulta una <span class="blue">patente robada</span><br>
+          en Chile
+        </h1>
+
+        <p>
+          SKANO permite detectar vehículos con encargo por robo,
+          validar patentes y reportar avistamientos desde el celular.
+          Una plataforma chilena enfocada en seguridad colaborativa.
+        </p>
+
+        <div class="buttons">
+          <a href="https://play.google.com/store/apps/details?id=cl.skano.app" class="btn btn-primary">
+            Descargar SKANO
+          </a>
+
+          <a href="index.html" class="btn btn-secondary">
+            Volver al inicio
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <img src="img/mockup-skano.png" alt="SKANO App" class="phone">
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+
+      <h2 class="section-title">
+        ¿Cómo funciona SKANO?
+      </h2>
+
+      <p class="section-text">
+        SKANO fue creada para ayudar a detectar vehículos robados mediante una comunidad activa.
+        La plataforma permite verificar patentes, generar alertas y colaborar de forma segura.
+      </p>
+
+      <div class="steps">
+
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Ingresa patente</h3>
+          <p>Consulta rápidamente un vehículo desde la aplicación.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Validación</h3>
+          <p>SKANO verifica información y estados del vehículo.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Reporte seguro</h3>
+          <p>El usuario puede reportar sin confrontación directa.</p>
+        </div>
+
+        <div class="step">
+          <div class="step-number">4</div>
+          <h3>Alerta</h3>
+          <p>El sistema puede generar avisos y notificaciones.</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+
+      <h2 class="section-title">
+        ¿Por qué usar una app para detectar autos robados?
+      </h2>
+
+      <p class="section-text">
+        En Chile el robo de vehículos sigue aumentando y muchas veces los vehículos permanecen estacionados o escondidos durante horas.
+        SKANO busca aumentar las posibilidades de detección utilizando más ojos observando en terreno.
+      </p>
+
+      <div class="grid">
+
+        <div class="card">
+          <h3>📍 Comunidad activa</h3>
+          <p>Más personas observando significa más posibilidades de detectar vehículos robados.</p>
+        </div>
+
+        <div class="card">
+          <h3>🛡️ Reporte protegido</h3>
+          <p>La plataforma incorpora medidas de seguridad y validación de identidad.</p>
+        </div>
+
+        <div class="card">
+          <h3>📲 Tecnología móvil</h3>
+          <p>Todo funciona directamente desde el celular y en tiempo real.</p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="container">
+
+      <h2>
+        Descarga SKANO y ayuda a detectar vehículos robados
+      </h2>
+
+      <p class="section-text" style="margin:auto auto 40px auto;">
+        Plataforma chilena enfocada en seguridad colaborativa y detección preventiva.
+      </p>
+
+      <a href="https://play.google.com/store/apps/details?id=cl.skano.app" class="btn btn-primary">
+        Descargar para Android
+      </a>
+
+    </div>
+  </section>
+
+  <footer>
+    © 2026 SKANO · Seguridad colaborativa en Chile · www.skano.cl
+  </footer>
+
+</body>
+</html>
+```
+
+## Qué mejora esta nueva página
+
+* Mucho más limpia visualmente.
+* Más enfocada en SEO.
+* Menos texto defensivo.
+* Más sensación startup/premium.
+* Mejor lectura en celular.
+* Más clara para Google.
+* Más enfocada en conversión.
+
+## Próximo paso recomendado
+
+Crear después:
+
+* buscar-autos-robados-chile.html
+* detectar-autos-robados.html
+* seguridad-estacionamientos.html
+* reportar-auto-robado.html
+
+manteniendo la misma estética premium.
