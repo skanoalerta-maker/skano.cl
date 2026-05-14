@@ -195,6 +195,300 @@
     .proof-card strong{display:block;font-size:1rem;color:#071421}
     .proof-card span{display:block;margin-top:5px;color:#607086;font-size:.79rem;font-weight:730;line-height:1.35}
 
+    /* =========================================================
+       HERO - BARRA DE ESTADO APP / SENSACIÓN STARTUP
+       Aquí se controla la fila que dice Red activa, GPS seguro, App chilena.
+       Sirve para que el hero se sienta más como producto funcional.
+       ========================================================= */
+    .hero-live-strip{
+      display:flex;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:22px;
+      max-width:720px;
+    }
+
+    .hero-live-pill{
+      position:relative;
+      display:inline-flex;
+      align-items:center;
+      gap:9px;
+      min-height:40px;
+      padding:10px 14px;
+      border-radius:999px;
+      color:#0b2340;
+      font-size:.78rem;
+      font-weight:950;
+      letter-spacing:.035em;
+      text-transform:uppercase;
+      background:rgba(255,255,255,.72);
+      border:1px solid rgba(7,139,255,.16);
+      box-shadow:0 14px 34px rgba(0,35,90,.08);
+      backdrop-filter:blur(14px);
+      overflow:hidden;
+    }
+
+    .hero-live-pill::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:linear-gradient(120deg,transparent,rgba(0,215,255,.12),transparent);
+      transform:translateX(-130%);
+      animation:microShine 7s ease-in-out infinite;
+    }
+
+    .live-dot{
+      width:9px;
+      height:9px;
+      border-radius:999px;
+      background:#22c55e;
+      box-shadow:0 0 0 0 rgba(34,197,94,.60);
+      animation:livePulse 1.8s ease-in-out infinite;
+    }
+
+    .hero-live-pill.chile{
+      color:#073b76;
+      border-color:rgba(7,139,255,.22);
+    }
+
+    /* =========================================================
+       SECCIÓN FLUJO - MEJORA VISUAL LIMPIA
+       Mantiene fondo claro, pero agrega sensación app/producto.
+       ========================================================= */
+    .section-light{
+      background:
+        radial-gradient(circle at 12% 18%,rgba(0,215,255,.16),transparent 30%),
+        radial-gradient(circle at 88% 20%,rgba(7,139,255,.12),transparent 26%),
+        linear-gradient(180deg,#f6fbff 0%,#eef7ff 100%);
+    }
+
+    .step{
+      isolation:isolate;
+    }
+
+    .step::after{
+      content:"";
+      position:absolute;
+      left:26px;
+      right:26px;
+      bottom:0;
+      height:3px;
+      border-radius:999px;
+      background:linear-gradient(90deg,var(--blue),var(--cyan));
+      opacity:.72;
+      transform:scaleX(.32);
+      transform-origin:left;
+      transition:.35s ease;
+    }
+
+    .step:hover::after{
+      transform:scaleX(1);
+    }
+
+    .step h3{
+      letter-spacing:-.025em;
+    }
+
+    /* =========================================================
+       NUEVA FRANJA - INFRAESTRUCTURA SKANO
+       Separación visual entre flujo e infraestructura funcional.
+       Aquí puedes cambiar textos visuales de conexión app, cloud, alertas.
+       ========================================================= */
+    .infra-band{
+      margin-top:34px;
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:22px;
+      align-items:stretch;
+    }
+
+    .infra-panel{
+      position:relative;
+      overflow:hidden;
+      border-radius:34px;
+      padding:30px;
+      background:
+        linear-gradient(135deg,rgba(255,255,255,.86),rgba(255,255,255,.62));
+      border:1px solid rgba(7,139,255,.13);
+      box-shadow:0 28px 76px rgba(0,45,90,.11);
+      backdrop-filter:blur(18px);
+    }
+
+    .infra-panel::before{
+      content:"";
+      position:absolute;
+      inset:auto -40px -70px auto;
+      width:210px;
+      height:210px;
+      border-radius:999px;
+      background:radial-gradient(circle,rgba(0,215,255,.22),transparent 68%);
+      pointer-events:none;
+    }
+
+    .infra-panel h3{
+      position:relative;
+      font-size:1.45rem;
+      font-weight:950;
+      letter-spacing:-.045em;
+      color:#071421;
+      margin-bottom:10px;
+    }
+
+    .infra-panel p{
+      position:relative;
+      color:#607086;
+      line-height:1.76;
+      font-weight:620;
+      max-width:760px;
+    }
+
+    .infra-mini-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+      margin-top:22px;
+      position:relative;
+    }
+
+    .infra-mini{
+      min-height:96px;
+      border-radius:22px;
+      padding:16px;
+      background:rgba(6,20,38,.88);
+      color:#fff;
+      border:1px solid rgba(0,215,255,.14);
+      box-shadow:0 18px 48px rgba(0,0,0,.16);
+    }
+
+    .infra-mini span{
+      display:block;
+      color:#00d7ff;
+      font-size:.72rem;
+      font-weight:950;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      margin-bottom:8px;
+    }
+
+    .infra-mini strong{
+      display:block;
+      font-size:.92rem;
+      line-height:1.25;
+    }
+
+    .infra-terminal{
+      border-radius:34px;
+      padding:24px;
+      background:linear-gradient(180deg,#07111f,#061426);
+      border:1px solid rgba(0,215,255,.16);
+      box-shadow:0 30px 90px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.05);
+      color:white;
+      overflow:hidden;
+      position:relative;
+    }
+
+    .infra-terminal::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(90deg,rgba(0,215,255,.055) 1px,transparent 1px),
+        linear-gradient(180deg,rgba(0,215,255,.04) 1px,transparent 1px);
+      background-size:32px 32px;
+      mask-image:linear-gradient(180deg,#000,transparent);
+      opacity:.72;
+    }
+
+    .terminal-row{
+      position:relative;
+      z-index:2;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:13px 0;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      color:rgba(255,255,255,.78);
+      font-size:.86rem;
+      font-weight:850;
+    }
+
+    .terminal-row:last-child{border-bottom:0}
+
+    .terminal-state{
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      color:#8cf7ff;
+      font-weight:950;
+      white-space:nowrap;
+    }
+
+    .terminal-state::before{
+      content:"";
+      width:8px;
+      height:8px;
+      border-radius:999px;
+      background:#22c55e;
+      box-shadow:0 0 18px rgba(34,197,94,.80);
+    }
+
+    /* =========================================================
+       PANEL WEB SKANO - MOVIMIENTO MÁS VIVO
+       Se mueve en línea suave, no queda estático.
+       ========================================================= */
+    @keyframes panelFloat{
+      0%,100%{ transform:scale(.78) translate(0,0); }
+      25%{ transform:scale(.78) translate(-10px,-4px); }
+      50%{ transform:scale(.78) translate(-18px,0); }
+      75%{ transform:scale(.78) translate(-10px,5px); }
+    }
+
+    /* =========================================================
+       FOOTER - MÁS STARTUP / MÁS MARCA
+       Pequeña mejora de estructura sin ensuciar.
+       ========================================================= */
+    .footer-brand-wrap{
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      gap:0;
+    }
+
+    .footer-claim{
+      margin-top:18px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .footer-claim span{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 13px;
+      border-radius:999px;
+      color:rgba(255,255,255,.78);
+      background:rgba(255,255,255,.055);
+      border:1px solid rgba(255,255,255,.10);
+      font-size:.78rem;
+      font-weight:900;
+    }
+
+    @keyframes microShine{
+      0%,68%{transform:translateX(-130%);opacity:0}
+      76%{opacity:.9}
+      100%{transform:translateX(130%);opacity:0}
+    }
+
+    @keyframes livePulse{
+      0%{box-shadow:0 0 0 0 rgba(34,197,94,.60)}
+      70%{box-shadow:0 0 0 9px rgba(34,197,94,0)}
+      100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}
+    }
+
+
     .visual{position:relative;min-height:590px;display:flex;align-items:center;justify-content:center}
     .surveillance{
       position:relative;z-index:4;width:min(660px,100%);aspect-ratio:16/9;
@@ -349,8 +643,10 @@
     .hero-access-btn.disabled{ pointer-events:none; }
 
     @keyframes panelFloat{
-      0%,100%{ transform:scale(.78) translateY(0); }
-      50%{ transform:scale(.78) translateY(-10px); }
+      0%,100%{ transform:scale(.78) translate(0,0); }
+      25%{ transform:scale(.78) translate(-10px,-4px); }
+      50%{ transform:scale(.78) translate(-18px,0); }
+      75%{ transform:scale(.78) translate(-10px,5px); }
     }
 
     /* SECTIONS */
@@ -602,6 +898,16 @@
       .mobile-cta{display:block}
       .footer-bottom{padding-bottom:74px}
     }
+
+    /* =========================================================
+       RESPONSIVE NUEVA INFRAESTRUCTURA
+       Controla cómo se ordena el bloque App/Seguridad/Red en tablet y móvil.
+       ========================================================= */
+    @media(max-width:900px){
+      .infra-band{grid-template-columns:1fr}
+      .infra-mini-grid{grid-template-columns:1fr}
+    }
+
     @media(prefers-reduced-motion:reduce){
       .proof-card,.step,.glass-card,.surveillance,.float,.photo-track,.hero-bg,.section-dark::before,.gallery::before,.services-section::before{animation:none!important}
       .reveal,.reveal-left,.reveal-right{opacity:1!important;transform:none!important;filter:none!important}
@@ -696,6 +1002,17 @@
             <div class="proof-card"><strong>Reporte seguro</strong><span>PIN, selfie y ubicación protegida.</span></div>
             <div class="proof-card"><strong>Red activa</strong><span>Más ojos en terreno para ayudar.</span></div>
           </div>
+
+          <!-- =========================================================
+               HERO - ESTADOS FUNCIONALES DE LA APP
+               Cambia estos textos si quieres mostrar otros estados reales.
+               ========================================================= -->
+          <div class="hero-live-strip">
+            <div class="hero-live-pill"><span class="live-dot"></span> Red SKANO activa</div>
+            <div class="hero-live-pill">📍 GPS seguro</div>
+            <div class="hero-live-pill">🔐 Validación con selfie</div>
+            <div class="hero-live-pill chile">🇨🇱 App chilena</div>
+          </div>
         </div>
 
         <div class="visual reveal reveal-right" aria-label="Visual SKANO detección vehicular">
@@ -761,6 +1078,34 @@
           <article class="step reveal" style="--delay:.14s"><div class="num">2</div><h3>Valida encargo</h3><p>SKANO revisa el estado del vehículo y evita reportes cuando no corresponde.</p></article>
           <article class="step reveal" style="--delay:.23s"><div class="num">3</div><h3>Reporte protegido</h3><p>El reporte exige protocolo seguro, ubicación, PIN y selfie para reducir abuso.</p></article>
           <article class="step reveal" style="--delay:.32s"><div class="num">4</div><h3>Alerta al dueño</h3><p>El dueño recibe información útil sin exponer datos personales del reportante.</p></article>
+        </div>
+
+        <!-- =========================================================
+             BLOQUE INFRAESTRUCTURA SKANO
+             Este bloque separa visualmente la app del flujo.
+             Úsalo para explicar que SKANO no es solo página, es sistema.
+             ========================================================= -->
+        <div class="infra-band reveal">
+          <div class="infra-panel">
+            <h3>Infraestructura pensada para operar como plataforma</h3>
+            <p>
+              SKANO conecta consulta de patente, validación de identidad, ubicación segura,
+              alertas al dueño y trazabilidad administrativa en un flujo simple para el usuario.
+            </p>
+
+            <div class="infra-mini-grid">
+              <div class="infra-mini"><span>App</span><strong>Consulta y reporte desde el celular.</strong></div>
+              <div class="infra-mini"><span>Seguridad</span><strong>PIN, selfie, GPS y protocolo.</strong></div>
+              <div class="infra-mini"><span>Red</span><strong>Comunidad activa en terreno.</strong></div>
+            </div>
+          </div>
+
+          <div class="infra-terminal" aria-label="Estado funcional SKANO">
+            <div class="terminal-row"><span>Validación patente</span><strong class="terminal-state">Activa</strong></div>
+            <div class="terminal-row"><span>Protocolo reportante</span><strong class="terminal-state">Seguro</strong></div>
+            <div class="terminal-row"><span>Alerta al dueño</span><strong class="terminal-state">Preparada</strong></div>
+            <div class="terminal-row"><span>Panel empresa/parquímetros</span><strong class="terminal-state">Escalable</strong></div>
+          </div>
         </div>
       </div>
     </section>
