@@ -2771,6 +2771,285 @@ body::before{
   }
 }
 
+
+/* =========================================================
+   FOOTER PREMIUM SKANO - MISMO ESTILO VISUAL DEL INDEX NICHO
+   ========================================================= */
+.footer{
+  position: relative !important;
+  overflow: hidden !important;
+  isolation: isolate !important;
+  padding: 96px 0 70px !important;
+  margin: 0 !important;
+  border-top: 1px solid rgba(72, 169, 255, .20) !important;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(0, 141, 255, .20), transparent 34%),
+    radial-gradient(circle at 84% 24%, rgba(0, 220, 255, .14), transparent 30%),
+    linear-gradient(135deg, rgba(3, 12, 36, .98) 0%, rgba(4, 25, 58, .96) 50%, rgba(3, 18, 42, .98) 100%) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+
+.footer::before{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  z-index:0 !important;
+  pointer-events:none !important;
+  background:
+    linear-gradient(90deg, rgba(0,207,255,.045) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(0,207,255,.035) 1px, transparent 1px) !important;
+  background-size: 72px 72px !important;
+  opacity:.36 !important;
+}
+
+.footer::after{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  z-index:0 !important;
+  pointer-events:none !important;
+  background:
+    linear-gradient(155deg, transparent 10%, rgba(0,207,255,.13) 10.4%, transparent 10.8%),
+    linear-gradient(168deg, transparent 30%, rgba(0,207,255,.11) 30.3%, transparent 30.7%),
+    linear-gradient(12deg, transparent 60%, rgba(45,125,255,.12) 60.2%, transparent 60.6%),
+    radial-gradient(circle at 72% 44%, rgba(0,207,255,.12), transparent 38%) !important;
+  opacity:.78 !important;
+}
+
+.footer-premium-wrap{
+  position:relative !important;
+  z-index:2 !important;
+  width:min(1240px, calc(100% - 42px)) !important;
+  margin:0 auto !important;
+}
+
+.footer-premium-main{
+  display:grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, .85fr) !important;
+  gap: clamp(42px, 7vw, 120px) !important;
+  align-items:start !important;
+}
+
+.footer-brand-row{
+  display:flex !important;
+  align-items:center !important;
+  gap:22px !important;
+  margin-bottom:26px !important;
+}
+
+.footer-brand-logo{
+  width:72px !important;
+  height:72px !important;
+  object-fit:contain !important;
+  border-radius:4px !important;
+  filter: drop-shadow(0 0 18px rgba(0,207,255,.28)) !important;
+}
+
+.footer-brand-name{
+  margin:0 !important;
+  color:#ffffff !important;
+  font-size: clamp(1.65rem, 3vw, 2.15rem) !important;
+  font-weight:950 !important;
+  letter-spacing:.12em !important;
+  text-transform:uppercase !important;
+  text-shadow:0 0 26px rgba(0,207,255,.16) !important;
+}
+
+.footer-premium-text{
+  max-width:620px !important;
+  margin:0 !important;
+  color:rgba(255,255,255,.76) !important;
+  font-size:1.02rem !important;
+  line-height:1.85 !important;
+  font-weight:750 !important;
+  text-shadow:0 14px 34px rgba(0,0,0,.38) !important;
+}
+
+.footer-social-title{
+  margin:0 0 24px !important;
+  color:#77bfff !important;
+  font-size:.95rem !important;
+  font-weight:950 !important;
+  letter-spacing:.18em !important;
+  text-transform:uppercase !important;
+}
+
+.footer-social-row{
+  display:flex !important;
+  align-items:center !important;
+  flex-wrap:wrap !important;
+  gap:18px !important;
+  margin-bottom:26px !important;
+}
+
+.footer-social-btn{
+  width:62px !important;
+  height:62px !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  border-radius:999px !important;
+  color:#fff !important;
+  text-decoration:none !important;
+  font-size:1.55rem !important;
+  font-weight:950 !important;
+  border:1px solid rgba(255,255,255,.12) !important;
+  box-shadow:0 18px 44px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.16) !important;
+  transition: transform .22s ease, filter .22s ease, box-shadow .22s ease !important;
+}
+
+.footer-social-btn:hover{
+  transform:translateY(-4px) scale(1.04) !important;
+  filter:brightness(1.12) !important;
+  box-shadow:0 24px 58px rgba(0,0,0,.42), 0 0 26px rgba(0,207,255,.12) !important;
+}
+
+.footer-social-btn.tiktok{ background:radial-gradient(circle at 68% 70%, #ff2d55 0 18%, transparent 19%), linear-gradient(135deg, #030712, #111827) !important; }
+.footer-social-btn.instagram{ background:radial-gradient(circle at 28% 84%, #ffd166, transparent 28%), radial-gradient(circle at 72% 20%, #6c5ce7, transparent 34%), linear-gradient(135deg, #f97316, #d946ef, #2563eb) !important; }
+.footer-social-btn.facebook{ background:linear-gradient(135deg, #1877f2, #0b5fca) !important; font-family:Arial, sans-serif !important; }
+.footer-social-btn.youtube{ background:linear-gradient(135deg, #ff2020, #c91111) !important; font-size:1.35rem !important; }
+.footer-social-btn.kick{ background:linear-gradient(135deg, #4cff00, #18b800) !important; color:#04120a !important; }
+
+.footer-country-badge{
+  width:max-content !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  gap:14px !important;
+  min-height:60px !important;
+  padding:0 22px !important;
+  border-radius:17px !important;
+  color:#ffffff !important;
+  font-weight:950 !important;
+  letter-spacing:.02em !important;
+  background:linear-gradient(180deg, rgba(8,28,70,.62), rgba(5,18,48,.42)) !important;
+  border:1px solid rgba(0,132,255,.45) !important;
+  box-shadow:0 18px 46px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.08) !important;
+  backdrop-filter:blur(16px) !important;
+  -webkit-backdrop-filter:blur(16px) !important;
+}
+
+.footer-chile-flag{
+  width:38px !important;
+  height:26px !important;
+  display:inline-grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  grid-template-rows: 1fr 1fr !important;
+  overflow:hidden !important;
+  border-radius:4px !important;
+  box-shadow:0 0 0 1px rgba(255,255,255,.18) !important;
+}
+
+.footer-chile-flag span:nth-child(1){ background:#0645ad !important; position:relative !important; }
+.footer-chile-flag span:nth-child(1)::after{ content:"★"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#fff; font-size:9px; }
+.footer-chile-flag span:nth-child(2){ background:#fff !important; }
+.footer-chile-flag span:nth-child(3),
+.footer-chile-flag span:nth-child(4){ background:#df1b2f !important; }
+
+.footer-premium-line{
+  position:relative !important;
+  z-index:2 !important;
+  height:1px !important;
+  width:100% !important;
+  margin:48px 0 34px !important;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.24), transparent) !important;
+}
+
+.footer-premium-bottom{
+  position:relative !important;
+  z-index:2 !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:22px !important;
+  color:rgba(255,255,255,.62) !important;
+  font-weight:750 !important;
+}
+
+.footer-premium-copy{
+  margin:0 !important;
+  color:rgba(255,255,255,.64) !important;
+}
+
+.footer-appfactory{
+  display:flex !important;
+  align-items:center !important;
+  gap:8px !important;
+  color:rgba(255,255,255,.70) !important;
+  font-weight:850 !important;
+  white-space:nowrap !important;
+}
+
+.footer-appfactory strong{
+  color:#00a6ff !important;
+  font-weight:950 !important;
+}
+
+.footer-appfactory img{
+  height:22px !important;
+  width:auto !important;
+  object-fit:contain !important;
+  filter: drop-shadow(0 0 8px rgba(0,207,255,.18)) !important;
+}
+
+@media (max-width: 860px){
+  .footer{
+    padding:72px 0 110px !important;
+  }
+
+  .footer-premium-main{
+    grid-template-columns:1fr !important;
+    gap:40px !important;
+  }
+
+  .footer-social-area{
+    text-align:left !important;
+  }
+
+  .footer-premium-bottom{
+    flex-direction:column !important;
+    align-items:flex-start !important;
+  }
+
+  .footer-social-btn{
+    width:56px !important;
+    height:56px !important;
+  }
+
+  .footer-appfactory{
+    white-space:normal !important;
+  }
+}
+
+@media (max-width: 520px){
+  .footer-premium-wrap{
+    width:min(100% - 28px, 1240px) !important;
+  }
+
+  .footer-brand-row{
+    gap:16px !important;
+  }
+
+  .footer-brand-logo{
+    width:58px !important;
+    height:58px !important;
+  }
+
+  .footer-social-row{
+    gap:12px !important;
+  }
+
+  .footer-social-btn{
+    width:50px !important;
+    height:50px !important;
+    font-size:1.2rem !important;
+  }
+
+  .footer-country-badge{
+    width:100% !important;
+    justify-content:center !important;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -3715,42 +3994,54 @@ body::before{
   }
 </script>
 
-<!-- ================= MENSAJE FINAL ================= -->
-<section class="final-message">
-  <div class="container">
-    <div class="final-card reveal">
-      <h3 class="final-slogan">“Reporta seguro, los buenos somos más.”</h3>
-
-      <p class="final-text">
-        Con tu ayuda, SKANO puede marcar la diferencia.
-        Cada reporte, cada mensaje y cada apoyo de la comunidad nos acerca a convertir
-        SKANO en la mejor aplicación para la búsqueda y recuperación de vehículos robados.
-      </p>
-
-      <p class="final-text subtle">
-        Porque cuando la tecnología y las personas se unen,
-        la seguridad se construye entre todos.
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- ================= FOOTER ================= -->
+<!-- ================= FOOTER PREMIUM ================= -->
 <footer class="footer">
-  <div class="container footer-grid">
-    <div>
-      <img src="/img/skano-logo.png" class="footer-logo" alt="Logo SKANO" />
-      <p class="footer-slogan">“Reporta seguro, los buenos somos más.”</p>
-    </div>
-    <div>
-      <p class="footer-copy">© 2025 SKANO – Todos los derechos reservados.</p>
-      <p class="footer-copy"><a href="/app-para-autos-robados-en-chile.html">Buscar autos robados en Chile</a></p>
-    </div>
-  </div>
+  <div class="footer-premium-wrap">
+    <div class="footer-premium-main">
+      <div class="footer-brand-area">
+        <div class="footer-brand-row">
+          <img src="/img/skano-logo.png" class="footer-brand-logo" alt="Logo SKANO" />
+          <h2 class="footer-brand-name">SKANO</h2>
+        </div>
 
-  <div class="appfactory-signature reveal" aria-label="App y página web desarrolladas por AppFactory Chile">
-    <span>App y página web desarrolladas por</span>
-    <img src="/img/appfactory-chile-logo.png" alt="AppFactory Chile by D&H" />
+        <p class="footer-premium-text">
+          Reporta seguro, los buenos somos más. Plataforma chilena de seguridad
+          colaborativa para consultar patentes, registrar vehículos robados y recibir
+          alertas verificadas.
+        </p>
+      </div>
+
+      <div class="footer-social-area">
+        <p class="footer-social-title">Síguenos en</p>
+
+        <div class="footer-social-row" aria-label="Redes sociales de SKANO">
+          <a class="footer-social-btn tiktok" href="https://www.tiktok.com/@skanooficial" target="_blank" rel="noopener noreferrer" aria-label="TikTok SKANO">♪</a>
+          <a class="footer-social-btn instagram" href="https://www.instagram.com/skano.oficial" target="_blank" rel="noopener noreferrer" aria-label="Instagram SKANO">◎</a>
+          <a class="footer-social-btn facebook" href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook SKANO">f</a>
+          <a class="footer-social-btn youtube" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" aria-label="YouTube SKANO">▶</a>
+          <a class="footer-social-btn kick" href="https://kick.com/skanolive" target="_blank" rel="noopener noreferrer" aria-label="Kick SKANO">K</a>
+        </div>
+
+        <div class="footer-country-badge" aria-label="Aplicación chilena">
+          <span class="footer-chile-flag" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </span>
+          <span>APP CHILE</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-premium-line"></div>
+
+    <div class="footer-premium-bottom">
+      <p class="footer-premium-copy">© 2026 SKANO · Seguridad colaborativa en Chile.</p>
+
+      <div class="footer-appfactory">
+        <span>Desarrollado por</span>
+        <strong>AppFactory Chile</strong>
+        <img src="/img/appfactory-chile-logo.png" alt="AppFactory Chile" />
+      </div>
+    </div>
   </div>
 </footer>
 
