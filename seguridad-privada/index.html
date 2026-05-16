@@ -48,8 +48,7 @@
   }
   </script>
 
-  <!-- CSS externo desactivado para evitar conflicto visual con estilos internos -->
-  <!-- <link rel="stylesheet" href="/style.css" /> -->
+  <link rel="stylesheet" href="/style.css" />
   <link rel="icon" type="image/png" href="/img/skano-logo.png" />
 
   <style>
@@ -3271,15 +3270,30 @@ body::before{
   
 
 /* =========================================================
-   SKANO LÍNEAS PREMIUM DEFINITIVAS
-   Archivo completo corregido:
-   - líneas curvas reales tipo referencia
-   - no cruzan toda la pantalla
-   - no son fotos ni archivos externos
-   - sin logos repetidos en fondos
-   - glow azul eléctrico + magenta controlado
+   SKANO PATCH PREMIUM DEFINITIVO - LÍNEAS FINAS / NO DISCO
+   Implementado directamente en el archivo HTML.
+   - Sin imágenes nuevas.
+   - Sin diagonales largas cruzando la pantalla.
+   - Trazos cortos, curvos, limpios y tecnológicos.
+   - Azul eléctrico con toque magenta controlado.
    ========================================================= */
 
+/* Limpia el parche anterior demasiado invasivo */
+#que-es::before,
+#app::before,
+#portal::before,
+#documentos::before,
+#planes::before,
+#terminos::before,
+#recompensas::before,
+#contacto::before,
+.seo-content-section::before,
+.footer::before,
+.footer::after{
+  filter:none !important;
+}
+
+/* Base premium para secciones */
 #que-es,
 #app,
 #portal,
@@ -3288,13 +3302,17 @@ body::before{
 #terminos,
 #recompensas,
 #contacto,
-.seo-content-section,
-.footer{
+.seo-content-section{
   position:relative !important;
   overflow:hidden !important;
   isolation:isolate !important;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(0,122,255,.18), transparent 32%),
+    radial-gradient(circle at 86% 86%, rgba(0,217,255,.10), transparent 34%),
+    linear-gradient(135deg, rgba(3,12,36,.98) 0%, rgba(4,22,52,.96) 48%, rgba(3,13,34,.98) 100%) !important;
 }
 
+/* Ambiente sin logos repetidos */
 #que-es::after,
 #app::after,
 #portal::after,
@@ -3309,29 +3327,14 @@ body::before{
   inset:0 !important;
   z-index:0 !important;
   pointer-events:none !important;
-  background:none !important;
-  opacity:0 !important;
+  background:
+    radial-gradient(circle at 8% 12%, rgba(0,217,255,.10), transparent 22%),
+    radial-gradient(circle at 94% 88%, rgba(255,79,216,.07), transparent 24%) !important;
+  opacity:1 !important;
   filter:none !important;
 }
 
-/* Fondo premium limpio para las secciones */
-#que-es,
-#app,
-#portal,
-#documentos,
-#planes,
-#terminos,
-#recompensas,
-#contacto,
-.seo-content-section{
-  background:
-    radial-gradient(circle at 16% 18%, rgba(0,141,255,.20), transparent 34%),
-    radial-gradient(circle at 84% 22%, rgba(0,220,255,.11), transparent 30%),
-    radial-gradient(circle at 56% 92%, rgba(177,76,255,.08), transparent 34%),
-    linear-gradient(135deg, rgba(3,12,36,.99) 0%, rgba(4,25,58,.97) 50%, rgba(3,18,42,.99) 100%) !important;
-}
-
-/* Curvas cortas, finas y potentes: estilo de la referencia */
+/* Líneas premium: fragmentos curvos de esquina, NO cruzan toda la sección */
 #que-es::before,
 #app::before,
 #portal::before,
@@ -3346,36 +3349,58 @@ body::before{
   inset:0 !important;
   z-index:0 !important;
   pointer-events:none !important;
-  background:
-    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%201200%20720%22%20preserveAspectRatio%3D%22none%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22g1%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2300AFFF%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2224%25%22%20stop-color%3D%22%2300D9FF%22%20stop-opacity%3D%22.95%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2262%25%22%20stop-color%3D%22%2300AFFF%22%20stop-opacity%3D%22.72%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23FF4FD8%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22g2%22%20x1%3D%22100%25%22%20y1%3D%220%25%22%20x2%3D%220%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23FF4FD8%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2234%25%22%20stop-color%3D%22%23B14CFF%22%20stop-opacity%3D%22.80%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2262%25%22%20stop-color%3D%22%2300D9FF%22%20stop-opacity%3D%22.86%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%2300AFFF%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%3Cfilter%20id%3D%22glow%22%3E%0A%20%20%20%20%20%20%3CfeGaussianBlur%20stdDeviation%3D%224%22%20result%3D%22b%22/%3E%0A%20%20%20%20%20%20%3CfeMerge%3E%0A%20%20%20%20%20%20%20%20%3CfeMergeNode%20in%3D%22b%22/%3E%0A%20%20%20%20%20%20%20%20%3CfeMergeNode%20in%3D%22SourceGraphic%22/%3E%0A%20%20%20%20%20%20%3C/feMerge%3E%0A%20%20%20%20%3C/filter%3E%0A%20%20%3C/defs%3E%0A%0A%20%20%3C%21--%20Trazo%20superior%20izquierdo%3A%20entra%2C%20curva%20y%20desaparece%20--%3E%0A%20%20%3Cpath%20d%3D%22M%20-90%20175%20C%2080%2072%2C%20194%20115%2C%20342%20-42%22%0A%20%20%20%20%20%20%20%20fill%3D%22none%22%20stroke%3D%22url%28%23g1%29%22%20stroke-width%3D%223.2%22%0A%20%20%20%20%20%20%20%20stroke-linecap%3D%22round%22%20filter%3D%22url%28%23glow%29%22%20opacity%3D%22.92%22/%3E%0A%20%20%3Cpath%20d%3D%22M%20-36%20222%20C%2088%20150%2C%20184%20158%2C%20292%2052%22%0A%20%20%20%20%20%20%20%20fill%3D%22none%22%20stroke%3D%22%2300D9FF%22%20stroke-width%3D%221.2%22%0A%20%20%20%20%20%20%20%20stroke-linecap%3D%22round%22%20opacity%3D%22.36%22/%3E%0A%0A%20%20%3C%21--%20Trazo%20inferior%20derecho%3A%20corto%2C%20elegante%2C%20no%20cruza%20la%20secci%C3%B3n%20--%3E%0A%20%20%3Cpath%20d%3D%22M%20880%20760%20C%20996%20612%2C%201072%20608%2C%201308%20428%22%0A%20%20%20%20%20%20%20%20fill%3D%22none%22%20stroke%3D%22url%28%23g2%29%22%20stroke-width%3D%223.4%22%0A%20%20%20%20%20%20%20%20stroke-linecap%3D%22round%22%20filter%3D%22url%28%23glow%29%22%20opacity%3D%22.96%22/%3E%0A%20%20%3Cpath%20d%3D%22M%20954%20728%20C%201052%20650%2C%201122%20640%2C%201242%20544%22%0A%20%20%20%20%20%20%20%20fill%3D%22none%22%20stroke%3D%22%23FF4FD8%22%20stroke-width%3D%221.3%22%0A%20%20%20%20%20%20%20%20stroke-linecap%3D%22round%22%20opacity%3D%22.34%22/%3E%0A%3C/svg%3E") center center / 100% 100% no-repeat !important;
-  opacity:.86 !important;
+
+  background-image:
+    radial-gradient(520px 260px at -12% -26%,
+      transparent 61.8%,
+      rgba(0,175,255,.00) 62.0%,
+      rgba(0,175,255,.32) 62.18%,
+      rgba(0,217,255,.72) 62.36%,
+      rgba(0,175,255,.22) 62.58%,
+      transparent 62.95%
+    ),
+    radial-gradient(560px 300px at 116% 124%,
+      transparent 60.8%,
+      rgba(0,217,255,.00) 61.0%,
+      rgba(0,217,255,.42) 61.20%,
+      rgba(177,76,255,.52) 61.42%,
+      rgba(255,79,216,.34) 61.64%,
+      transparent 62.02%
+    ),
+    linear-gradient(135deg,
+      transparent 0 14%,
+      rgba(0,217,255,.30) 14.18%,
+      rgba(0,175,255,.00) 14.45%,
+      transparent 15% 100%
+    );
+
+  background-size:
+    42% 34%,
+    40% 34%,
+    22% 18%;
+
+  background-position:
+    left top,
+    right bottom,
+    left 4% top 0;
+
+  background-repeat:no-repeat !important;
+
+  opacity:.92 !important;
   filter:
-    drop-shadow(0 0 10px rgba(0,217,255,.55))
-    drop-shadow(0 0 22px rgba(0,175,255,.28))
-    drop-shadow(0 0 26px rgba(255,79,216,.18)) !important;
+    drop-shadow(0 0 6px rgba(0,217,255,.42))
+    drop-shadow(0 0 14px rgba(0,132,255,.20)) !important;
 }
 
-/* Que el contenido siempre quede encima */
-#que-es > .container,
-#app > .container,
-#portal > .container,
-#documentos > .container,
-#planes > .container,
-#terminos > .container,
-#recompensas > .container,
-#contacto > .container,
-.seo-content-section > .seo-content-card,
-.footer > .footer-premium-wrap{
-  position:relative !important;
-  z-index:2 !important;
-}
-
-/* Footer: curvas más visibles pero elegantes */
+/* Footer: mismo estilo fino y elegante del ejemplo, sin láser largo */
 .footer{
+  position:relative !important;
+  overflow:hidden !important;
+  isolation:isolate !important;
   background:
-    radial-gradient(circle at 18% 18%, rgba(0,141,255,.20), transparent 34%),
-    radial-gradient(circle at 84% 24%, rgba(0,220,255,.14), transparent 30%),
-    linear-gradient(135deg, rgba(3,12,36,.98) 0%, rgba(4,25,58,.96) 50%, rgba(3,18,42,.98) 100%) !important;
+    radial-gradient(circle at 18% 18%, rgba(0,132,255,.20), transparent 34%),
+    radial-gradient(circle at 82% 82%, rgba(0,217,255,.13), transparent 34%),
+    linear-gradient(135deg, rgba(3,12,36,.98), rgba(4,20,50,.96), rgba(3,10,28,.98)) !important;
 }
 
 .footer::before{
@@ -3385,10 +3410,30 @@ body::before{
   z-index:0 !important;
   pointer-events:none !important;
   background:
-    linear-gradient(90deg, rgba(0,207,255,.026) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(0,207,255,.020) 1px, transparent 1px) !important;
-  background-size:72px 72px !important;
-  opacity:.55 !important;
+    radial-gradient(760px 410px at -12% -24%,
+      transparent 61.5%,
+      rgba(0,175,255,.00) 61.75%,
+      rgba(0,175,255,.30) 61.95%,
+      #00AFFF 62.18%,
+      #00D9FF 62.38%,
+      rgba(0,175,255,.18) 62.64%,
+      transparent 63.10%
+    ),
+    radial-gradient(820px 460px at 112% 128%,
+      transparent 60.8%,
+      rgba(0,217,255,.00) 61.05%,
+      rgba(0,217,255,.38) 61.25%,
+      #00D9FF 61.46%,
+      rgba(177,76,255,.54) 61.68%,
+      rgba(255,79,216,.42) 61.90%,
+      transparent 62.35%
+    ) !important;
+  background-repeat:no-repeat !important;
+  opacity:.98 !important;
+  filter:
+    drop-shadow(0 0 7px rgba(0,217,255,.50))
+    drop-shadow(0 0 18px rgba(0,132,255,.22))
+    drop-shadow(0 0 20px rgba(255,79,216,.10)) !important;
 }
 
 .footer::after{
@@ -3398,15 +3443,31 @@ body::before{
   z-index:0 !important;
   pointer-events:none !important;
   background:
-    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%201400%20620%22%20preserveAspectRatio%3D%22none%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22a%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2300AFFF%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2222%25%22%20stop-color%3D%22%2300D9FF%22%20stop-opacity%3D%221%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2258%25%22%20stop-color%3D%22%2300AFFF%22%20stop-opacity%3D%22.78%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%2300AFFF%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22b%22%20x1%3D%22100%25%22%20y1%3D%220%25%22%20x2%3D%220%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23FF4FD8%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2228%25%22%20stop-color%3D%22%23FF4FD8%22%20stop-opacity%3D%22.95%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2252%25%22%20stop-color%3D%22%23B14CFF%22%20stop-opacity%3D%22.82%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2278%25%22%20stop-color%3D%22%2300D9FF%22%20stop-opacity%3D%22.92%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%2300AFFF%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%3Cfilter%20id%3D%22g%22%3E%0A%20%20%20%20%20%20%3CfeGaussianBlur%20stdDeviation%3D%224.2%22%20result%3D%22blur%22/%3E%0A%20%20%20%20%20%20%3CfeMerge%3E%0A%20%20%20%20%20%20%20%20%3CfeMergeNode%20in%3D%22blur%22/%3E%0A%20%20%20%20%20%20%20%20%3CfeMergeNode%20in%3D%22SourceGraphic%22/%3E%0A%20%20%20%20%20%20%3C/feMerge%3E%0A%20%20%20%20%3C/filter%3E%0A%20%20%3C/defs%3E%0A%0A%20%20%3Cpath%20d%3D%22M%20-120%20210%20C%2094%2048%2C%20270%20132%2C%20438%20-70%22%0A%20%20%20%20%20%20%20%20fill%3D%22none%22%20stroke%3D%22url%28%23a%29%22%20stroke-width%3D%223.4%22%0A%20%20%20%20%20%20%20%20stroke-linecap%3D%22round%22%20filter%3D%22url%28%23g%29%22%20opacity%3D%22.95%22/%3E%0A%20%20%3Cpath%20d%3D%22M%20-60%20274%20C%20118%20164%2C%20250%20182%2C%20392%2058%22%0A%20%20%20%20%20%20%20%20fill%3D%22none%22%20stroke%3D%22%2300D9FF%22%20stroke-width%3D%221.2%22%0A%20%20%20%20%20%20%20%20stroke-linecap%3D%22round%22%20opacity%3D%22.34%22/%3E%0A%0A%20%20%3Cpath%20d%3D%22M%20894%20668%20C%201014%20514%2C%201142%20554%2C%201510%20274%22%0A%20%20%20%20%20%20%20%20fill%3D%22none%22%20stroke%3D%22url%28%23b%29%22%20stroke-width%3D%223.6%22%0A%20%20%20%20%20%20%20%20stroke-linecap%3D%22round%22%20filter%3D%22url%28%23g%29%22%20opacity%3D%22.96%22/%3E%0A%20%20%3Cpath%20d%3D%22M%201018%20626%20C%201120%20528%2C%201206%20528%2C%201362%20404%22%0A%20%20%20%20%20%20%20%20fill%3D%22none%22%20stroke%3D%22%23FF4FD8%22%20stroke-width%3D%221.3%22%0A%20%20%20%20%20%20%20%20stroke-linecap%3D%22round%22%20opacity%3D%22.36%22/%3E%0A%3C/svg%3E") center center / 100% 100% no-repeat !important;
-  opacity:.98 !important;
-  filter:
-    drop-shadow(0 0 12px rgba(0,217,255,.70))
-    drop-shadow(0 0 24px rgba(177,76,255,.44))
-    drop-shadow(0 0 34px rgba(255,79,216,.24)) !important;
+    radial-gradient(circle at 7% 18%, rgba(0,217,255,.09), transparent 20%),
+    radial-gradient(circle at 92% 82%, rgba(255,79,216,.08), transparent 24%),
+    linear-gradient(90deg, rgba(0,207,255,.018) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(0,207,255,.014) 1px, transparent 1px) !important;
+  background-size:auto, auto, 84px 84px, 84px 84px !important;
+  opacity:.72 !important;
+  filter:none !important;
 }
 
-/* Tarjetas sobre las líneas, sin taparse ni ensuciarse */
+/* Las líneas siempre quedan detrás del contenido */
+#que-es > .container,
+#app > .container,
+#portal > .container,
+#documentos > .container,
+#planes > .container,
+#terminos > .container,
+#recompensas > .container,
+#contacto > .container,
+.seo-content-section > .seo-content-card,
+.footer-premium-wrap{
+  position:relative !important;
+  z-index:2 !important;
+}
+
+/* Tarjetas menos brillantes para que las líneas se vean finas, no ordinarias */
 .advanced-card,
 .portal-card,
 .portal-hero,
@@ -3417,13 +3478,23 @@ body::before{
 .info-card,
 .seo-content-card,
 .final-card,
-.hero-card,
 .hero-proof-item{
-  position:relative !important;
-  z-index:2 !important;
+  border-color:rgba(0,207,255,.14) !important;
+  box-shadow:
+    0 24px 70px rgba(0,0,0,.34),
+    inset 0 1px 0 rgba(255,255,255,.06) !important;
 }
 
-/* Responsive: reduce intensidad y tamaño visual de las curvas */
+/* Botón APP CHILE con glow limpio, no exagerado */
+.footer-country-badge{
+  border-color:rgba(0,175,255,.50) !important;
+  box-shadow:
+    0 0 10px rgba(0,217,255,.24),
+    0 16px 42px rgba(0,0,0,.32),
+    inset 0 1px 0 rgba(255,255,255,.10) !important;
+}
+
+/* Móvil: reduce aún más los trazos para que no ensucie */
 @media (max-width: 780px){
   #que-es::before,
   #app::before,
@@ -3434,273 +3505,134 @@ body::before{
   #recompensas::before,
   #contacto::before,
   .seo-content-section::before{
-    background:
-      url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%201200%20720%22%20preserveAspectRatio%3D%22none%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22g1%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2300AFFF%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2224%25%22%20stop-color%3D%22%2300D9FF%22%20stop-opacity%3D%22.95%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2262%25%22%20stop-color%3D%22%2300AFFF%22%20stop-opacity%3D%22.72%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23FF4FD8%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22g2%22%20x1%3D%22100%25%22%20y1%3D%220%25%22%20x2%3D%220%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23FF4FD8%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2234%25%22%20stop-color%3D%22%23B14CFF%22%20stop-opacity%3D%22.80%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2262%25%22%20stop-color%3D%22%2300D9FF%22%20stop-opacity%3D%22.86%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%2300AFFF%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%3Cfilter%20id%3D%22glow%22%3E%0A%20%20%20%20%20%20%3CfeGaussianBlur%20stdDeviation%3D%224%22%20result%3D%22b%22/%3E%0A%20%20%20%20%20%20%3CfeMerge%3E%0A%20%20%20%20%20%20%20%20%3CfeMergeNode%20in%3D%22b%22/%3E%0A%20%20%20%20%20%20%20%20%3CfeMergeNode%20in%3D%22SourceGraphic%22/%3E%0A%20%20%20%20%20%20%3C/feMerge%3E%0A%20%20%20%20%3C/filter%3E%0A%20%20%3C/defs%3E%0A%0A%20%20%3C%21--%20Trazo%20superior%20izquierdo%3A%20entra%2C%20curva%20y%20desaparece%20--%3E%0A%20%20%3Cpath%20d%3D%22M%20-90%20175%20C%2080%2072%2C%20194%20115%2C%20342%20-42%22%0A%20%20%20%20%20%20%20%20fill%3D%22none%22%20stroke%3D%22url%28%23g1%29%22%20stroke-width%3D%223.2%22%0A%20%20%20%20%20%20%20%20stroke-linecap%3D%22round%22%20filter%3D%22url%28%23glow%29%22%20opacity%3D%22.92%22/%3E%0A%20%20%3Cpath%20d%3D%22M%20-36%20222%20C%2088%20150%2C%20184%20158%2C%20292%2052%22%0A%20%20%20%20%20%20%20%20fill%3D%22none%22%20stroke%3D%22%2300D9FF%22%20stroke-width%3D%221.2%22%0A%20%20%20%20%20%20%20%20stroke-linecap%3D%22round%22%20opacity%3D%22.36%22/%3E%0A%0A%20%20%3C%21--%20Trazo%20inferior%20derecho%3A%20corto%2C%20elegante%2C%20no%20cruza%20la%20secci%C3%B3n%20--%3E%0A%20%20%3Cpath%20d%3D%22M%20880%20760%20C%20996%20612%2C%201072%20608%2C%201308%20428%22%0A%20%20%20%20%20%20%20%20fill%3D%22none%22%20stroke%3D%22url%28%23g2%29%22%20stroke-width%3D%223.4%22%0A%20%20%20%20%20%20%20%20stroke-linecap%3D%22round%22%20filter%3D%22url%28%23glow%29%22%20opacity%3D%22.96%22/%3E%0A%20%20%3Cpath%20d%3D%22M%20954%20728%20C%201052%20650%2C%201122%20640%2C%201242%20544%22%0A%20%20%20%20%20%20%20%20fill%3D%22none%22%20stroke%3D%22%23FF4FD8%22%20stroke-width%3D%221.3%22%0A%20%20%20%20%20%20%20%20stroke-linecap%3D%22round%22%20opacity%3D%22.34%22/%3E%0A%3C/svg%3E") center center / 135% 100% no-repeat !important;
-    opacity:.58 !important;
-    filter:
-      drop-shadow(0 0 8px rgba(0,217,255,.42))
-      drop-shadow(0 0 16px rgba(255,79,216,.18)) !important;
+    background-image:
+      radial-gradient(420px 230px at -18% -18%,
+        transparent 61.8%,
+        rgba(0,217,255,.62) 62.22%,
+        transparent 62.9%
+      ),
+      radial-gradient(460px 250px at 122% 118%,
+        transparent 60.8%,
+        rgba(0,217,255,.38) 61.28%,
+        rgba(255,79,216,.26) 61.55%,
+        transparent 62.2%
+      ) !important;
+    background-size:54% 28%, 54% 28% !important;
+    opacity:.70 !important;
   }
 
-  .footer::after{
+  .footer::before{
     background:
-      url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%201400%20620%22%20preserveAspectRatio%3D%22none%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22a%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2300AFFF%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2222%25%22%20stop-color%3D%22%2300D9FF%22%20stop-opacity%3D%221%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2258%25%22%20stop-color%3D%22%2300AFFF%22%20stop-opacity%3D%22.78%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%2300AFFF%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22b%22%20x1%3D%22100%25%22%20y1%3D%220%25%22%20x2%3D%220%25%22%20y2%3D%22100%25%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23FF4FD8%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2228%25%22%20stop-color%3D%22%23FF4FD8%22%20stop-opacity%3D%22.95%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2252%25%22%20stop-color%3D%22%23B14CFF%22%20stop-opacity%3D%22.82%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%2278%25%22%20stop-color%3D%22%2300D9FF%22%20stop-opacity%3D%22.92%22/%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%2300AFFF%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%3Cfilter%20id%3D%22g%22%3E%0A%20%20%20%20%20%20%3CfeGaussianBlur%20stdDeviation%3D%224.2%22%20result%3D%22blur%22/%3E%0A%20%20%20%20%20%20%3CfeMerge%3E%0A%20%20%20%20%20%20%20%20%3CfeMergeNode%20in%3D%22blur%22/%3E%0A%20%20%20%20%20%20%20%20%3CfeMergeNode%20in%3D%22SourceGraphic%22/%3E%0A%20%20%20%20%20%20%3C/feMerge%3E%0A%20%20%20%20%3C/filter%3E%0A%20%20%3C/defs%3E%0A%0A%20%20%3Cpath%20d%3D%22M%20-120%20210%20C%2094%2048%2C%20270%20132%2C%20438%20-70%22%0A%20%20%20%20%20%20%20%20fill%3D%22none%22%20stroke%3D%22url%28%23a%29%22%20stroke-width%3D%223.4%22%0A%20%20%20%20%20%20%20%20stroke-linecap%3D%22round%22%20filter%3D%22url%28%23g%29%22%20opacity%3D%22.95%22/%3E%0A%20%20%3Cpath%20d%3D%22M%20-60%20274%20C%20118%20164%2C%20250%20182%2C%20392%2058%22%0A%20%20%20%20%20%20%20%20fill%3D%22none%22%20stroke%3D%22%2300D9FF%22%20stroke-width%3D%221.2%22%0A%20%20%20%20%20%20%20%20stroke-linecap%3D%22round%22%20opacity%3D%22.34%22/%3E%0A%0A%20%20%3Cpath%20d%3D%22M%20894%20668%20C%201014%20514%2C%201142%20554%2C%201510%20274%22%0A%20%20%20%20%20%20%20%20fill%3D%22none%22%20stroke%3D%22url%28%23b%29%22%20stroke-width%3D%223.6%22%0A%20%20%20%20%20%20%20%20stroke-linecap%3D%22round%22%20filter%3D%22url%28%23g%29%22%20opacity%3D%22.96%22/%3E%0A%20%20%3Cpath%20d%3D%22M%201018%20626%20C%201120%20528%2C%201206%20528%2C%201362%20404%22%0A%20%20%20%20%20%20%20%20fill%3D%22none%22%20stroke%3D%22%23FF4FD8%22%20stroke-width%3D%221.3%22%0A%20%20%20%20%20%20%20%20stroke-linecap%3D%22round%22%20opacity%3D%22.36%22/%3E%0A%3C/svg%3E") center center / 145% 100% no-repeat !important;
-    opacity:.72 !important;
+      radial-gradient(520px 300px at -28% -18%,
+        transparent 61.5%,
+        #00AFFF 62.15%,
+        #00D9FF 62.45%,
+        transparent 63.2%
+      ),
+      radial-gradient(560px 320px at 128% 124%,
+        transparent 60.8%,
+        #00D9FF 61.44%,
+        rgba(255,79,216,.40) 61.85%,
+        transparent 62.6%
+      ) !important;
+    opacity:.82 !important;
   }
 }
 
 
 
   
+
 /* =========================================================
-   FIX DEFINITIVO LAYOUT SKANO
-   Corrige página rota por conflictos de CSS:
-   - evita secciones en columnas horizontales
-   - limita ancho de contenedores
-   - ordena grids/cards
-   - evita que paneles tapen contenido
-   - mantiene todo el HTML original
+   SKANO LÍNEAS PREMIUM DEFINITIVAS - IMPLEMENTADAS EN HTML
+   Corrige el efecto anterior: elimina diagonales tipo disco/gamer
+   y usa trazos SVG curvos, cortos, finos y luminosos.
    ========================================================= */
 
-html,
-body{
-  width:100% !important;
-  max-width:100% !important;
-  margin:0 !important;
-  overflow-x:hidden !important;
-}
-
-body{
-  display:block !important;
-}
-
-.main-header,
-.hero,
-.section,
-.section-alt,
-.photo-showcase,
-.seo-content-section,
-.final-message,
 .footer{
-  width:100% !important;
-  max-width:100% !important;
-  display:block !important;
-  float:none !important;
-  clear:both !important;
-  transform:none;
+  background:
+    radial-gradient(900px 360px at 12% 12%, rgba(0, 112, 255, .18), transparent 46%),
+    radial-gradient(760px 340px at 88% 88%, rgba(0, 217, 255, .12), transparent 44%),
+    linear-gradient(135deg, #031229 0%, #061b3c 42%, #031027 100%) !important;
 }
 
-.container,
-.header-inner,
-.hero-grid,
-.footer-premium-wrap{
-  width:min(1180px, calc(100% - 40px)) !important;
-  max-width:1180px !important;
-  margin-left:auto !important;
-  margin-right:auto !important;
-  box-sizing:border-box !important;
+.footer::before{
+  background:
+    linear-gradient(90deg, rgba(0,217,255,.022) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(0,217,255,.018) 1px, transparent 1px) !important;
+  background-size:86px 86px !important;
+  opacity:.32 !important;
+  filter:none !important;
 }
 
-/* HERO: siempre en dos columnas reales, no comprimido */
-.hero-grid{
-  display:grid !important;
-  grid-template-columns:minmax(0, 1.05fr) minmax(320px, .8fr) !important;
-  gap:clamp(28px, 5vw, 72px) !important;
-  align-items:center !important;
+.footer::after{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  z-index:0 !important;
+  pointer-events:none !important;
+  background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201600%20520%22%20preserveAspectRatio%3D%22none%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22g1%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%22360%22%20y2%3D%22120%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%2300D9FF%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%2300AFFF%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%221%22%20stop-color%3D%22%232D7DFF%22%2F%3E%0A%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22g2%22%20x1%3D%221180%22%20y1%3D%22520%22%20x2%3D%221600%22%20y2%3D%22245%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%2300D9FF%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%22.48%22%20stop-color%3D%22%23B14CFF%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23FF4FD8%22%2F%3E%0A%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%20%20%3Cfilter%20id%3D%22glow%22%20x%3D%22-60%25%22%20y%3D%22-60%25%22%20width%3D%22220%25%22%20height%3D%22220%25%22%3E%0A%20%20%20%20%20%20%3CfeGaussianBlur%20stdDeviation%3D%225%22%20result%3D%22b1%22%2F%3E%0A%20%20%20%20%20%20%3CfeGaussianBlur%20stdDeviation%3D%2213%22%20result%3D%22b2%22%2F%3E%0A%20%20%20%20%20%20%3CfeMerge%3E%0A%20%20%20%20%20%20%20%20%3CfeMergeNode%20in%3D%22b2%22%2F%3E%0A%20%20%20%20%20%20%20%20%3CfeMergeNode%20in%3D%22b1%22%2F%3E%0A%20%20%20%20%20%20%20%20%3CfeMergeNode%20in%3D%22SourceGraphic%22%2F%3E%0A%20%20%20%20%20%20%3C%2FfeMerge%3E%0A%20%20%20%20%3C%2Ffilter%3E%0A%20%20%3C%2Fdefs%3E%0A%20%20%3Cpath%20d%3D%22M%20-20%20128%20C%2045%20104%2066%2082%2092%2048%20C%20118%2015%20150%204%20210%204%20L%20342%204%20C%20392%204%20414%20-22%20438%20-68%22%20fill%3D%22none%22%20stroke%3D%22url%28%23g1%29%22%20stroke-width%3D%223.3%22%20stroke-linecap%3D%22round%22%20filter%3D%22url%28%23glow%29%22%20opacity%3D%22.96%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%2292%22%20cy%3D%2248%22%20r%3D%223.8%22%20fill%3D%22%2300D9FF%22%20filter%3D%22url%28%23glow%29%22%20opacity%3D%22.95%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%201245%20528%20C%201295%20466%201334%20440%201404%20438%20L%201480%20436%20C%201545%20432%201576%20390%201592%20305%22%20fill%3D%22none%22%20stroke%3D%22url%28%23g2%29%22%20stroke-width%3D%223.2%22%20stroke-linecap%3D%22round%22%20filter%3D%22url%28%23glow%29%22%20opacity%3D%22.94%22%2F%3E%0A%3C%2Fsvg%3E") !important;
+  background-repeat:no-repeat !important;
+  background-size:100% 100% !important;
+  background-position:center !important;
+  opacity:1 !important;
+  filter:none !important;
 }
 
-.hero-left,
-.hero-right{
-  min-width:0 !important;
-  width:100% !important;
-  max-width:100% !important;
+/* Anula las líneas largas/diagonales anteriores en secciones */
+#que-es::before,
+#app::before,
+#portal::before,
+#documentos::before,
+#planes::before,
+#terminos::before,
+#recompensas::before,
+#contacto::before,
+.seo-content-section::before{
+  background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%201600%20760%22%20preserveAspectRatio%3D%22none%22%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22a%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%22380%22%20y2%3D%22240%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%2300D9FF%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%232D7DFF%22%2F%3E%3C%2FlinearGradient%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22b%22%20x1%3D%221240%22%20y1%3D%22760%22%20x2%3D%221600%22%20y2%3D%22520%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%2300D9FF%22%2F%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%23B14CFF%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23FF4FD8%22%2F%3E%3C%2FlinearGradient%3E%0A%20%20%20%20%3Cfilter%20id%3D%22s%22%20x%3D%22-50%25%22%20y%3D%22-50%25%22%20width%3D%22200%25%22%20height%3D%22200%25%22%3E%3CfeGaussianBlur%20stdDeviation%3D%224%22%20result%3D%22x%22%2F%3E%3CfeGaussianBlur%20stdDeviation%3D%2212%22%20result%3D%22y%22%2F%3E%3CfeMerge%3E%3CfeMergeNode%20in%3D%22y%22%2F%3E%3CfeMergeNode%20in%3D%22x%22%2F%3E%3CfeMergeNode%20in%3D%22SourceGraphic%22%2F%3E%3C%2FfeMerge%3E%3C%2Ffilter%3E%0A%20%20%3C%2Fdefs%3E%0A%20%20%3Cpath%20d%3D%22M%20-12%20214%20C%2036%20162%2062%20132%20108%20124%20L%20222%20124%20C%20280%20122%20298%2090%20328%2042%22%20fill%3D%22none%22%20stroke%3D%22url%28%23a%29%22%20stroke-width%3D%222.8%22%20stroke-linecap%3D%22round%22%20filter%3D%22url%28%23s%29%22%20opacity%3D%22.72%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%201270%20774%20C%201322%20704%201368%20676%201430%20676%20L%201490%20676%20C%201542%20674%201572%20642%201608%20560%22%20fill%3D%22none%22%20stroke%3D%22url%28%23b%29%22%20stroke-width%3D%222.6%22%20stroke-linecap%3D%22round%22%20filter%3D%22url%28%23s%29%22%20opacity%3D%22.58%22%2F%3E%0A%3C%2Fsvg%3E") !important;
+  background-repeat:no-repeat !important;
+  background-size:100% 100% !important;
+  background-position:center !important;
+  opacity:.82 !important;
+  filter:none !important;
 }
 
-/* TITULOS: impedir que se corten o formen columnas raras */
-.hero-title,
-.section-title,
-.seo-content-card h2{
-  word-break:normal !important;
-  overflow-wrap:normal !important;
-  hyphens:none !important;
+#que-es::after,
+#app::after,
+#portal::after,
+#documentos::after,
+#planes::after,
+#terminos::after,
+#recompensas::after,
+#contacto::after,
+.seo-content-section::after{
+  background:
+    radial-gradient(650px 260px at 8% 10%, rgba(0,217,255,.105), transparent 54%),
+    radial-gradient(640px 280px at 95% 92%, rgba(255,79,216,.075), transparent 54%) !important;
+  opacity:1 !important;
+  filter:none !important;
 }
 
-.hero-title{
-  max-width:760px !important;
-}
-
-/* TODAS LAS GRILLAS PRINCIPALES */
-.features-grid,
-.security-grid,
-.portal-top,
-.portal-grid,
-.documents-grid,
-.plans-grid,
-.rewards-grid,
-.info-grid,
-.cards-wrapper{
-  display:grid !important;
-  width:100% !important;
-  max-width:100% !important;
-  min-width:0 !important;
-  box-sizing:border-box !important;
-  gap:24px !important;
-}
-
-/* Columnas controladas */
-.features-grid,
-.security-grid,
-.portal-grid{
-  grid-template-columns:repeat(3, minmax(0, 1fr)) !important;
-}
-
-.portal-top,
-.documents-grid,
-.plans-grid{
-  grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
-}
-
-.rewards-grid{
-  grid-template-columns:repeat(4, minmax(0, 1fr)) !important;
-}
-
-/* Cards: impedir postes verticales y desbordes */
-.advanced-card,
-.portal-card,
-.portal-hero,
-.portal-rules,
-.document-card,
-.plan-card,
-.reward-card,
-.info-card,
-.seo-content-card,
-.final-card,
-.hero-card,
-.hero-proof-item{
-  width:100% !important;
-  max-width:100% !important;
-  min-width:0 !important;
-  height:auto !important;
-  min-height:auto !important;
-  box-sizing:border-box !important;
-  overflow:hidden !important;
-  white-space:normal !important;
-  word-break:normal !important;
-  overflow-wrap:break-word !important;
-}
-
-/* Quitar animaciones que empujan layouts o generan saltos */
-.advanced-card,
-.portal-card,
-.portal-hero,
-.portal-rules,
-.document-card,
-.plan-card,
-.reward-card,
-.info-card,
-.seo-content-card,
-.final-card,
-.hero-card,
-.hero-proof-item{
-  animation:none !important;
-  transform:none !important;
-}
-
-.advanced-card:hover,
-.portal-card:hover,
-.portal-hero:hover,
-.portal-rules:hover,
-.document-card:hover,
-.plan-card:hover,
-.reward-card:hover,
-.info-card:hover,
-.seo-content-card:hover,
-.final-card:hover,
-.hero-card:hover{
-  transform:translateY(-4px) !important;
-}
-
-/* Desactivar brillos diagonales que estaban ensuciando las tarjetas */
-.advanced-card::after,
-.portal-card::after,
-.portal-hero::after,
-.portal-rules::after,
-.document-card::after,
-.plan-card::after,
-.reward-card::after,
-.info-card::after,
-.seo-content-card::after,
-.final-card::after,
-.hero-proof-item::after{
-  display:none !important;
-  content:none !important;
-  animation:none !important;
-}
-
-/* Panel flotante: que no tape el sitio */
-.side-panel{
-  position:fixed !important;
-  right:22px !important;
-  top:118px !important;
-  width:218px !important;
-  max-width:218px !important;
-  z-index:3000 !important;
-}
-
-@media (max-width:1280px){
-  .side-panel{
-    display:none !important;
-  }
-}
-
-/* Responsive real */
-@media (max-width:980px){
-  .container,
-  .header-inner,
-  .hero-grid,
-  .footer-premium-wrap{
-    width:min(100% - 28px, 1180px) !important;
+@media (max-width:780px){
+  .footer::after{
+    background-size:130% 100% !important;
+    background-position:center !important;
+    opacity:.92 !important;
   }
 
-  .hero{
-    min-height:auto !important;
-    padding-top:42px !important;
-    padding-bottom:78px !important;
-  }
-
-  .hero-grid{
-    grid-template-columns:1fr !important;
-  }
-
-  .features-grid,
-  .security-grid,
-  .portal-top,
-  .portal-grid,
-  .documents-grid,
-  .plans-grid,
-  .rewards-grid,
-  .info-grid{
-    grid-template-columns:1fr !important;
-  }
-
-  .hero-proof{
-    grid-template-columns:1fr !important;
-  }
-
-  .hero-title{
-    font-size:clamp(2.35rem, 12vw, 4.3rem) !important;
+  #que-es::before,
+  #app::before,
+  #portal::before,
+  #documentos::before,
+  #planes::before,
+  #terminos::before,
+  #recompensas::before,
+  #contacto::before,
+  .seo-content-section::before{
+    background-size:140% 100% !important;
+    opacity:.62 !important;
   }
 }
-
-@media (min-width:981px) and (max-width:1180px){
-  .features-grid,
-  .security-grid,
-  .portal-grid,
-  .rewards-grid{
-    grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
-  }
-}
-
 </style>
 </head>
 <body>
