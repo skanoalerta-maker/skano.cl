@@ -415,6 +415,288 @@
       .photo-card{ height: 220px; }
     }
 
+
+/* =========================================================
+   RECOMPENSAS SKANO - BLOQUE PROFESIONAL / ALTO IMPACTO
+   Pegar al final del <style> para mejorar la sección sin cambiar contenido.
+   ========================================================= */
+
+#recompensas{
+  position: relative !important;
+  overflow: hidden !important;
+  isolation: isolate !important;
+  padding: 108px 0 118px !important;
+  background:
+    radial-gradient(circle at 10% 8%, rgba(0,217,255,.22), transparent 30%),
+    radial-gradient(circle at 88% 18%, rgba(177,76,255,.14), transparent 28%),
+    radial-gradient(circle at 50% 95%, rgba(0,175,255,.10), transparent 36%),
+    linear-gradient(135deg, #020817 0%, #041b3d 48%, #020817 100%) !important;
+  border-top: 1px solid rgba(0,217,255,.18) !important;
+  border-bottom: 1px solid rgba(255,255,255,.06) !important;
+}
+
+#recompensas::before{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  z-index:0 !important;
+  pointer-events:none !important;
+  background:
+    linear-gradient(90deg, rgba(0,217,255,.030) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(0,217,255,.022) 1px, transparent 1px) !important;
+  background-size: 82px 82px !important;
+  opacity:.44 !important;
+}
+
+#recompensas::after{
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  z-index:0 !important;
+  pointer-events:none !important;
+  background:
+    radial-gradient(circle at 8% 4%, rgba(0,217,255,.32), transparent 16%),
+    radial-gradient(circle at 92% 96%, rgba(255,79,216,.22), transparent 20%) !important;
+  filter: blur(2px) !important;
+  opacity:.72 !important;
+}
+
+#recompensas > .container{
+  position:relative !important;
+  z-index:2 !important;
+}
+
+#recompensas .section-title{
+  text-align:center !important;
+  font-size: clamp(2.35rem, 4.8vw, 4.6rem) !important;
+  line-height: .98 !important;
+  letter-spacing: -.055em !important;
+  margin-bottom: 18px !important;
+  color:#ffffff !important;
+  text-shadow:
+    0 18px 56px rgba(0,0,0,.62),
+    0 0 28px rgba(0,217,255,.16) !important;
+}
+
+#recompensas .section-lead{
+  max-width: 760px !important;
+  margin: 0 auto 42px !important;
+  text-align:center !important;
+  color: rgba(255,255,255,.82) !important;
+  font-size: clamp(1rem, 1.18vw, 1.14rem) !important;
+  line-height: 1.75 !important;
+}
+
+#recompensas .rewards-explain{
+  margin-top: 30px !important;
+}
+
+#recompensas .rewards-explain .advanced-card{
+  position:relative !important;
+  overflow:hidden !important;
+  border-radius: 30px !important;
+  padding: 34px 36px !important;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(0,217,255,.16), transparent 34%),
+    radial-gradient(circle at 100% 100%, rgba(177,76,255,.10), transparent 32%),
+    linear-gradient(180deg, rgba(8,25,62,.88), rgba(4,12,33,.78)) !important;
+  border: 1px solid rgba(0,217,255,.24) !important;
+  box-shadow:
+    0 26px 80px rgba(0,0,0,.38),
+    0 0 38px rgba(0,217,255,.08),
+    inset 0 1px 0 rgba(255,255,255,.07) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+
+#recompensas .rewards-explain .advanced-card::before{
+  content:"" !important;
+  position:absolute !important;
+  width: 520px !important;
+  height: 220px !important;
+  right: -180px !important;
+  top: -130px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(0,217,255,.20) !important;
+  transform: rotate(-12deg) !important;
+  box-shadow: 0 0 26px rgba(0,217,255,.10) !important;
+  pointer-events:none !important;
+}
+
+#recompensas .advanced-card::after,
+#recompensas .reward-card::after{
+  display:none !important;
+  content:none !important;
+  animation:none !important;
+}
+
+#recompensas .advanced-card > *,
+#recompensas .reward-card > *{
+  position:relative !important;
+  z-index:2 !important;
+}
+
+#recompensas .advanced-card h3{
+  color:#ffffff !important;
+  font-size: clamp(1.18rem, 1.8vw, 1.52rem) !important;
+  letter-spacing: -.02em !important;
+  margin-bottom: 14px !important;
+  text-shadow: 0 0 22px rgba(0,217,255,.12) !important;
+}
+
+#recompensas .advanced-card p{
+  color: rgba(255,255,255,.82) !important;
+  font-size: .98rem !important;
+  line-height: 1.8 !important;
+}
+
+#recompensas .rewards-grid{
+  display:grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 22px !important;
+  margin-top: 28px !important;
+}
+
+#recompensas .reward-card{
+  position:relative !important;
+  min-height: 172px !important;
+  padding: 28px 22px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  border-radius: 28px !important;
+  overflow:hidden !important;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(0,217,255,.13), transparent 42%),
+    linear-gradient(180deg, rgba(9,29,70,.90), rgba(4,12,32,.82)) !important;
+  border: 1px solid rgba(0,217,255,.22) !important;
+  box-shadow:
+    0 24px 68px rgba(0,0,0,.34),
+    0 0 32px rgba(0,217,255,.06),
+    inset 0 1px 0 rgba(255,255,255,.07) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  transform: translateY(0) !important;
+  transition:
+    transform .28s ease,
+    border-color .28s ease,
+    box-shadow .28s ease,
+    background .28s ease !important;
+}
+
+#recompensas .reward-card::before{
+  content:"" !important;
+  position:absolute !important;
+  inset: 0 !important;
+  pointer-events:none !important;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.055), transparent 32%),
+    radial-gradient(circle at 50% 118%, rgba(0,217,255,.18), transparent 42%) !important;
+  opacity:.95 !important;
+}
+
+#recompensas .reward-card:hover{
+  transform: translateY(-8px) !important;
+  border-color: rgba(0,217,255,.44) !important;
+  box-shadow:
+    0 34px 92px rgba(0,0,0,.46),
+    0 0 44px rgba(0,217,255,.14),
+    inset 0 1px 0 rgba(255,255,255,.10) !important;
+}
+
+#recompensas .reward-card h3{
+  margin: 0 0 10px !important;
+  color:#ffffff !important;
+  font-size: 1.15rem !important;
+  letter-spacing: -.02em !important;
+}
+
+#recompensas .reward-card p{
+  margin: 0 0 12px !important;
+  color: rgba(255,255,255,.72) !important;
+  font-weight: 750 !important;
+}
+
+#recompensas .reward-card strong{
+  display:block !important;
+  color:#ffffff !important;
+  font-size: clamp(1.35rem, 2vw, 1.75rem) !important;
+  line-height: 1 !important;
+  letter-spacing: -.035em !important;
+  text-shadow:
+    0 0 18px rgba(0,217,255,.20),
+    0 8px 22px rgba(0,0,0,.42) !important;
+}
+
+#recompensas .rewards-grid:first-of-type .reward-card:nth-child(1){
+  border-color: rgba(205,127,50,.38) !important;
+}
+
+#recompensas .rewards-grid:first-of-type .reward-card:nth-child(2){
+  border-color: rgba(192,215,235,.34) !important;
+}
+
+#recompensas .rewards-grid:first-of-type .reward-card:nth-child(3){
+  border-color: rgba(255,215,90,.38) !important;
+}
+
+#recompensas .rewards-grid:first-of-type .reward-card:nth-child(4){
+  border-color: rgba(0,217,255,.42) !important;
+  box-shadow:
+    0 24px 68px rgba(0,0,0,.34),
+    0 0 42px rgba(0,217,255,.10),
+    inset 0 1px 0 rgba(255,255,255,.07) !important;
+}
+
+#recompensas .rewards-grid:last-of-type{
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  max-width: 930px !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+
+#recompensas .section-lead:last-child{
+  max-width: 860px !important;
+  margin-top: 34px !important;
+  padding: 18px 22px !important;
+  border-radius: 22px !important;
+  background: rgba(4,14,38,.46) !important;
+  border: 1px solid rgba(0,217,255,.14) !important;
+  box-shadow: 0 18px 52px rgba(0,0,0,.24) !important;
+}
+
+@media(max-width: 980px){
+  #recompensas{
+    padding: 82px 0 94px !important;
+  }
+
+  #recompensas .rewards-grid,
+  #recompensas .rewards-grid:last-of-type{
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media(max-width: 560px){
+  #recompensas .section-title{
+    font-size: clamp(2.05rem, 12vw, 3.15rem) !important;
+  }
+
+  #recompensas .rewards-explain .advanced-card{
+    padding: 28px 22px !important;
+    border-radius: 24px !important;
+  }
+
+  #recompensas .rewards-grid,
+  #recompensas .rewards-grid:last-of-type{
+    grid-template-columns: 1fr !important;
+  }
+
+  #recompensas .reward-card{
+    min-height: 150px !important;
+  }
+}
     /* =========================================================
        AJUSTES PRO SKANO - SIN PERDER ESTRUCTURA ORIGINAL
        1) Menú superior con scroll horizontal si se aprieta.
