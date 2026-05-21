@@ -3082,6 +3082,257 @@ body::before{
   .download-main-green small{ font-size:.68rem; }
 }
 
+  
+
+/* =========================================================
+   SKANO SOCIAL HUB PRO - FOOTER CENTRAL / ICONOS PREMIUM
+   ========================================================= */
+.skano-social-hub{
+  position:relative;
+  padding: 18px 0 58px;
+  background: transparent !important;
+  overflow:hidden;
+}
+
+.skano-social-hub::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:min(920px, 92vw);
+  height:360px;
+  transform:translate(-50%, -50%);
+  background:
+    radial-gradient(circle at 20% 35%, rgba(0,230,118,.16), transparent 32%),
+    radial-gradient(circle at 80% 20%, rgba(0,213,255,.16), transparent 30%),
+    radial-gradient(circle at 50% 65%, rgba(11,124,255,.11), transparent 38%);
+  filter:blur(14px);
+  opacity:.92;
+  pointer-events:none;
+}
+
+.skano-social-shell{
+  position:relative;
+  z-index:2;
+  width:min(960px, calc(100% - 36px));
+  margin:0 auto;
+  padding:34px 34px 32px;
+  border-radius:34px;
+  background:
+    linear-gradient(180deg, rgba(7,20,54,.78), rgba(3,11,31,.62));
+  border:1px solid rgba(0,213,255,.20);
+  box-shadow:
+    0 32px 100px rgba(0,0,0,.42),
+    0 0 46px rgba(0,213,255,.10),
+    inset 0 1px 0 rgba(255,255,255,.08);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  overflow:hidden;
+}
+
+.skano-social-shell::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(90deg, rgba(0,213,255,.045) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(0,230,118,.030) 1px, transparent 1px);
+  background-size:46px 46px;
+  opacity:.42;
+  pointer-events:none;
+}
+
+.skano-social-shell::after{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  background:linear-gradient(115deg, transparent 0%, rgba(255,255,255,.16) 46%, transparent 58%);
+  transform:translateX(-130%);
+  animation:skanoSocialShine 7s ease-in-out infinite;
+  pointer-events:none;
+}
+
+@keyframes skanoSocialShine{
+  0%,68%{transform:translateX(-130%);opacity:0;}
+  76%{opacity:.75;}
+  100%{transform:translateX(130%);opacity:0;}
+}
+
+.skano-social-head{
+  position:relative;
+  z-index:2;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:24px;
+  margin-bottom:26px;
+}
+
+.skano-social-kicker{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  margin:0 0 10px;
+  color:#8fd3ff;
+  font-size:.78rem;
+  font-weight:950;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+
+.skano-social-kicker::before{
+  content:"";
+  width:9px;
+  height:9px;
+  border-radius:999px;
+  background:#00e676;
+  box-shadow:0 0 22px rgba(0,230,118,.85);
+}
+
+.skano-social-title{
+  margin:0;
+  color:#ffffff;
+  font-size:clamp(1.9rem, 4vw, 3.35rem);
+  line-height:1;
+  letter-spacing:-.055em;
+  text-shadow:0 18px 60px rgba(0,0,0,.48);
+}
+
+.skano-social-title span{
+  background:linear-gradient(90deg,#00e676,#00d5ff,#ffffff);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.skano-social-text{
+  max-width:330px;
+  margin:0;
+  color:rgba(255,255,255,.70);
+  font-size:.94rem;
+  line-height:1.55;
+}
+
+.skano-social-grid{
+  position:relative;
+  z-index:2;
+  display:grid;
+  grid-template-columns:repeat(6, 1fr);
+  gap:14px;
+}
+
+.skano-social-card{
+  position:relative;
+  min-height:124px;
+  padding:16px 12px;
+  border-radius:24px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  text-decoration:none;
+  color:#fff;
+  background:linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.035));
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 18px 54px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.06);
+  transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+  overflow:hidden;
+  animation:skanoIconFloat 6.5s ease-in-out infinite;
+}
+
+.skano-social-card:nth-child(2n){animation-delay:-1.4s;}
+.skano-social-card:nth-child(3n){animation-delay:-2.6s;}
+
+@keyframes skanoIconFloat{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-7px);}
+}
+
+.skano-social-card::before{
+  content:"";
+  position:absolute;
+  inset:-1px;
+  background:radial-gradient(circle at 50% 0%, var(--social-glow), transparent 58%);
+  opacity:.55;
+  pointer-events:none;
+}
+
+.skano-social-card:hover{
+  transform:translateY(-10px) scale(1.025);
+  border-color:var(--social-border);
+  box-shadow:
+    0 24px 78px rgba(0,0,0,.38),
+    0 0 42px var(--social-shadow),
+    inset 0 1px 0 rgba(255,255,255,.10);
+  animation-play-state:paused;
+}
+
+.social-icon-pro{
+  position:relative;
+  z-index:2;
+  width:56px;
+  height:56px;
+  border-radius:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg, var(--social-a), var(--social-b));
+  box-shadow:0 16px 34px var(--social-shadow), inset 0 1px 0 rgba(255,255,255,.34);
+}
+
+.social-icon-pro svg{
+  width:28px;
+  height:28px;
+  fill:#fff;
+  display:block;
+}
+
+.skano-social-card strong{
+  position:relative;
+  z-index:2;
+  font-size:.88rem;
+  font-weight:950;
+  line-height:1.1;
+  text-align:center;
+  letter-spacing:-.01em;
+}
+
+.skano-social-card small{
+  position:relative;
+  z-index:2;
+  color:rgba(255,255,255,.58);
+  font-size:.68rem;
+  font-weight:800;
+  text-align:center;
+}
+
+.skano-social-card.tiktok{--social-a:#10131f;--social-b:#ff0050;--social-glow:rgba(255,0,80,.28);--social-border:rgba(255,0,80,.38);--social-shadow:rgba(255,0,80,.24);}
+.skano-social-card.facebook{--social-a:#0b67d1;--social-b:#1877f2;--social-glow:rgba(24,119,242,.26);--social-border:rgba(24,119,242,.42);--social-shadow:rgba(24,119,242,.23);}
+.skano-social-card.group{--social-a:#0b7cff;--social-b:#00d5ff;--social-glow:rgba(0,213,255,.24);--social-border:rgba(0,213,255,.42);--social-shadow:rgba(0,213,255,.22);}
+.skano-social-card.youtube{--social-a:#ff1111;--social-b:#b80000;--social-glow:rgba(255,0,0,.24);--social-border:rgba(255,0,0,.42);--social-shadow:rgba(255,0,0,.23);}
+.skano-social-card.twitch{--social-a:#9146ff;--social-b:#5b20d6;--social-glow:rgba(145,70,255,.28);--social-border:rgba(145,70,255,.44);--social-shadow:rgba(145,70,255,.24);}
+.skano-social-card.whatsapp{--social-a:#25d366;--social-b:#128c7e;--social-glow:rgba(37,211,102,.24);--social-border:rgba(37,211,102,.42);--social-shadow:rgba(37,211,102,.22);}
+
+@media (max-width:980px){
+  .skano-social-head{flex-direction:column;align-items:flex-start;}
+  .skano-social-text{max-width:100%;}
+  .skano-social-grid{grid-template-columns:repeat(3,1fr);}
+}
+
+@media (max-width:620px){
+  .skano-social-hub{padding:10px 0 44px;}
+  .skano-social-shell{padding:26px 18px;border-radius:28px;}
+  .skano-social-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
+  .skano-social-card{min-height:112px;border-radius:20px;}
+  .social-icon-pro{width:50px;height:50px;border-radius:16px;}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .skano-social-card,
+  .skano-social-shell::after{animation:none !important;}
+}
+
   </style>
 </head>
 <body>
@@ -4075,6 +4326,73 @@ body::before{
         Porque cuando la tecnología y las personas se unen,
         la seguridad se construye entre todos.
       </p>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ================= REDES SOCIALES SKANO PRO ================= -->
+<section class="skano-social-hub" aria-label="Redes oficiales y comunidad SKANO">
+  <div class="skano-social-shell reveal">
+    <div class="skano-social-head">
+      <div>
+        <p class="skano-social-kicker">Síguenos en redes oficiales</p>
+        <h2 class="skano-social-title">La comunidad <span>SKANO</span> está activa</h2>
+      </div>
+      <p class="skano-social-text">
+        Lives, noticias, reportes, videos y comunidad ayudando a detectar vehículos robados en Chile.
+      </p>
+    </div>
+
+    <div class="skano-social-grid">
+      <a class="skano-social-card tiktok" href="https://www.tiktok.com/@skanooficial" target="_blank" rel="noopener noreferrer" aria-label="TikTok oficial SKANO">
+        <span class="social-icon-pro" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M16.6 5.1c.8.9 1.8 1.5 3 1.7v3.1c-1.4-.1-2.7-.5-3.9-1.3v6.2c0 3-2.4 5.4-5.4 5.4S4.9 17.8 4.9 14.8s2.4-5.4 5.4-5.4c.4 0 .8 0 1.1.1v3.3c-.3-.1-.7-.2-1.1-.2-1.2 0-2.2 1-2.2 2.2s1 2.2 2.2 2.2 2.2-1 2.2-2.2V3.8h3c.2.5.5.9 1.1 1.3z"/></svg>
+        </span>
+        <strong>TikTok</strong>
+        <small>@skanooficial</small>
+      </a>
+
+      <a class="skano-social-card facebook" href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook oficial SKANO">
+        <span class="social-icon-pro" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M14.2 8.2V6.7c0-.7.5-.9.9-.9h2.2V2.2L14.2 2c-3.4 0-4.2 2.1-4.2 4.3v1.9H7.3V12H10v10h4.1V12h3.1l.5-3.8h-3.5z"/></svg>
+        </span>
+        <strong>Facebook</strong>
+        <small>Página oficial</small>
+      </a>
+
+      <a class="skano-social-card group" href="https://www.facebook.com/groups/" target="_blank" rel="noopener noreferrer" aria-label="Grupo de Facebook SKANO">
+        <span class="social-icon-pro" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M8.8 11.2a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zm6.6.4a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM8.8 13.1c-3.1 0-5.8 1.6-5.8 3.7V20h11.6v-3.2c0-2.1-2.7-3.7-5.8-3.7zm6.6.4c-.5 0-1 .1-1.5.2 1.4.9 2.3 2 2.3 3.3V20H21v-2.8c0-2-2.5-3.7-5.6-3.7z"/></svg>
+        </span>
+        <strong>Grupo Facebook</strong>
+        <small>Comunidad SKANO</small>
+      </a>
+
+      <a class="skano-social-card youtube" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" aria-label="YouTube SKANO">
+        <span class="social-icon-pro" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M21.6 7.2s-.2-1.5-.8-2.1c-.8-.8-1.7-.8-2.1-.9C15.8 4 12 4 12 4s-3.8 0-6.7.2c-.4.1-1.3.1-2.1.9-.6.6-.8 2.1-.8 2.1S2.2 9 2.2 10.8v1.7c0 1.8.2 3.6.2 3.6s.2 1.5.8 2.1c.8.8 1.9.8 2.4.9 1.8.2 6.4.2 6.4.2s3.8 0 6.7-.2c.4-.1 1.3-.1 2.1-.9.6-.6.8-2.1.8-2.1s.2-1.8.2-3.6v-1.7c0-1.8-.2-3.6-.2-3.6zM10.1 14.8V8.6l5.9 3.1-5.9 3.1z"/></svg>
+        </span>
+        <strong>YouTube</strong>
+        <small>Videos y lives</small>
+      </a>
+
+      <a class="skano-social-card twitch" href="https://www.twitch.tv/skanolive" target="_blank" rel="noopener noreferrer" aria-label="Twitch SKANO Live">
+        <span class="social-icon-pro" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M4.2 3 3 6.1v13.1h4.5V21h2.6l1.8-1.8h3.5L21 13.6V3H4.2zm14.6 9.6-3.2 3.2h-4.1l-1.8 1.8v-1.8H6.1V5.2h12.7v7.4zM15.6 8h1.8v5.1h-1.8V8zm-4.6 0h1.8v5.1H11V8z"/></svg>
+        </span>
+        <strong>Twitch</strong>
+        <small>skanolive</small>
+      </a>
+
+      <a class="skano-social-card whatsapp" href="/whatsapp.html" aria-label="WhatsApp SKANO">
+        <span class="social-icon-pro" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 2.2A9.7 9.7 0 0 0 3.8 17l-1 4.8 4.9-1A9.7 9.7 0 1 0 12 2.2zm0 17.6c-1.5 0-2.9-.4-4.1-1.1l-.3-.2-2.9.6.6-2.8-.2-.3A7.8 7.8 0 1 1 12 19.8zm4.4-5.8c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.6.1-.2.2-.7.8-.8 1-.1.2-.3.2-.5.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.6-1.5-.8-2-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.2-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.8 2.8 4.4 3.9.6.3 1.1.4 1.5.5.6.2 1.2.1 1.6.1.5-.1 1.4-.6 1.6-1.1.2-.5.2-1 .1-1.1-.1-.2-.3-.2-.5-.3z"/></svg>
+        </span>
+        <strong>WhatsApp</strong>
+        <small>Asistente SKANO</small>
+      </a>
     </div>
   </div>
 </section>
