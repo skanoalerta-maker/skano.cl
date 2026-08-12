@@ -29,3 +29,16 @@ if(readingsTrack&&skanoReadings.length){
 
 const revealObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');revealObserver.unobserve(entry.target)}}),{threshold:.12});
 document.querySelectorAll('.reveal').forEach(element=>revealObserver.observe(element));
+
+/* Recupera los iconos vectoriales originales de la comunidad SKANO. */
+const officialSocialIcons={
+  tiktok:'<svg viewBox="0 0 24 24"><path d="M16.6 5.1c.8.9 1.8 1.5 3 1.7v3.1c-1.4-.1-2.7-.5-3.9-1.3v6.2c0 3-2.4 5.4-5.4 5.4s-5.4-2.4-5.4-5.4 2.4-5.4 5.4-5.4c.4 0 .8 0 1.1.1v3.3c-.3-.1-.7-.2-1.1-.2-1.2 0-2.2 1-2.2 2.2s1 2.2 2.2 2.2 2.2-1 2.2-2.2V3.8h3c.2.5.5.9 1.1 1.3z"/></svg>',
+  facebook:'<svg viewBox="0 0 24 24"><path d="M14.2 8.2V6.7c0-.7.5-.9.9-.9h2.2V2.2L14.2 2c-3.4 0-4.2 2.1-4.2 4.3v1.9H7.3V12H10v10h4.1V12h3.1l.5-3.8h-3.5z"/></svg>',
+  group:'<svg viewBox="0 0 24 24"><path d="M8.8 11.2a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zm6.6.4a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM8.8 13.1c-3.1 0-5.8 1.6-5.8 3.7V20h11.6v-3.2c0-2.1-2.7-3.7-5.8-3.7zm6.6.4c-.5 0-1 .1-1.5.2 1.4.9 2.3 2 2.3 3.3V20H21v-2.8c0-2-2.5-3.7-5.6-3.7z"/></svg>',
+  youtube:'<svg viewBox="0 0 24 24"><path d="M21.6 7.2s-.2-1.5-.8-2.1c-.8-.8-1.7-.8-2.1-.9C15.8 4 12 4 12 4s-3.8 0-6.7.2c-.4.1-1.3.1-2.1.9-.6.6-.8 2.1-.8 2.1S2.2 9 2.2 10.8v1.7c0 1.8.2 3.6.2 3.6s.2 1.5.8 2.1c.8.8 1.9.8 2.4.9 1.8.2 6.4.2 6.4.2s3.8 0 6.7-.2c.4-.1 1.3-.1 2.1-.9.6-.6.8-2.1.8-2.1s.2-1.8.2-3.6v-1.7c0-1.8-.2-3.6-.2-3.6zM10.1 14.8V8.6l5.9 3.1-5.9 3.1z"/></svg>',
+  twitch:'<svg viewBox="0 0 24 24"><path d="M4.2 3 3 6.1v13.1h4.5V21h2.6l1.8-1.8h3.5L21 13.6V3H4.2zm14.6 9.6-3.2 3.2h-4.1l-1.8 1.8v-1.8H6.1V5.2h12.7v7.4zM15.6 8h1.8v5.1h-1.8V8zm-4.6 0h1.8v5.1H11V8z"/></svg>',
+  whats:'<svg viewBox="0 0 24 24"><path d="M12 2.2A9.7 9.7 0 0 0 3.8 17l-1 4.8 4.9-1A9.7 9.7 0 1 0 12 2.2zm0 17.6c-1.5 0-2.9-.4-4.1-1.1l-.3-.2-2.9.6.6-2.8-.2-.3A7.8 7.8 0 1 1 12 19.8zm4.4-5.8c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.6.1-.2.2-.7.8-.8 1-.1.2-.3.2-.5.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.6-1.5-.8-2-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.2-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.8 2.8 4.4 3.9.6.3 1.1.4 1.5.5.6.2 1.2.1 1.6.1.5-.1 1.4-.6 1.6-1.1.2-.5.2-1 .1-1.1-.1-.2-.3-.2-.5-.3z"/></svg>'
+};
+Object.entries(officialSocialIcons).forEach(([network,icon])=>{const target=document.querySelector(`.social-grid .${network} .social-icon`);if(target)target.innerHTML=icon});
+const portalIcons=[['.web-panel .portal-main:nth-of-type(1) .portal-icon','🔐'],['.web-panel .portal-download span','📱'],['.web-panel .portal-soon span','🍎']];
+portalIcons.forEach(([selector,icon])=>{const target=document.querySelector(selector);if(target)target.textContent=icon});
