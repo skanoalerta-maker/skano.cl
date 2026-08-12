@@ -7,7 +7,7 @@ mainNav?.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{
 document.addEventListener('keydown',event=>{if(event.key==='Escape'){mainNav?.classList.remove('open');menuButton?.setAttribute('aria-expanded','false')}});
 document.getElementById('year').textContent=String(new Date().getFullYear());
 const form=document.getElementById('contactForm');
-form?.addEventListener('submit',event=>{event.preventDefault();if(!form.reportValidity())return;const data=new FormData(form);const subject=encodeURIComponent('Contacto corporativo desde skano.cl');const body=encodeURIComponent(`Nombre: ${data.get('name')}\nCorreo: ${data.get('email')}\n\nMensaje:\n${data.get('message')}`);document.getElementById('formStatus').textContent='Abriendo tu aplicación de correo para completar el envío…';window.location.href=`mailto:contacto@skano.cl?subject=${subject}&body=${body}`});
+form?.addEventListener('submit',event=>{event.preventDefault();if(!form.reportValidity())return;const data=new FormData(form);const subject=encodeURIComponent('Contacto corporativo desde skano.cl');const body=encodeURIComponent(`Nombre: ${data.get('name')}\nCorreo: ${data.get('email')}\n\nMensaje:\n${data.get('message')}`);document.getElementById('formStatus').textContent='Abriendo tu aplicación de correo para completar el envío…';window.location.href=`mailto:skano.oficial@gmail.com?subject=${subject}&body=${body}`});
 
 /* Para agregar o quitar lecturas, edita únicamente esta lista. */
 const skanoReadings=[
