@@ -113,6 +113,32 @@ terrainStyles.textContent=`
 `;
 document.head.append(terrainStyles);
 
+/* Une visualmente el ecosistema con SKANO en acción y muestra capturas completas. */
+const ecosystemSection=document.querySelector('.ecosystem');
+const readingsSection=document.querySelector('.readings');
+if(ecosystemSection&&readingsSection)ecosystemSection.after(readingsSection);
+
+const ecosystemStyles=document.createElement('style');
+ecosystemStyles.textContent=`
+  .ecosystem{position:relative;padding:125px 0 105px;background:linear-gradient(145deg,#f7fbff 0%,#edf5fc 62%,#e7f3fb 100%);overflow:hidden}
+  .ecosystem:before{content:"";position:absolute;inset:0;background:linear-gradient(rgba(8,120,249,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(8,120,249,.035) 1px,transparent 1px);background-size:54px 54px;mask-image:linear-gradient(90deg,#000,transparent 80%)}
+  .ecosystem .shell{position:relative}.ecosystem .eyebrow{display:inline-flex;padding:8px 12px;border:1px solid rgba(8,120,249,.18);border-radius:999px;background:rgba(255,255,255,.72);color:#40729e}
+  .ecosystem h2{max-width:1000px;font-size:clamp(46px,6.3vw,86px);line-height:.98;letter-spacing:-.06em;margin-top:24px}.ecosystem h2 em{background:linear-gradient(90deg,#0878f9,#08b9dc);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .eco-line{gap:10px;border:0;margin-top:70px}.eco-line article{min-height:155px;padding:22px;border:1px solid rgba(20,94,157,.13);border-radius:15px;background:rgba(255,255,255,.72);box-shadow:0 16px 40px rgba(13,61,104,.07);transition:transform .25s,border-color .25s}.eco-line article:hover{transform:translateY(-5px);border-color:rgba(8,170,220,.42)}.eco-line b{color:#118dc8;font-size:12px}.eco-line span{font-size:10px;letter-spacing:.04em}
+  .readings{padding:100px 0 90px;background:linear-gradient(180deg,#071d37,#04162b);border-top:1px solid rgba(41,216,237,.18)}
+  .readings .section-head{align-items:center}.readings .section-head h2{font-size:clamp(42px,5.6vw,74px)}.readings .section-head p{color:#a9bfd2}
+  .readings-marquee{padding:12px 0 18px}.reading-card{width:clamp(300px,29vw,440px);height:520px;aspect-ratio:auto;background:linear-gradient(145deg,#06172e,#0a2949);border-color:rgba(41,216,237,.25);box-shadow:0 20px 55px rgba(0,0,0,.3)}
+  .reading-card img{object-fit:contain;padding:10px;background:#06172e}.reading-card:after{inset:66% 0 0}.reading-label{bottom:20px;left:20px;border-radius:4px;background:rgba(3,18,36,.88)}
+  .reading-note{margin-top:28px;padding-top:20px;border-top:1px solid rgba(123,182,220,.12)}
+  .purpose{position:relative;gap:1px;padding:1px;background:#173c5e;overflow:hidden}.purpose:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(41,216,237,.13),transparent);pointer-events:none}
+  .purpose-card{position:relative;min-height:610px;padding-top:115px;padding-bottom:105px;overflow:hidden;isolation:isolate}.purpose-card:before{content:"";position:absolute;z-index:-1;width:360px;height:360px;border-radius:50%;border:1px solid currentColor;opacity:.07;right:-110px;top:-120px;box-shadow:0 0 0 60px currentColor,0 0 0 120px currentColor}.purpose-card:after{position:absolute;right:8%;bottom:-45px;font-size:210px;line-height:1;font-weight:800;letter-spacing:-.08em;opacity:.055}
+  .purpose-card.mission:after{content:"01"}.purpose-card.vision:after{content:"02"}.purpose-card>span{display:inline-flex;align-items:center;gap:10px;padding:8px 13px;border:1px solid currentColor;border-radius:999px;font-size:9px;letter-spacing:.17em}.purpose-card>span:before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 12px currentColor}
+  .purpose-card h2{max-width:560px;font-size:clamp(46px,4.7vw,72px);line-height:.98;letter-spacing:-.05em;margin:38px 0 28px}.purpose-card p{max-width:540px;font-size:15px;line-height:1.85}.mission{background:linear-gradient(145deg,#f7fbff,#eaf4fb)}.mission h2{color:#06182e}.mission p{color:#536d84}.vision{background:radial-gradient(circle at 80% 20%,rgba(25,195,233,.18),transparent 32%),linear-gradient(135deg,#07345d,#0879b4);box-shadow:inset 0 0 80px rgba(0,10,30,.2)}.vision p{color:#d0e6f2}
+  @media(max-width:900px){.eco-line{grid-template-columns:repeat(3,1fr)}.reading-card{height:470px}}
+  @media(max-width:600px){.ecosystem{padding:85px 0 70px}.ecosystem h2{font-size:45px}.eco-line{grid-template-columns:1fr 1fr;gap:8px;margin-top:45px}.eco-line article{min-height:120px;padding:16px}.readings{padding:75px 0 65px}.reading-card{width:82vw;height:460px}.section-head{padding-right:0}.purpose{grid-template-columns:1fr}.purpose-card{min-height:auto;padding:80px 25px}.purpose-card h2{font-size:48px}.purpose-card:after{font-size:140px}}
+`;
+document.head.append(ecosystemStyles);
+
 /* Recupera los iconos vectoriales originales de la comunidad SKANO. */
 const officialSocialIcons={
   tiktok:'<svg viewBox="0 0 24 24"><path d="M16.6 5.1c.8.9 1.8 1.5 3 1.7v3.1c-1.4-.1-2.7-.5-3.9-1.3v6.2c0 3-2.4 5.4-5.4 5.4s-5.4-2.4-5.4-5.4 2.4-5.4 5.4-5.4c.4 0 .8 0 1.1.1v3.3c-.3-.1-.7-.2-1.1-.2-1.2 0-2.2 1-2.2 2.2s1 2.2 2.2 2.2 2.2-1 2.2-2.2V3.8h3c.2.5.5.9 1.1 1.3z"/></svg>',
