@@ -42,13 +42,3 @@ const officialSocialIcons={
 Object.entries(officialSocialIcons).forEach(([network,icon])=>{const target=document.querySelector(`.social-grid .${network} .social-icon`);if(target)target.innerHTML=icon});
 const portalIcons=[['.web-panel .portal-main:nth-of-type(1) .portal-icon','🔐'],['.web-panel .portal-download span','📱'],['.web-panel .portal-soon span','🍎']];
 portalIcons.forEach(([selector,icon])=>{const target=document.querySelector(selector);if(target)target.textContent=icon});
-
-/* Escena vial en movimiento. */
-const ecosystemSection=document.querySelector('.ecosystem');
-if(ecosystemSection){
-  const trafficSection=document.createElement('section');
-  trafficSection.className='traffic-network';
-  trafficSection.setAttribute('aria-labelledby','traffic-title');
-  trafficSection.innerHTML=`<div class="traffic-glow"></div><div class="shell traffic-layout"><div class="traffic-copy reveal visible"><span class="eyebrow cyan">ECOSISTEMA EN MOVIMIENTO</span><h2 id="traffic-title">UNA RED QUE<br><em>NO SE DETIENE</em></h2><p>Vehículos, tecnología y colaboración avanzando al mismo tiempo. Una representación visual de la visión conectada de SKANO.</p><div class="traffic-status"><i></i><span>FLUJO VEHICULAR ACTIVO</span></div></div><div class="traffic-scene" aria-hidden="true"><div class="road road-a"><div class="lane lane-forward"><i style="--delay:-2s;--speed:10s;--car:#21d8ed"></i><i style="--delay:-6s;--speed:12s;--car:#fff"></i><i style="--delay:-10s;--speed:14s;--car:#1689ff"></i></div><div class="lane lane-reverse"><i style="--delay:-1s;--speed:13s;--car:#ffcf54"></i><i style="--delay:-7s;--speed:11s;--car:#fff"></i><i style="--delay:-9s;--speed:15s;--car:#29d8ed"></i></div></div><div class="road road-b"><div class="lane lane-forward"><i style="--delay:-3s;--speed:13s;--car:#fff"></i><i style="--delay:-8s;--speed:10s;--car:#21d8ed"></i><i style="--delay:-11s;--speed:16s;--car:#1689ff"></i></div><div class="lane lane-reverse"><i style="--delay:-4s;--speed:12s;--car:#ffcf54"></i><i style="--delay:-9s;--speed:14s;--car:#fff"></i><i style="--delay:-12s;--speed:11s;--car:#29d8ed"></i></div></div><div class="traffic-core"><img src="/img/skano-logo.png" alt=""><span>SKANO</span><small>RED CONECTADA</small></div><span class="signal signal-a"></span><span class="signal signal-b"></span><span class="signal signal-c"></span></div></div>`;
-  ecosystemSection.insertAdjacentElement('afterend',trafficSection);
-}
