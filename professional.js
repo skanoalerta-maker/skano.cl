@@ -30,6 +30,53 @@ if(readingsTrack&&skanoReadings.length){
 const revealObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');revealObserver.unobserve(entry.target)}}),{threshold:.12});
 document.querySelectorAll('.reveal').forEach(element=>revealObserver.observe(element));
 
+/* Mantiene los fondos de video en reproducción continua. */
+const keepVideoPlaying=video=>{
+  video.loop=true;
+  video.muted=true;
+  video.defaultMuted=true;
+  video.playsInline=true;
+  video.autoplay=true;
+  const resume=()=>{if(video.paused)video.play().catch(()=>{})};
+  video.addEventListener('ended',()=>{video.currentTime=0;resume()});
+  video.addEventListener('pause',()=>{if(!document.hidden)resume()});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)resume()});
+  resume();
+};
+
+const addBackgroundVideo=(section,src,className)=>{
+  if(!section)return;
+  const video=document.createElement('video');
+  video.className=`section-video ${className}`;
+  video.src=src;
+  video.preload='metadata';
+  video.setAttribute('aria-hidden','true');
+  section.prepend(video);
+  keepVideoPlaying(video);
+};
+
+const trafficSection=document.querySelector('.traffic-network');
+const originSection=document.querySelector('.origin');
+if(trafficSection&&originSection)originSection.after(trafficSection);
+addBackgroundVideo(trafficSection,'/assets/videos/red-skano.mp4','traffic-video');
+addBackgroundVideo(document.querySelector('.contact'),'/assets/videos/contacto-skano.mp4','contact-video');
+document.querySelectorAll('video:not(.section-video)').forEach(keepVideoPlaying);
+
+const contactTitle=document.querySelector('.contact-copy h2');
+if(contactTitle)contactTitle.textContent='CONTÁCTANOS AQUÍ.';
+
+const videoStyles=document.createElement('style');
+videoStyles.textContent=`
+  .traffic-network,.contact{position:relative;background:#06182e;overflow:hidden}
+  .section-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none}
+  .traffic-network:before{z-index:1;background:linear-gradient(90deg,rgba(3,17,36,.78),rgba(4,31,61,.28))}
+  .traffic-network .traffic-glow{display:none}.traffic-network .traffic-layout{z-index:2;grid-template-columns:1fr}.traffic-network .traffic-scene{display:none}
+  .contact-backdrop{z-index:1;background:linear-gradient(rgba(3,15,34,.82),rgba(3,17,38,.88));opacity:1}.contact>.shell{z-index:2}
+  .contact .contact-grid,.contact form{background:rgba(5,20,45,.62);border:1px solid rgba(70,205,235,.25);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);color:#fff}
+  .contact input,.contact textarea{color:#fff;border-bottom-color:rgba(255,255,255,.3)}
+`;
+document.head.append(videoStyles);
+
 /* Recupera los iconos vectoriales originales de la comunidad SKANO. */
 const officialSocialIcons={
   tiktok:'<svg viewBox="0 0 24 24"><path d="M16.6 5.1c.8.9 1.8 1.5 3 1.7v3.1c-1.4-.1-2.7-.5-3.9-1.3v6.2c0 3-2.4 5.4-5.4 5.4s-5.4-2.4-5.4-5.4 2.4-5.4 5.4-5.4c.4 0 .8 0 1.1.1v3.3c-.3-.1-.7-.2-1.1-.2-1.2 0-2.2 1-2.2 2.2s1 2.2 2.2 2.2 2.2-1 2.2-2.2V3.8h3c.2.5.5.9 1.1 1.3z"/></svg>',
