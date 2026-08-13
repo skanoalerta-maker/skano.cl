@@ -70,7 +70,7 @@ if(contactHeading&&contactGrid)contactHeading.after(contactGrid);
 
 const videoStyles=document.createElement('style');
 videoStyles.textContent=`
-  html,body{background:#06182e}
+  html,body{width:100%;max-width:100%;overflow-x:clip;background:#06182e}
   .story{background:#fff}
   .traffic-network,.contact{position:relative;background:#06182e;overflow:hidden}
   .section-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none}
