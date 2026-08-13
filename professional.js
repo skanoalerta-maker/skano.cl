@@ -83,6 +83,36 @@ videoStyles.textContent=`
 `;
 document.head.append(videoStyles);
 
+/* Galería protegida de vehículos detectados, inmediatamente bajo el hero. */
+const terrainImages=Array.from({length:8},(_,index)=>`/assets/images/terreno/skano-terreno-${String(index+1).padStart(2,'0')}.webp`);
+const terrainGallery=document.createElement('section');
+terrainGallery.className='terrain-gallery';
+terrainGallery.setAttribute('aria-labelledby','terrain-title');
+terrainGallery.innerHTML=`<div class="shell terrain-heading"><span class="eyebrow cyan">OPERACIÓN EN TERRENO</span><h2 id="terrain-title">VEHÍCULOS EN MOVIMIENTO<br><em>DETECTADOS POR SKANO</em></h2><p class="terrain-review">Estas imágenes fueron captadas mediante el lector de patentes de SKANO y procesadas utilizando sus bases de datos, protocolos operativos y sistemas de detección vehicular.</p><p class="terrain-privacy">Patentes pixeladas para proteger la información de los vehículos registrados.</p></div><div class="terrain-viewport"><div class="terrain-track"></div></div>`;
+const terrainTrack=terrainGallery.querySelector('.terrain-track');
+[...terrainImages,...terrainImages].forEach((src,index)=>{
+  const figure=document.createElement('figure');
+  if(index>=terrainImages.length)figure.setAttribute('aria-hidden','true');
+  const image=document.createElement('img');
+  image.src=src;image.alt=index<terrainImages.length?'Vehículo procesado por tecnología SKANO':'';image.loading='lazy';image.decoding='async';
+  figure.append(image);terrainTrack.append(figure);
+});
+document.querySelector('.hero')?.after(terrainGallery);
+
+const terrainStyles=document.createElement('style');
+terrainStyles.textContent=`
+  .terrain-gallery{padding:90px 0;background:linear-gradient(135deg,#041326,#082b50);color:#fff;overflow:hidden}
+  .terrain-heading h2{font-size:clamp(36px,5vw,68px);line-height:1;letter-spacing:-.045em;margin:12px 0 18px}.terrain-heading h2 em{font-style:normal;color:var(--cyan)}.terrain-review{max-width:820px;color:#c5d8e7;font-size:14px;line-height:1.75}.terrain-privacy{color:#68ddeb;font-size:10px;letter-spacing:.04em;margin-top:12px}
+  .terrain-viewport{margin-top:40px;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+  .terrain-track{display:flex;gap:18px;width:max-content;animation:terrainFlow 58s linear infinite;will-change:transform}.terrain-track:hover{animation-play-state:paused}
+  .terrain-track figure{width:clamp(250px,24vw,370px);height:470px;margin:0;border:1px solid rgba(41,216,237,.25);border-radius:18px;overflow:hidden;background:#06182e;box-shadow:0 18px 45px rgba(0,0,0,.28)}
+  .terrain-track img{width:100%;height:100%;object-fit:cover;transition:transform .45s}.terrain-track figure:hover img{transform:scale(1.025)}
+  @keyframes terrainFlow{to{transform:translateX(calc(-50% - 9px))}}
+  @media(max-width:600px){.terrain-gallery{padding:70px 0}.terrain-track{gap:12px;animation-duration:48s}.terrain-track figure{width:78vw;height:430px}}
+  @media(prefers-reduced-motion:reduce){.terrain-track{animation:none;max-width:100vw;overflow-x:auto;scroll-snap-type:x mandatory}.terrain-track figure{scroll-snap-align:center}}
+`;
+document.head.append(terrainStyles);
+
 /* Recupera los iconos vectoriales originales de la comunidad SKANO. */
 const officialSocialIcons={
   tiktok:'<svg viewBox="0 0 24 24"><path d="M16.6 5.1c.8.9 1.8 1.5 3 1.7v3.1c-1.4-.1-2.7-.5-3.9-1.3v6.2c0 3-2.4 5.4-5.4 5.4s-5.4-2.4-5.4-5.4 2.4-5.4 5.4-5.4c.4 0 .8 0 1.1.1v3.3c-.3-.1-.7-.2-1.1-.2-1.2 0-2.2 1-2.2 2.2s1 2.2 2.2 2.2 2.2-1 2.2-2.2V3.8h3c.2.5.5.9 1.1 1.3z"/></svg>',
