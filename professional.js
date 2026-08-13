@@ -71,6 +71,7 @@ if(contactHeading&&contactGrid)contactHeading.after(contactGrid);
 const videoStyles=document.createElement('style');
 videoStyles.textContent=`
   html,body{background:#06182e}
+  .story{background:#fff}
   .traffic-network,.contact{position:relative;background:#06182e;overflow:hidden}
   .section-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none}
   .traffic-network:before{z-index:1;background:linear-gradient(90deg,rgba(3,17,36,.78),rgba(4,31,61,.28))}
