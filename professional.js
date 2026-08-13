@@ -88,7 +88,7 @@ const terrainImages=Array.from({length:8},(_,index)=>`/assets/images/terreno/ska
 const terrainGallery=document.createElement('section');
 terrainGallery.className='terrain-gallery';
 terrainGallery.setAttribute('aria-labelledby','terrain-title');
-terrainGallery.innerHTML=`<div class="shell terrain-heading"><span class="eyebrow cyan">OPERACIÓN EN TERRENO</span><h2 id="terrain-title">VEHÍCULOS EN MOVIMIENTO<br><em>DETECTADOS POR SKANO</em></h2><p>Patentes pixeladas para proteger la información de los vehículos registrados.</p></div><div class="terrain-viewport"><div class="terrain-track"></div></div>`;
+terrainGallery.innerHTML=`<div class="shell terrain-heading"><span class="eyebrow cyan">OPERACIÓN EN TERRENO</span><h2 id="terrain-title">VEHÍCULOS EN MOVIMIENTO<br><em>DETECTADOS POR SKANO</em></h2><p class="terrain-review">Estas imágenes fueron captadas mediante el lector de patentes de SKANO y procesadas utilizando sus bases de datos, protocolos operativos y sistemas de detección vehicular.</p><p class="terrain-privacy">Patentes pixeladas para proteger la información de los vehículos registrados.</p></div><div class="terrain-viewport"><div class="terrain-track"></div></div>`;
 const terrainTrack=terrainGallery.querySelector('.terrain-track');
 [...terrainImages,...terrainImages].forEach((src,index)=>{
   const figure=document.createElement('figure');
@@ -102,7 +102,7 @@ document.querySelector('.hero')?.after(terrainGallery);
 const terrainStyles=document.createElement('style');
 terrainStyles.textContent=`
   .terrain-gallery{padding:90px 0;background:linear-gradient(135deg,#041326,#082b50);color:#fff;overflow:hidden}
-  .terrain-heading h2{font-size:clamp(36px,5vw,68px);line-height:1;letter-spacing:-.045em;margin:12px 0 18px}.terrain-heading h2 em{font-style:normal;color:var(--cyan)}.terrain-heading p{color:#9db6ca;font-size:12px}
+  .terrain-heading h2{font-size:clamp(36px,5vw,68px);line-height:1;letter-spacing:-.045em;margin:12px 0 18px}.terrain-heading h2 em{font-style:normal;color:var(--cyan)}.terrain-review{max-width:820px;color:#c5d8e7;font-size:14px;line-height:1.75}.terrain-privacy{color:#68ddeb;font-size:10px;letter-spacing:.04em;margin-top:12px}
   .terrain-viewport{margin-top:40px;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
   .terrain-track{display:flex;gap:18px;width:max-content;animation:terrainFlow 58s linear infinite;will-change:transform}.terrain-track:hover{animation-play-state:paused}
   .terrain-track figure{width:clamp(250px,24vw,370px);height:470px;margin:0;border:1px solid rgba(41,216,237,.25);border-radius:18px;overflow:hidden;background:#06182e;box-shadow:0 18px 45px rgba(0,0,0,.28)}
