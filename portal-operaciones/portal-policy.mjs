@@ -4,12 +4,32 @@ export function normalizePlate(value = "") {
   return String(value).toUpperCase().replace(/[^A-Z0-9]/g, "");
 }
 
-export function authorizeOperationsSession(claims, profile) {
-  return Boolean(claims?.staff === true && claims?.staff_role === REQUIRED_ROLE
-    && profile?.role === REQUIRED_ROLE && profile?.status === "active");
+export function isValidOperationsStaff(claims, profile) {
+  return Boolean(
+    claims?.staff === true &&
+    claims?.staff_role === REQUIRED_ROLE &&
+    profile?.role === REQUIRED_ROLE &&
+    profile?.status === "active"
+  );
+}
+
+export function isValidAdmin(adminProfile) {
+  return Boolean(
+    adminProfile?.active === true &&
+    ["admin", "superadmin"].includes(adminProfile?.role)
+  );
+}
+
+export function authorizeOperationsSession(claims, staffProfile, adminProfile) {
+  return isValidOperationsStaff(claims, staffProfile) ||
+    isValidAdmin(adminProfile);
 }
 
 export function hasPermission(profile, permission) {
+  if (profile?.is_admin === true) {
+    return true;
+  }
+
   return profile?.permissions?.[permission] === true;
 }
 
