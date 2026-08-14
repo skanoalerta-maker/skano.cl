@@ -1,4 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+
 import {
   getAuth,
   onAuthStateChanged,
@@ -14,7 +15,6 @@ import {
   getDocs,
   getFirestore,
   limit,
-  orderBy,
   query,
   where
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
@@ -27,10 +27,13 @@ import {
 import {
   authorizeOperationsSession,
   hasPermission,
-  normalizePlate,
-  visibleSections
+  normalizePlate
 } from "./portal-policy.mjs";
 
+
+/* =========================================================
+   FIREBASE
+   ========================================================= */
 
 const firebaseConfig = Object.freeze({
   projectId: "skano-app-e734d",
@@ -39,137 +42,328 @@ const firebaseConfig = Object.freeze({
   apiKey: "AIzaSyAB9eiXvC5EifYp0P_ZxtI8HIwdVsPXTF4",
   authDomain: "skano-app-e734d.firebaseapp.com",
   messagingSenderId: "663221835822",
-  measurementId: "G-3QJ70H0TQ3",
+  measurementId: "G-3QJ70H0TQ3"
 });
 
 
-const app = initializeApp(firebaseConfig);
+const app =
+  initializeApp(firebaseConfig);
 
-if (app.options.projectId !== "skano-app-e734d") {
-  throw new Error("Proyecto Firebase no autorizado.");
+
+if (
+  app.options.projectId !==
+  "skano-app-e734d"
+) {
+  throw new Error(
+    "Proyecto Firebase no autorizado."
+  );
 }
 
 
-const auth = getAuth(app);
-const db = getFirestore(app);
-const functions = getFunctions(app, "us-central1");
+const auth =
+  getAuth(app);
+
+const db =
+  getFirestore(app);
+
+const functions =
+  getFunctions(
+    app,
+    "us-central1"
+  );
 
 
-const callables = Object.freeze({
-  createVehicle: httpsCallable(
-    functions,
-    "createOperationsVehicle"
-  ),
+/* =========================================================
+   CLOUD FUNCTIONS
+   ========================================================= */
 
-  deactivateVehicle: httpsCallable(
-    functions,
-    "deactivateOperationsVehicle"
-  ),
+const callables =
+  Object.freeze({
 
-  exportVehicles: httpsCallable(
-    functions,
-    "exportOperationsVehicles"
-  ),
+    createVehicle:
+      httpsCallable(
+        functions,
+        "createOperationsVehicle"
+      ),
 
-  reviewRequest: httpsCallable(
-    functions,
-    "reviewInstitutionalRequest"
-  ),
-});
+    deactivateVehicle:
+      httpsCallable(
+        functions,
+        "deactivateOperationsVehicle"
+      ),
 
+    exportVehicles:
+      httpsCallable(
+        functions,
+        "exportOperationsVehicles"
+      ),
+
+    reviewRequest:
+      httpsCallable(
+        functions,
+        "reviewInstitutionalRequest"
+      )
+
+  });
+
+
+/* =========================================================
+   ESTADO
+   ========================================================= */
 
 const state = {
+
   profile: null,
+
   user: null,
+
   vehicles: [],
+
   requests: [],
+
   selectedVehicle: null,
+
   selectedRequest: null,
+
   validated: false
+
 };
 
 
-const $ = (selector, root = document) =>
-  root.querySelector(selector);
+/* =========================================================
+   HELPERS DOM
+   ========================================================= */
 
-const $$ = (selector, root = document) =>
-  [...root.querySelectorAll(selector)];
-
-
-const safeDate = value => {
-  const date =
-    value?.toDate?.() ??
-    (value ? new Date(value) : null);
-
-  return date && !Number.isNaN(date.getTime())
-    ? new Intl.DateTimeFormat("es-CL", {
-        dateStyle: "medium"
-      }).format(date)
-    : "—";
-};
+const $ =
+  (
+    selector,
+    root = document
+  ) =>
+    root.querySelector(
+      selector
+    );
 
 
-const technicalError = (scope, error) =>
-  console.error(
-    `[SKANO:${scope}]`,
-    error?.code || "unknown",
-    error?.message || "Error"
-  );
+const $$ =
+  (
+    selector,
+    root = document
+  ) =>
+    [
+      ...root.querySelectorAll(
+        selector
+      )
+    ];
 
 
-const cleanError = (error, fallback) => {
-  if (error?.code?.includes("unauthenticated")) {
-    return "Sesión expirada. Vuelve a ingresar.";
+/* =========================================================
+   FECHAS
+   ========================================================= */
+
+const safeDate =
+  value => {
+
+    const date =
+      value?.toDate?.() ??
+      (
+        value
+          ? new Date(value)
+          : null
+      );
+
+
+    return (
+      date &&
+      !Number.isNaN(
+        date.getTime()
+      )
+    )
+      ? new Intl.DateTimeFormat(
+          "es-CL",
+          {
+            dateStyle:
+              "medium"
+          }
+        ).format(
+          date
+        )
+      : "—";
+  };
+
+
+/* =========================================================
+   LOG TÉCNICO
+   ========================================================= */
+
+const technicalError =
+  (
+    scope,
+    error
+  ) =>
+    console.error(
+      `[SKANO:${scope}]`,
+      error?.code ||
+        "unknown",
+      error?.message ||
+        "Error"
+    );
+
+
+/* =========================================================
+   ERRORES LIMPIOS
+   ========================================================= */
+
+const cleanError =
+  (
+    error,
+    fallback
+  ) => {
+
+    if (
+      error?.code?.includes(
+        "unauthenticated"
+      )
+    ) {
+      return (
+        "Sesión expirada. " +
+        "Vuelve a ingresar."
+      );
+    }
+
+
+    if (
+      error?.code?.includes(
+        "permission-denied"
+      )
+    ) {
+      return (
+        "Permiso insuficiente " +
+        "para realizar esta operación."
+      );
+    }
+
+
+    if (
+      error?.code?.includes(
+        "already-exists"
+      )
+    ) {
+      return (
+        "Ya existe un vehículo " +
+        "con esa patente."
+      );
+    }
+
+
+    if (
+      error?.code?.includes(
+        "failed-precondition"
+      )
+    ) {
+      return (
+        "La solicitud ya fue procesada " +
+        "o cambió de estado."
+      );
+    }
+
+
+    return fallback;
+  };
+
+
+/* =========================================================
+   BOTONES OCUPADOS
+   ========================================================= */
+
+function setBusy(
+  button,
+  busy,
+  label
+) {
+
+  if (!button) {
+    return;
   }
 
-  if (error?.code?.includes("permission-denied")) {
-    return "Permiso insuficiente para realizar esta operación.";
-  }
-
-  if (error?.code?.includes("already-exists")) {
-    return "Ya existe un vehículo con esa patente.";
-  }
-
-  if (error?.code?.includes("failed-precondition")) {
-    return "La solicitud ya fue procesada o cambió de estado.";
-  }
-
-  return fallback;
-};
-
-
-function setBusy(button, busy, label) {
-  if (!button) return;
 
   if (busy) {
-    button.dataset.original = button.textContent;
+
+    button.dataset.original =
+      button.textContent;
+
   }
 
-  button.disabled = busy;
 
-  button.textContent = busy
-    ? label
-    : button.dataset.original || button.textContent;
+  button.disabled =
+    busy;
+
+
+  button.textContent =
+    busy
+      ? label
+      : (
+          button.dataset.original ||
+          button.textContent
+        );
 }
 
 
-function notice(message, type = "success") {
-  const node = $("#notice");
+/* =========================================================
+   AVISOS
+   ========================================================= */
 
-  node.textContent = message;
-  node.className = `notice ${type}`;
-  node.hidden = false;
+function notice(
+  message,
+  type = "success"
+) {
 
-  clearTimeout(notice.timer);
+  const node =
+    $("#notice");
 
-  notice.timer = setTimeout(
-    () => node.hidden = true,
-    5000
+
+  if (!node) {
+    return;
+  }
+
+
+  node.textContent =
+    message;
+
+
+  node.className =
+    `notice ${type}`;
+
+
+  node.hidden =
+    false;
+
+
+  clearTimeout(
+    notice.timer
   );
+
+
+  notice.timer =
+    setTimeout(
+      () => {
+
+        node.hidden =
+          true;
+
+      },
+      5000
+    );
 }
 
 
-function permission(name) {
+/* =========================================================
+   PERMISOS
+   ========================================================= */
+
+function permission(
+  name
+) {
+
   return hasPermission(
     state.profile,
     name
@@ -178,56 +372,92 @@ function permission(name) {
 
 
 function enforcePermissions() {
-  $$("[data-permission]").forEach(node => {
-    node.hidden = !permission(
-      node.dataset.permission
-    );
-  });
+
+  $$(
+    "[data-permission]"
+  ).forEach(
+    node => {
+
+      node.hidden =
+        !permission(
+          node.dataset.permission
+        );
+
+    }
+  );
 }
 
+
+/* =========================================================
+   INVALIDAR SESIÓN
+   ========================================================= */
 
 async function invalidate(
   message =
     "No tienes autorización para ingresar al Portal de Operaciones SKANO."
 ) {
-  state.validated = false;
-  state.profile = null;
 
-  await signOut(auth).catch(() => {});
+  state.validated =
+    false;
 
-  $("#portalView").hidden = true;
-  $("#loadingView").hidden = true;
-  $("#loginView").hidden = false;
+  state.profile =
+    null;
 
-  $("#loginMessage").textContent = message;
+  state.user =
+    null;
+
+
+  await signOut(
+    auth
+  ).catch(
+    () => {}
+  );
+
+
+  $("#portalView").hidden =
+    true;
+
+  $("#loadingView").hidden =
+    true;
+
+  $("#loginView").hidden =
+    false;
+
+
+  $("#loginMessage").textContent =
+    message;
 }
 
 
 /* =========================================================
-   VALIDACIÓN DE SESIÓN
-   - operations_staff
-   - admin
-   - superadmin
+   LEER PERFILES DE AUTORIZACIÓN
+
+   IMPORTANTE:
+
+   Un operations_staff normalmente puede leer:
+   staff_accounts/{uid}
+
+   Pero NO necesita poder leer:
+   admins/{uid}
+
+   Un admin puede leer su:
+   admins/{uid}
+
+   Por eso usamos Promise.allSettled.
+   Una consulta denegada NO hace caer automáticamente
+   la otra autorización válida.
    ========================================================= */
 
-async function validateSession(user) {
+async function readAuthorizationProfiles(
+  user
+) {
 
-  $("#loginView").hidden = true;
-  $("#portalView").hidden = true;
-  $("#loadingView").hidden = false;
+  const [
+    staffResult,
+    adminResult
+  ] =
+    await Promise.allSettled([
 
-  try {
-
-    await user.getIdToken(true);
-
-    const token =
-      await user.getIdTokenResult();
-
-
-    const [
-      staffSnap,
-      adminSnap
-    ] = await Promise.all([
       getDoc(
         doc(
           db,
@@ -243,70 +473,216 @@ async function validateSession(user) {
           user.uid
         )
       )
+
     ]);
 
 
-    const staffProfile =
-      staffSnap.exists()
-        ? staffSnap.data()
-        : null;
+  const staffSnap =
+    staffResult.status ===
+    "fulfilled"
+      ? staffResult.value
+      : null;
 
 
-    const adminProfile =
-      adminSnap.exists()
-        ? adminSnap.data()
-        : null;
+  const adminSnap =
+    adminResult.status ===
+    "fulfilled"
+      ? adminResult.value
+      : null;
 
 
-    if (
-      !authorizeOperationsSession(
-        token.claims,
-        staffProfile,
-        adminProfile
-      )
-    ) {
-      return invalidate();
-    }
+  const staffProfile =
+    staffSnap?.exists()
+      ? staffSnap.data()
+      : null;
 
 
-    const isAdmin =
-      adminProfile?.active === true &&
-      [
-        "admin",
-        "superadmin"
-      ].includes(
-        adminProfile?.role
+  const adminProfile =
+    adminSnap?.exists()
+      ? adminSnap.data()
+      : null;
+
+
+  return {
+
+    staffProfile,
+
+    adminProfile
+
+  };
+}
+
+
+/* =========================================================
+   CONSTRUIR PERFIL DE SESIÓN
+   ========================================================= */
+
+function buildSessionProfile(
+  staffProfile,
+  adminProfile
+) {
+
+  const isAdmin =
+
+    adminProfile?.active ===
+      true &&
+
+    [
+      "admin",
+      "superadmin"
+    ].includes(
+      adminProfile?.role
+    );
+
+
+  if (isAdmin) {
+
+    return {
+
+      ...adminProfile,
+
+      is_admin:
+        true,
+
+      status:
+        "active"
+
+    };
+
+  }
+
+
+  return staffProfile;
+}
+
+
+/* =========================================================
+   VALIDACIÓN DE SESIÓN
+
+   PERMITE:
+
+   - operations_staff válido
+   - admin activo
+   - superadmin activo
+
+   NO autoriza por correo.
+   NO autoriza solo por estar autenticado.
+   ========================================================= */
+
+async function validateSession(
+  user
+) {
+
+  $("#loginView").hidden =
+    true;
+
+  $("#portalView").hidden =
+    true;
+
+  $("#loadingView").hidden =
+    false;
+
+
+  try {
+
+    /*
+     * Renueva token para recoger
+     * claims actuales.
+     */
+
+    await user.getIdToken(
+      true
+    );
+
+
+    const token =
+      await user.getIdTokenResult();
+
+
+    /*
+     * Lee ambos caminos posibles
+     * sin hacer caer toda la sesión
+     * si uno de ellos está prohibido.
+     */
+
+    const {
+      staffProfile,
+      adminProfile
+    } =
+      await readAuthorizationProfiles(
+        user
       );
 
 
+    /*
+     * Seguridad real del portal.
+     */
+
+    const authorized =
+      authorizeOperationsSession(
+        token.claims,
+        staffProfile,
+        adminProfile
+      );
+
+
+    if (!authorized) {
+
+      await invalidate();
+
+      return;
+
+    }
+
+
     const profile =
-      isAdmin
-        ? {
-            ...adminProfile,
-            is_admin: true,
-            status: "active"
-          }
-        : staffProfile;
+      buildSessionProfile(
+        staffProfile,
+        adminProfile
+      );
 
 
-    state.user = user;
-    state.profile = profile;
-    state.validated = true;
+    if (!profile) {
+
+      await invalidate();
+
+      return;
+
+    }
+
+
+    state.user =
+      user;
+
+    state.profile =
+      profile;
+
+    state.validated =
+      true;
 
 
     const displayName =
+
       profile?.full_name ||
+
       profile?.name ||
+
       user.displayName ||
-      user.email?.split("@")[0] ||
+
+      user.email?.split(
+        "@"
+      )[0] ||
+
       "funcionario";
 
 
     $("#welcomeName").textContent =
       displayName;
 
+
     $("#sidebarName").textContent =
       displayName;
+
 
     $("#sidebarEmail").textContent =
       user.email || "";
@@ -315,11 +691,29 @@ async function validateSession(user) {
     enforcePermissions();
 
 
-    $("#loadingView").hidden = true;
-    $("#portalView").hidden = false;
+    /*
+     * Oculta validación y muestra portal.
+     */
 
+    $("#loadingView").hidden =
+      true;
+
+
+    $("#loginView").hidden =
+      true;
+
+
+    $("#portalView").hidden =
+      false;
+
+
+    /*
+     * Estas cargas NO bloquean
+     * el ingreso al portal.
+     */
 
     await Promise.allSettled([
+
       loadVehicles(),
 
       permission(
@@ -327,6 +721,7 @@ async function validateSession(user) {
       )
         ? loadRequests()
         : Promise.resolve()
+
     ]);
 
   } catch (error) {
@@ -336,13 +731,22 @@ async function validateSession(user) {
       error
     );
 
+
     await invalidate(
       error?.code?.includes(
         "permission-denied"
       )
-        ? "No tienes autorización para ingresar al Portal de Operaciones SKANO."
-        : "No fue posible validar la sesión."
+        ? (
+            "No tienes autorización " +
+            "para ingresar al Portal " +
+            "de Operaciones SKANO."
+          )
+        : (
+            "No fue posible " +
+            "validar la sesión."
+          )
     );
+
   }
 }
 
@@ -355,16 +759,44 @@ onAuthStateChanged(
   auth,
   user => {
 
+    /*
+     * Firebase conserva sesiones.
+     * Si existe una sesión autenticada,
+     * vuelve a validarse el rol.
+     */
+
     if (user) {
-      validateSession(user);
+
+      validateSession(
+        user
+      );
+
       return;
+
     }
 
-    if (!state.validated) {
-      $("#loadingView").hidden = true;
-      $("#portalView").hidden = true;
-      $("#loginView").hidden = false;
-    }
+
+    state.validated =
+      false;
+
+    state.user =
+      null;
+
+    state.profile =
+      null;
+
+
+    $("#loadingView").hidden =
+      true;
+
+
+    $("#portalView").hidden =
+      true;
+
+
+    $("#loginView").hidden =
+      false;
+
   }
 );
 
@@ -379,11 +811,43 @@ $("#loginForm").addEventListener(
 
     event.preventDefault();
 
+
     const button =
       $("#loginButton");
 
+
+    const email =
+      $("#email")
+        .value
+        .trim();
+
+
+    const password =
+      $("#password")
+        .value;
+
+
     $("#loginMessage").textContent =
       "";
+
+
+    /*
+     * No permite enviar formulario
+     * sin ambos campos.
+     */
+
+    if (
+      !email ||
+      !password
+    ) {
+
+      $("#loginMessage").textContent =
+        "Debes ingresar correo electrónico y contraseña.";
+
+      return;
+
+    }
+
 
     setBusy(
       button,
@@ -391,15 +855,23 @@ $("#loginForm").addEventListener(
       "VALIDANDO…"
     );
 
+
     try {
+
+      /*
+       * Firebase Authentication exige
+       * correo + contraseña correcta.
+       */
 
       await signInWithEmailAndPassword(
         auth,
-        $("#email").value.trim(),
-        $("#password").value
+        email,
+        password
       );
 
-      $("#password").value = "";
+
+      $("#password").value =
+        "";
 
     } catch (error) {
 
@@ -408,13 +880,25 @@ $("#loginForm").addEventListener(
         error
       );
 
-      $("#password").value = "";
+
+      $("#password").value =
+        "";
+
 
       $("#loginMessage").textContent =
+
         error?.code ===
         "auth/invalid-credential"
-          ? "Correo o contraseña incorrectos."
-          : "No fue posible iniciar sesión.";
+
+          ? (
+              "Correo o contraseña " +
+              "incorrectos."
+            )
+
+          : (
+              "No fue posible " +
+              "iniciar sesión."
+            );
 
     } finally {
 
@@ -422,6 +906,7 @@ $("#loginForm").addEventListener(
         button,
         false
       );
+
     }
   }
 );
@@ -436,10 +921,14 @@ $("#forgotPasswordButton").addEventListener(
   async () => {
 
     const email =
-      $("#email").value.trim();
+      $("#email")
+        .value
+        .trim();
+
 
     const message =
       $("#loginMessage");
+
 
     message.classList.remove(
       "neutral"
@@ -451,7 +940,9 @@ $("#forgotPasswordButton").addEventListener(
       message.textContent =
         "Ingresa tu correo electrónico para continuar.";
 
+
       $("#email").focus();
+
 
       return;
     }
@@ -488,17 +979,25 @@ $("#forgotPasswordButton").addEventListener(
 
     } finally {
 
+      /*
+       * Mensaje neutro:
+       * no revela si una cuenta existe.
+       */
+
       message.textContent =
         "Si el correo corresponde a una cuenta autorizada, recibirás instrucciones para restablecer tu contraseña.";
+
 
       message.classList.add(
         "neutral"
       );
 
+
       setBusy(
         button,
         false
       );
+
     }
   }
 );
@@ -512,13 +1011,25 @@ $("#logoutButton").addEventListener(
   "click",
   async () => {
 
-    state.validated = false;
+    state.validated =
+      false;
 
-    await signOut(auth);
+    state.user =
+      null;
+
+    state.profile =
+      null;
+
+
+    await signOut(
+      auth
+    );
+
 
     location.replace(
       "/portal-operaciones/"
     );
+
   }
 );
 
@@ -527,88 +1038,147 @@ $("#logoutButton").addEventListener(
    NAVEGACIÓN
    ========================================================= */
 
-function showView(name) {
+function showView(
+  name
+) {
 
   if (
-    name === "requests" &&
+    name ===
+      "requests" &&
+
     !permission(
       "institutional_requests_read"
     )
   ) {
+
     return notice(
       "No tienes permiso para acceder a acreditaciones.",
       "error"
     );
+
   }
 
 
   if (
-    name === "exports" &&
+    name ===
+      "exports" &&
+
     !permission(
       "vehicles_export"
     )
   ) {
+
     return notice(
       "No tienes permiso para exportar.",
       "error"
     );
+
   }
 
 
-  $$(".view").forEach(
-    node =>
+  $$(
+    ".view"
+  ).forEach(
+    node => {
+
       node.classList.toggle(
         "active",
-        node.dataset.panel === name
-      )
+        node.dataset.panel ===
+          name
+      );
+
+    }
   );
 
 
-  $$(".nav-item").forEach(
-    node =>
+  $$(
+    ".nav-item"
+  ).forEach(
+    node => {
+
       node.classList.toggle(
         "active",
-        node.dataset.view === name
-      )
+        node.dataset.view ===
+          name
+      );
+
+    }
   );
 
 
-  $(".sidebar").classList.remove(
-    "open"
-  );
+  const sidebar =
+    $(".sidebar");
+
+
+  if (sidebar) {
+
+    sidebar.classList.remove(
+      "open"
+    );
+
+  }
 }
 
 
-$$(".nav-item").forEach(
-  button =>
+/* =========================================================
+   BOTONES NAVEGACIÓN
+   ========================================================= */
+
+$$(
+  ".nav-item"
+).forEach(
+  button => {
+
     button.addEventListener(
       "click",
-      () =>
+      () => {
+
         showView(
           button.dataset.view
-        )
-    )
+        );
+
+      }
+    );
+
+  }
 );
 
 
-$$("[data-go]").forEach(
-  button =>
+$$(
+  "[data-go]"
+).forEach(
+  button => {
+
     button.addEventListener(
       "click",
-      () =>
+      () => {
+
         showView(
           button.dataset.go
-        )
-    )
+        );
+
+      }
+    );
+
+  }
 );
 
+
+/* =========================================================
+   MENÚ MÓVIL
+   ========================================================= */
 
 $("#menuButton").addEventListener(
   "click",
-  () =>
-    $(".sidebar").classList.toggle(
-      "open"
-    )
+  () => {
+
+    $(".sidebar")
+      ?.classList
+      .toggle(
+        "open"
+      );
+
+  }
 );
 
 
@@ -616,19 +1186,38 @@ $("#menuButton").addEventListener(
    RELOJ
    ========================================================= */
 
-setInterval(
-  () =>
-    $("#clock").textContent =
-      new Intl.DateTimeFormat(
-        "es-CL",
-        {
-          dateStyle: "medium",
-          timeStyle: "short"
-        }
-      ).format(
-        new Date()
-      ),
+function updateClock() {
 
+  const clock =
+    $("#clock");
+
+
+  if (!clock) {
+    return;
+  }
+
+
+  clock.textContent =
+    new Intl.DateTimeFormat(
+      "es-CL",
+      {
+        dateStyle:
+          "medium",
+
+        timeStyle:
+          "short"
+      }
+    ).format(
+      new Date()
+    );
+}
+
+
+updateClock();
+
+
+setInterval(
+  updateClock,
   1000
 );
 
@@ -645,17 +1234,29 @@ async function loadVehicles() {
     )
   ) {
 
-    state.vehicles = [];
+    state.vehicles =
+      [];
+
+
+    $("#vehiclesLoading").hidden =
+      false;
+
 
     $("#vehiclesLoading").textContent =
       "No tienes permiso para consultar vehículos.";
 
+
     return;
+
   }
 
 
   $("#vehiclesLoading").hidden =
     false;
+
+
+  $("#vehiclesLoading").textContent =
+    "Cargando vehículos…";
 
 
   try {
@@ -667,7 +1268,9 @@ async function loadVehicles() {
             db,
             "stolen_vehicles"
           ),
-          limit(250)
+          limit(
+            250
+          )
         )
       );
 
@@ -675,19 +1278,30 @@ async function loadVehicles() {
     state.vehicles =
       snap.docs.map(
         item => ({
-          id: item.id,
+          id:
+            item.id,
+
           ...item.data()
         })
       );
 
 
+    const activeCount =
+      state.vehicles.filter(
+        vehicle =>
+
+          vehicle.active !==
+            false &&
+
+          vehicle.status !==
+            "inactive"
+
+      ).length;
+
+
     $("#activeVehiclesCount").textContent =
       String(
-        state.vehicles.filter(
-          v =>
-            v.active !== false &&
-            v.status !== "inactive"
-        ).length
+        activeCount
       );
 
 
@@ -700,49 +1314,117 @@ async function loadVehicles() {
       error
     );
 
+
+    $("#vehiclesLoading").hidden =
+      false;
+
+
     $("#vehiclesLoading").textContent =
       "No fue posible cargar los vehículos.";
+
   }
 }
 
+
+/* =========================================================
+   ESCAPE HTML
+   ========================================================= */
+
+const escapeHtml =
+  value =>
+    String(
+      value ?? ""
+    ).replace(
+      /[&<>'"]/g,
+      char =>
+        ({
+          "&":
+            "&amp;",
+
+          "<":
+            "&lt;",
+
+          ">":
+            "&gt;",
+
+          "'":
+            "&#39;",
+
+          '"':
+            "&quot;"
+        })[char]
+    );
+
+
+/* =========================================================
+   RENDER VEHÍCULOS
+   ========================================================= */
 
 function renderVehicles() {
 
   const term =
     normalizePlate(
-      $("#vehicleSearch").value
+      $("#vehicleSearch")
+        .value
     );
 
 
   const filter =
-    $("#vehicleFilter").value;
+    $("#vehicleFilter")
+      .value;
 
 
   const rows =
     state.vehicles.filter(
-      v =>
-        (
-          !term ||
+      vehicle => {
+
+        const plate =
           normalizePlate(
-            v.plate ||
-            v.plate_normalized ||
-            v.id
-          ).includes(term)
-        ) &&
-        (
-          filter === "all" ||
+
+            vehicle.plate ||
+
+            vehicle.plate_normalized ||
+
+            vehicle.id
+
+          );
+
+
+        const matchesTerm =
+          !term ||
+          plate.includes(
+            term
+          );
+
+
+        const isActive =
+
+          vehicle.active !==
+            false &&
+
+          vehicle.status !==
+            "inactive";
+
+
+        const matchesFilter =
+
+          filter ===
+            "all" ||
+
           (
-            filter === "active"
-              ? (
-                  v.active !== false &&
-                  v.status !== "inactive"
-                )
-              : (
-                  v.active === false ||
-                  v.status === "inactive"
-                )
-          )
-        )
+            filter ===
+              "active"
+              ? isActive
+              : !isActive
+          );
+
+
+        return (
+          matchesTerm &&
+          matchesFilter
+        );
+
+      }
     );
 
 
@@ -751,149 +1433,211 @@ function renderVehicles() {
 
 
   $("#vehiclesEmpty").hidden =
-    rows.length > 0;
+    rows.length >
+    0;
 
 
-  $("#vehiclesTable tbody").replaceChildren(
-    ...rows.map(vehicle => {
-
-      const tr =
-        document.createElement(
-          "tr"
-        );
+  const body =
+    $("#vehiclesTable tbody");
 
 
-      const plate =
-        normalizePlate(
-          vehicle.plate ||
-          vehicle.plate_normalized ||
-          vehicle.id
-        );
+  body.replaceChildren(
+    ...rows.map(
+      vehicle => {
 
-
-      const active =
-        vehicle.active !== false &&
-        vehicle.status !== "inactive";
-
-
-      tr.innerHTML = `
-        <td data-label="PPU">
-          <b class="plate">
-            ${escapeHtml(plate)}
-          </b>
-        </td>
-
-        <td data-label="Vehículo">
-          <b>
-            ${escapeHtml(
-              vehicle.brand ||
-              vehicle.marca ||
-              "—"
-            )}
-          </b>
-
-          <small>
-            ${escapeHtml(
-              vehicle.model ||
-              vehicle.modelo ||
-              ""
-            )}
-          </small>
-        </td>
-
-        <td data-label="Año / Color">
-          ${escapeHtml(
-            vehicle.year ||
-            vehicle.ano ||
-            "—"
-          )}
-          ·
-          ${escapeHtml(
-            vehicle.color ||
-            "—"
-          )}
-        </td>
-
-        <td data-label="Estado">
-          <span class="pill ${active ? "on" : "off"}">
-            ${active ? "ACTIVO" : "INACTIVO"}
-          </span>
-        </td>
-
-        <td data-label="Fecha">
-          ${safeDate(
-            vehicle.created_at ||
-            vehicle.reported_at ||
-            vehicle.updated_at
-          )}
-        </td>
-
-        <td data-label="Origen">
-          ${escapeHtml(
-            vehicle.source ||
-            vehicle.origin ||
-            vehicle.fuente ||
-            "—"
-          )}
-        </td>
-
-        <td data-label="Acción"></td>
-      `;
-
-
-      if (
-        active &&
-        permission(
-          "vehicles_deactivate"
-        )
-      ) {
-
-        const button =
+        const tr =
           document.createElement(
-            "button"
+            "tr"
           );
 
-        button.className =
-          "text-button danger-text";
 
-        button.textContent =
-          "DAR DE BAJA";
+        const plate =
+          normalizePlate(
 
-        button.addEventListener(
-          "click",
-          () =>
-            openDeactivate(
-              vehicle
-            )
-        );
+            vehicle.plate ||
 
-        tr.lastElementChild.append(
-          button
-        );
+            vehicle.plate_normalized ||
+
+            vehicle.id
+
+          );
+
+
+        const active =
+
+          vehicle.active !==
+            false &&
+
+          vehicle.status !==
+            "inactive";
+
+
+        tr.innerHTML =
+          `
+            <td data-label="PPU">
+
+              <b class="plate">
+                ${escapeHtml(
+                  plate
+                )}
+              </b>
+
+            </td>
+
+
+            <td data-label="Vehículo">
+
+              <b>
+
+                ${escapeHtml(
+                  vehicle.brand ||
+                  vehicle.marca ||
+                  "—"
+                )}
+
+              </b>
+
+
+              <small>
+
+                ${escapeHtml(
+                  vehicle.model ||
+                  vehicle.modelo ||
+                  ""
+                )}
+
+              </small>
+
+            </td>
+
+
+            <td data-label="Año / Color">
+
+              ${escapeHtml(
+                vehicle.year ||
+                vehicle.ano ||
+                "—"
+              )}
+
+              ·
+
+              ${escapeHtml(
+                vehicle.color ||
+                "—"
+              )}
+
+            </td>
+
+
+            <td data-label="Estado">
+
+              <span
+                class="pill ${
+                  active
+                    ? "on"
+                    : "off"
+                }"
+              >
+
+                ${
+                  active
+                    ? "ACTIVO"
+                    : "INACTIVO"
+                }
+
+              </span>
+
+            </td>
+
+
+            <td data-label="Fecha">
+
+              ${safeDate(
+
+                vehicle.created_at ||
+
+                vehicle.reported_at ||
+
+                vehicle.updated_at
+
+              )}
+
+            </td>
+
+
+            <td data-label="Origen">
+
+              ${escapeHtml(
+
+                vehicle.source ||
+
+                vehicle.origin ||
+
+                vehicle.fuente ||
+
+                "—"
+
+              )}
+
+            </td>
+
+
+            <td data-label="Acción"></td>
+          `;
+
+
+        if (
+          active &&
+
+          permission(
+            "vehicles_deactivate"
+          )
+        ) {
+
+          const button =
+            document.createElement(
+              "button"
+            );
+
+
+          button.className =
+            "text-button danger-text";
+
+
+          button.textContent =
+            "DAR DE BAJA";
+
+
+          button.addEventListener(
+            "click",
+            () => {
+
+              openDeactivate(
+                vehicle
+              );
+
+            }
+          );
+
+
+          tr.lastElementChild.append(
+            button
+          );
+
+        }
+
+
+        return tr;
+
       }
-
-
-      return tr;
-    })
+    )
   );
 }
 
 
-const escapeHtml = value =>
-  String(
-    value ?? ""
-  ).replace(
-    /[&<>'"]/g,
-    char =>
-      ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        "'": "&#39;",
-        '"': "&quot;"
-      })[char]
-  );
-
+/* =========================================================
+   FILTROS VEHÍCULOS
+   ========================================================= */
 
 $("#vehicleSearch").addEventListener(
   "input",
@@ -921,8 +1665,11 @@ const vehicleDialog =
   $("#vehicleDialog");
 
 
-$$("[data-open-create]").forEach(
-  button =>
+$$(
+  "[data-open-create]"
+).forEach(
+  button => {
+
     button.addEventListener(
       "click",
       () => {
@@ -932,23 +1679,36 @@ $$("[data-open-create]").forEach(
             "vehicles_create"
           )
         ) {
-          return notice(
+
+          notice(
             "Permiso insuficiente.",
             "error"
           );
+
+          return;
+
         }
 
 
         $("#vehicleForm").reset();
 
+
         $("#vehicleFormMessage").textContent =
           "";
 
+
         vehicleDialog.showModal();
+
       }
-    )
+    );
+
+  }
 );
 
+
+/* =========================================================
+   FORMULARIO CREAR VEHÍCULO
+   ========================================================= */
 
 $("#vehicleForm").addEventListener(
   "submit",
@@ -962,9 +1722,13 @@ $("#vehicleForm").addEventListener(
         "vehicles_create"
       )
     ) {
-      return invalidate(
+
+      await invalidate(
         "Tu permiso para crear vehículos ya no está disponible."
       );
+
+      return;
+
     }
 
 
@@ -987,10 +1751,15 @@ $("#vehicleForm").addEventListener(
 
 
     if (
-      plate.length < 5
+      plate.length <
+      5
     ) {
-      return $("#vehicleFormMessage").textContent =
+
+      $("#vehicleFormMessage").textContent =
         "Ingresa una patente válida.";
+
+      return;
+
     }
 
 
@@ -1018,20 +1787,23 @@ $("#vehicleForm").addEventListener(
           "source"
         )?.trim() ||
         "operations_portal"
+
     };
 
 
-    if (
+    const year =
       data.get(
         "year"
-      )
-    ) {
+      );
+
+
+    if (year) {
+
       vehicle.year =
         Number(
-          data.get(
-            "year"
-          )
+          year
         );
+
     }
 
 
@@ -1045,17 +1817,20 @@ $("#vehicleForm").addEventListener(
     try {
 
       const result =
-        await callables.createVehicle({
-          vehicle
-        });
+        await callables
+          .createVehicle({
+            vehicle
+          });
 
 
       if (
         !result.data?.ok
       ) {
+
         throw new Error(
           "Respuesta inesperada"
         );
+
       }
 
 
@@ -1089,6 +1864,7 @@ $("#vehicleForm").addEventListener(
         button,
         false
       );
+
     }
   }
 );
@@ -1107,10 +1883,14 @@ function openDeactivate(
       "vehicles_deactivate"
     )
   ) {
-    return notice(
+
+    notice(
       "Permiso insuficiente.",
       "error"
     );
+
+    return;
+
   }
 
 
@@ -1120,8 +1900,13 @@ function openDeactivate(
 
   $("#deactivatePlate").textContent =
     normalizePlate(
+
       vehicle.plate ||
+
+      vehicle.plate_normalized ||
+
       vehicle.id
+
     );
 
 
@@ -1140,14 +1925,26 @@ function openDeactivate(
 }
 
 
+/* =========================================================
+   MOTIVO DAR DE BAJA
+   ========================================================= */
+
 $("#reasonPreset").addEventListener(
   "change",
-  event =>
+  event => {
+
     $("#otherReasonLabel").hidden =
+
       event.target.value !==
-      "Otro"
+      "Otro";
+
+  }
 );
 
+
+/* =========================================================
+   FORM DAR DE BAJA
+   ========================================================= */
 
 $("#deactivateForm").addEventListener(
   "submit",
@@ -1161,19 +1958,42 @@ $("#deactivateForm").addEventListener(
         "vehicles_deactivate"
       )
     ) {
-      return invalidate(
+
+      await invalidate(
         "Tu permiso para dar de baja vehículos ya no está disponible."
       );
+
+      return;
+
+    }
+
+
+    if (
+      !state.selectedVehicle
+    ) {
+
+      $("#deactivateMessage").textContent =
+        "No hay un vehículo seleccionado.";
+
+      return;
+
     }
 
 
     const preset =
-      $("#reasonPreset").value;
+      $("#reasonPreset")
+        .value;
 
 
     const reason =
-      preset === "Otro"
-        ? $("#otherReason").value.trim()
+
+      preset ===
+        "Otro"
+
+        ? $("#otherReason")
+            .value
+            .trim()
+
         : preset;
 
 
@@ -1183,6 +2003,7 @@ $("#deactivateForm").addEventListener(
         "Debes indicar un motivo.";
 
       return;
+
     }
 
 
@@ -1200,24 +2021,35 @@ $("#deactivateForm").addEventListener(
     try {
 
       const result =
-        await callables.deactivateVehicle({
-          id:
-            state.selectedVehicle.id,
+        await callables
+          .deactivateVehicle({
 
-          reason
-        });
+            id:
+              state
+                .selectedVehicle
+                .id,
+
+            reason
+
+          });
 
 
       if (
         !result.data?.ok
       ) {
+
         throw new Error(
           "Respuesta inesperada"
         );
+
       }
 
 
       $("#deactivateDialog").close();
+
+
+      state.selectedVehicle =
+        null;
 
 
       notice(
@@ -1247,6 +2079,7 @@ $("#deactivateForm").addEventListener(
         button,
         false
       );
+
     }
   }
 );
@@ -1263,7 +2096,9 @@ async function loadRequests() {
       "institutional_requests_read"
     )
   ) {
+
     return;
+
   }
 
 
@@ -1271,11 +2106,16 @@ async function loadRequests() {
     false;
 
 
+  $("#requestsLoading").textContent =
+    "Cargando solicitudes…";
+
+
   try {
 
     const snap =
       await getDocs(
         query(
+
           collection(
             db,
             "institutional_requests"
@@ -1287,7 +2127,10 @@ async function loadRequests() {
             "pending"
           ),
 
-          limit(100)
+          limit(
+            100
+          )
+
         )
       );
 
@@ -1295,8 +2138,12 @@ async function loadRequests() {
     state.requests =
       snap.docs.map(
         item => ({
-          id: item.id,
+
+          id:
+            item.id,
+
           ...item.data()
+
         })
       );
 
@@ -1317,11 +2164,20 @@ async function loadRequests() {
     );
 
 
+    $("#requestsLoading").hidden =
+      false;
+
+
     $("#requestsLoading").textContent =
       "No fue posible cargar las acreditaciones.";
+
   }
 }
 
+
+/* =========================================================
+   RENDER ACREDITACIONES
+   ========================================================= */
 
 function renderRequests() {
 
@@ -1330,10 +2186,12 @@ function renderRequests() {
 
 
   $("#requestsEmpty").hidden =
-    state.requests.length > 0;
+    state.requests.length >
+    0;
 
 
   $("#requestsGrid").replaceChildren(
+
     ...state.requests.map(
       request => {
 
@@ -1347,87 +2205,143 @@ function renderRequests() {
           "request-card";
 
 
-        card.innerHTML = `
-          <span class="pill pending">
-            PENDIENTE
-          </span>
-
-          <h3>
-            ${escapeHtml(
-              request.full_name ||
-              request.name ||
-              "Solicitud institucional"
-            )}
-          </h3>
-
-          <p>
-            ${escapeHtml(
-              request.institution ||
-              "Institución no informada"
-            )}
-          </p>
-
-          <dl>
-
-            <div>
-              <dt>Región</dt>
-              <dd>
-                ${escapeHtml(
-                  request.region ||
-                  "—"
-                )}
-              </dd>
-            </div>
-
-            <div>
-              <dt>Unidad</dt>
-              <dd>
-                ${escapeHtml(
-                  request.unit ||
-                  "—"
-                )}
-              </dd>
-            </div>
-
-            <div>
-              <dt>Fecha</dt>
-              <dd>
-                ${safeDate(
-                  request.submitted_at ||
-                  request.created_at
-                )}
-              </dd>
-            </div>
-
-          </dl>
-
-          <button class="secondary">
-            REVISAR SOLICITUD
-          </button>
-        `;
+        card.innerHTML =
+          `
+            <span class="pill pending">
+              PENDIENTE
+            </span>
 
 
-        $("button", card).addEventListener(
-          "click",
-          () =>
-            openRequest(
-              request
-            )
-        );
+            <h3>
+
+              ${escapeHtml(
+
+                request.full_name ||
+
+                request.name ||
+
+                "Solicitud institucional"
+
+              )}
+
+            </h3>
+
+
+            <p>
+
+              ${escapeHtml(
+
+                request.institution ||
+
+                "Institución no informada"
+
+              )}
+
+            </p>
+
+
+            <dl>
+
+              <div>
+
+                <dt>
+                  Región
+                </dt>
+
+                <dd>
+
+                  ${escapeHtml(
+                    request.region ||
+                    "—"
+                  )}
+
+                </dd>
+
+              </div>
+
+
+              <div>
+
+                <dt>
+                  Unidad
+                </dt>
+
+                <dd>
+
+                  ${escapeHtml(
+                    request.unit ||
+                    "—"
+                  )}
+
+                </dd>
+
+              </div>
+
+
+              <div>
+
+                <dt>
+                  Fecha
+                </dt>
+
+                <dd>
+
+                  ${safeDate(
+
+                    request.submitted_at ||
+
+                    request.created_at
+
+                  )}
+
+                </dd>
+
+              </div>
+
+            </dl>
+
+
+            <button class="secondary">
+              REVISAR SOLICITUD
+            </button>
+          `;
+
+
+        $("button", card)
+          .addEventListener(
+            "click",
+            () => {
+
+              openRequest(
+                request
+              );
+
+            }
+          );
 
 
         return card;
+
       }
     )
+
   );
 }
 
+
+/* =========================================================
+   ACTUALIZAR ACREDITACIONES
+   ========================================================= */
 
 $("#refreshRequests").addEventListener(
   "click",
   loadRequests
 );
 
+
+/* =========================================================
+   ABRIR SOLICITUD
+   ========================================================= */
 
 function openRequest(
   request
@@ -1438,8 +2352,11 @@ function openRequest(
 
 
   $("#requestName").textContent =
+
     request.full_name ||
+
     request.name ||
+
     "Solicitud institucional";
 
 
@@ -1478,8 +2395,11 @@ function openRequest(
     [
       "Fecha",
       safeDate(
+
         request.submitted_at ||
+
         request.created_at
+
       )
     ],
 
@@ -1487,30 +2407,53 @@ function openRequest(
       "Estado",
       request.status
     ]
+
   ];
 
 
   $("#requestDetails").innerHTML =
+
     fields
+
       .filter(
-        ([, value]) =>
+        (
+          [
+            ,
+            value
+          ]
+        ) =>
           value
       )
+
       .map(
-        ([key, value]) =>
+        (
+          [
+            key,
+            value
+          ]
+        ) =>
           `
             <div>
+
               <dt>
-                ${escapeHtml(key)}
+                ${escapeHtml(
+                  key
+                )}
               </dt>
 
               <dd>
-                ${escapeHtml(value)}
+                ${escapeHtml(
+                  value
+                )}
               </dd>
+
             </div>
           `
       )
-      .join("");
+
+      .join(
+        ""
+      );
 
 
   $("#requestMessage").textContent =
@@ -1521,12 +2464,25 @@ function openRequest(
 }
 
 
-$("[data-close-request]").addEventListener(
+/* =========================================================
+   CERRAR SOLICITUD
+   ========================================================= */
+
+$(
+  "[data-close-request]"
+)?.addEventListener(
   "click",
-  () =>
-    $("#requestDialog").close()
+  () => {
+
+    $("#requestDialog").close();
+
+  }
 );
 
+
+/* =========================================================
+   DECIDIR ACREDITACIÓN
+   ========================================================= */
 
 async function decideRequest(
   decision
@@ -1537,23 +2493,52 @@ async function decideRequest(
       "institutional_requests_review"
     )
   ) {
-    return notice(
+
+    notice(
       "No tienes permiso para procesar acreditaciones.",
       "error"
     );
+
+    return;
+
+  }
+
+
+  if (
+    !state.selectedRequest
+  ) {
+
+    notice(
+      "No existe una solicitud seleccionada.",
+      "error"
+    );
+
+    return;
+
   }
 
 
   const approve =
-    decision === "approve";
+    decision ===
+    "approve";
+
+
+  const confirmed =
+    confirm(
+      `${
+        approve
+          ? "Aprobar"
+          : "Rechazar"
+      } esta solicitud institucional?`
+    );
 
 
   if (
-    !confirm(
-      `${approve ? "Aprobar" : "Rechazar"} esta solicitud institucional?`
-    )
+    !confirmed
   ) {
+
     return;
+
   }
 
 
@@ -1582,25 +2567,40 @@ async function decideRequest(
   try {
 
     const result =
-      await callables.reviewRequest({
-        uid:
-          state.selectedRequest.uid ||
-          state.selectedRequest.id,
+      await callables
+        .reviewRequest({
 
-        decision
-      });
+          uid:
+
+            state
+              .selectedRequest
+              .uid ||
+
+            state
+              .selectedRequest
+              .id,
+
+          decision
+
+        });
 
 
     if (
       !result.data?.ok
     ) {
+
       throw new Error(
         "Respuesta inesperada"
       );
+
     }
 
 
     $("#requestDialog").close();
+
+
+    state.selectedRequest =
+      null;
 
 
     notice(
@@ -1640,25 +2640,36 @@ async function decideRequest(
       rejectButton,
       false
     );
+
   }
 }
 
 
+/* =========================================================
+   BOTONES APROBAR / RECHAZAR
+   ========================================================= */
+
 $("#approveButton").addEventListener(
   "click",
-  () =>
+  () => {
+
     decideRequest(
       "approve"
-    )
+    );
+
+  }
 );
 
 
 $("#rejectButton").addEventListener(
   "click",
-  () =>
+  () => {
+
     decideRequest(
       "reject"
-    )
+    );
+
+  }
 );
 
 
@@ -1675,9 +2686,13 @@ $("#exportButton").addEventListener(
         "vehicles_export"
       )
     ) {
-      return invalidate(
+
+      await invalidate(
         "Tu permiso para exportar ya no está disponible."
       );
+
+      return;
+
     }
 
 
@@ -1698,13 +2713,21 @@ $("#exportButton").addEventListener(
 
     try {
 
+      const exportLimit =
+        Number(
+          $("#exportLimit")
+            .value
+        );
+
+
       const result =
-        await callables.exportVehicles({
-          limit:
-            Number(
-              $("#exportLimit").value
-            )
-        });
+        await callables
+          .exportVehicles({
+
+            limit:
+              exportLimit
+
+          });
 
 
       const vehicles =
@@ -1713,13 +2736,16 @@ $("#exportButton").addEventListener(
 
       if (
         !result.data?.ok ||
+
         !Array.isArray(
           vehicles
         )
       ) {
+
         throw new Error(
           "Formato de exportación inesperado"
         );
+
       }
 
 
@@ -1756,74 +2782,117 @@ $("#exportButton").addEventListener(
         button,
         false
       );
+
     }
   }
 );
 
+
+/* =========================================================
+   DESCARGAR CSV
+   ========================================================= */
 
 function downloadCsv(
   vehicles
 ) {
 
   const columns = [
+
     "id",
+
     "plate",
+
     "brand",
+
     "model",
+
     "year",
+
     "color",
+
     "status",
+
     "active",
+
     "source"
+
   ];
 
 
-  const value = item => {
+  const value =
+    item => {
 
-    const raw =
-      item == null
-        ? ""
-        : typeof item === "object"
-          ? JSON.stringify(item)
-          : String(item);
+      const raw =
+
+        item == null
+
+          ? ""
+
+          : typeof item ===
+              "object"
+
+            ? JSON.stringify(
+                item
+              )
+
+            : String(
+                item
+              );
 
 
-    return `"${raw.replaceAll(
-      '"',
-      '""'
-    )}"`;
-  };
+      return `"${raw.replaceAll(
+        '"',
+        '""'
+      )}"`;
+
+    };
 
 
   const csv = [
 
-    columns.join(","),
+    columns.join(
+      ","
+    ),
 
     ...vehicles.map(
       row =>
+
         columns.map(
           key =>
             value(
               row[key]
             )
-        ).join(",")
+        ).join(
+          ","
+        )
     )
 
-  ].join("\r\n");
+  ].join(
+    "\r\n"
+  );
+
+
+  /*
+   * BOM intencional SOLO para CSV,
+   * necesario para Excel/acentos.
+   */
+
+  const blob =
+    new Blob(
+      [
+        "\ufeff",
+        csv
+      ],
+      {
+        type:
+          "text/csv;charset=utf-8"
+      }
+    );
 
 
   const url =
     URL.createObjectURL(
-      new Blob(
-        [
-          "\ufeff",
-          csv
-        ],
-        {
-          type:
-            "text/csv;charset=utf-8"
-        }
-      )
+      blob
     );
 
 
@@ -1841,11 +2910,22 @@ function downloadCsv(
     `skano-vehiculos-${
       new Date()
         .toISOString()
-        .slice(0, 10)
+        .slice(
+          0,
+          10
+        )
     }.csv`;
 
 
+  document.body.appendChild(
+    anchor
+  );
+
+
   anchor.click();
+
+
+  anchor.remove();
 
 
   URL.revokeObjectURL(
@@ -1856,7 +2936,17 @@ function downloadCsv(
 
 /* =========================================================
    REVALIDACIÓN DE SESIÓN
-   Cuando el navegador vuelve a primer plano.
+
+   Cuando el navegador vuelve a primer plano,
+   vuelve a revisar:
+
+   - claims
+   - staff_accounts
+   - admins
+
+   También usa Promise.allSettled para que
+   operations_staff no falle por no tener
+   acceso al documento admins/{uid}.
    ========================================================= */
 
 document.addEventListener(
@@ -1864,98 +2954,94 @@ document.addEventListener(
   async () => {
 
     if (
-      !document.hidden &&
-      state.user &&
-      state.validated
+      document.hidden ||
+
+      !state.user ||
+
+      !state.validated
     ) {
 
-      try {
+      return;
 
-        const [
-          staffSnap,
-          adminSnap
-        ] = await Promise.all([
-
-          getDoc(
-            doc(
-              db,
-              "staff_accounts",
-              state.user.uid
-            )
-          ),
-
-          getDoc(
-            doc(
-              db,
-              "admins",
-              state.user.uid
-            )
-          )
-        ]);
+    }
 
 
-        const staffProfile =
-          staffSnap.exists()
-            ? staffSnap.data()
-            : null;
+    try {
+
+      const user =
+        state.user;
 
 
-        const adminProfile =
-          adminSnap.exists()
-            ? adminSnap.data()
-            : null;
+      /*
+       * Fuerza actualización de claims.
+       */
+
+      await user.getIdToken(
+        true
+      );
 
 
-        await state.user.getIdToken(true);
+      const token =
+        await user.getIdTokenResult();
 
 
-        const token =
-          await state.user.getIdTokenResult();
-
-
-        if (
-          !authorizeOperationsSession(
-            token.claims,
-            staffProfile,
-            adminProfile
-          )
-        ) {
-
-          await invalidate();
-
-          return;
-        }
-
-
-        const isAdmin =
-          adminProfile?.active === true &&
-          [
-            "admin",
-            "superadmin"
-          ].includes(
-            adminProfile?.role
-          );
-
-
-        state.profile =
-          isAdmin
-            ? {
-                ...adminProfile,
-                is_admin: true,
-                status: "active"
-              }
-            : staffProfile;
-
-
-        enforcePermissions();
-
-      } catch (error) {
-
-        technicalError(
-          "session-recheck",
-          error
+      const {
+        staffProfile,
+        adminProfile
+      } =
+        await readAuthorizationProfiles(
+          user
         );
+
+
+      const authorized =
+        authorizeOperationsSession(
+          token.claims,
+          staffProfile,
+          adminProfile
+        );
+
+
+      if (
+        !authorized
+      ) {
+
+        await invalidate();
+
+        return;
+
       }
+
+
+      const profile =
+        buildSessionProfile(
+          staffProfile,
+          adminProfile
+        );
+
+
+      if (!profile) {
+
+        await invalidate();
+
+        return;
+
+      }
+
+
+      state.profile =
+        profile;
+
+
+      enforcePermissions();
+
+    } catch (error) {
+
+      technicalError(
+        "session-recheck",
+        error
+      );
+
     }
   }
 );
