@@ -1,1003 +1,1961 @@
-[hidden] {
-  display: none !important;
-}
-
-:root {
-  --navy: #031126;
-  --navy2: #071c38;
-  --panel: #0a2446;
-  --line: rgba(83, 205, 239, .2);
-  --cyan: #35d9f2;
-  --blue: #1689ff;
-  --white: #f4f9ff;
-  --muted: #8ea6c2;
-  --danger: #ff6677;
-  --success: #56e2a4;
-  font-family: Manrope, system-ui, sans-serif;
-  color: var(--white);
-  background: var(--navy);
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  background:
-    radial-gradient(
-      circle at 80% 10%,
-      rgba(22, 137, 255, .18),
-      transparent 32%
-    ),
-    linear-gradient(
-      145deg,
-      #020b19,
-      #061a35 65%,
-      #051329
-    );
-  color: var(--white);
-}
-
-button,
-input,
-select,
-textarea {
-  font: inherit;
-}
-
-.ambient {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(
-      rgba(53, 217, 242, .025) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      rgba(53, 217, 242, .025) 1px,
-      transparent 1px
-    );
-  background-size: 42px 42px;
-}
-
-.login-shell,
-.center-state {
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-}
-
-.login-card {
-  position: relative;
-  width: min(460px, 100%);
-  padding: 42px;
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  background:
-    linear-gradient(
-      160deg,
-      rgba(12, 40, 76, .96),
-      rgba(4, 17, 38, .98)
-    );
-  box-shadow: 0 30px 90px rgba(0, 0, 0, .45);
-  overflow: hidden;
-}
-
-.login-card::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  height: 3px;
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      var(--cyan),
-      var(--blue),
-      transparent
-    );
-}
-
-.portal-brand {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-}
-
-.portal-brand img {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-}
-
-.portal-brand span {
-  display: grid;
-  letter-spacing: .08em;
-}
-
-.portal-brand b {
-  font-size: 1.25rem;
-}
-
-.portal-brand small {
-  font-size: .58rem;
-  color: var(--cyan);
-}
-
-.eyebrow {
-  margin: 30px 0 8px;
-  color: var(--cyan);
-  font-size: .7rem;
-  font-weight: 800;
-  letter-spacing: .18em;
-}
-
-.login-card h1,
-.view h1 {
-  margin: 0;
-  font-size: clamp(2rem, 5vw, 3rem);
-  line-height: 1.02;
-  letter-spacing: -.04em;
-}
-
-.login-card h1 em {
-  color: var(--cyan);
-  font-style: normal;
-}
-
-.login-intro,
-.section-heading p,
-.hero-panel p {
-  color: var(--muted);
-  line-height: 1.6;
-}
-
-.login-card form {
-  display: grid;
-  gap: 17px;
-  margin-top: 28px;
-}
-
-label {
-  display: grid;
-  gap: 7px;
-  color: #cbd9e9;
-  font-size: .78rem;
-  font-weight: 700;
-}
-
-input,
-select,
-textarea {
-  width: 100%;
-  border: 1px solid rgba(142, 166, 194, .3);
-  border-radius: 10px;
-  background: #06162c;
-  color: var(--white);
-  padding: 13px 14px;
-  outline: none;
-}
-
-input:focus,
-select:focus,
-textarea:focus {
-  border-color: var(--cyan);
-  box-shadow: 0 0 0 3px rgba(53, 217, 242, .1);
-}
-
-button {
-  border: 0;
-  cursor: pointer;
-}
-
-button:disabled {
-  opacity: .55;
-  cursor: wait;
-}
-
-.primary,
-.secondary,
-.danger,
-.icon-button,
-.logout {
-  border-radius: 10px;
-  padding: 13px 17px;
-  font-size: .75rem;
-  font-weight: 800;
-  letter-spacing: .06em;
-}
-
-.primary {
-  color: #001425;
-  background:
-    linear-gradient(
-      110deg,
-      var(--cyan),
-      #3ea4ff
-    );
-  box-shadow:
-    0 8px 28px rgba(30, 171, 235, .2);
-}
-
-.secondary {
-  color: var(--white);
-  background: #102c50;
-  border: 1px solid var(--line);
-}
-
-.danger {
-  color: #fff;
-  background: #b93d52;
-}
-
-.full {
-  width: 100%;
-}
-
-.message {
-  min-height: 20px;
-  color: var(--danger);
-  font-size: .78rem;
-}
-
-.secure-note {
-  display: block;
-  text-align: center;
-  color: #6f89a8;
-  margin-top: 20px;
-}
-
-.center-state {
-  align-content: center;
-  color: var(--muted);
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid rgba(255, 255, 255, .12);
-  border-top-color: var(--cyan);
-  border-radius: 50%;
-  animation: spin .8s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.portal {
-  min-height: 100vh;
-}
-
-.sidebar {
-  position: fixed;
-  inset: 0 auto 0 0;
-  width: 270px;
-  padding: 26px 20px;
-  background: rgba(3, 14, 31, .97);
-  border-right: 1px solid var(--line);
-  display: flex;
-  flex-direction: column;
-  z-index: 20;
-}
-
-.compact {
-  padding: 0 10px 24px;
-  border-bottom: 1px solid var(--line);
-}
-
-.compact img {
-  width: 40px;
-  height: 40px;
-}
-
-.sidebar nav {
-  display: grid;
-  gap: 7px;
-  margin-top: 28px;
-}
-
-.nav-item {
-  display: flex;
-  gap: 13px;
-  align-items: center;
-  padding: 13px;
-  border-radius: 9px;
-  background: transparent;
-  color: #9db1c9;
-  text-align: left;
-}
-
-.nav-item span {
-  font-size: .62rem;
-  color: #55728f;
-}
-
-.nav-item:hover,
-.nav-item.active {
-  background:
-    linear-gradient(
-      90deg,
-      rgba(24, 137, 255, .2),
-      rgba(53, 217, 242, .05)
-    );
-  color: #fff;
-}
-
-.nav-item.active span {
-  color: var(--cyan);
-}
-
-.session-card {
-  display: grid;
-  gap: 4px;
-  margin-top: auto;
-  padding: 15px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: #071a34;
-}
-
-.session-card small {
-  font-size: .58rem;
-  color: var(--success);
-  letter-spacing: .12em;
-}
-
-.session-card b {
-  font-size: .8rem;
-}
-
-.session-card span {
-  font-size: .64rem;
-  color: var(--muted);
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.logout {
-  margin-top: 10px;
-  background: transparent;
-  color: #9fb1c7;
-  border: 1px solid rgba(255, 255, 255, .1);
-}
-
-.workspace {
-  margin-left: 270px;
-  min-height: 100vh;
-}
-
-.topbar {
-  height: 74px;
-  padding: 0 34px;
-  border-bottom: 1px solid var(--line);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(4, 19, 41, .72);
-  backdrop-filter: blur(12px);
-}
-
-.topbar p {
-  margin: 0;
-  font-size: .68rem;
-  letter-spacing: .16em;
-  font-weight: 800;
-}
-
-.topbar span {
-  font-size: .67rem;
-  color: var(--muted);
-}
-
-.status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.status i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--success);
-  box-shadow: 0 0 10px var(--success);
-}
-
-.menu {
-  display: none;
-  background: transparent;
-  color: #fff;
-  font-size: 1.2rem;
-}
-
-.view {
-  display: none;
-  padding: 34px;
-  max-width: 1500px;
-  margin: auto;
-}
-
-.view.active {
-  display: block;
-}
-
-.hero-panel {
-  min-height: 235px;
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  padding: 38px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background:
-    radial-gradient(
-      circle at 80%,
-      rgba(22, 137, 255, .23),
-      transparent 30%
-    ),
-    linear-gradient(
-      120deg,
-      #092548,
-      #06172e
-    );
-  overflow: hidden;
-}
-
-.hero-panel .eyebrow {
-  margin-top: 0;
-}
-
-.hero-panel h1 {
-  font-size: clamp(2rem, 4vw, 3.25rem);
-}
-
-.hero-panel h1 span {
-  color: var(--cyan);
-}
-
-.shield {
-  width: 135px;
-  height: 135px;
-  border: 1px solid rgba(53, 217, 242, .4);
-  border-radius: 30% 30% 45% 45%;
-  display: grid;
-  place-content: center;
-  text-align: center;
-  color: var(--cyan);
-  font-size: 2rem;
-  font-weight: 800;
-  box-shadow:
-    inset 0 0 40px rgba(53, 217, 242, .08),
-    0 0 40px rgba(53, 217, 242, .08);
-}
-
-.shield small {
-  font-size: .45rem;
-  letter-spacing: .12em;
-}
-
-.metrics {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 17px;
-  margin: 18px 0;
-}
-
-.metrics article,
-.section-card,
-.data-card,
-.export-card {
-  border: 1px solid var(--line);
-  border-radius: 15px;
-  background: rgba(8, 31, 60, .75);
-  padding: 23px;
-}
-
-.metrics article {
-  display: grid;
-  gap: 8px;
-}
-
-.metrics span {
-  color: var(--muted);
-  font-size: .65rem;
-  font-weight: 800;
-  letter-spacing: .11em;
-}
-
-.metrics strong {
-  font-size: 2.4rem;
-}
-
-.metrics small {
-  color: #718ca9;
-}
-
-.active-text {
-  color: var(--success);
-  font-size: 1.5rem !important;
-}
-
-.section-heading {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 22px;
-}
-
-.section-heading .eyebrow {
-  margin: 0 0 7px;
-}
-
-.section-heading h1,
-.section-heading h2 {
-  margin: 0;
-}
-
-.section-heading p {
-  margin: 7px 0 0;
-}
-
-.quick-actions {
-  display: flex;
-  gap: 12px;
-}
-
-.toolbar {
-  display: grid;
-  grid-template-columns:
-    minmax(240px, 1fr)
-    220px
-    48px;
-  gap: 12px;
-  margin-bottom: 15px;
-}
-
-.search {
-  position: relative;
-}
-
-.search input {
-  padding-left: 14px;
-}
-
-.icon-button {
-  padding: 0;
-  background: #102c50;
-  color: #fff;
-  border: 1px solid var(--line);
-  font-size: 1.2rem;
-}
-
-.data-card {
-  padding: 0;
-  overflow: hidden;
-}
-
-.table-wrap {
-  overflow: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  padding: 16px;
-  text-align: left;
-  border-bottom: 1px solid rgba(83, 205, 239, .1);
-  font-size: .78rem;
-}
-
-th {
-  font-size: .62rem;
-  color: #7190ae;
-  letter-spacing: .08em;
-}
-
-td small {
-  display: block;
-  color: var(--muted);
-  margin-top: 3px;
-}
-
-.plate {
-  font-family: var(--font-mono, monospace);
-  font-size: .95rem;
-  letter-spacing: .08em;
-}
-
-.pill {
-  display: inline-block;
-  padding: 5px 8px;
-  border-radius: 30px;
-  font-size: .58rem;
-  font-weight: 800;
-  letter-spacing: .08em;
-}
-
-.pill.on {
-  color: var(--success);
-  background: rgba(86, 226, 164, .1);
-}
-
-.pill.off {
-  color: #a6b4c5;
-  background: rgba(166, 180, 197, .1);
-}
-
-.pill.pending {
-  color: #ffd166;
-  background: rgba(255, 209, 102, .1);
-}
-
-.text-button {
-  padding: 5px;
-  background: transparent;
-  font-size: .66rem;
-  font-weight: 800;
-}
-
-.danger-text {
-  color: var(--danger);
-}
-
-.inline-state {
-  padding: 28px;
-  text-align: center;
-  color: var(--muted);
-}
-
-.request-grid {
-  display: grid;
-  grid-template-columns:
-    repeat(
-      auto-fit,
-      minmax(260px, 1fr)
-    );
-  gap: 16px;
-}
-
-.request-card {
-  padding: 22px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: rgba(8, 31, 60, .75);
-}
-
-.request-card h3 {
-  margin: 16px 0 5px;
-}
-
-.request-card p {
-  color: var(--muted);
-}
-
-.request-card dl {
-  display: grid;
-  gap: 8px;
-}
-
-.request-card dl div,
-#requestDetails div {
-  display: flex;
-  justify-content: space-between;
-  gap: 15px;
-}
-
-.request-card dt,
-#requestDetails dt {
-  color: var(--muted);
-  font-size: .72rem;
-}
-
-.request-card dd,
-#requestDetails dd {
-  margin: 0;
-  text-align: right;
-  font-size: .74rem;
-}
-
-.request-card button {
-  width: 100%;
-  margin-top: 13px;
-}
-
-.export-card {
-  display: flex;
-  gap: 30px;
-  align-items: center;
-  max-width: 760px;
-}
-
-.export-symbol {
-  width: 120px;
-  height: 140px;
-  border-radius: 14px;
-  display: grid;
-  place-content: center;
-  border: 1px solid var(--line);
-  background:
-    linear-gradient(
-      145deg,
-      #0e3565,
-      #071a35
-    );
-  font-size: 1.5rem;
-  color: var(--cyan);
-  font-weight: 800;
-}
-
-.export-card > div:last-child {
-  flex: 1;
-}
-
-.export-card label {
-  max-width: 220px;
-  margin: 18px 0;
-}
-
-.notice {
-  position: fixed;
-  right: 25px;
-  top: 90px;
-  z-index: 50;
-  max-width: 400px;
-  padding: 14px 18px;
-  border-radius: 10px;
-  background: #123b3a;
-  border: 1px solid rgba(86, 226, 164, .4);
-  box-shadow: 0 15px 45px rgba(0, 0, 0, .35);
-  font-size: .8rem;
-}
-
-.notice.error {
-  background: #45212c;
-  border-color: rgba(255, 102, 119, .5);
-}
-
-dialog {
-  width: min(
-    680px,
-    calc(100% - 24px)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+  limit,
+  orderBy,
+  query,
+  where
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+import {
+  getFunctions,
+  httpsCallable
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-functions.js";
+
+import {
+  authorizeOperationsSession,
+  hasPermission,
+  normalizePlate,
+  visibleSections
+} from "./portal-policy.mjs";
+
+
+const firebaseConfig = Object.freeze({
+  projectId: "skano-app-e734d",
+  appId: "1:663221835822:web:339ba87801334f55b1e7bf",
+  storageBucket: "skano-app-e734d.firebasestorage.app",
+  apiKey: "AIzaSyAB9eiXvC5EifYp0P_ZxtI8HIwdVsPXTF4",
+  authDomain: "skano-app-e734d.firebaseapp.com",
+  messagingSenderId: "663221835822",
+  measurementId: "G-3QJ70H0TQ3",
+});
+
+
+const app = initializeApp(firebaseConfig);
+
+if (app.options.projectId !== "skano-app-e734d") {
+  throw new Error("Proyecto Firebase no autorizado.");
+}
+
+
+const auth = getAuth(app);
+const db = getFirestore(app);
+const functions = getFunctions(app, "us-central1");
+
+
+const callables = Object.freeze({
+  createVehicle: httpsCallable(
+    functions,
+    "createOperationsVehicle"
+  ),
+
+  deactivateVehicle: httpsCallable(
+    functions,
+    "deactivateOperationsVehicle"
+  ),
+
+  exportVehicles: httpsCallable(
+    functions,
+    "exportOperationsVehicles"
+  ),
+
+  reviewRequest: httpsCallable(
+    functions,
+    "reviewInstitutionalRequest"
+  ),
+});
+
+
+const state = {
+  profile: null,
+  user: null,
+  vehicles: [],
+  requests: [],
+  selectedVehicle: null,
+  selectedRequest: null,
+  validated: false
+};
+
+
+const $ = (selector, root = document) =>
+  root.querySelector(selector);
+
+const $$ = (selector, root = document) =>
+  [...root.querySelectorAll(selector)];
+
+
+const safeDate = value => {
+  const date =
+    value?.toDate?.() ??
+    (value ? new Date(value) : null);
+
+  return date && !Number.isNaN(date.getTime())
+    ? new Intl.DateTimeFormat("es-CL", {
+        dateStyle: "medium"
+      }).format(date)
+    : "—";
+};
+
+
+const technicalError = (scope, error) =>
+  console.error(
+    `[SKANO:${scope}]`,
+    error?.code || "unknown",
+    error?.message || "Error"
   );
-  padding: 0;
-  border: 0;
-  border-radius: 18px;
-  background: transparent;
-  color: var(--white);
+
+
+const cleanError = (error, fallback) => {
+  if (error?.code?.includes("unauthenticated")) {
+    return "Sesión expirada. Vuelve a ingresar.";
+  }
+
+  if (error?.code?.includes("permission-denied")) {
+    return "Permiso insuficiente para realizar esta operación.";
+  }
+
+  if (error?.code?.includes("already-exists")) {
+    return "Ya existe un vehículo con esa patente.";
+  }
+
+  if (error?.code?.includes("failed-precondition")) {
+    return "La solicitud ya fue procesada o cambió de estado.";
+  }
+
+  return fallback;
+};
+
+
+function setBusy(button, busy, label) {
+  if (!button) return;
+
+  if (busy) {
+    button.dataset.original = button.textContent;
+  }
+
+  button.disabled = busy;
+
+  button.textContent = busy
+    ? label
+    : button.dataset.original || button.textContent;
 }
 
-dialog::backdrop {
-  background: rgba(0, 7, 17, .78);
-  backdrop-filter: blur(6px);
+
+function notice(message, type = "success") {
+  const node = $("#notice");
+
+  node.textContent = message;
+  node.className = `notice ${type}`;
+  node.hidden = false;
+
+  clearTimeout(notice.timer);
+
+  notice.timer = setTimeout(
+    () => node.hidden = true,
+    5000
+  );
 }
 
-.modal-card {
-  position: relative;
-  padding: 30px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: #081d39;
-  box-shadow: 0 30px 90px rgba(0, 0, 0, .5);
+
+function permission(name) {
+  return hasPermission(
+    state.profile,
+    name
+  );
 }
 
-.modal-card .eyebrow {
-  margin-top: 0;
+
+function enforcePermissions() {
+  $$("[data-permission]").forEach(node => {
+    node.hidden = !permission(
+      node.dataset.permission
+    );
+  });
 }
 
-.modal-card h2 {
-  margin-top: 0;
+
+async function invalidate(
+  message =
+    "No tienes autorización para ingresar al Portal de Operaciones SKANO."
+) {
+  state.validated = false;
+  state.profile = null;
+
+  await signOut(auth).catch(() => {});
+
+  $("#portalView").hidden = true;
+  $("#loadingView").hidden = true;
+  $("#loginView").hidden = false;
+
+  $("#loginMessage").textContent = message;
 }
 
-.modal-close {
-  position: absolute;
-  right: 15px;
-  top: 12px;
-  background: transparent;
-  color: #8da3bc;
-  font-size: 1.8rem;
-}
 
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-}
+/* =========================================================
+   VALIDACIÓN DE SESIÓN
+   - operations_staff
+   - admin
+   - superadmin
+   ========================================================= */
 
-.form-note {
-  color: var(--muted);
-  font-size: .75rem;
-}
+async function validateSession(user) {
 
-.decision-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 24px;
-}
+  $("#loginView").hidden = true;
+  $("#portalView").hidden = true;
+  $("#loadingView").hidden = false;
 
-.decision-actions button {
-  flex: 1;
-}
+  try {
 
-#requestDetails {
-  display: grid;
-  gap: 12px;
-  padding: 18px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-}
+    await user.getIdToken(true);
 
-.modal-card textarea {
-  min-height: 90px;
-  resize: vertical;
-}
+    const token =
+      await user.getIdTokenResult();
 
-@media (max-width: 900px) {
 
-  .sidebar {
-    transform: translateX(-100%);
-    transition: .25s;
-  }
+    const [
+      staffSnap,
+      adminSnap
+    ] = await Promise.all([
+      getDoc(
+        doc(
+          db,
+          "staff_accounts",
+          user.uid
+        )
+      ),
 
-  .sidebar.open {
-    transform: none;
-  }
+      getDoc(
+        doc(
+          db,
+          "admins",
+          user.uid
+        )
+      )
+    ]);
 
-  .workspace {
-    margin-left: 0;
-  }
 
-  .menu {
-    display: block;
-  }
+    const staffProfile =
+      staffSnap.exists()
+        ? staffSnap.data()
+        : null;
 
-  .topbar {
-    padding: 0 18px;
-  }
 
-  .view {
-    padding: 22px;
-  }
+    const adminProfile =
+      adminSnap.exists()
+        ? adminSnap.data()
+        : null;
 
-  .metrics {
-    grid-template-columns: 1fr;
-  }
 
-  .hero-panel {
-    padding: 28px;
-  }
+    if (
+      !authorizeOperationsSession(
+        token.claims,
+        staffProfile,
+        adminProfile
+      )
+    ) {
+      return invalidate();
+    }
 
-  .shield {
-    display: none;
-  }
 
-  .section-heading {
-    align-items: flex-start;
-    flex-direction: column;
-  }
+    const isAdmin =
+      adminProfile?.active === true &&
+      [
+        "admin",
+        "superadmin"
+      ].includes(
+        adminProfile?.role
+      );
 
-  .toolbar {
-    grid-template-columns:
-      1fr
-      1fr
-      48px;
-  }
-}
 
-@media (max-width: 650px) {
+    const profile =
+      isAdmin
+        ? {
+            ...adminProfile,
+            is_admin: true,
+            status: "active"
+          }
+        : staffProfile;
 
-  .login-card {
-    padding: 28px 22px;
-  }
 
-  .view {
-    padding: 16px;
-  }
+    state.user = user;
+    state.profile = profile;
+    state.validated = true;
 
-  .topbar .status {
-    display: none;
-  }
 
-  .hero-panel {
-    min-height: 210px;
-    padding: 24px;
-  }
+    const displayName =
+      profile?.full_name ||
+      profile?.name ||
+      user.displayName ||
+      user.email?.split("@")[0] ||
+      "funcionario";
 
-  .hero-panel h1 {
-    font-size: 2rem;
-  }
 
-  .quick-actions,
-  .decision-actions {
-    display: grid;
-  }
+    $("#welcomeName").textContent =
+      displayName;
 
-  .toolbar {
-    grid-template-columns:
-      1fr
-      48px;
-  }
+    $("#sidebarName").textContent =
+      displayName;
 
-  .toolbar select {
-    grid-column: 1;
-  }
+    $("#sidebarEmail").textContent =
+      user.email || "";
 
-  .toolbar .icon-button {
-    grid-column: 2;
-    grid-row: 1 / 3;
-  }
 
-  .data-card {
-    background: transparent;
-    border: 0;
-  }
+    enforcePermissions();
 
-  .table-wrap {
-    overflow: visible;
-  }
 
-  table thead {
-    display: none;
-  }
+    $("#loadingView").hidden = true;
+    $("#portalView").hidden = false;
 
-  table,
-  tbody,
-  tr,
-  td {
-    display: block;
-  }
 
-  tr {
-    margin-bottom: 12px;
-    padding: 14px;
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    background: rgba(8, 31, 60, .8);
-  }
+    await Promise.allSettled([
+      loadVehicles(),
 
-  td {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    padding: 9px 0;
-    border: 0;
-    text-align: right;
-  }
+      permission(
+        "institutional_requests_read"
+      )
+        ? loadRequests()
+        : Promise.resolve()
+    ]);
 
-  td::before {
-    content: attr(data-label);
-    color: #718ca9;
-    font-size: .65rem;
-    font-weight: 800;
-    text-align: left;
-  }
+  } catch (error) {
 
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
+    technicalError(
+      "session",
+      error
+    );
 
-  .export-card {
-    align-items: flex-start;
-  }
-
-  .export-symbol {
-    width: 76px;
-    height: 90px;
-  }
-
-  .section-heading > .primary {
-    width: 100%;
+    await invalidate(
+      error?.code?.includes(
+        "permission-denied"
+      )
+        ? "No tienes autorización para ingresar al Portal de Operaciones SKANO."
+        : "No fue posible validar la sesión."
+    );
   }
 }
+
+
+/* =========================================================
+   AUTH STATE
+   ========================================================= */
+
+onAuthStateChanged(
+  auth,
+  user => {
+
+    if (user) {
+      validateSession(user);
+      return;
+    }
+
+    if (!state.validated) {
+      $("#loadingView").hidden = true;
+      $("#portalView").hidden = true;
+      $("#loginView").hidden = false;
+    }
+  }
+);
+
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
+$("#loginForm").addEventListener(
+  "submit",
+  async event => {
+
+    event.preventDefault();
+
+    const button =
+      $("#loginButton");
+
+    $("#loginMessage").textContent =
+      "";
+
+    setBusy(
+      button,
+      true,
+      "VALIDANDO…"
+    );
+
+    try {
+
+      await signInWithEmailAndPassword(
+        auth,
+        $("#email").value.trim(),
+        $("#password").value
+      );
+
+      $("#password").value = "";
+
+    } catch (error) {
+
+      technicalError(
+        "login",
+        error
+      );
+
+      $("#password").value = "";
+
+      $("#loginMessage").textContent =
+        error?.code ===
+        "auth/invalid-credential"
+          ? "Correo o contraseña incorrectos."
+          : "No fue posible iniciar sesión.";
+
+    } finally {
+
+      setBusy(
+        button,
+        false
+      );
+    }
+  }
+);
+
+
+/* =========================================================
+   RESTABLECER CONTRASEÑA
+   ========================================================= */
+
+$("#forgotPasswordButton").addEventListener(
+  "click",
+  async () => {
+
+    const email =
+      $("#email").value.trim();
+
+    const message =
+      $("#loginMessage");
+
+    message.classList.remove(
+      "neutral"
+    );
+
+
+    if (!email) {
+
+      message.textContent =
+        "Ingresa tu correo electrónico para continuar.";
+
+      $("#email").focus();
+
+      return;
+    }
+
+
+    const button =
+      $("#forgotPasswordButton");
+
+
+    setBusy(
+      button,
+      true,
+      "ENVIANDO…"
+    );
+
+
+    message.textContent =
+      "";
+
+
+    try {
+
+      await sendPasswordResetEmail(
+        auth,
+        email
+      );
+
+    } catch (error) {
+
+      technicalError(
+        "password-reset",
+        error
+      );
+
+    } finally {
+
+      message.textContent =
+        "Si el correo corresponde a una cuenta autorizada, recibirás instrucciones para restablecer tu contraseña.";
+
+      message.classList.add(
+        "neutral"
+      );
+
+      setBusy(
+        button,
+        false
+      );
+    }
+  }
+);
+
+
+/* =========================================================
+   LOGOUT
+   ========================================================= */
+
+$("#logoutButton").addEventListener(
+  "click",
+  async () => {
+
+    state.validated = false;
+
+    await signOut(auth);
+
+    location.replace(
+      "/portal-operaciones/"
+    );
+  }
+);
+
+
+/* =========================================================
+   NAVEGACIÓN
+   ========================================================= */
+
+function showView(name) {
+
+  if (
+    name === "requests" &&
+    !permission(
+      "institutional_requests_read"
+    )
+  ) {
+    return notice(
+      "No tienes permiso para acceder a acreditaciones.",
+      "error"
+    );
+  }
+
+
+  if (
+    name === "exports" &&
+    !permission(
+      "vehicles_export"
+    )
+  ) {
+    return notice(
+      "No tienes permiso para exportar.",
+      "error"
+    );
+  }
+
+
+  $$(".view").forEach(
+    node =>
+      node.classList.toggle(
+        "active",
+        node.dataset.panel === name
+      )
+  );
+
+
+  $$(".nav-item").forEach(
+    node =>
+      node.classList.toggle(
+        "active",
+        node.dataset.view === name
+      )
+  );
+
+
+  $(".sidebar").classList.remove(
+    "open"
+  );
+}
+
+
+$$(".nav-item").forEach(
+  button =>
+    button.addEventListener(
+      "click",
+      () =>
+        showView(
+          button.dataset.view
+        )
+    )
+);
+
+
+$$("[data-go]").forEach(
+  button =>
+    button.addEventListener(
+      "click",
+      () =>
+        showView(
+          button.dataset.go
+        )
+    )
+);
+
+
+$("#menuButton").addEventListener(
+  "click",
+  () =>
+    $(".sidebar").classList.toggle(
+      "open"
+    )
+);
+
+
+/* =========================================================
+   RELOJ
+   ========================================================= */
+
+setInterval(
+  () =>
+    $("#clock").textContent =
+      new Intl.DateTimeFormat(
+        "es-CL",
+        {
+          dateStyle: "medium",
+          timeStyle: "short"
+        }
+      ).format(
+        new Date()
+      ),
+
+  1000
+);
+
+
+/* =========================================================
+   VEHÍCULOS
+   ========================================================= */
+
+async function loadVehicles() {
+
+  if (
+    !permission(
+      "vehicles_read"
+    )
+  ) {
+
+    state.vehicles = [];
+
+    $("#vehiclesLoading").textContent =
+      "No tienes permiso para consultar vehículos.";
+
+    return;
+  }
+
+
+  $("#vehiclesLoading").hidden =
+    false;
+
+
+  try {
+
+    const snap =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "stolen_vehicles"
+          ),
+          limit(250)
+        )
+      );
+
+
+    state.vehicles =
+      snap.docs.map(
+        item => ({
+          id: item.id,
+          ...item.data()
+        })
+      );
+
+
+    $("#activeVehiclesCount").textContent =
+      String(
+        state.vehicles.filter(
+          v =>
+            v.active !== false &&
+            v.status !== "inactive"
+        ).length
+      );
+
+
+    renderVehicles();
+
+  } catch (error) {
+
+    technicalError(
+      "vehicles-read",
+      error
+    );
+
+    $("#vehiclesLoading").textContent =
+      "No fue posible cargar los vehículos.";
+  }
+}
+
+
+function renderVehicles() {
+
+  const term =
+    normalizePlate(
+      $("#vehicleSearch").value
+    );
+
+
+  const filter =
+    $("#vehicleFilter").value;
+
+
+  const rows =
+    state.vehicles.filter(
+      v =>
+        (
+          !term ||
+          normalizePlate(
+            v.plate ||
+            v.plate_normalized ||
+            v.id
+          ).includes(term)
+        ) &&
+        (
+          filter === "all" ||
+          (
+            filter === "active"
+              ? (
+                  v.active !== false &&
+                  v.status !== "inactive"
+                )
+              : (
+                  v.active === false ||
+                  v.status === "inactive"
+                )
+          )
+        )
+    );
+
+
+  $("#vehiclesLoading").hidden =
+    true;
+
+
+  $("#vehiclesEmpty").hidden =
+    rows.length > 0;
+
+
+  $("#vehiclesTable tbody").replaceChildren(
+    ...rows.map(vehicle => {
+
+      const tr =
+        document.createElement(
+          "tr"
+        );
+
+
+      const plate =
+        normalizePlate(
+          vehicle.plate ||
+          vehicle.plate_normalized ||
+          vehicle.id
+        );
+
+
+      const active =
+        vehicle.active !== false &&
+        vehicle.status !== "inactive";
+
+
+      tr.innerHTML = `
+        <td data-label="PPU">
+          <b class="plate">
+            ${escapeHtml(plate)}
+          </b>
+        </td>
+
+        <td data-label="Vehículo">
+          <b>
+            ${escapeHtml(
+              vehicle.brand ||
+              vehicle.marca ||
+              "—"
+            )}
+          </b>
+
+          <small>
+            ${escapeHtml(
+              vehicle.model ||
+              vehicle.modelo ||
+              ""
+            )}
+          </small>
+        </td>
+
+        <td data-label="Año / Color">
+          ${escapeHtml(
+            vehicle.year ||
+            vehicle.ano ||
+            "—"
+          )}
+          ·
+          ${escapeHtml(
+            vehicle.color ||
+            "—"
+          )}
+        </td>
+
+        <td data-label="Estado">
+          <span class="pill ${active ? "on" : "off"}">
+            ${active ? "ACTIVO" : "INACTIVO"}
+          </span>
+        </td>
+
+        <td data-label="Fecha">
+          ${safeDate(
+            vehicle.created_at ||
+            vehicle.reported_at ||
+            vehicle.updated_at
+          )}
+        </td>
+
+        <td data-label="Origen">
+          ${escapeHtml(
+            vehicle.source ||
+            vehicle.origin ||
+            vehicle.fuente ||
+            "—"
+          )}
+        </td>
+
+        <td data-label="Acción"></td>
+      `;
+
+
+      if (
+        active &&
+        permission(
+          "vehicles_deactivate"
+        )
+      ) {
+
+        const button =
+          document.createElement(
+            "button"
+          );
+
+        button.className =
+          "text-button danger-text";
+
+        button.textContent =
+          "DAR DE BAJA";
+
+        button.addEventListener(
+          "click",
+          () =>
+            openDeactivate(
+              vehicle
+            )
+        );
+
+        tr.lastElementChild.append(
+          button
+        );
+      }
+
+
+      return tr;
+    })
+  );
+}
+
+
+const escapeHtml = value =>
+  String(
+    value ?? ""
+  ).replace(
+    /[&<>'"]/g,
+    char =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "'": "&#39;",
+        '"': "&quot;"
+      })[char]
+  );
+
+
+$("#vehicleSearch").addEventListener(
+  "input",
+  renderVehicles
+);
+
+
+$("#vehicleFilter").addEventListener(
+  "change",
+  renderVehicles
+);
+
+
+$("#refreshVehicles").addEventListener(
+  "click",
+  loadVehicles
+);
+
+
+/* =========================================================
+   CREAR VEHÍCULO
+   ========================================================= */
+
+const vehicleDialog =
+  $("#vehicleDialog");
+
+
+$$("[data-open-create]").forEach(
+  button =>
+    button.addEventListener(
+      "click",
+      () => {
+
+        if (
+          !permission(
+            "vehicles_create"
+          )
+        ) {
+          return notice(
+            "Permiso insuficiente.",
+            "error"
+          );
+        }
+
+
+        $("#vehicleForm").reset();
+
+        $("#vehicleFormMessage").textContent =
+          "";
+
+        vehicleDialog.showModal();
+      }
+    )
+);
+
+
+$("#vehicleForm").addEventListener(
+  "submit",
+  async event => {
+
+    event.preventDefault();
+
+
+    if (
+      !permission(
+        "vehicles_create"
+      )
+    ) {
+      return invalidate(
+        "Tu permiso para crear vehículos ya no está disponible."
+      );
+    }
+
+
+    const button =
+      $("#createVehicleButton");
+
+
+    const data =
+      new FormData(
+        event.currentTarget
+      );
+
+
+    const plate =
+      normalizePlate(
+        data.get(
+          "plate"
+        )
+      );
+
+
+    if (
+      plate.length < 5
+    ) {
+      return $("#vehicleFormMessage").textContent =
+        "Ingresa una patente válida.";
+    }
+
+
+    const vehicle = {
+
+      plate,
+
+      brand:
+        data.get(
+          "brand"
+        )?.trim(),
+
+      model:
+        data.get(
+          "model"
+        )?.trim(),
+
+      color:
+        data.get(
+          "color"
+        )?.trim(),
+
+      source:
+        data.get(
+          "source"
+        )?.trim() ||
+        "operations_portal"
+    };
+
+
+    if (
+      data.get(
+        "year"
+      )
+    ) {
+      vehicle.year =
+        Number(
+          data.get(
+            "year"
+          )
+        );
+    }
+
+
+    setBusy(
+      button,
+      true,
+      "REGISTRANDO…"
+    );
+
+
+    try {
+
+      const result =
+        await callables.createVehicle({
+          vehicle
+        });
+
+
+      if (
+        !result.data?.ok
+      ) {
+        throw new Error(
+          "Respuesta inesperada"
+        );
+      }
+
+
+      vehicleDialog.close();
+
+
+      notice(
+        `Vehículo ${plate} registrado correctamente.`
+      );
+
+
+      await loadVehicles();
+
+    } catch (error) {
+
+      technicalError(
+        "vehicle-create",
+        error
+      );
+
+
+      $("#vehicleFormMessage").textContent =
+        cleanError(
+          error,
+          "No fue posible crear el vehículo."
+        );
+
+    } finally {
+
+      setBusy(
+        button,
+        false
+      );
+    }
+  }
+);
+
+
+/* =========================================================
+   DAR DE BAJA VEHÍCULO
+   ========================================================= */
+
+function openDeactivate(
+  vehicle
+) {
+
+  if (
+    !permission(
+      "vehicles_deactivate"
+    )
+  ) {
+    return notice(
+      "Permiso insuficiente.",
+      "error"
+    );
+  }
+
+
+  state.selectedVehicle =
+    vehicle;
+
+
+  $("#deactivatePlate").textContent =
+    normalizePlate(
+      vehicle.plate ||
+      vehicle.id
+    );
+
+
+  $("#deactivateForm").reset();
+
+
+  $("#otherReasonLabel").hidden =
+    true;
+
+
+  $("#deactivateMessage").textContent =
+    "";
+
+
+  $("#deactivateDialog").showModal();
+}
+
+
+$("#reasonPreset").addEventListener(
+  "change",
+  event =>
+    $("#otherReasonLabel").hidden =
+      event.target.value !==
+      "Otro"
+);
+
+
+$("#deactivateForm").addEventListener(
+  "submit",
+  async event => {
+
+    event.preventDefault();
+
+
+    if (
+      !permission(
+        "vehicles_deactivate"
+      )
+    ) {
+      return invalidate(
+        "Tu permiso para dar de baja vehículos ya no está disponible."
+      );
+    }
+
+
+    const preset =
+      $("#reasonPreset").value;
+
+
+    const reason =
+      preset === "Otro"
+        ? $("#otherReason").value.trim()
+        : preset;
+
+
+    if (!reason) {
+
+      $("#deactivateMessage").textContent =
+        "Debes indicar un motivo.";
+
+      return;
+    }
+
+
+    const button =
+      $("#deactivateButton");
+
+
+    setBusy(
+      button,
+      true,
+      "DANDO DE BAJA…"
+    );
+
+
+    try {
+
+      const result =
+        await callables.deactivateVehicle({
+          id:
+            state.selectedVehicle.id,
+
+          reason
+        });
+
+
+      if (
+        !result.data?.ok
+      ) {
+        throw new Error(
+          "Respuesta inesperada"
+        );
+      }
+
+
+      $("#deactivateDialog").close();
+
+
+      notice(
+        "Vehículo dado de baja correctamente."
+      );
+
+
+      await loadVehicles();
+
+    } catch (error) {
+
+      technicalError(
+        "vehicle-deactivate",
+        error
+      );
+
+
+      $("#deactivateMessage").textContent =
+        cleanError(
+          error,
+          "No fue posible dar de baja el vehículo."
+        );
+
+    } finally {
+
+      setBusy(
+        button,
+        false
+      );
+    }
+  }
+);
+
+
+/* =========================================================
+   SOLICITUDES INSTITUCIONALES
+   ========================================================= */
+
+async function loadRequests() {
+
+  if (
+    !permission(
+      "institutional_requests_read"
+    )
+  ) {
+    return;
+  }
+
+
+  $("#requestsLoading").hidden =
+    false;
+
+
+  try {
+
+    const snap =
+      await getDocs(
+        query(
+          collection(
+            db,
+            "institutional_requests"
+          ),
+
+          where(
+            "status",
+            "==",
+            "pending"
+          ),
+
+          limit(100)
+        )
+      );
+
+
+    state.requests =
+      snap.docs.map(
+        item => ({
+          id: item.id,
+          ...item.data()
+        })
+      );
+
+
+    $("#pendingRequestsCount").textContent =
+      String(
+        state.requests.length
+      );
+
+
+    renderRequests();
+
+  } catch (error) {
+
+    technicalError(
+      "requests-read",
+      error
+    );
+
+
+    $("#requestsLoading").textContent =
+      "No fue posible cargar las acreditaciones.";
+  }
+}
+
+
+function renderRequests() {
+
+  $("#requestsLoading").hidden =
+    true;
+
+
+  $("#requestsEmpty").hidden =
+    state.requests.length > 0;
+
+
+  $("#requestsGrid").replaceChildren(
+    ...state.requests.map(
+      request => {
+
+        const card =
+          document.createElement(
+            "article"
+          );
+
+
+        card.className =
+          "request-card";
+
+
+        card.innerHTML = `
+          <span class="pill pending">
+            PENDIENTE
+          </span>
+
+          <h3>
+            ${escapeHtml(
+              request.full_name ||
+              request.name ||
+              "Solicitud institucional"
+            )}
+          </h3>
+
+          <p>
+            ${escapeHtml(
+              request.institution ||
+              "Institución no informada"
+            )}
+          </p>
+
+          <dl>
+
+            <div>
+              <dt>Región</dt>
+              <dd>
+                ${escapeHtml(
+                  request.region ||
+                  "—"
+                )}
+              </dd>
+            </div>
+
+            <div>
+              <dt>Unidad</dt>
+              <dd>
+                ${escapeHtml(
+                  request.unit ||
+                  "—"
+                )}
+              </dd>
+            </div>
+
+            <div>
+              <dt>Fecha</dt>
+              <dd>
+                ${safeDate(
+                  request.submitted_at ||
+                  request.created_at
+                )}
+              </dd>
+            </div>
+
+          </dl>
+
+          <button class="secondary">
+            REVISAR SOLICITUD
+          </button>
+        `;
+
+
+        $("button", card).addEventListener(
+          "click",
+          () =>
+            openRequest(
+              request
+            )
+        );
+
+
+        return card;
+      }
+    )
+  );
+}
+
+
+$("#refreshRequests").addEventListener(
+  "click",
+  loadRequests
+);
+
+
+function openRequest(
+  request
+) {
+
+  state.selectedRequest =
+    request;
+
+
+  $("#requestName").textContent =
+    request.full_name ||
+    request.name ||
+    "Solicitud institucional";
+
+
+  const fields = [
+
+    [
+      "Correo",
+      request.email
+    ],
+
+    [
+      "Institución",
+      request.institution
+    ],
+
+    [
+      "Código institucional",
+      request.institution_code
+    ],
+
+    [
+      "Región",
+      request.region
+    ],
+
+    [
+      "Unidad",
+      request.unit
+    ],
+
+    [
+      "Rol solicitado",
+      request.requested_role
+    ],
+
+    [
+      "Fecha",
+      safeDate(
+        request.submitted_at ||
+        request.created_at
+      )
+    ],
+
+    [
+      "Estado",
+      request.status
+    ]
+  ];
+
+
+  $("#requestDetails").innerHTML =
+    fields
+      .filter(
+        ([, value]) =>
+          value
+      )
+      .map(
+        ([key, value]) =>
+          `
+            <div>
+              <dt>
+                ${escapeHtml(key)}
+              </dt>
+
+              <dd>
+                ${escapeHtml(value)}
+              </dd>
+            </div>
+          `
+      )
+      .join("");
+
+
+  $("#requestMessage").textContent =
+    "";
+
+
+  $("#requestDialog").showModal();
+}
+
+
+$("[data-close-request]").addEventListener(
+  "click",
+  () =>
+    $("#requestDialog").close()
+);
+
+
+async function decideRequest(
+  decision
+) {
+
+  if (
+    !permission(
+      "institutional_requests_review"
+    )
+  ) {
+    return notice(
+      "No tienes permiso para procesar acreditaciones.",
+      "error"
+    );
+  }
+
+
+  const approve =
+    decision === "approve";
+
+
+  if (
+    !confirm(
+      `${approve ? "Aprobar" : "Rechazar"} esta solicitud institucional?`
+    )
+  ) {
+    return;
+  }
+
+
+  const approveButton =
+    $("#approveButton");
+
+
+  const rejectButton =
+    $("#rejectButton");
+
+
+  setBusy(
+    approveButton,
+    true,
+    "APROBANDO…"
+  );
+
+
+  setBusy(
+    rejectButton,
+    true,
+    "RECHAZANDO…"
+  );
+
+
+  try {
+
+    const result =
+      await callables.reviewRequest({
+        uid:
+          state.selectedRequest.uid ||
+          state.selectedRequest.id,
+
+        decision
+      });
+
+
+    if (
+      !result.data?.ok
+    ) {
+      throw new Error(
+        "Respuesta inesperada"
+      );
+    }
+
+
+    $("#requestDialog").close();
+
+
+    notice(
+      `Solicitud ${
+        approve
+          ? "aprobada"
+          : "rechazada"
+      } correctamente.`
+    );
+
+
+    await loadRequests();
+
+  } catch (error) {
+
+    technicalError(
+      "request-review",
+      error
+    );
+
+
+    $("#requestMessage").textContent =
+      cleanError(
+        error,
+        "No fue posible procesar la acreditación."
+      );
+
+  } finally {
+
+    setBusy(
+      approveButton,
+      false
+    );
+
+
+    setBusy(
+      rejectButton,
+      false
+    );
+  }
+}
+
+
+$("#approveButton").addEventListener(
+  "click",
+  () =>
+    decideRequest(
+      "approve"
+    )
+);
+
+
+$("#rejectButton").addEventListener(
+  "click",
+  () =>
+    decideRequest(
+      "reject"
+    )
+);
+
+
+/* =========================================================
+   EXPORTACIÓN
+   ========================================================= */
+
+$("#exportButton").addEventListener(
+  "click",
+  async () => {
+
+    if (
+      !permission(
+        "vehicles_export"
+      )
+    ) {
+      return invalidate(
+        "Tu permiso para exportar ya no está disponible."
+      );
+    }
+
+
+    const button =
+      $("#exportButton");
+
+
+    setBusy(
+      button,
+      true,
+      "GENERANDO…"
+    );
+
+
+    $("#exportStatus").textContent =
+      "";
+
+
+    try {
+
+      const result =
+        await callables.exportVehicles({
+          limit:
+            Number(
+              $("#exportLimit").value
+            )
+        });
+
+
+      const vehicles =
+        result.data?.vehicles;
+
+
+      if (
+        !result.data?.ok ||
+        !Array.isArray(
+          vehicles
+        )
+      ) {
+        throw new Error(
+          "Formato de exportación inesperado"
+        );
+      }
+
+
+      downloadCsv(
+        vehicles
+      );
+
+
+      $("#exportStatus").textContent =
+        `Exportación generada: ${vehicles.length} registros.`;
+
+
+      notice(
+        "Listado generado correctamente."
+      );
+
+    } catch (error) {
+
+      technicalError(
+        "vehicles-export",
+        error
+      );
+
+
+      $("#exportStatus").textContent =
+        cleanError(
+          error,
+          "No fue posible generar la exportación."
+        );
+
+    } finally {
+
+      setBusy(
+        button,
+        false
+      );
+    }
+  }
+);
+
+
+function downloadCsv(
+  vehicles
+) {
+
+  const columns = [
+    "id",
+    "plate",
+    "brand",
+    "model",
+    "year",
+    "color",
+    "status",
+    "active",
+    "source"
+  ];
+
+
+  const value = item => {
+
+    const raw =
+      item == null
+        ? ""
+        : typeof item === "object"
+          ? JSON.stringify(item)
+          : String(item);
+
+
+    return `"${raw.replaceAll(
+      '"',
+      '""'
+    )}"`;
+  };
+
+
+  const csv = [
+
+    columns.join(","),
+
+    ...vehicles.map(
+      row =>
+        columns.map(
+          key =>
+            value(
+              row[key]
+            )
+        ).join(",")
+    )
+
+  ].join("\r\n");
+
+
+  const url =
+    URL.createObjectURL(
+      new Blob(
+        [
+          "\ufeff",
+          csv
+        ],
+        {
+          type:
+            "text/csv;charset=utf-8"
+        }
+      )
+    );
+
+
+  const anchor =
+    document.createElement(
+      "a"
+    );
+
+
+  anchor.href =
+    url;
+
+
+  anchor.download =
+    `skano-vehiculos-${
+      new Date()
+        .toISOString()
+        .slice(0, 10)
+    }.csv`;
+
+
+  anchor.click();
+
+
+  URL.revokeObjectURL(
+    url
+  );
+}
+
+
+/* =========================================================
+   REVALIDACIÓN DE SESIÓN
+   Cuando el navegador vuelve a primer plano.
+   ========================================================= */
+
+document.addEventListener(
+  "visibilitychange",
+  async () => {
+
+    if (
+      !document.hidden &&
+      state.user &&
+      state.validated
+    ) {
+
+      try {
+
+        const [
+          staffSnap,
+          adminSnap
+        ] = await Promise.all([
+
+          getDoc(
+            doc(
+              db,
+              "staff_accounts",
+              state.user.uid
+            )
+          ),
+
+          getDoc(
+            doc(
+              db,
+              "admins",
+              state.user.uid
+            )
+          )
+        ]);
+
+
+        const staffProfile =
+          staffSnap.exists()
+            ? staffSnap.data()
+            : null;
+
+
+        const adminProfile =
+          adminSnap.exists()
+            ? adminSnap.data()
+            : null;
+
+
+        await state.user.getIdToken(true);
+
+
+        const token =
+          await state.user.getIdTokenResult();
+
+
+        if (
+          !authorizeOperationsSession(
+            token.claims,
+            staffProfile,
+            adminProfile
+          )
+        ) {
+
+          await invalidate();
+
+          return;
+        }
+
+
+        const isAdmin =
+          adminProfile?.active === true &&
+          [
+            "admin",
+            "superadmin"
+          ].includes(
+            adminProfile?.role
+          );
+
+
+        state.profile =
+          isAdmin
+            ? {
+                ...adminProfile,
+                is_admin: true,
+                status: "active"
+              }
+            : staffProfile;
+
+
+        enforcePermissions();
+
+      } catch (error) {
+
+        technicalError(
+          "session-recheck",
+          error
+        );
+      }
+    }
+  }
+);
