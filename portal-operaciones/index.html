@@ -4,85 +4,1183 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
+
   <title>Portal de Operaciones | SKANO</title>
+
   <link rel="icon" href="/img/skano-logo.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/portal-operaciones/portal.css">
-  <link rel="stylesheet" href="/portal-operaciones/password-reset.css">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="/portal-operaciones/portal.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="/portal-operaciones/password-reset.css"
+  >
 </head>
+
 <body>
-  <div class="ambient" aria-hidden="true"></div>
-  <main id="loginView" class="login-shell">
-    <section class="login-card" aria-labelledby="loginTitle">
-      <div class="portal-brand"><img src="/img/skano-logo.png" alt=""><span><b>SKANO</b><small>SEGURIDAD VEHICULAR</small></span></div>
-      <p class="eyebrow">ACCESO RESTRINGIDO</p>
-      <h1 id="loginTitle">PORTAL DE<br><em>OPERACIONES</em></h1>
-      <p class="login-intro">Gestión interna segura para personal autorizado SKANO.</p>
+
+  <div
+    class="ambient"
+    aria-hidden="true"
+  ></div>
+
+
+  <!-- =====================================================
+       LOGIN
+       ===================================================== -->
+
+  <main
+    id="loginView"
+    class="login-shell"
+  >
+
+    <section
+      class="login-card"
+      aria-labelledby="loginTitle"
+    >
+
+      <div class="portal-brand">
+
+        <img
+          src="/img/skano-logo.png"
+          alt=""
+        >
+
+        <span>
+          <b>SKANO</b>
+          <small>SEGURIDAD VEHICULAR</small>
+        </span>
+
+      </div>
+
+
+      <p class="eyebrow">
+        ACCESO RESTRINGIDO
+      </p>
+
+
+      <h1 id="loginTitle">
+        PORTAL DE
+        <br>
+        <em>OPERACIONES</em>
+      </h1>
+
+
+      <p class="login-intro">
+        Gestión interna segura para personal autorizado SKANO.
+      </p>
+
+
       <form id="loginForm">
-        <label>Correo electrónico<input id="email" name="email" type="email" autocomplete="username" required></label>
-        <label>Contraseña<input id="password" name="password" type="password" autocomplete="current-password" required></label>
-        <button class="forgot-link" id="forgotPasswordButton" type="button">¿Olvidaste tu contraseña?</button>
-        <button class="primary full" id="loginButton" type="submit">INGRESAR AL PORTAL</button>
+
+        <label>
+          Correo electrónico
+
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autocomplete="username"
+            required
+          >
+        </label>
+
+
+        <label>
+          Contraseña
+
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            required
+          >
+        </label>
+
+
+        <button
+          class="forgot-link"
+          id="forgotPasswordButton"
+          type="button"
+        >
+          ¿Olvidaste tu contraseña?
+        </button>
+
+
+        <button
+          class="primary full"
+          id="loginButton"
+          type="submit"
+        >
+          INGRESAR AL PORTAL
+        </button>
+
       </form>
-      <p id="loginMessage" class="message" role="alert"></p>
-      <small class="secure-note">Sesión protegida por Firebase Authentication</small>
+
+
+      <p
+        id="loginMessage"
+        class="message"
+        role="alert"
+      ></p>
+
+
+      <small class="secure-note">
+        Sesión protegida por Firebase Authentication
+      </small>
+
     </section>
+
   </main>
 
-  <div id="loadingView" class="center-state" hidden><span class="spinner"></span><p>Validando acceso operativo…</p></div>
 
-  <div id="portalView" class="portal" hidden>
-    <aside class="sidebar">
-      <div class="portal-brand compact"><img src="/img/skano-logo.png" alt=""><span><b>SKANO</b><small>OPERACIONES</small></span></div>
-      <nav aria-label="Portal de Operaciones">
-        <button class="nav-item active" data-view="dashboard"><span>01</span>Inicio</button>
-        <button class="nav-item" data-view="vehicles"><span>02</span>Vehículos con encargo</button>
-        <button class="nav-item" data-view="requests" data-permission="institutional_requests_read"><span>03</span>Acreditaciones</button>
-        <button class="nav-item" data-view="exports" data-permission="vehicles_export"><span>04</span>Exportaciones</button>
-      </nav>
-      <div class="session-card"><small>SESIÓN ACTIVA</small><b id="sidebarName">Personal SKANO</b><span id="sidebarEmail"></span></div>
-      <button id="logoutButton" class="logout">Cerrar sesión</button>
-    </aside>
+  <!-- =====================================================
+       VALIDANDO SESIÓN
+       ===================================================== -->
 
-    <div class="workspace">
-      <header class="topbar"><button id="menuButton" class="menu" aria-label="Abrir navegación">☰</button><div><p>SKANO · CONTROL OPERATIVO</p><span id="clock"></span></div><span class="status"><i></i> SISTEMA OPERATIVO</span></header>
-      <div id="notice" class="notice" role="status" hidden></div>
+  <div
+    id="loadingView"
+    class="center-state"
+    hidden
+  >
 
-      <section class="view active" data-panel="dashboard">
-        <div class="hero-panel"><div><p class="eyebrow">PORTAL DE OPERACIONES</p><h1>Bienvenido, <span id="welcomeName">funcionario</span></h1><p>Información autorizada para la gestión diaria de SKANO.</p></div><div class="shield">SO<br><small>ACCESO VALIDADO</small></div></div>
-        <div class="metrics">
-          <article><span>VEHÍCULOS ACTIVOS</span><strong id="activeVehiclesCount">—</strong><small>Encargos vigentes</small></article>
-          <article data-permission="institutional_requests_read"><span>SOLICITUDES PENDIENTES</span><strong id="pendingRequestsCount">—</strong><small>Acreditaciones por revisar</small></article>
-          <article><span>ESTADO DE CUENTA</span><strong class="active-text">ACTIVA</strong><small>Perfil operations_staff</small></article>
-        </div>
-        <div class="section-card"><div class="section-heading"><div><p class="eyebrow">ACCESOS RÁPIDOS</p><h2>¿Qué necesitas hacer?</h2></div></div><div class="quick-actions"><button class="primary" data-open-create data-permission="vehicles_create">+ AGREGAR VEHÍCULO</button><button class="secondary" data-go="requests" data-permission="institutional_requests_read">REVISAR SOLICITUDES</button></div></div>
-      </section>
+    <span class="spinner"></span>
 
-      <section class="view" data-panel="vehicles">
-        <div class="section-heading"><div><p class="eyebrow">REGISTRO OFICIAL</p><h1>Vehículos con encargo</h1><p>Consulta acotada de la colección oficial <code>stolen_vehicles</code>.</p></div><button class="primary" data-open-create data-permission="vehicles_create">+ AGREGAR VEHÍCULO CON ENCARGO</button></div>
-        <div class="toolbar"><label class="search">Buscar patente<input id="vehicleSearch" type="search" placeholder="Ej. ABCD12" autocomplete="off"></label><select id="vehicleFilter" aria-label="Filtrar por estado"><option value="all">Todos los estados</option><option value="active">Activos</option><option value="inactive">Inactivos</option></select><button id="refreshVehicles" class="icon-button" aria-label="Actualizar vehículos">↻</button></div>
-        <div class="data-card"><div id="vehiclesLoading" class="inline-state">Cargando vehículos…</div><div id="vehiclesEmpty" class="inline-state" hidden>No hay vehículos para los filtros seleccionados.</div><div class="table-wrap"><table id="vehiclesTable"><thead><tr><th>PPU</th><th>Vehículo</th><th>Año / Color</th><th>Estado</th><th>Fecha</th><th>Origen</th><th>Acción</th></tr></thead><tbody></tbody></table></div></div>
-      </section>
+    <p>
+      Validando acceso operativo…
+    </p>
 
-      <section class="view" data-panel="requests" data-permission="institutional_requests_read">
-        <div class="section-heading"><div><p class="eyebrow">FLUJO INSTITUCIONAL</p><h1>Acreditaciones</h1><p>Solicitudes pendientes autorizadas para revisión.</p></div><button id="refreshRequests" class="secondary">ACTUALIZAR</button></div>
-        <div id="requestsLoading" class="inline-state">Cargando solicitudes…</div><div id="requestsGrid" class="request-grid"></div><div id="requestsEmpty" class="inline-state" hidden>No existen solicitudes pendientes.</div>
-      </section>
-
-      <section class="view" data-panel="exports" data-permission="vehicles_export">
-        <div class="section-heading"><div><p class="eyebrow">EXPORTACIÓN SEGURA</p><h1>Descargar listado</h1><p>El archivo se genera con los datos devueltos por la Function oficial.</p></div></div>
-        <div class="export-card"><div class="export-symbol">CSV</div><div><h2>Listado de vehículos</h2><p>Descarga hasta 500 registros autorizados. La generación queda registrada por el backend.</p><label>Límite de registros<select id="exportLimit"><option>100</option><option selected>250</option><option>500</option></select></label><button id="exportButton" class="primary">DESCARGAR LISTADO</button><p id="exportStatus" class="message"></p></div></div>
-      </section>
-    </div>
   </div>
 
-  <dialog id="vehicleDialog"><form method="dialog" class="modal-card" id="vehicleForm"><button class="modal-close" value="cancel" aria-label="Cerrar">×</button><p class="eyebrow">NUEVO REGISTRO</p><h2>Agregar vehículo con encargo</h2><div class="form-grid"><label>PPU<input name="plate" required maxlength="12" placeholder="ABCD12"></label><label>Marca<input name="brand" maxlength="80"></label><label>Modelo<input name="model" maxlength="80"></label><label>Año<input name="year" type="number" min="1900" max="2100"></label><label>Color<input name="color" maxlength="60"></label><label>Origen / fuente<input name="source" maxlength="100" placeholder="Ingreso operaciones"></label></div><p class="form-note">El registro será procesado exclusivamente por <code>createOperationsVehicle</code>.</p><button id="createVehicleButton" class="primary full" type="submit">REGISTRAR VEHÍCULO</button><p id="vehicleFormMessage" class="message" role="alert"></p></form></dialog>
 
-  <dialog id="deactivateDialog"><form method="dialog" class="modal-card" id="deactivateForm"><button class="modal-close" value="cancel" aria-label="Cerrar">×</button><p class="eyebrow">ACTUALIZAR ENCARGO</p><h2>Dar de baja vehículo</h2><p>PPU <strong id="deactivatePlate"></strong>. El documento no será eliminado.</p><label>Motivo obligatorio<select id="reasonPreset" required><option value="">Selecciona un motivo</option><option>Vehículo recuperado</option><option>Encargo retirado</option><option>Error de ingreso</option><option value="Otro">Otro</option></select></label><label id="otherReasonLabel" hidden>Especifica el motivo<textarea id="otherReason" maxlength="500"></textarea></label><button id="deactivateButton" class="danger full" type="submit">CONFIRMAR BAJA</button><p id="deactivateMessage" class="message" role="alert"></p></form></dialog>
+  <!-- =====================================================
+       PORTAL
+       ===================================================== -->
 
-  <dialog id="requestDialog"><div class="modal-card"><button class="modal-close" data-close-request aria-label="Cerrar">×</button><p class="eyebrow">SOLICITUD INSTITUCIONAL</p><h2 id="requestName">Detalle de acreditación</h2><dl id="requestDetails"></dl><div class="decision-actions" data-permission="institutional_requests_review"><button id="approveButton" class="primary">APROBAR</button><button id="rejectButton" class="danger">RECHAZAR</button></div><p id="requestMessage" class="message" role="alert"></p></div></dialog>
-  <script type="module" src="/portal-operaciones/portal.js"></script>
+  <div
+    id="portalView"
+    class="portal"
+    hidden
+  >
+
+
+    <!-- ===================================================
+         SIDEBAR
+         =================================================== -->
+
+    <aside class="sidebar">
+
+
+      <div class="portal-brand compact">
+
+        <img
+          src="/img/skano-logo.png"
+          alt=""
+        >
+
+        <span>
+          <b>SKANO</b>
+          <small>OPERACIONES</small>
+        </span>
+
+      </div>
+
+
+      <nav aria-label="Portal de Operaciones">
+
+        <button
+          class="nav-item active"
+          data-view="dashboard"
+        >
+          <span>01</span>
+          Inicio
+        </button>
+
+
+        <button
+          class="nav-item"
+          data-view="vehicles"
+        >
+          <span>02</span>
+          Vehículos con encargo
+        </button>
+
+
+        <button
+          class="nav-item"
+          data-view="requests"
+          data-permission="institutional_requests_read"
+        >
+          <span>03</span>
+          Acreditaciones
+        </button>
+
+
+        <button
+          class="nav-item"
+          data-view="exports"
+          data-permission="vehicles_export"
+        >
+          <span>04</span>
+          Exportaciones
+        </button>
+
+      </nav>
+
+
+      <div class="session-card">
+
+        <small>
+          SESIÓN ACTIVA
+        </small>
+
+        <b id="sidebarName">
+          Personal SKANO
+        </b>
+
+        <span id="sidebarEmail"></span>
+
+      </div>
+
+
+      <button
+        id="logoutButton"
+        class="logout"
+        type="button"
+      >
+        Cerrar sesión
+      </button>
+
+    </aside>
+
+
+    <!-- ===================================================
+         WORKSPACE
+         =================================================== -->
+
+    <div class="workspace">
+
+
+      <header class="topbar">
+
+        <button
+          id="menuButton"
+          class="menu"
+          type="button"
+          aria-label="Abrir navegación"
+        >
+          ☰
+        </button>
+
+
+        <div>
+
+          <p>
+            SKANO · CONTROL OPERATIVO
+          </p>
+
+          <span id="clock"></span>
+
+        </div>
+
+
+        <span class="status">
+          <i></i>
+          SISTEMA OPERATIVO
+        </span>
+
+      </header>
+
+
+      <div
+        id="notice"
+        class="notice"
+        role="status"
+        hidden
+      ></div>
+
+
+      <!-- =================================================
+           DASHBOARD
+           ================================================= -->
+
+      <section
+        class="view active"
+        data-panel="dashboard"
+      >
+
+
+        <div class="hero-panel">
+
+
+          <div>
+
+            <p class="eyebrow">
+              PORTAL DE OPERACIONES
+            </p>
+
+
+            <h1>
+              Bienvenido,
+              <span id="welcomeName">
+                funcionario
+              </span>
+            </h1>
+
+
+            <p>
+              Información autorizada para la gestión diaria de SKANO.
+            </p>
+
+          </div>
+
+
+          <div class="shield">
+            SO
+            <br>
+
+            <small>
+              ACCESO VALIDADO
+            </small>
+          </div>
+
+
+        </div>
+
+
+        <div class="metrics">
+
+
+          <article>
+
+            <span>
+              VEHÍCULOS ACTIVOS
+            </span>
+
+            <strong id="activeVehiclesCount">
+              —
+            </strong>
+
+            <small>
+              Encargos vigentes
+            </small>
+
+          </article>
+
+
+          <article
+            data-permission="institutional_requests_read"
+          >
+
+            <span>
+              SOLICITUDES PENDIENTES
+            </span>
+
+            <strong id="pendingRequestsCount">
+              —
+            </strong>
+
+            <small>
+              Acreditaciones por revisar
+            </small>
+
+          </article>
+
+
+          <article>
+
+            <span>
+              ESTADO DE CUENTA
+            </span>
+
+            <strong class="active-text">
+              ACTIVA
+            </strong>
+
+            <small>
+              Acceso SKANO autorizado
+            </small>
+
+          </article>
+
+
+        </div>
+
+
+        <div class="section-card">
+
+
+          <div class="section-heading">
+
+            <div>
+
+              <p class="eyebrow">
+                ACCESOS RÁPIDOS
+              </p>
+
+              <h2>
+                ¿Qué necesitas hacer?
+              </h2>
+
+            </div>
+
+          </div>
+
+
+          <div class="quick-actions">
+
+            <button
+              class="primary"
+              type="button"
+              data-open-create
+              data-permission="vehicles_create"
+            >
+              + AGREGAR VEHÍCULO
+            </button>
+
+
+            <button
+              class="secondary"
+              type="button"
+              data-go="requests"
+              data-permission="institutional_requests_read"
+            >
+              REVISAR SOLICITUDES
+            </button>
+
+          </div>
+
+
+        </div>
+
+
+      </section>
+
+
+      <!-- =================================================
+           VEHÍCULOS
+           ================================================= -->
+
+      <section
+        class="view"
+        data-panel="vehicles"
+      >
+
+
+        <div class="section-heading">
+
+
+          <div>
+
+            <p class="eyebrow">
+              REGISTRO OFICIAL
+            </p>
+
+
+            <h1>
+              Vehículos con encargo
+            </h1>
+
+
+            <p>
+              Consulta acotada de la colección oficial
+              <code>stolen_vehicles</code>.
+            </p>
+
+          </div>
+
+
+          <button
+            class="primary"
+            type="button"
+            data-open-create
+            data-permission="vehicles_create"
+          >
+            + AGREGAR VEHÍCULO CON ENCARGO
+          </button>
+
+
+        </div>
+
+
+        <div class="toolbar">
+
+
+          <label class="search">
+
+            Buscar patente
+
+            <input
+              id="vehicleSearch"
+              type="search"
+              placeholder="Ej. ABCD12"
+              autocomplete="off"
+            >
+
+          </label>
+
+
+          <select
+            id="vehicleFilter"
+            aria-label="Filtrar por estado"
+          >
+
+            <option value="all">
+              Todos los estados
+            </option>
+
+            <option value="active">
+              Activos
+            </option>
+
+            <option value="inactive">
+              Inactivos
+            </option>
+
+          </select>
+
+
+          <button
+            id="refreshVehicles"
+            class="icon-button"
+            type="button"
+            aria-label="Actualizar vehículos"
+          >
+            ↻
+          </button>
+
+
+        </div>
+
+
+        <div class="data-card">
+
+
+          <div
+            id="vehiclesLoading"
+            class="inline-state"
+          >
+            Cargando vehículos…
+          </div>
+
+
+          <div
+            id="vehiclesEmpty"
+            class="inline-state"
+            hidden
+          >
+            No hay vehículos para los filtros seleccionados.
+          </div>
+
+
+          <div class="table-wrap">
+
+
+            <table id="vehiclesTable">
+
+
+              <thead>
+
+                <tr>
+
+                  <th>PPU</th>
+
+                  <th>
+                    Vehículo
+                  </th>
+
+                  <th>
+                    Año / Color
+                  </th>
+
+                  <th>
+                    Estado
+                  </th>
+
+                  <th>
+                    Fecha
+                  </th>
+
+                  <th>
+                    Origen
+                  </th>
+
+                  <th>
+                    Acción
+                  </th>
+
+                </tr>
+
+              </thead>
+
+
+              <tbody></tbody>
+
+
+            </table>
+
+
+          </div>
+
+
+        </div>
+
+
+      </section>
+
+
+      <!-- =================================================
+           ACREDITACIONES
+           ================================================= -->
+
+      <section
+        class="view"
+        data-panel="requests"
+        data-permission="institutional_requests_read"
+      >
+
+
+        <div class="section-heading">
+
+
+          <div>
+
+            <p class="eyebrow">
+              FLUJO INSTITUCIONAL
+            </p>
+
+
+            <h1>
+              Acreditaciones
+            </h1>
+
+
+            <p>
+              Solicitudes pendientes autorizadas para revisión.
+            </p>
+
+          </div>
+
+
+          <button
+            id="refreshRequests"
+            class="secondary"
+            type="button"
+          >
+            ACTUALIZAR
+          </button>
+
+
+        </div>
+
+
+        <div
+          id="requestsLoading"
+          class="inline-state"
+        >
+          Cargando solicitudes…
+        </div>
+
+
+        <div
+          id="requestsGrid"
+          class="request-grid"
+        ></div>
+
+
+        <div
+          id="requestsEmpty"
+          class="inline-state"
+          hidden
+        >
+          No existen solicitudes pendientes.
+        </div>
+
+
+      </section>
+
+
+      <!-- =================================================
+           EXPORTACIONES
+           ================================================= -->
+
+      <section
+        class="view"
+        data-panel="exports"
+        data-permission="vehicles_export"
+      >
+
+
+        <div class="section-heading">
+
+
+          <div>
+
+            <p class="eyebrow">
+              EXPORTACIÓN SEGURA
+            </p>
+
+
+            <h1>
+              Descargar listado
+            </h1>
+
+
+            <p>
+              El archivo se genera con los datos devueltos por la Function oficial.
+            </p>
+
+          </div>
+
+
+        </div>
+
+
+        <div class="export-card">
+
+
+          <div class="export-symbol">
+            CSV
+          </div>
+
+
+          <div>
+
+
+            <h2>
+              Listado de vehículos
+            </h2>
+
+
+            <p>
+              Descarga hasta 500 registros autorizados.
+              La generación queda registrada por el backend.
+            </p>
+
+
+            <label>
+
+              Límite de registros
+
+              <select id="exportLimit">
+
+                <option>
+                  100
+                </option>
+
+                <option selected>
+                  250
+                </option>
+
+                <option>
+                  500
+                </option>
+
+              </select>
+
+            </label>
+
+
+            <button
+              id="exportButton"
+              class="primary"
+              type="button"
+            >
+              DESCARGAR LISTADO
+            </button>
+
+
+            <p
+              id="exportStatus"
+              class="message"
+            ></p>
+
+
+          </div>
+
+
+        </div>
+
+
+      </section>
+
+
+    </div>
+
+
+  </div>
+
+
+  <!-- =====================================================
+       MODAL: AGREGAR VEHÍCULO
+       ===================================================== -->
+
+  <dialog id="vehicleDialog">
+
+
+    <form
+      method="dialog"
+      class="modal-card"
+      id="vehicleForm"
+    >
+
+
+      <!-- FIX:
+           este botón NO envía el formulario.
+           Cierra directamente el dialog.
+      -->
+
+      <button
+        type="button"
+        class="modal-close"
+        aria-label="Cerrar"
+        onclick="document.getElementById('vehicleDialog').close()"
+      >
+        ×
+      </button>
+
+
+      <p class="eyebrow">
+        NUEVO REGISTRO
+      </p>
+
+
+      <h2>
+        Agregar vehículo con encargo
+      </h2>
+
+
+      <div class="form-grid">
+
+
+        <label>
+
+          PPU
+
+          <input
+            name="plate"
+            required
+            maxlength="12"
+            placeholder="ABCD12"
+          >
+
+        </label>
+
+
+        <label>
+
+          Marca
+
+          <input
+            name="brand"
+            maxlength="80"
+          >
+
+        </label>
+
+
+        <label>
+
+          Modelo
+
+          <input
+            name="model"
+            maxlength="80"
+          >
+
+        </label>
+
+
+        <label>
+
+          Año
+
+          <input
+            name="year"
+            type="number"
+            min="1900"
+            max="2100"
+          >
+
+        </label>
+
+
+        <label>
+
+          Color
+
+          <input
+            name="color"
+            maxlength="60"
+          >
+
+        </label>
+
+
+        <label>
+
+          Origen / fuente
+
+          <input
+            name="source"
+            maxlength="100"
+            placeholder="Ingreso operaciones"
+          >
+
+        </label>
+
+
+      </div>
+
+
+      <p class="form-note">
+
+        El registro será procesado exclusivamente por
+
+        <code>
+          createOperationsVehicle
+        </code>.
+
+      </p>
+
+
+      <button
+        id="createVehicleButton"
+        class="primary full"
+        type="submit"
+      >
+        REGISTRAR VEHÍCULO
+      </button>
+
+
+      <p
+        id="vehicleFormMessage"
+        class="message"
+        role="alert"
+      ></p>
+
+
+    </form>
+
+
+  </dialog>
+
+
+  <!-- =====================================================
+       MODAL: DAR DE BAJA
+       ===================================================== -->
+
+  <dialog id="deactivateDialog">
+
+
+    <form
+      method="dialog"
+      class="modal-card"
+      id="deactivateForm"
+    >
+
+
+      <!-- FIX:
+           tampoco envía deactivateForm
+      -->
+
+      <button
+        type="button"
+        class="modal-close"
+        aria-label="Cerrar"
+        onclick="document.getElementById('deactivateDialog').close()"
+      >
+        ×
+      </button>
+
+
+      <p class="eyebrow">
+        ACTUALIZAR ENCARGO
+      </p>
+
+
+      <h2>
+        Dar de baja vehículo
+      </h2>
+
+
+      <p>
+
+        PPU
+
+        <strong id="deactivatePlate"></strong>.
+
+        El documento no será eliminado.
+
+      </p>
+
+
+      <label>
+
+        Motivo obligatorio
+
+        <select
+          id="reasonPreset"
+          required
+        >
+
+          <option value="">
+            Selecciona un motivo
+          </option>
+
+          <option>
+            Vehículo recuperado
+          </option>
+
+          <option>
+            Encargo retirado
+          </option>
+
+          <option>
+            Error de ingreso
+          </option>
+
+          <option value="Otro">
+            Otro
+          </option>
+
+        </select>
+
+      </label>
+
+
+      <label
+        id="otherReasonLabel"
+        hidden
+      >
+
+        Especifica el motivo
+
+        <textarea
+          id="otherReason"
+          maxlength="500"
+        ></textarea>
+
+      </label>
+
+
+      <button
+        id="deactivateButton"
+        class="danger full"
+        type="submit"
+      >
+        CONFIRMAR BAJA
+      </button>
+
+
+      <p
+        id="deactivateMessage"
+        class="message"
+        role="alert"
+      ></p>
+
+
+    </form>
+
+
+  </dialog>
+
+
+  <!-- =====================================================
+       MODAL: ACREDITACIÓN
+       ===================================================== -->
+
+  <dialog id="requestDialog">
+
+
+    <div class="modal-card">
+
+
+      <button
+        type="button"
+        class="modal-close"
+        data-close-request
+        aria-label="Cerrar"
+        onclick="document.getElementById('requestDialog').close()"
+      >
+        ×
+      </button>
+
+
+      <p class="eyebrow">
+        SOLICITUD INSTITUCIONAL
+      </p>
+
+
+      <h2 id="requestName">
+        Detalle de acreditación
+      </h2>
+
+
+      <dl id="requestDetails"></dl>
+
+
+      <div
+        class="decision-actions"
+        data-permission="institutional_requests_review"
+      >
+
+
+        <button
+          id="approveButton"
+          class="primary"
+          type="button"
+        >
+          APROBAR
+        </button>
+
+
+        <button
+          id="rejectButton"
+          class="danger"
+          type="button"
+        >
+          RECHAZAR
+        </button>
+
+
+      </div>
+
+
+      <p
+        id="requestMessage"
+        class="message"
+        role="alert"
+      ></p>
+
+
+    </div>
+
+
+  </dialog>
+
+
+  <!-- =====================================================
+       JAVASCRIPT
+       ===================================================== -->
+
+  <script
+    type="module"
+    src="/portal-operaciones/portal.js?v=20260813-3"
+  ></script>
+
+
 </body>
 </html>
