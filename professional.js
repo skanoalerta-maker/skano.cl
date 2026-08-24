@@ -1,3 +1,4 @@
+const premiumStyles=document.createElement('link');premiumStyles.rel='stylesheet';premiumStyles.href='/premium.css';document.head.append(premiumStyles);
 const header=document.getElementById('header');
 const menuButton=document.getElementById('menuButton');
 const mainNav=document.getElementById('mainNav');
@@ -29,6 +30,45 @@ if(readingsTrack&&skanoReadings.length){
 
 const revealObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');revealObserver.unobserve(entry.target)}}),{threshold:.12});
 document.querySelectorAll('.reveal').forEach(element=>revealObserver.observe(element));
+
+/* Sistema visual SKANO: movimiento sobrio, reutilizable y de bajo costo. */
+const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!reducedMotion)document.body.animate([{opacity:.94},{opacity:1}],{duration:180,easing:'ease-out'});
+document.documentElement.classList.add('motion-ready');
+document.querySelectorAll('main>section').forEach((section,index)=>{
+  section.classList.add('sk-reveal');
+  section.style.setProperty('--reveal-order',String(index%3));
+  revealObserver.observe(section);
+});
+
+const homeHero=document.querySelector('.hero');
+if(homeHero){
+  const techLayer=document.createElement('div');
+  techLayer.className='sk-tech-layer';
+  techLayer.setAttribute('aria-hidden','true');
+  techLayer.innerHTML='<i class="node n1"></i><i class="node n2"></i><i class="node n3"></i><i class="node n4"></i><span class="link l1"></span><span class="link l2"></span><span class="link l3"></span>';
+  homeHero.prepend(techLayer);
+  const scan=document.createElement('div');
+  scan.className='sk-brand-scan';
+  scan.setAttribute('aria-hidden','true');
+  scan.innerHTML='<div class="scan-frame"><span class="fake-plate">SK·N0 01</span><b>DETECTADO</b><small>CÁMARA · PPU · RED SKANO</small></div><i></i>';
+  homeHero.append(scan);
+}
+
+const ecosystem=document.querySelector('.ecosystem');
+if(ecosystem){
+  const network=document.createElement('section');
+  network.className='sk-network sk-reveal';
+  network.setAttribute('aria-labelledby','sk-network-title');
+  network.innerHTML='<div class="shell"><span class="eyebrow cyan">RED SKANO</span><h2 id="sk-network-title">UNA SEÑAL.<br><em>TODA UNA RED.</em></h2><p>Cada punto conectado transforma una observación en información útil.</p><div class="network-flow"><div><i>01</i><b>PERSONA</b></div><span></span><div><i>02</i><b>VEHÍCULO</b></div><span></span><div><i>03</i><b>LECTOR SKANO</b></div><span></span><div><i>04</i><b>RED</b></div><span></span><div><i>05</i><b>DETECCIÓN</b></div><span></span><div><i>06</i><b>ALERTA</b></div></div></div>';
+  ecosystem.after(network);
+  revealObserver.observe(network);
+}
+
+if(!reducedMotion&&matchMedia('(min-width: 901px)').matches&&homeHero){
+  let ticking=false;
+  addEventListener('scroll',()=>{if(ticking)return;ticking=true;requestAnimationFrame(()=>{homeHero.style.setProperty('--parallax',`${Math.min(scrollY*.025,24)}px`);ticking=false})},{passive:true});
+}
 
 /* Mantiene los fondos de video en reproducción continua. */
 const keepVideoPlaying=video=>{
