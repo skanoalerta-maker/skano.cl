@@ -1,6 +1,7 @@
 (function(){const premiumStyles=document.createElement('link');premiumStyles.rel='stylesheet';premiumStyles.href='/planes/premium.css';document.head.append(premiumStyles);
 const clp=n=>new Intl.NumberFormat('es-CL',{style:'currency',currency:'CLP',maximumFractionDigits:0}).format(n);
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const privacyMark=document.querySelector('.privacy>b');if(privacyMark){const logo=document.createElement('img');logo.src='/img/skano-logo.png';logo.alt='Logo SKANO';logo.width=44;logo.height=44;logo.style.cssText='width:44px;height:44px;object-fit:contain;filter:drop-shadow(0 0 10px rgba(34,217,238,.28))';privacyMark.replaceChildren(logo)}
 if(!reduced)document.body.animate([{opacity:.94},{opacity:1}],{duration:180,easing:'ease-out'});
 document.documentElement.classList.add('motion-ready');
 const header=document.querySelector('.top');addEventListener('scroll',()=>header?.classList.toggle('scrolled',scrollY>12),{passive:true});
