@@ -220,10 +220,19 @@
 
         <button
           class="nav-item"
+          data-view="suspicious"
+          data-permission="suspicious_vehicles_read"
+        >
+          <span>03</span>
+          Vehículos sospechosos
+        </button>
+
+        <button
+          class="nav-item"
           data-view="requests"
           data-permission="institutional_requests_read"
         >
-          <span>03</span>
+          <span>04</span>
           Acreditaciones
         </button>
 
@@ -233,7 +242,7 @@
           data-view="exports"
           data-permission="vehicles_export"
         >
-          <span>04</span>
+          <span>05</span>
           Exportaciones
         </button>
 
@@ -642,6 +651,37 @@
 
 
       <!-- =================================================
+           VEHÍCULOS DE INTERÉS INSTITUCIONAL
+           ================================================= -->
+      <section class="view" data-panel="suspicious" data-permission="suspicious_vehicles_read">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">ANTECEDENTES INSTITUCIONALES</p>
+            <h1>Vehículos sospechosos</h1>
+            <p>Vehículos de interés institucional. No corresponden a encargos por robo.</p>
+          </div>
+          <button id="openSuspiciousCreate" class="primary" type="button" data-permission="suspicious_vehicles_create">
+            + AGREGAR VEHÍCULO SOSPECHOSO
+          </button>
+        </div>
+        <div class="suspicious-warning">VEHÍCULO DE INTERÉS INSTITUCIONAL · SIN ENCARGO · SIN RECOMPENSA</div>
+        <div class="toolbar suspicious-toolbar">
+          <label>Buscar PPU<input id="suspiciousPlate" type="search" placeholder="AB-CD-12"></label>
+          <label>Estado<select id="suspiciousStatus"><option value="all">Todos</option><option value="pending_review">Pendientes</option><option value="approved">Aprobados</option><option value="rejected">Rechazados</option><option value="closed">Cerrados / Desactivados</option></select></label>
+          <label>Origen<select id="suspiciousInstitution"><option value="all">Todos</option><option value="carabineros">Carabineros</option><option value="pdi">PDI</option><option value="seguridad_ciudadana">Seguridad Ciudadana</option><option value="operations">Operaciones SKANO</option></select></label>
+          <label>Desde<input id="suspiciousFrom" type="date"></label>
+          <label>Hasta<input id="suspiciousTo" type="date"></label>
+          <button id="refreshSuspicious" class="secondary" type="button">BUSCAR</button>
+        </div>
+        <div class="data-card">
+          <div id="suspiciousLoading" class="inline-state">Cargando antecedentes…</div>
+          <div id="suspiciousEmpty" class="inline-state" hidden>No hay antecedentes para los filtros seleccionados.</div>
+          <div class="table-wrap"><table id="suspiciousTable"><thead><tr><th>PPU</th><th>Vehículo</th><th>Origen</th><th>Fecha</th><th>Estado</th><th>Acción</th></tr></thead><tbody></tbody></table></div>
+        </div>
+        <button id="loadMoreSuspicious" class="secondary load-more" type="button" hidden>CARGAR MÁS</button>
+      </section>
+
+      <!-- =================================================
            ACREDITACIONES
            ================================================= -->
 
@@ -977,6 +1017,49 @@
 
   </dialog>
 
+  <dialog id="suspiciousCreateDialog">
+    <form class="modal-card wide-modal" id="suspiciousCreateForm">
+      <button type="button" class="modal-close" data-close-suspicious-create>×</button>
+      <p class="eyebrow">OPERACIONES SKANO</p><h2>Agregar vehículo sospechoso</h2>
+      <p class="form-note">Se guardará como vehículo de interés institucional en estado pendiente de revisión.</p>
+      <div class="form-grid">
+        <label>PPU<input name="plate" required maxlength="12"></label>
+        <label>Marca<input name="brand" maxlength="80"></label>
+        <label>Modelo<input name="model" maxlength="80"></label>
+        <label>Año<input name="year" type="number" min="1900" max="2100"></label>
+        <label>Color<input name="color" maxlength="60"></label>
+        <label>Tipo<input name="type" maxlength="80"></label>
+        <label>Región<input name="region" required maxlength="100"></label>
+        <label>Comuna<input name="commune" required maxlength="100"></label>
+        <label class="span-2">Lugar de observación<input name="observation_place" required maxlength="250"></label>
+        <label>Fecha y hora<input name="observed_at" type="datetime-local" required></label>
+        <label>Referencia institucional<input name="institutional_reference" maxlength="500"></label>
+        <label class="span-2">Características del vehículo<textarea name="vehicle_characteristics" required maxlength="3000"></textarea></label>
+        <label>Categoría modus operandi<input name="modus_operandi_category" required maxlength="200"></label>
+        <label>Descripción modus operandi<textarea name="modus_operandi_description" maxlength="5000"></textarea></label>
+        <label class="span-2">Observaciones<textarea name="observations" maxlength="5000"></textarea></label>
+      </div>
+      <button class="primary full" type="submit">GUARDAR COMO PENDIENTE</button>
+      <p id="suspiciousCreateMessage" class="message" role="alert"></p>
+    </form>
+  </dialog>
+
+  <dialog id="suspiciousDetailDialog">
+    <div class="modal-card wide-modal">
+      <button type="button" class="modal-close" data-close-suspicious-detail>×</button>
+      <p class="eyebrow">VEHÍCULO DE INTERÉS INSTITUCIONAL</p>
+      <h2 id="suspiciousDetailTitle">Detalle</h2>
+      <div id="suspiciousDetailContent" class="detail-sections"></div>
+      <section id="futureEvidence" class="future-evidence" hidden><h3>Evidencia fotográfica</h3></section>
+      <div class="decision-actions suspicious-actions">
+        <button id="approveSuspicious" class="primary" type="button" data-permission="suspicious_vehicles_review">APROBAR</button>
+        <button id="rejectSuspicious" class="danger" type="button" data-permission="suspicious_vehicles_review">RECHAZAR</button>
+        <button id="closeSuspicious" class="secondary" type="button" data-permission="suspicious_vehicles_deactivate">DESACTIVAR / CERRAR</button>
+      </div>
+      <p id="suspiciousActionMessage" class="message" role="alert"></p>
+    </div>
+  </dialog>
+
 
   <!-- =====================================================
        MODAL: DAR DE BAJA
@@ -1176,9 +1259,11 @@
        JAVASCRIPT
        ===================================================== -->
 
+  <link rel="stylesheet" href="/portal-operaciones/suspicious-vehicles.css?v=20260824-1">
+
   <script
     type="module"
-    src="/portal-operaciones/portal.js?v=20260813-3"
+    src="/portal-operaciones/portal.js?v=20260825-1"
   ></script>
 
 

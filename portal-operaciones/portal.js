@@ -102,7 +102,14 @@ const callables =
       httpsCallable(
         functions,
         "reviewInstitutionalRequest"
-      )
+      ),
+
+    listSuspicious: httpsCallable(functions, "listInstitutionalSuspiciousVehicles"),
+    getSuspicious: httpsCallable(functions, "getInstitutionalSuspiciousVehicle"),
+    createSuspicious: httpsCallable(functions, "createInstitutionalSuspiciousVehicle"),
+    approveSuspicious: httpsCallable(functions, "approveInstitutionalSuspiciousVehicle"),
+    rejectSuspicious: httpsCallable(functions, "rejectInstitutionalSuspiciousVehicle"),
+    closeSuspicious: httpsCallable(functions, "closeInstitutionalSuspiciousVehicle")
 
   });
 
@@ -120,6 +127,12 @@ const state = {
   vehicles: [],
 
   requests: [],
+
+  suspicious: [],
+
+  suspiciousCursor: null,
+
+  selectedSuspicious: null,
 
   selectedVehicle: null,
 
@@ -720,6 +733,10 @@ async function validateSession(
         "institutional_requests_read"
       )
         ? loadRequests()
+        : Promise.resolve(),
+
+      permission("suspicious_vehicles_read")
+        ? loadSuspiciousVehicles({ reset: true })
         : Promise.resolve()
 
     ]);
@@ -1073,6 +1090,10 @@ function showView(
       "error"
     );
 
+  }
+
+  if (name === "suspicious" && !permission("suspicious_vehicles_read")) {
+    return notice("No tienes permiso para consultar vehículos sospechosos.", "error");
   }
 
 
@@ -3045,3 +3066,141 @@ document.addEventListener(
     }
   }
 );
+
+/* =========================================================
+   VEHÍCULOS DE INTERÉS INSTITUCIONAL
+   ========================================================= */
+
+const suspiciousStatusLabel = value => ({
+  pending_review: "PENDIENTE", approved: "APROBADO", rejected: "RECHAZADO", closed: "DESACTIVADO / CERRADO"
+})[value] || "NO INFORMADO";
+
+const informed = value => {
+  if (value === true) return "Sí";
+  if (value === false) return "No";
+  if (Array.isArray(value)) return value.length ? value.join(", ") : "No informado";
+  if (value == null || String(value).trim() === "") return "No informado";
+  return String(value);
+};
+
+async function loadSuspiciousVehicles({ reset = false } = {}) {
+  if (!permission("suspicious_vehicles_read")) return;
+  const loading = $("#suspiciousLoading");
+  loading.hidden = false;
+  loading.textContent = "Cargando antecedentes…";
+  try {
+    const filters = {
+      pageSize: 25,
+      status: $("#suspiciousStatus")?.value || "all",
+      institutionType: $("#suspiciousInstitution")?.value || "all",
+      plate: normalizePlate($("#suspiciousPlate")?.value || ""),
+      from: $("#suspiciousFrom")?.value || null,
+      to: $("#suspiciousTo")?.value || null,
+      cursor: reset ? null : state.suspiciousCursor,
+    };
+    const response = await callables.listSuspicious(filters);
+    const data = response.data || {};
+    state.suspicious = reset ? (data.items || []) : [...state.suspicious, ...(data.items || [])];
+    state.suspiciousCursor = data.nextCursor || null;
+    renderSuspiciousVehicles();
+  } catch (error) {
+    technicalError("suspicious-list", error);
+    loading.textContent = cleanError(error, "No fue posible cargar los antecedentes.");
+  }
+}
+
+function renderSuspiciousVehicles() {
+  const body = $("#suspiciousTable tbody");
+  body.innerHTML = state.suspicious.map(item => {
+    const status = item.status || "";
+    const origin = item.institution || (item.source === "operations" ? "OPERACIONES SKANO" : item.institution_type);
+    return `<tr>
+      <td data-label="PPU"><strong class="plate">${escapeHtml(informed(item.plate || item.observed_plate))}</strong></td>
+      <td data-label="Vehículo">${escapeHtml(informed([item.brand, item.model].filter(Boolean).join(" ")))}<small>${escapeHtml(informed(item.color))}</small></td>
+      <td data-label="Origen">${escapeHtml(informed(origin))}<small>${escapeHtml(informed(item.submitted_by_name))}</small></td>
+      <td data-label="Fecha">${escapeHtml(safeDate(item.submitted_at))}</td>
+      <td data-label="Estado"><span class="pill ${status === "approved" ? "on" : status === "pending_review" ? "pending" : "off"}">${escapeHtml(suspiciousStatusLabel(status))}</span></td>
+      <td data-label="Acción"><button class="text-button suspicious-detail-button" data-id="${escapeHtml(item.id)}">VER DETALLE</button></td>
+    </tr>`;
+  }).join("");
+  $("#suspiciousLoading").hidden = true;
+  $("#suspiciousEmpty").hidden = state.suspicious.length !== 0;
+  $("#loadMoreSuspicious").hidden = !state.suspiciousCursor;
+  $$(".suspicious-detail-button").forEach(button => button.addEventListener("click", () => openSuspiciousDetail(button.dataset.id)));
+}
+
+const detailFields = {
+  "Vehículo": [["PPU", "plate"], ["PPU observada", "observed_plate"], ["Marca", "brand"], ["Modelo", "model"], ["Color", "color"], ["Año", "year"], ["Tipo", "type"]],
+  "Ubicación": [["Región", "region"], ["Comuna", "commune"], ["Lugar de observación", "observation_place"], ["Fecha de avistamiento", "observed_at"]],
+  "Antecedentes": [["Observaciones", "observations"], ["Características", "vehicle_characteristics"], ["Categoría modus operandi", "modus_operandi_category"], ["Descripción modus operandi", "modus_operandi_description"], ["Referencia institucional", "institutional_reference"], ["Robado al momento del envío", "stolen_at_time_of_submission"], ["Tipo de reporte", "report_type"], ["Tipo de envío", "submission_type"]],
+  "Origen institucional": [["Institución", "institution"], ["Tipo institucional", "institution_type"], ["Fuente", "source"], ["Descripción de origen", "display_source"], ["UID creador", "submitted_by_uid"], ["Creador", "submitted_by_name"], ["Correo", "submitted_by_email"]],
+  "Validaciones": [["Biometría confirmada", "biometric_confirmed"], ["Biometría confirmada el", "biometric_confirmed_at"], ["Declaración aceptada", "responsibility_declaration_accepted"], ["Identidad confirmada", "identity_confirmed"], ["Origen institucional", "institutional_reported"], ["Reporte policial", "police_reported"], ["Marcado sospechoso", "suspicious_reported"]],
+  "Auditoría": [["Estado", "status"], ["Enviado el", "submitted_at"], ["Actualizado el", "updated_at"], ["Revisado por", "reviewed_by"], ["Revisado el", "reviewed_at"], ["Motivo de rechazo", "rejection_reason"], ["Proyección activa", "active_vehicle_id"], ["Cerrado por", "closed_by"], ["Cerrado el", "closed_at"], ["Motivo de cierre", "closed_reason"]],
+};
+
+function detailValue(item, key) {
+  return key.endsWith("_at") ? (item[key] ? safeDate(item[key]) : "No informado") : informed(item[key]);
+}
+
+async function openSuspiciousDetail(id) {
+  $("#suspiciousDetailContent").innerHTML = '<div class="inline-state">Cargando ficha completa…</div>';
+  $("#suspiciousDetailDialog").showModal();
+  try {
+    const response = await callables.getSuspicious({ id });
+    const item = response.data.submission;
+    state.selectedSuspicious = item;
+    $("#suspiciousDetailTitle").textContent = item.plate || item.observed_plate || "Detalle institucional";
+    $("#suspiciousDetailContent").innerHTML = Object.entries(detailFields).map(([title, fields]) =>
+      `<section><h3>${escapeHtml(title)}</h3><dl>${fields.map(([label, key]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(detailValue(item, key))}</dd></div>`).join("")}</dl></section>`
+    ).join("");
+    $("#approveSuspicious").hidden = item.status !== "pending_review" || !permission("suspicious_vehicles_review");
+    $("#rejectSuspicious").hidden = item.status !== "pending_review" || !permission("suspicious_vehicles_review");
+    $("#closeSuspicious").hidden = item.status !== "approved" || !permission("suspicious_vehicles_deactivate");
+  } catch (error) {
+    $("#suspiciousDetailContent").textContent = cleanError(error, "No fue posible abrir la ficha.");
+  }
+}
+
+async function performSuspiciousAction(action) {
+  const item = state.selectedSuspicious;
+  if (!item) return;
+  let reason = null;
+  if (action !== "approve") {
+    reason = window.prompt(action === "reject" ? "Motivo obligatorio del rechazo:" : "Motivo obligatorio del cierre:");
+    if (!reason?.trim()) return;
+  }
+  const button = action === "approve" ? $("#approveSuspicious") : action === "reject" ? $("#rejectSuspicious") : $("#closeSuspicious");
+  setBusy(button, true);
+  try {
+    const callable = action === "approve" ? callables.approveSuspicious : action === "reject" ? callables.rejectSuspicious : callables.closeSuspicious;
+    await callable({ id: item.id, reason });
+    $("#suspiciousDetailDialog").close();
+    await loadSuspiciousVehicles({ reset: true });
+    notice(action === "approve" ? "Antecedente aprobado como vehículo de interés institucional." : action === "reject" ? "Antecedente rechazado; se conserva el historial." : "Antecedente desactivado y cerrado.");
+  } catch (error) {
+    $("#suspiciousActionMessage").textContent = cleanError(error, "No fue posible completar la acción.");
+  } finally { setBusy(button, false); }
+}
+
+$("#refreshSuspicious")?.addEventListener("click", () => loadSuspiciousVehicles({ reset: true }));
+$("#loadMoreSuspicious")?.addEventListener("click", () => loadSuspiciousVehicles());
+$("#suspiciousPlate")?.addEventListener("keydown", event => { if (event.key === "Enter") loadSuspiciousVehicles({ reset: true }); });
+$("#openSuspiciousCreate")?.addEventListener("click", () => $("#suspiciousCreateDialog").showModal());
+$("[data-close-suspicious-create]")?.addEventListener("click", () => $("#suspiciousCreateDialog").close());
+$("[data-close-suspicious-detail]")?.addEventListener("click", () => $("#suspiciousDetailDialog").close());
+$("#approveSuspicious")?.addEventListener("click", () => performSuspiciousAction("approve"));
+$("#rejectSuspicious")?.addEventListener("click", () => performSuspiciousAction("reject"));
+$("#closeSuspicious")?.addEventListener("click", () => performSuspiciousAction("close"));
+$("#suspiciousCreateForm")?.addEventListener("submit", async event => {
+  event.preventDefault();
+  const form = event.currentTarget; const data = Object.fromEntries(new FormData(form).entries());
+  data.year = data.year ? Number(data.year) : null;
+  try {
+    await callables.createSuspicious({ vehicle: data });
+    form.reset(); $("#suspiciousCreateDialog").close();
+    await loadSuspiciousVehicles({ reset: true });
+    notice("Vehículo de interés institucional guardado como pendiente de revisión.");
+  } catch (error) {
+    $("#suspiciousCreateMessage").textContent = cleanError(error, "No fue posible guardar el antecedente.");
+  }
+});

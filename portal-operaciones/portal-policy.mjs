@@ -40,5 +40,9 @@ export function visibleSections(profile) {
     exportVehicles: hasPermission(profile, "vehicles_export"),
     readRequests: hasPermission(profile, "institutional_requests_read"),
     reviewRequests: hasPermission(profile, "institutional_requests_review"),
+    readSuspicious: hasPermission(profile, "suspicious_vehicles_read"),
+    createSuspicious: hasPermission(profile, "suspicious_vehicles_create"),
+    reviewSuspicious: hasPermission(profile, "suspicious_vehicles_review"),
+    deactivateSuspicious: hasPermission(profile, "suspicious_vehicles_deactivate"),
   };
 }
