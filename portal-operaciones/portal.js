@@ -11,6 +11,7 @@ import {
 import {
   collection,
   doc,
+  getCountFromServer,
   getDoc,
   getDocs,
   getFirestore,
@@ -145,9 +146,13 @@ const state = {
 
   selectedSuspicious: null,
 
+  pendingSuspiciousAction: null,
+
   selectedVehicle: null,
 
   selectedRequest: null,
+
+  pendingRequestDecision: null,
 
   validated: false
 
@@ -711,6 +716,14 @@ async function validateSession(
     $("#sidebarEmail").textContent =
       user.email || "";
 
+    const displayRole = profile?.is_admin === true
+      ? (profile?.role === "superadmin" ? "SUPERADMIN" : "ADMINISTRADOR")
+      : "OPERADOR DE CONTROL";
+
+    $("#sidebarRole").textContent = displayRole;
+    $("#topbarOperator").textContent = displayName;
+    $("#topbarRole").textContent = displayRole;
+
 
     enforcePermissions();
 
@@ -748,9 +761,13 @@ async function validateSession(
 
       permission("suspicious_vehicles_read")
         ? loadSuspiciousVehicles({ reset: true })
-        : Promise.resolve()
+        : Promise.resolve(),
+
+      loadDashboardAggregates()
 
     ]);
+
+    renderRecentMovements();
 
   } catch (error) {
 
@@ -1255,105 +1272,281 @@ setInterval(
 
 
 /* =========================================================
+   DASHBOARD OPERACIONAL
+   ========================================================= */
+
+function toJsDate(value) {
+  const date = value?.toDate?.() ?? (value ? new Date(value) : null);
+  return date && !Number.isNaN(date.getTime()) ? date : null;
+}
+
+function vehicleIsActive(vehicle) {
+  return vehicle?.active !== false && vehicle?.status !== "inactive";
+}
+
+function vehiclePlate(vehicle) {
+  return normalizePlate(vehicle?.plate || vehicle?.plate_normalized || vehicle?.id || "");
+}
+
+function vehicleTimestamp(vehicle) {
+  return toJsDate(vehicle?.updated_at || vehicle?.created_at || vehicle?.reported_at || vehicle?.recovered_at);
+}
+
+function refreshVehicleMetrics() {
+  const active = state.vehicles.filter(vehicleIsActive).length;
+  const inactive = Math.max(0, state.vehicles.length - active);
+  const recentThreshold = Date.now() - (7 * 24 * 60 * 60 * 1000);
+  const recent = state.vehicles.filter(vehicle => {
+    const date = toJsDate(vehicle?.created_at || vehicle?.reported_at || vehicle?.updated_at);
+    return date && date.getTime() >= recentThreshold;
+  }).length;
+
+  if ($("#activeVehiclesCount")) $("#activeVehiclesCount").textContent = String(active);
+  if ($("#inactiveVehiclesCount")) $("#inactiveVehiclesCount").textContent = String(inactive);
+  if ($("#recentVehiclesCount")) $("#recentVehiclesCount").textContent = String(recent);
+}
+
+async function safeCount(queryRef, fallback = 0) {
+  try {
+    const snapshot = await getCountFromServer(queryRef);
+    return snapshot.data().count;
+  } catch (error) {
+    technicalError("dashboard-count", error);
+    return fallback;
+  }
+}
+
+async function loadDashboardAggregates() {
+  const jobs = [];
+
+  if (permission("suspicious_vehicles_read")) {
+    const statuses = ["pending_review", "approved", "rejected", "closed"];
+    const ids = ["#pendingSuspiciousCount", "#approvedSuspiciousCount", "#rejectedSuspiciousCount", "#closedSuspiciousCount"];
+
+    statuses.forEach((status, index) => {
+      const fallback = state.suspicious.filter(item => item.status === status).length;
+      const countQuery = query(
+        collection(db, "institutional_vehicle_submissions"),
+        where("report_type", "==", "suspicious_vehicle"),
+        where("status", "==", status)
+      );
+      jobs.push(
+        safeCount(countQuery, fallback).then(count => {
+          const node = $(ids[index]);
+          if (node) node.textContent = String(count);
+        })
+      );
+    });
+  }
+
+  if (permission("institutional_requests_read")) {
+    const pendingQuery = query(
+      collection(db, "institutional_requests"),
+      where("status", "==", "pending")
+    );
+    jobs.push(
+      safeCount(pendingQuery, state.requests.length).then(count => {
+        if ($("#pendingRequestsCount")) $("#pendingRequestsCount").textContent = String(count);
+      })
+    );
+  }
+
+  refreshVehicleMetrics();
+  await Promise.allSettled(jobs);
+}
+
+function renderRecentMovements() {
+  const container = $("#recentMovements");
+  if (!container) return;
+
+  const movements = [];
+
+  if (permission("vehicles_read")) {
+    state.vehicles.forEach(vehicle => {
+      const date = vehicleTimestamp(vehicle);
+      if (!date) return;
+      const active = vehicleIsActive(vehicle);
+      movements.push({
+        date,
+        kind: "encargo",
+        typeLabel: "ENCARGO",
+        title: vehiclePlate(vehicle) || "PPU no informada",
+        status: active ? "ACTIVO" : "INACTIVO",
+        statusClass: active ? "active" : "inactive",
+        primary: [vehicle.brand || vehicle.marca, vehicle.model || vehicle.modelo].filter(Boolean).join(" · ") || "Vehículo sin descripción",
+        secondary: vehicle.source || vehicle.origin || vehicle.fuente || "Origen no informado"
+      });
+    });
+  }
+
+  if (permission("suspicious_vehicles_read")) {
+    state.suspicious.forEach(item => {
+      const date = toJsDate(item.updated_at || item.reviewed_at || item.submitted_at);
+      if (!date) return;
+      const statusMap = {
+        pending_review: ["PENDIENTE", "pending"],
+        approved: ["APROBADO", "approved"],
+        rejected: ["RECHAZADO", "rejected"],
+        closed: ["CERRADO", "closed"]
+      };
+      const [status, statusClass] = statusMap[item.status] || ["NO INFORMADO", "inactive"];
+      movements.push({
+        date,
+        kind: "interest",
+        typeLabel: "INTERÉS",
+        title: normalizePlate(item.plate || item.observed_plate || "") || "PPU no informada",
+        status,
+        statusClass,
+        primary: item.institution || item.display_source || "Vehículo de interés institucional",
+        secondary: item.submitted_by_name || item.submitted_by_email || "Funcionario no informado"
+      });
+    });
+  }
+
+  if (permission("institutional_requests_read")) {
+    state.requests.forEach(request => {
+      const date = toJsDate(request.updated_at || request.submitted_at || request.created_at);
+      if (!date) return;
+      movements.push({
+        date,
+        kind: "accreditation",
+        typeLabel: "ACREDITACIÓN",
+        title: request.full_name || request.name || "Solicitud institucional",
+        status: "PENDIENTE",
+        statusClass: "pending",
+        primary: request.institution || "Institución no informada",
+        secondary: [request.unit, request.region].filter(Boolean).join(" · ") || "Antecedentes institucionales"
+      });
+    });
+  }
+
+  movements.sort((a, b) => b.date - a.date);
+  const visible = movements.slice(0, 10);
+
+  if (!visible.length) {
+    container.innerHTML = '<div class="inline-state">No hay movimientos recientes disponibles para esta sesión.</div>';
+    return;
+  }
+
+  container.replaceChildren(...visible.map(item => {
+    const article = document.createElement("article");
+    article.className = "movement-item";
+
+    const type = document.createElement("span");
+    type.className = `movement-type ${item.kind}`;
+    type.textContent = item.typeLabel;
+
+    const body = document.createElement("div");
+    body.className = "movement-body";
+
+    const titleLine = document.createElement("div");
+    titleLine.className = "movement-title-line";
+
+    const strong = document.createElement("strong");
+    strong.textContent = item.title;
+
+    const status = document.createElement("span");
+    status.className = `movement-status ${item.statusClass}`;
+    status.textContent = item.status;
+
+    titleLine.append(strong, status);
+
+    const primary = document.createElement("p");
+    primary.className = "movement-primary";
+    primary.textContent = item.primary;
+
+    const secondary = document.createElement("span");
+    secondary.className = "movement-secondary";
+    secondary.textContent = item.secondary;
+
+    body.append(titleLine, primary, secondary);
+
+    const time = document.createElement("time");
+    time.dateTime = item.date.toISOString();
+
+    const dateText = document.createElement("span");
+    dateText.className = "movement-date";
+    dateText.textContent = new Intl.DateTimeFormat("es-CL", { dateStyle: "medium" }).format(item.date);
+
+    const clockText = document.createElement("span");
+    clockText.className = "movement-clock";
+    clockText.textContent = new Intl.DateTimeFormat("es-CL", { timeStyle: "short" }).format(item.date);
+
+    time.append(dateText, clockText);
+    article.append(type, body, time);
+    return article;
+  }));
+}
+
+/* =========================================================
+   BÚSQUEDA RÁPIDA DE PPU
+   Solo usa registros ya cargados en la sesión.
+   ========================================================= */
+
+$("#headerPlateSearch")?.addEventListener("submit", event => {
+  event.preventDefault();
+  const plate = normalizePlate($("#headerPlateInput")?.value || "");
+
+  if (plate.length < 5) {
+    notice("Ingresa una patente válida.", "error");
+    return;
+  }
+
+  const vehicle = state.vehicles.find(item => vehiclePlate(item) === plate);
+  const suspicious = state.suspicious.find(item => normalizePlate(item.plate || item.observed_plate || "") === plate);
+
+  if (vehicle) {
+    showView("vehicles");
+    $("#vehicleSearch").value = plate;
+    renderVehicles();
+    openVehicleDetail(vehicle);
+    if (suspicious) notice("La PPU también aparece entre los antecedentes institucionales cargados.");
+    return;
+  }
+
+  if (suspicious) {
+    showView("suspicious");
+    $("#suspiciousPlate").value = plate;
+    openSuspiciousDetail(suspicious.id);
+    return;
+  }
+
+  notice("No se encontró la PPU entre los registros actualmente cargados. Usa el buscador del módulo para ampliar la consulta.", "error");
+});
+
+/* =========================================================
    VEHÍCULOS
    ========================================================= */
 
 async function loadVehicles() {
 
-  if (
-    !permission(
-      "vehicles_read"
-    )
-  ) {
-
-    state.vehicles =
-      [];
-
-
-    $("#vehiclesLoading").hidden =
-      false;
-
-
-    $("#vehiclesLoading").textContent =
-      "No tienes permiso para consultar vehículos.";
-
-
+  if (!permission("vehicles_read")) {
+    state.vehicles = [];
+    $("#vehiclesLoading").hidden = false;
+    $("#vehiclesLoading").textContent = "No tienes permiso para consultar vehículos.";
+    refreshVehicleMetrics();
     return;
-
   }
 
-
-  $("#vehiclesLoading").hidden =
-    false;
-
-
-  $("#vehiclesLoading").textContent =
-    "Cargando vehículos…";
-
+  $("#vehiclesLoading").hidden = false;
+  $("#vehiclesLoading").textContent = "Cargando vehículos…";
 
   try {
-
-    const snap =
-      await getDocs(
-        query(
-          collection(
-            db,
-            "stolen_vehicles"
-          ),
-          limit(
-            250
-          )
-        )
-      );
-
-
-    state.vehicles =
-      snap.docs.map(
-        item => ({
-          id:
-            item.id,
-
-          ...item.data()
-        })
-      );
-
-
-    const activeCount =
-      state.vehicles.filter(
-        vehicle =>
-
-          vehicle.active !==
-            false &&
-
-          vehicle.status !==
-            "inactive"
-
-      ).length;
-
-
-    $("#activeVehiclesCount").textContent =
-      String(
-        activeCount
-      );
-
-
-    renderVehicles();
-
-  } catch (error) {
-
-    technicalError(
-      "vehicles-read",
-      error
+    const snap = await getDocs(
+      query(
+        collection(db, "stolen_vehicles"),
+        limit(250)
+      )
     );
 
-
-    $("#vehiclesLoading").hidden =
-      false;
-
-
-    $("#vehiclesLoading").textContent =
-      "No fue posible cargar los vehículos.";
-
+    state.vehicles = snap.docs.map(item => ({ id: item.id, ...item.data() }));
+    refreshVehicleMetrics();
+    renderVehicles();
+    renderRecentMovements();
+  } catch (error) {
+    technicalError("vehicles-read", error);
+    $("#vehiclesLoading").hidden = false;
+    $("#vehiclesLoading").textContent = "No fue posible cargar los vehículos.";
   }
 }
 
@@ -1393,278 +1586,144 @@ const escapeHtml =
    ========================================================= */
 
 function renderVehicles() {
-
-  const term =
-    normalizePlate(
-      $("#vehicleSearch")
-        .value
-    );
-
-
-  const filter =
-    $("#vehicleFilter")
-      .value;
-
-
-  const rows =
-    state.vehicles.filter(
-      vehicle => {
-
-        const plate =
-          normalizePlate(
-
-            vehicle.plate ||
-
-            vehicle.plate_normalized ||
-
-            vehicle.id
-
-          );
-
-
-        const matchesTerm =
-          !term ||
-          plate.includes(
-            term
-          );
-
-
-        const isActive =
-
-          vehicle.active !==
-            false &&
-
-          vehicle.status !==
-            "inactive";
-
-
-        const matchesFilter =
-
-          filter ===
-            "all" ||
-
-          (
-            filter ===
-              "active"
-              ? isActive
-              : !isActive
-          );
-
-
-        return (
-          matchesTerm &&
-          matchesFilter
-        );
-
-      }
-    );
-
-
-  $("#vehiclesLoading").hidden =
-    true;
-
-
-  $("#vehiclesEmpty").hidden =
-    rows.length >
-    0;
-
-
-  const body =
-    $("#vehiclesTable tbody");
-
-
-  body.replaceChildren(
-    ...rows.map(
-      vehicle => {
-
-        const tr =
-          document.createElement(
-            "tr"
-          );
-
-
-        const plate =
-          normalizePlate(
-
-            vehicle.plate ||
-
-            vehicle.plate_normalized ||
-
-            vehicle.id
-
-          );
-
-
-        const active =
-
-          vehicle.active !==
-            false &&
-
-          vehicle.status !==
-            "inactive";
-
-
-        tr.innerHTML =
-          `
-            <td data-label="PPU">
-
-              <b class="plate">
-                ${escapeHtml(
-                  plate
-                )}
-              </b>
-
-            </td>
-
-
-            <td data-label="Vehículo">
-
-              <b>
-
-                ${escapeHtml(
-                  vehicle.brand ||
-                  vehicle.marca ||
-                  "—"
-                )}
-
-              </b>
-
-
-              <small>
-
-                ${escapeHtml(
-                  vehicle.model ||
-                  vehicle.modelo ||
-                  ""
-                )}
-
-              </small>
-
-            </td>
-
-
-            <td data-label="Año / Color">
-
-              ${escapeHtml(
-                vehicle.year ||
-                vehicle.ano ||
-                "—"
-              )}
-
-              ·
-
-              ${escapeHtml(
-                vehicle.color ||
-                "—"
-              )}
-
-            </td>
-
-
-            <td data-label="Estado">
-
-              <span
-                class="pill ${
-                  active
-                    ? "on"
-                    : "off"
-                }"
-              >
-
-                ${
-                  active
-                    ? "ACTIVO"
-                    : "INACTIVO"
-                }
-
-              </span>
-
-            </td>
-
-
-            <td data-label="Fecha">
-
-              ${safeDate(
-
-                vehicle.created_at ||
-
-                vehicle.reported_at ||
-
-                vehicle.updated_at
-
-              )}
-
-            </td>
-
-
-            <td data-label="Origen">
-
-              ${escapeHtml(
-
-                vehicle.source ||
-
-                vehicle.origin ||
-
-                vehicle.fuente ||
-
-                "—"
-
-              )}
-
-            </td>
-
-
-            <td data-label="Acción"></td>
-          `;
-
-
-        if (
-          active &&
-
-          permission(
-            "vehicles_deactivate"
-          )
-        ) {
-
-          const button =
-            document.createElement(
-              "button"
-            );
-
-
-          button.className =
-            "text-button danger-text";
-
-
-          button.textContent =
-            "DAR DE BAJA";
-
-
-          button.addEventListener(
-            "click",
-            () => {
-
-              openDeactivate(
-                vehicle
-              );
-
-            }
-          );
-
-
-          tr.lastElementChild.append(
-            button
-          );
-
-        }
-
-
-        return tr;
-
-      }
-    )
-  );
+  const term = normalizePlate($("#vehicleSearch").value);
+  const filter = $("#vehicleFilter").value;
+
+  const rows = state.vehicles.filter(vehicle => {
+    const plate = vehiclePlate(vehicle);
+    const matchesTerm = !term || plate.includes(term);
+    const isActive = vehicleIsActive(vehicle);
+    const matchesFilter = filter === "all" || (filter === "active" ? isActive : !isActive);
+    return matchesTerm && matchesFilter;
+  });
+
+  $("#vehiclesLoading").hidden = true;
+  $("#vehiclesEmpty").hidden = rows.length > 0;
+
+  const body = $("#vehiclesTable tbody");
+  body.replaceChildren(...rows.map(vehicle => {
+    const tr = document.createElement("tr");
+    const plate = vehiclePlate(vehicle);
+    const active = vehicleIsActive(vehicle);
+    const brand = vehicle.brand || vehicle.marca || "No informado";
+    const model = vehicle.model || vehicle.modelo || "No informado";
+    const year = vehicle.year || vehicle.ano || "No informado";
+    const color = vehicle.color || "No informado";
+    const type = vehicle.type || vehicle.tipo || "No informado";
+    const source = vehicle.source || vehicle.origin || vehicle.fuente || "No informado";
+
+    tr.innerHTML = `
+      <td data-label="PPU"><b class="plate">${escapeHtml(plate || "No informado")}</b></td>
+      <td data-label="Vehículo"><b>${escapeHtml(brand)}</b><small>${escapeHtml(model)}</small></td>
+      <td data-label="Año">${escapeHtml(year)}</td>
+      <td data-label="Color">${escapeHtml(color)}</td>
+      <td data-label="Tipo">${escapeHtml(type)}</td>
+      <td data-label="Estado"><span class="pill ${active ? "on" : "off"}">${active ? "ACTIVO" : "INACTIVO"}</span></td>
+      <td data-label="Ingreso">${escapeHtml(safeDate(vehicle.created_at || vehicle.reported_at))}</td>
+      <td data-label="Actualización">${escapeHtml(safeDate(vehicle.updated_at || vehicle.recovered_at || vehicle.closed_at))}</td>
+      <td data-label="Origen">${escapeHtml(source)}</td>
+      <td data-label="Acción"><div class="action-stack"></div></td>
+    `;
+
+    const actions = $(".action-stack", tr);
+
+    const detailButton = document.createElement("button");
+    detailButton.type = "button";
+    detailButton.className = "text-button view-file";
+    detailButton.textContent = "VER EXPEDIENTE";
+    detailButton.addEventListener("click", () => openVehicleDetail(vehicle));
+    actions.append(detailButton);
+
+    if (active && permission("vehicles_deactivate")) {
+      const deactivateButton = document.createElement("button");
+      deactivateButton.type = "button";
+      deactivateButton.className = "text-button danger-text";
+      deactivateButton.textContent = "DAR DE BAJA";
+      deactivateButton.addEventListener("click", () => openDeactivate(vehicle));
+      actions.append(deactivateButton);
+    }
+
+    return tr;
+  }));
 }
+
+function firstPresent(item, keys) {
+  for (const key of keys) {
+    const value = item?.[key];
+    if (value !== undefined && value !== null && String(value).trim() !== "") return value;
+  }
+  return null;
+}
+
+function vehicleDetailValue(item, keys, { date = false } = {}) {
+  const value = firstPresent(item, keys);
+  if (value == null) return "No informado";
+  return date ? (safeDate(value) === "—" ? "No informado" : safeDate(value)) : String(value);
+}
+
+function renderVehicleDetailSections(vehicle) {
+  const sections = [
+    ["Identificación", [
+      ["PPU", vehiclePlate(vehicle) || "No informado"],
+      ["Marca", vehicleDetailValue(vehicle, ["brand", "marca"])],
+      ["Modelo", vehicleDetailValue(vehicle, ["model", "modelo"])],
+      ["Año", vehicleDetailValue(vehicle, ["year", "ano"])],
+      ["Color", vehicleDetailValue(vehicle, ["color"])],
+      ["Tipo", vehicleDetailValue(vehicle, ["type", "tipo"])]
+    ]],
+    ["Identificadores", [
+      ["VIN", vehicleDetailValue(vehicle, ["vin", "VIN", "vehicle_vin"])],
+      ["Número de chasis", vehicleDetailValue(vehicle, ["chassis_number", "chassisNumber", "chassis"])],
+      ["Número de motor", vehicleDetailValue(vehicle, ["engine_number", "engineNumber", "motor_number", "motorNumber"])]
+    ]],
+    ["Situación", [
+      ["Estado", vehicleIsActive(vehicle) ? "Activo" : "Inactivo / cerrado"],
+      ["Estado registrado", vehicleDetailValue(vehicle, ["status"])],
+      ["Motivo / antecedente", vehicleDetailValue(vehicle, ["encargo_reason", "reason", "theft_reason", "case_reason", "observations", "notes"])],
+      ["Ingreso", vehicleDetailValue(vehicle, ["created_at", "reported_at"], { date: true })],
+      ["Recuperación / cierre", vehicleDetailValue(vehicle, ["recovered_at", "closed_at", "deactivated_at"], { date: true })],
+      ["Motivo de baja", vehicleDetailValue(vehicle, ["deactivation_reason", "closed_reason", "inactive_reason", "recovered_to"])]
+    ]],
+    ["Origen", [
+      ["Fuente", vehicleDetailValue(vehicle, ["source", "origin", "fuente"])],
+      ["Propietario / responsable", vehicleDetailValue(vehicle, ["owner_name", "owner_email", "owner_uid"])],
+      ["Creado por", vehicleDetailValue(vehicle, ["created_by_name", "created_by_email", "created_by", "created_by_uid"])]]
+    ],
+    ["Trazabilidad", [
+      ["Última actualización", vehicleDetailValue(vehicle, ["updated_at"], { date: true })],
+      ["Desactivado por", vehicleDetailValue(vehicle, ["deactivated_by_name", "deactivated_by_email", "deactivated_by", "closed_by"])],
+      ["Último reporte", vehicleDetailValue(vehicle, ["last_report_id"])],
+      ["Última comisaría / destino", vehicleDetailValue(vehicle, ["last_known_police_destination", "recovered_to"])]]
+    ]
+  ];
+
+  return sections.map(([title, fields]) => `
+    <section>
+      <h3>${escapeHtml(title)}</h3>
+      <dl>${fields.map(([label, value]) => `
+        <div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>
+      `).join("")}</dl>
+    </section>
+  `).join("");
+}
+
+function openVehicleDetail(vehicle) {
+  state.selectedVehicle = vehicle;
+  const active = vehicleIsActive(vehicle);
+  $("#vehicleDetailTitle").textContent = vehiclePlate(vehicle) || "Vehículo con encargo";
+  $("#vehicleDetailStatus").className = `pill ${active ? "on" : "off"}`;
+  $("#vehicleDetailStatus").textContent = active ? "ACTIVO" : "INACTIVO";
+  $("#vehicleDetailContent").innerHTML = renderVehicleDetailSections(vehicle);
+  $("#vehicleDetailDeactivate").hidden = !active || !permission("vehicles_deactivate");
+  $("#vehicleDetailDialog").showModal();
+}
+
+$("[data-close-vehicle-detail]")?.addEventListener("click", () => $("#vehicleDetailDialog").close());
+$("#vehicleDetailDeactivate")?.addEventListener("click", () => {
+  const vehicle = state.selectedVehicle;
+  $("#vehicleDetailDialog").close();
+  if (vehicle) openDeactivate(vehicle);
+});
 
 
 /* =========================================================
@@ -2187,6 +2246,7 @@ async function loadRequests() {
 
 
     renderRequests();
+    renderRecentMovements();
 
   } catch (error) {
 
@@ -2516,193 +2576,75 @@ $(
    DECIDIR ACREDITACIÓN
    ========================================================= */
 
-async function decideRequest(
-  decision
-) {
-
-  if (
-    !permission(
-      "institutional_requests_review"
-    )
-  ) {
-
-    notice(
-      "No tienes permiso para procesar acreditaciones.",
-      "error"
-    );
-
-    return;
-
+async function decideRequest(decision) {
+  if (!permission("institutional_requests_review")) {
+    notice("No tienes permiso para procesar acreditaciones.", "error");
+    return false;
   }
 
-
-  if (
-    !state.selectedRequest
-  ) {
-
-    notice(
-      "No existe una solicitud seleccionada.",
-      "error"
-    );
-
-    return;
-
+  if (!state.selectedRequest) {
+    notice("No existe una solicitud seleccionada.", "error");
+    return false;
   }
 
-
-  const approve =
-    decision ===
-    "approve";
-
-
-  const confirmed =
-    confirm(
-      `${
-        approve
-          ? "Aprobar"
-          : "Rechazar"
-      } esta solicitud institucional?`
-    );
-
-
-  if (
-    !confirmed
-  ) {
-
-    return;
-
-  }
-
-
-  const approveButton =
-    $("#approveButton");
-
-
-  const rejectButton =
-    $("#rejectButton");
-
-
-  setBusy(
-    approveButton,
-    true,
-    "APROBANDO…"
-  );
-
-
-  setBusy(
-    rejectButton,
-    true,
-    "RECHAZANDO…"
-  );
-
+  const approve = decision === "approve";
+  const button = $("#confirmRequestDecision");
+  setBusy(button, true, approve ? "APROBANDO…" : "RECHAZANDO…");
+  $("#requestDecisionMessage").textContent = "";
 
   try {
+    const result = await callables.reviewRequest({
+      uid: state.selectedRequest.uid || state.selectedRequest.id,
+      decision
+    });
 
-    const result =
-      await callables
-        .reviewRequest({
+    if (!result.data?.ok) throw new Error("Respuesta inesperada");
 
-          uid:
+    if ($("#requestDecisionDialog")?.open) $("#requestDecisionDialog").close();
+    if ($("#requestDialog")?.open) $("#requestDialog").close();
+    state.pendingRequestDecision = null;
+    state.selectedRequest = null;
 
-            state
-              .selectedRequest
-              .uid ||
-
-            state
-              .selectedRequest
-              .id,
-
-          decision
-
-        });
-
-
-    if (
-      !result.data?.ok
-    ) {
-
-      throw new Error(
-        "Respuesta inesperada"
-      );
-
-    }
-
-
-    $("#requestDialog").close();
-
-
-    state.selectedRequest =
-      null;
-
-
-    notice(
-      `Solicitud ${
-        approve
-          ? "aprobada"
-          : "rechazada"
-      } correctamente.`
-    );
-
-
+    notice(`Solicitud ${approve ? "aprobada" : "rechazada"} correctamente.`);
     await loadRequests();
-
+    return true;
   } catch (error) {
-
-    technicalError(
-      "request-review",
-      error
-    );
-
-
-    $("#requestMessage").textContent =
-      cleanError(
-        error,
-        "No fue posible procesar la acreditación."
-      );
-
+    technicalError("request-review", error);
+    $("#requestDecisionMessage").textContent = cleanError(error, "No fue posible procesar la acreditación.");
+    return false;
   } finally {
-
-    setBusy(
-      approveButton,
-      false
-    );
-
-
-    setBusy(
-      rejectButton,
-      false
-    );
-
+    setBusy(button, false);
   }
 }
 
+function openRequestDecision(decision) {
+  if (!permission("institutional_requests_review") || !state.selectedRequest) return;
+  state.pendingRequestDecision = decision;
+  const approve = decision === "approve";
+  $("#requestDecisionTitle").textContent = approve ? "Aprobar acreditación" : "Rechazar acreditación";
+  $("#requestDecisionIntro").textContent = approve
+    ? "Confirma que revisaste los antecedentes institucionales antes de aprobar esta solicitud."
+    : "Confirma el rechazo de esta solicitud institucional. El registro conservará su trazabilidad.";
+  $("#confirmRequestDecision").className = approve ? "primary" : "danger";
+  $("#confirmRequestDecision").textContent = approve ? "CONFIRMAR APROBACIÓN" : "CONFIRMAR RECHAZO";
+  $("#requestDecisionMessage").textContent = "";
+  $("#requestDecisionDialog").showModal();
+}
 
-/* =========================================================
-   BOTONES APROBAR / RECHAZAR
-   ========================================================= */
+function closeRequestDecision() {
+  if ($("#requestDecisionDialog")?.open) $("#requestDecisionDialog").close();
+  state.pendingRequestDecision = null;
+  $("#requestDecisionMessage").textContent = "";
+}
 
-$("#approveButton").addEventListener(
-  "click",
-  () => {
-
-    decideRequest(
-      "approve"
-    );
-
-  }
-);
-
-
-$("#rejectButton").addEventListener(
-  "click",
-  () => {
-
-    decideRequest(
-      "reject"
-    );
-
-  }
-);
+$("#approveButton").addEventListener("click", () => openRequestDecision("approve"));
+$("#rejectButton").addEventListener("click", () => openRequestDecision("reject"));
+$$('[data-close-request-decision]').forEach(button => button.addEventListener("click", closeRequestDecision));
+$("#requestDecisionForm")?.addEventListener("submit", async event => {
+  event.preventDefault();
+  if (!state.pendingRequestDecision) return;
+  await decideRequest(state.pendingRequestDecision);
+});
 
 
 /* =========================================================
@@ -3114,6 +3056,8 @@ async function loadSuspiciousVehicles({ reset = false } = {}) {
     state.suspicious = reset ? (data.items || []) : [...state.suspicious, ...(data.items || [])];
     state.suspiciousCursor = data.nextCursor || null;
     renderSuspiciousVehicles();
+    renderRecentMovements();
+    if (reset) loadDashboardAggregates();
   } catch (error) {
     technicalError("suspicious-list", error);
     loading.textContent = cleanError(error, "No fue posible cargar los antecedentes.");
@@ -3231,25 +3175,72 @@ async function openSuspiciousDetail(id) {
   }
 }
 
-async function performSuspiciousAction(action) {
+async function performSuspiciousAction(action, reason = null) {
   const item = state.selectedSuspicious;
-  if (!item) return;
-  let reason = null;
-  if (action !== "approve") {
-    reason = window.prompt(action === "reject" ? "Motivo obligatorio del rechazo:" : "Motivo obligatorio del cierre:");
-    if (!reason?.trim()) return;
+  if (!item) return false;
+
+  if (action !== "approve" && !reason?.trim()) {
+    $("#suspiciousReasonMessage").textContent = "Debes ingresar un motivo.";
+    return false;
   }
-  const button = action === "approve" ? $("#approveSuspicious") : action === "reject" ? $("#rejectSuspicious") : $("#closeSuspicious");
-  setBusy(button, true);
+
+  const button = action === "approve" ? $("#approveSuspicious") : $("#confirmSuspiciousReason");
+  setBusy(button, true, action === "approve" ? "APROBANDO…" : "PROCESANDO…");
+  $("#suspiciousActionMessage").textContent = "";
+  $("#suspiciousReasonMessage").textContent = "";
+
   try {
-    const callable = action === "approve" ? callables.approveSuspicious : action === "reject" ? callables.rejectSuspicious : callables.closeSuspicious;
-    await callable({ id: item.id, reason });
-    $("#suspiciousDetailDialog").close();
+    const callable = action === "approve"
+      ? callables.approveSuspicious
+      : action === "reject"
+        ? callables.rejectSuspicious
+        : callables.closeSuspicious;
+
+    await callable({ id: item.id, reason: action === "approve" ? null : reason.trim() });
+
+    if ($("#suspiciousReasonDialog")?.open) $("#suspiciousReasonDialog").close();
+    if ($("#suspiciousDetailDialog")?.open) $("#suspiciousDetailDialog").close();
+    clearSuspiciousEvidence();
+    state.pendingSuspiciousAction = null;
+    state.selectedSuspicious = null;
+
     await loadSuspiciousVehicles({ reset: true });
-    notice(action === "approve" ? "Antecedente aprobado como vehículo de interés institucional." : action === "reject" ? "Antecedente rechazado; se conserva el historial." : "Antecedente desactivado y cerrado.");
+    notice(
+      action === "approve"
+        ? "Antecedente aprobado como vehículo de interés institucional."
+        : action === "reject"
+          ? "Antecedente rechazado; se conserva el historial."
+          : "Antecedente desactivado y cerrado."
+    );
+    return true;
   } catch (error) {
-    $("#suspiciousActionMessage").textContent = cleanError(error, "No fue posible completar la acción.");
-  } finally { setBusy(button, false); }
+    technicalError(`suspicious-${action}`, error);
+    const target = action === "approve" ? $("#suspiciousActionMessage") : $("#suspiciousReasonMessage");
+    target.textContent = cleanError(error, "No fue posible completar la acción.");
+    return false;
+  } finally {
+    setBusy(button, false);
+  }
+}
+
+function openSuspiciousReason(action) {
+  if (!state.selectedSuspicious) return;
+  state.pendingSuspiciousAction = action;
+  $("#suspiciousReasonForm").reset();
+  $("#suspiciousReasonMessage").textContent = "";
+  $("#suspiciousReasonTitle").textContent = action === "reject" ? "Rechazar antecedente" : "Cerrar antecedente";
+  $("#suspiciousReasonIntro").textContent = action === "reject"
+    ? "El antecedente se conservará para trazabilidad. Indica el motivo del rechazo."
+    : "El expediente permanecerá en el historial. Indica el motivo del cierre o desactivación.";
+  $("#confirmSuspiciousReason").textContent = action === "reject" ? "CONFIRMAR RECHAZO" : "CONFIRMAR CIERRE";
+  $("#suspiciousReasonDialog").showModal();
+  $("#suspiciousReasonText").focus();
+}
+
+function closeSuspiciousReason() {
+  if ($("#suspiciousReasonDialog")?.open) $("#suspiciousReasonDialog").close();
+  state.pendingSuspiciousAction = null;
+  $("#suspiciousReasonMessage").textContent = "";
 }
 
 $("#refreshSuspicious")?.addEventListener("click", () => loadSuspiciousVehicles({ reset: true }));
@@ -3258,24 +3249,41 @@ $("#suspiciousPlate")?.addEventListener("keydown", event => { if (event.key === 
 $("#openSuspiciousCreate")?.addEventListener("click", () => $("#suspiciousCreateDialog").showModal());
 $("[data-close-suspicious-create]")?.addEventListener("click", () => $("#suspiciousCreateDialog").close());
 $("[data-close-suspicious-detail]")?.addEventListener("click", () => $("#suspiciousDetailDialog").close());
-$("[data-close-suspicious-detail]")?.addEventListener("click", clearSuspiciousEvidence);
+$("#suspiciousDetailDialog")?.addEventListener("close", clearSuspiciousEvidence);
 $("#previousEvidence")?.addEventListener("click", () => showSuspiciousEvidence(state.suspiciousEvidenceIndex - 1));
 $("#nextEvidence")?.addEventListener("click", () => showSuspiciousEvidence(state.suspiciousEvidenceIndex + 1));
 $("#openEvidenceLightbox")?.addEventListener("click", () => $("#suspiciousEvidenceLightbox").showModal());
 $("[data-close-evidence-lightbox]")?.addEventListener("click", () => $("#suspiciousEvidenceLightbox").close());
 $("#approveSuspicious")?.addEventListener("click", () => performSuspiciousAction("approve"));
-$("#rejectSuspicious")?.addEventListener("click", () => performSuspiciousAction("reject"));
-$("#closeSuspicious")?.addEventListener("click", () => performSuspiciousAction("close"));
+$("#rejectSuspicious")?.addEventListener("click", () => openSuspiciousReason("reject"));
+$("#closeSuspicious")?.addEventListener("click", () => openSuspiciousReason("close"));
+$$('[data-close-suspicious-reason]').forEach(button => button.addEventListener("click", closeSuspiciousReason));
+$("#suspiciousReasonForm")?.addEventListener("submit", async event => {
+  event.preventDefault();
+  const action = state.pendingSuspiciousAction;
+  if (!action) return;
+  const reason = $("#suspiciousReasonText").value.trim();
+  await performSuspiciousAction(action, reason);
+});
+
 $("#suspiciousCreateForm")?.addEventListener("submit", async event => {
   event.preventDefault();
-  const form = event.currentTarget; const data = Object.fromEntries(new FormData(form).entries());
+  const form = event.currentTarget;
+  const submitButton = form.querySelector('button[type="submit"]');
+  const data = Object.fromEntries(new FormData(form).entries());
   data.year = data.year ? Number(data.year) : null;
+  $("#suspiciousCreateMessage").textContent = "";
+  setBusy(submitButton, true, "GUARDANDO…");
   try {
     await callables.createSuspicious({ vehicle: data });
-    form.reset(); $("#suspiciousCreateDialog").close();
+    form.reset();
+    $("#suspiciousCreateDialog").close();
     await loadSuspiciousVehicles({ reset: true });
     notice("Vehículo de interés institucional guardado como pendiente de revisión.");
   } catch (error) {
+    technicalError("suspicious-create", error);
     $("#suspiciousCreateMessage").textContent = cleanError(error, "No fue posible guardar el antecedente.");
+  } finally {
+    setBusy(submitButton, false);
   }
 });
