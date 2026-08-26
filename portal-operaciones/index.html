@@ -933,33 +933,126 @@
     </div>
   </dialog>
 
-  <dialog id="suspiciousCreateDialog">
-    <form class="modal-card wide-modal" id="suspiciousCreateForm">
-      <button type="button" class="modal-close" data-close-suspicious-create>×</button>
-      <p class="eyebrow">OPERACIONES SKANO</p><h2>Agregar vehículo sospechoso</h2>
-      <p class="form-note">Se guardará como vehículo de interés institucional en estado pendiente de revisión.</p>
-      <div class="form-grid">
-        <label>PPU<input name="plate" required maxlength="12"></label>
-        <label>Marca<input name="brand" maxlength="80"></label>
-        <label>Modelo<input name="model" maxlength="80"></label>
-        <label>Año<input name="year" type="number" min="1900" max="2100"></label>
-        <label>Color<input name="color" maxlength="60"></label>
-        <label>Tipo<input name="type" maxlength="80"></label>
-        <label>Región<input name="region" required maxlength="100"></label>
-        <label>Comuna<input name="commune" required maxlength="100"></label>
-        <label class="span-2">Lugar de observación<input name="observation_place" required maxlength="250"></label>
-        <label>Fecha y hora<input name="observed_at" type="datetime-local" required></label>
-        <label>Referencia institucional<input name="institutional_reference" maxlength="500"></label>
-        <label class="span-2">Características del vehículo<textarea name="vehicle_characteristics" required maxlength="3000"></textarea></label>
-        <label>Categoría modus operandi<input name="modus_operandi_category" required maxlength="200"></label>
-        <label>Descripción modus operandi<textarea name="modus_operandi_description" maxlength="5000"></textarea></label>
-        <label class="span-2">Observaciones<textarea name="observations" maxlength="5000"></textarea></label>
-      </div>
-      <button class="primary full" type="submit">GUARDAR COMO PENDIENTE</button>
-      <p id="suspiciousCreateMessage" class="message" role="alert"></p>
-    </form>
-  </dialog>
+ <dialog id="suspiciousCreateDialog" class="suspicious-create-dialog">
 
+  <form id="suspiciousCreateForm" class="modal-card suspicious-create-card">
+
+    <div class="suspicious-create-header">
+      <div>
+        <p class="eyebrow">OPERACIONES SKANO</p>
+        <h2>Agregar vehículo sospechoso</h2>
+        <p class="form-note">
+          Se guardará como vehículo de interés institucional en estado pendiente de revisión.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="modal-close suspicious-create-close"
+        data-close-suspicious-create
+        aria-label="Cerrar"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="form-grid suspicious-create-grid">
+
+      <label>
+        PPU
+        <input name="plate" required maxlength="12">
+      </label>
+
+      <label>
+        Marca
+        <input name="brand" maxlength="80">
+      </label>
+
+      <label>
+        Modelo
+        <input name="model" maxlength="80">
+      </label>
+
+      <label>
+        Año
+        <input name="year" type="number" min="1900" max="2100">
+      </label>
+
+      <label>
+        Color
+        <input name="color" maxlength="60">
+      </label>
+
+      <label>
+        Tipo
+        <input name="type" maxlength="80">
+      </label>
+
+      <label>
+        Región
+        <input name="region" required maxlength="100">
+      </label>
+
+      <label>
+        Comuna
+        <input name="commune" required maxlength="100">
+      </label>
+
+      <label class="span-2">
+        Lugar de observación
+        <input name="observation_place" required maxlength="250">
+      </label>
+
+      <label>
+        Fecha y hora
+        <input name="observed_at" type="datetime-local" required>
+      </label>
+
+      <label>
+        Referencia institucional
+        <input name="institutional_reference" maxlength="500">
+      </label>
+
+      <label class="span-2">
+        Características del vehículo
+        <textarea name="vehicle_characteristics" required maxlength="3000"></textarea>
+      </label>
+
+      <label>
+        Categoría modus operandi
+        <input name="modus_operandi_category" required maxlength="200">
+      </label>
+
+      <label>
+        Descripción modus operandi
+        <textarea name="modus_operandi_description" maxlength="5000"></textarea>
+      </label>
+
+      <label class="span-2">
+        Observaciones
+        <textarea name="observations" maxlength="5000"></textarea>
+      </label>
+
+    </div>
+
+    <div class="suspicious-create-footer">
+      <button
+        class="primary"
+        type="submit"
+      >
+        GUARDAR COMO PENDIENTE
+      </button>
+    </div>
+
+    <p
+      id="suspiciousCreateMessage"
+      class="message"
+      role="alert"
+    ></p>
+
+  </form>
+
+</dialog>
   <dialog id="suspiciousDetailDialog">
     <div class="modal-card wide-modal">
       <button type="button" class="modal-close" data-close-suspicious-detail>×</button>
