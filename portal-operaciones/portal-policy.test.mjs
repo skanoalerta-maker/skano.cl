@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { normalizePlate, visibleSections } from "./portal-policy.mjs";
+import { normalizePlate, validatedEvidencePaths, visibleSections } from "./portal-policy.mjs";
 
 test("normaliza PPU sin crear una convención paralela", () => {
   assert.equal(normalizePlate("AB-CD-12"), "ABCD12");
@@ -25,4 +25,21 @@ test("visibilidad del módulo exige permisos específicos", () => {
 
 test("administrador conserva acceso global", () => {
   assert.equal(visibleSections({ is_admin: true }).readSuspicious, true);
+});
+
+test("evidencia exige UID, submission, nombres exactos, count, principal y paths únicos", () => {
+  const base = "institutional_vehicle_submissions/user-a/submission-a/evidence/";
+  const valid = {
+    id: "submission-a",
+    submitted_by_uid: "user-a",
+    evidence_storage_paths: [`${base}photo_1.jpg`, `${base}photo_2.jpg`],
+    primary_evidence_storage_path: `${base}photo_1.jpg`,
+    evidence_count: 2,
+  };
+  assert.deepEqual(validatedEvidencePaths(valid), valid.evidence_storage_paths);
+  assert.deepEqual(validatedEvidencePaths({ ...valid, evidence_count: 1 }), []);
+  assert.deepEqual(validatedEvidencePaths({ ...valid, primary_evidence_storage_path: `${base}photo_2.jpg` }), []);
+  assert.deepEqual(validatedEvidencePaths({ ...valid, evidence_storage_paths: [`${base}photo_1.jpg`, `${base}photo_1.jpg`] }), []);
+  assert.deepEqual(validatedEvidencePaths({ ...valid, evidence_storage_paths: ["institutional_vehicle_submissions/user-b/submission-a/evidence/photo_1.jpg"], evidence_count: 1 }), []);
+  assert.deepEqual(validatedEvidencePaths({ id: "historical", submitted_by_uid: "user-a" }), []);
 });

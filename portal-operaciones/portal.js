@@ -25,9 +25,16 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-functions.js";
 
 import {
+  getBlob,
+  getStorage,
+  ref as storageRef
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-storage.js";
+
+import {
   authorizeOperationsSession,
   hasPermission,
-  normalizePlate
+  normalizePlate,
+  validatedEvidencePaths
 } from "./portal-policy.mjs";
 
 
@@ -71,6 +78,8 @@ const functions =
     app,
     "us-central1"
   );
+
+const storage = getStorage(app);
 
 
 /* =========================================================
@@ -131,6 +140,8 @@ const state = {
   suspicious: [],
 
   suspiciousCursor: null,
+  suspiciousEvidenceUrls: [],
+  suspiciousEvidenceIndex: 0,
 
   selectedSuspicious: null,
 
@@ -3142,7 +3153,64 @@ function detailValue(item, key) {
   return key.endsWith("_at") ? (item[key] ? safeDate(item[key]) : "No informado") : informed(item[key]);
 }
 
+function clearSuspiciousEvidence() {
+  state.suspiciousEvidenceUrls.forEach(url => URL.revokeObjectURL(url));
+  state.suspiciousEvidenceUrls = [];
+  state.suspiciousEvidenceIndex = 0;
+  $("#suspiciousEvidence").hidden = false;
+  $("#suspiciousEvidenceEmpty").hidden = false;
+  $("#suspiciousEvidenceEmpty").textContent = "Sin evidencia fotográfica registrada";
+  $("#suspiciousEvidenceGallery").hidden = true;
+  $("#suspiciousEvidenceThumbnails").replaceChildren();
+}
+
+function showSuspiciousEvidence(index) {
+  if (!state.suspiciousEvidenceUrls.length) return;
+  const bounded = (index + state.suspiciousEvidenceUrls.length) % state.suspiciousEvidenceUrls.length;
+  state.suspiciousEvidenceIndex = bounded;
+  const url = state.suspiciousEvidenceUrls[bounded];
+  $("#suspiciousEvidenceMain").src = url;
+  $("#suspiciousEvidenceExpanded").src = url;
+  $("#previousEvidence").disabled = state.suspiciousEvidenceUrls.length < 2;
+  $("#nextEvidence").disabled = state.suspiciousEvidenceUrls.length < 2;
+  $$(".evidence-thumbnail").forEach((button, buttonIndex) => {
+    button.setAttribute("aria-current", buttonIndex === bounded ? "true" : "false");
+  });
+}
+
+async function renderSuspiciousEvidence(item) {
+  clearSuspiciousEvidence();
+  const paths = validatedEvidencePaths(item);
+  if (!paths.length) return;
+  let blobs;
+  try {
+    blobs = await Promise.all(paths.map(path => getBlob(storageRef(storage, path))));
+  } catch (error) {
+    technicalError("suspicious-evidence", error);
+    $("#suspiciousEvidenceEmpty").textContent = "No fue posible cargar la evidencia fotográfica.";
+    return;
+  }
+  state.suspiciousEvidenceUrls = blobs.map(blob => URL.createObjectURL(blob));
+  $("#suspiciousEvidenceEmpty").hidden = true;
+  $("#suspiciousEvidenceGallery").hidden = false;
+  const thumbnails = $("#suspiciousEvidenceThumbnails");
+  state.suspiciousEvidenceUrls.forEach((url, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "evidence-thumbnail";
+    button.setAttribute("aria-label", `Ver fotografía ${index + 1}`);
+    const image = document.createElement("img");
+    image.src = url;
+    image.alt = `Miniatura de evidencia ${index + 1}`;
+    button.append(image);
+    button.addEventListener("click", () => showSuspiciousEvidence(index));
+    thumbnails.append(button);
+  });
+  showSuspiciousEvidence(0);
+}
+
 async function openSuspiciousDetail(id) {
+  clearSuspiciousEvidence();
   $("#suspiciousDetailContent").innerHTML = '<div class="inline-state">Cargando ficha completa…</div>';
   $("#suspiciousDetailDialog").showModal();
   try {
@@ -3153,11 +3221,13 @@ async function openSuspiciousDetail(id) {
     $("#suspiciousDetailContent").innerHTML = Object.entries(detailFields).map(([title, fields]) =>
       `<section><h3>${escapeHtml(title)}</h3><dl>${fields.map(([label, key]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(detailValue(item, key))}</dd></div>`).join("")}</dl></section>`
     ).join("");
+    await renderSuspiciousEvidence(item);
     $("#approveSuspicious").hidden = item.status !== "pending_review" || !permission("suspicious_vehicles_review");
     $("#rejectSuspicious").hidden = item.status !== "pending_review" || !permission("suspicious_vehicles_review");
     $("#closeSuspicious").hidden = item.status !== "approved" || !permission("suspicious_vehicles_deactivate");
   } catch (error) {
     $("#suspiciousDetailContent").textContent = cleanError(error, "No fue posible abrir la ficha.");
+    clearSuspiciousEvidence();
   }
 }
 
@@ -3188,6 +3258,11 @@ $("#suspiciousPlate")?.addEventListener("keydown", event => { if (event.key === 
 $("#openSuspiciousCreate")?.addEventListener("click", () => $("#suspiciousCreateDialog").showModal());
 $("[data-close-suspicious-create]")?.addEventListener("click", () => $("#suspiciousCreateDialog").close());
 $("[data-close-suspicious-detail]")?.addEventListener("click", () => $("#suspiciousDetailDialog").close());
+$("[data-close-suspicious-detail]")?.addEventListener("click", clearSuspiciousEvidence);
+$("#previousEvidence")?.addEventListener("click", () => showSuspiciousEvidence(state.suspiciousEvidenceIndex - 1));
+$("#nextEvidence")?.addEventListener("click", () => showSuspiciousEvidence(state.suspiciousEvidenceIndex + 1));
+$("#openEvidenceLightbox")?.addEventListener("click", () => $("#suspiciousEvidenceLightbox").showModal());
+$("[data-close-evidence-lightbox]")?.addEventListener("click", () => $("#suspiciousEvidenceLightbox").close());
 $("#approveSuspicious")?.addEventListener("click", () => performSuspiciousAction("approve"));
 $("#rejectSuspicious")?.addEventListener("click", () => performSuspiciousAction("reject"));
 $("#closeSuspicious")?.addEventListener("click", () => performSuspiciousAction("close"));

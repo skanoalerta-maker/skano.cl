@@ -1050,7 +1050,18 @@
       <p class="eyebrow">VEHÍCULO DE INTERÉS INSTITUCIONAL</p>
       <h2 id="suspiciousDetailTitle">Detalle</h2>
       <div id="suspiciousDetailContent" class="detail-sections"></div>
-      <section id="futureEvidence" class="future-evidence" hidden><h3>Evidencia fotográfica</h3></section>
+      <section id="suspiciousEvidence" class="suspicious-evidence" hidden>
+        <h3>Evidencia fotográfica</h3>
+        <p id="suspiciousEvidenceEmpty" class="inline-state">Sin evidencia fotográfica registrada</p>
+        <div id="suspiciousEvidenceGallery" class="evidence-gallery" hidden>
+          <button id="previousEvidence" class="evidence-nav" type="button" aria-label="Fotografía anterior">‹</button>
+          <button id="openEvidenceLightbox" class="evidence-main" type="button" aria-label="Ampliar fotografía principal">
+            <img id="suspiciousEvidenceMain" alt="Evidencia principal del vehículo sospechoso">
+          </button>
+          <button id="nextEvidence" class="evidence-nav" type="button" aria-label="Fotografía siguiente">›</button>
+          <div id="suspiciousEvidenceThumbnails" class="evidence-thumbnails" aria-label="Fotografías adjuntas"></div>
+        </div>
+      </section>
       <div class="decision-actions suspicious-actions">
         <button id="approveSuspicious" class="primary" type="button" data-permission="suspicious_vehicles_review">APROBAR</button>
         <button id="rejectSuspicious" class="danger" type="button" data-permission="suspicious_vehicles_review">RECHAZAR</button>
@@ -1058,6 +1069,11 @@
       </div>
       <p id="suspiciousActionMessage" class="message" role="alert"></p>
     </div>
+  </dialog>
+
+  <dialog id="suspiciousEvidenceLightbox" class="evidence-lightbox">
+    <button type="button" class="modal-close" data-close-evidence-lightbox>×</button>
+    <img id="suspiciousEvidenceExpanded" alt="Evidencia fotográfica ampliada">
   </dialog>
 
 

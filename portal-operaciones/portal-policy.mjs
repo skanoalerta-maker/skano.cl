@@ -46,3 +46,16 @@ export function visibleSections(profile) {
     deactivateSuspicious: hasPermission(profile, "suspicious_vehicles_deactivate"),
   };
 }
+
+export function validatedEvidencePaths(item = {}) {
+  const paths = Array.isArray(item.evidence_storage_paths)
+    ? item.evidence_storage_paths.filter(path => typeof path === "string")
+    : [];
+  const prefix = `institutional_vehicle_submissions/${item.submitted_by_uid}/${item.id}/evidence/`;
+  const allowed = new Set([1, 2, 3].map(number => `${prefix}photo_${number}.jpg`));
+  if (!paths.length || paths.length > 3 || new Set(paths).size !== paths.length) return [];
+  if (paths.some(path => !allowed.has(path))) return [];
+  if (item.evidence_count !== paths.length) return [];
+  if (item.primary_evidence_storage_path !== paths[0]) return [];
+  return paths;
+}
