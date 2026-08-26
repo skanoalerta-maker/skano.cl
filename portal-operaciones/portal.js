@@ -28,7 +28,8 @@ import {
 import {
   getBlob,
   getStorage,
-  ref as storageRef
+  ref as storageRef,
+  uploadBytes
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-storage.js";
 
 import {
@@ -414,6 +415,17 @@ function enforcePermissions() {
 
     }
   );
+
+  $$(
+    "[data-operations-only]"
+  ).forEach(
+    node => {
+
+      node.hidden =
+        state.profile?.is_institutional === true;
+
+    }
+  );
 }
 
 
@@ -483,7 +495,9 @@ async function readAuthorizationProfiles(
 
   const [
     staffResult,
-    adminResult
+    adminResult,
+    userResult,
+    officerResult
   ] =
     await Promise.allSettled([
 
@@ -499,6 +513,22 @@ async function readAuthorizationProfiles(
         doc(
           db,
           "admins",
+          user.uid
+        )
+      ),
+
+      getDoc(
+        doc(
+          db,
+          "users",
+          user.uid
+        )
+      ),
+
+      getDoc(
+        doc(
+          db,
+          "police_officers",
           user.uid
         )
       )
@@ -520,23 +550,41 @@ async function readAuthorizationProfiles(
       : null;
 
 
-  const staffProfile =
-    staffSnap?.exists()
-      ? staffSnap.data()
+  const userSnap =
+    userResult.status ===
+    "fulfilled"
+      ? userResult.value
       : null;
 
 
-  const adminProfile =
-    adminSnap?.exists()
-      ? adminSnap.data()
+  const officerSnap =
+    officerResult.status ===
+    "fulfilled"
+      ? officerResult.value
       : null;
 
 
   return {
 
-    staffProfile,
+    staffProfile:
+      staffSnap?.exists()
+        ? staffSnap.data()
+        : null,
 
-    adminProfile
+    adminProfile:
+      adminSnap?.exists()
+        ? adminSnap.data()
+        : null,
+
+    userProfile:
+      userSnap?.exists()
+        ? userSnap.data()
+        : null,
+
+    officerProfile:
+      officerSnap?.exists()
+        ? officerSnap.data()
+        : null
 
   };
 }
@@ -548,7 +596,9 @@ async function readAuthorizationProfiles(
 
 function buildSessionProfile(
   staffProfile,
-  adminProfile
+  adminProfile,
+  userProfile,
+  officerProfile
 ) {
 
   const isAdmin =
@@ -573,6 +623,9 @@ function buildSessionProfile(
       is_admin:
         true,
 
+      is_institutional:
+        false,
+
       status:
         "active"
 
@@ -581,7 +634,108 @@ function buildSessionProfile(
   }
 
 
-  return staffProfile;
+  const isStaff =
+    staffProfile?.role === "operations_staff" &&
+    staffProfile?.status === "active";
+
+
+  if (isStaff) {
+
+    return {
+
+      ...staffProfile,
+
+      is_admin:
+        false,
+
+      is_institutional:
+        false
+
+    };
+
+  }
+
+
+  const isInstitutional =
+    userProfile?.role === "police" &&
+    userProfile?.police_verified === true &&
+    userProfile?.institutional_status === "approved" &&
+    officerProfile?.status === "active" &&
+    officerProfile?.verified === true &&
+    officerProfile?.can_manage_vehicles === true &&
+    officerProfile?.vehicle_manager_status === "active";
+
+
+  if (isInstitutional) {
+
+    return {
+
+      ...userProfile,
+      ...officerProfile,
+
+      role:
+        "institutional_vehicle_manager",
+
+      status:
+        "active",
+
+      is_admin:
+        false,
+
+      is_institutional:
+        true,
+
+      full_name:
+        officerProfile?.full_name ||
+        userProfile?.full_name ||
+        userProfile?.name ||
+        null,
+
+      institution:
+        officerProfile?.institution ||
+        userProfile?.institution ||
+        "Institución acreditada",
+
+      permissions: {
+
+        suspicious_vehicles_read:
+          true,
+
+        suspicious_vehicles_create:
+          true,
+
+        suspicious_vehicles_review:
+          false,
+
+        suspicious_vehicles_deactivate:
+          false,
+
+        vehicles_read:
+          false,
+
+        vehicles_create:
+          false,
+
+        vehicles_deactivate:
+          false,
+
+        vehicles_export:
+          false,
+
+        institutional_requests_read:
+          false,
+
+        institutional_requests_review:
+          false
+
+      }
+
+    };
+
+  }
+
+
+  return null;
 }
 
 
@@ -636,7 +790,9 @@ async function validateSession(
 
     const {
       staffProfile,
-      adminProfile
+      adminProfile,
+      userProfile,
+      officerProfile
     } =
       await readAuthorizationProfiles(
         user
@@ -651,7 +807,9 @@ async function validateSession(
       authorizeOperationsSession(
         token.claims,
         staffProfile,
-        adminProfile
+        adminProfile,
+        userProfile,
+        officerProfile
       );
 
 
@@ -667,7 +825,9 @@ async function validateSession(
     const profile =
       buildSessionProfile(
         staffProfile,
-        adminProfile
+        adminProfile,
+        userProfile,
+        officerProfile
       );
 
 
@@ -718,7 +878,9 @@ async function validateSession(
 
     const displayRole = profile?.is_admin === true
       ? (profile?.role === "superadmin" ? "SUPERADMIN" : "ADMINISTRADOR")
-      : "OPERADOR DE CONTROL";
+      : profile?.is_institutional === true
+        ? "ACCESO INSTITUCIONAL"
+        : "OPERADOR DE CONTROL";
 
     $("#sidebarRole").textContent = displayRole;
     $("#topbarOperator").textContent = displayName;
@@ -1088,6 +1250,32 @@ function showView(
 ) {
 
   if (
+    name === "vehicles" &&
+    !permission("vehicles_read")
+  ) {
+
+    return notice(
+      "Tu sesión no tiene acceso a vehículos con encargo.",
+      "error"
+    );
+
+  }
+
+
+  if (
+    name === "administration" &&
+    state.profile?.is_institutional === true
+  ) {
+
+    return notice(
+      "Esta sección está reservada para Operaciones SKANO.",
+      "error"
+    );
+
+  }
+
+
+  if (
     name ===
       "requests" &&
 
@@ -1325,6 +1513,13 @@ async function loadDashboardAggregates() {
 
     statuses.forEach((status, index) => {
       const fallback = state.suspicious.filter(item => item.status === status).length;
+
+      if (state.profile?.is_institutional === true) {
+        const node = $(ids[index]);
+        if (node) node.textContent = String(fallback);
+        return;
+      }
+
       const countQuery = query(
         collection(db, "institutional_vehicle_submissions"),
         where("report_type", "==", "suspicious_vehicle"),
@@ -2961,7 +3156,9 @@ document.addEventListener(
 
       const {
         staffProfile,
-        adminProfile
+        adminProfile,
+        userProfile,
+        officerProfile
       } =
         await readAuthorizationProfiles(
           user
@@ -2972,7 +3169,9 @@ document.addEventListener(
         authorizeOperationsSession(
           token.claims,
           staffProfile,
-          adminProfile
+          adminProfile,
+          userProfile,
+          officerProfile
         );
 
 
@@ -2990,7 +3189,9 @@ document.addEventListener(
       const profile =
         buildSessionProfile(
           staffProfile,
-          adminProfile
+          adminProfile,
+          userProfile,
+          officerProfile
         );
 
 
@@ -3246,7 +3447,19 @@ function closeSuspiciousReason() {
 $("#refreshSuspicious")?.addEventListener("click", () => loadSuspiciousVehicles({ reset: true }));
 $("#loadMoreSuspicious")?.addEventListener("click", () => loadSuspiciousVehicles());
 $("#suspiciousPlate")?.addEventListener("keydown", event => { if (event.key === "Enter") loadSuspiciousVehicles({ reset: true }); });
-$("#openSuspiciousCreate")?.addEventListener("click", () => $("#suspiciousCreateDialog").showModal());
+$("#openSuspiciousCreate")?.addEventListener("click", () => {
+  if (!permission("suspicious_vehicles_create")) {
+    notice("No tienes permiso para crear vehículos sospechosos.", "error");
+    return;
+  }
+
+  $("#suspiciousCreateForm")?.reset();
+  $("#suspiciousCreateMessage").textContent = "";
+  if ($("#suspiciousEvidenceSelection")) {
+    $("#suspiciousEvidenceSelection").textContent = "Selecciona entre 1 y 3 fotografías.";
+  }
+  $("#suspiciousCreateDialog").showModal();
+});
 $("[data-close-suspicious-create]")?.addEventListener("click", () => $("#suspiciousCreateDialog").close());
 $("[data-close-suspicious-detail]")?.addEventListener("click", () => $("#suspiciousDetailDialog").close());
 $("#suspiciousDetailDialog")?.addEventListener("close", clearSuspiciousEvidence);
@@ -3266,23 +3479,171 @@ $("#suspiciousReasonForm")?.addEventListener("submit", async event => {
   await performSuspiciousAction(action, reason);
 });
 
+function selectedEvidenceFiles() {
+  const input = $("#suspiciousEvidenceFiles");
+  return input?.files ? [...input.files] : [];
+}
+
+async function compressEvidenceToJpeg(file) {
+  if (!file?.type?.startsWith("image/")) {
+    throw new Error("invalid-image");
+  }
+
+  const bitmap = await createImageBitmap(file);
+  const maxSide = 1280;
+  const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
+  const width = Math.max(1, Math.round(bitmap.width * scale));
+  const height = Math.max(1, Math.round(bitmap.height * scale));
+
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+
+  const context = canvas.getContext("2d", { alpha: false });
+  context.drawImage(bitmap, 0, 0, width, height);
+  bitmap.close?.();
+
+  const blob = await new Promise(resolve => {
+    canvas.toBlob(resolve, "image/jpeg", 0.72);
+  });
+
+  if (!blob || blob.size <= 0 || blob.size > 8 * 1024 * 1024) {
+    throw new Error("invalid-image-size");
+  }
+
+  return blob;
+}
+
+async function uploadSuspiciousEvidence(submissionId, files) {
+  const blobs = await Promise.all(
+    files.map(file => compressEvidenceToJpeg(file))
+  );
+  const paths = [];
+
+  for (let index = 0; index < blobs.length; index += 1) {
+    const path = `institutional_vehicle_submissions/${state.user.uid}/${submissionId}/evidence/photo_${index + 1}.jpg`;
+
+    await uploadBytes(
+      storageRef(storage, path),
+      blobs[index],
+      {
+        contentType: "image/jpeg",
+        customMetadata: {
+          uploader_uid: state.user.uid,
+          submission_id: submissionId,
+          report_type: "suspicious_vehicle"
+        }
+      }
+    );
+
+    paths.push(path);
+  }
+
+  return {
+    paths,
+    primaryPath: paths[0],
+    count: paths.length
+  };
+}
+
+$("#suspiciousEvidenceFiles")?.addEventListener("change", event => {
+  const files = [...(event.currentTarget.files || [])];
+  const message = $("#suspiciousEvidenceSelection");
+
+  if (!message) return;
+
+  if (!files.length) {
+    message.textContent = "Selecciona entre 1 y 3 fotografías.";
+    return;
+  }
+
+  if (files.length > 3) {
+    message.textContent = "Máximo 3 fotografías.";
+    event.currentTarget.value = "";
+    return;
+  }
+
+  message.textContent = `${files.length} fotografía${files.length === 1 ? "" : "s"} seleccionada${files.length === 1 ? "" : "s"}.`;
+});
+
 $("#suspiciousCreateForm")?.addEventListener("submit", async event => {
   event.preventDefault();
+
+  if (!permission("suspicious_vehicles_create")) {
+    notice("No tienes permiso para crear vehículos sospechosos.", "error");
+    return;
+  }
+
   const form = event.currentTarget;
   const submitButton = form.querySelector('button[type="submit"]');
-  const data = Object.fromEntries(new FormData(form).entries());
+  const files = selectedEvidenceFiles();
+
+  if (files.length < 1 || files.length > 3) {
+    $("#suspiciousCreateMessage").textContent = "Debes adjuntar entre 1 y 3 fotografías.";
+    return;
+  }
+
+  if (files.some(file => !file?.type?.startsWith("image/"))) {
+    $("#suspiciousCreateMessage").textContent = "Solo puedes adjuntar archivos de imagen.";
+    return;
+  }
+
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
+  delete data.evidence_files;
   data.year = data.year ? Number(data.year) : null;
+
+  const normalizedPlate = normalizePlate(data.plate || "");
+  if (normalizedPlate.length < 5 || normalizedPlate.length > 8) {
+    $("#suspiciousCreateMessage").textContent = "Ingresa una patente válida.";
+    return;
+  }
+  data.plate = normalizedPlate;
+
+  const submissionId = doc(
+    collection(db, "institutional_vehicle_submissions")
+  ).id;
+
   $("#suspiciousCreateMessage").textContent = "";
-  setBusy(submitButton, true, "GUARDANDO…");
+  setBusy(submitButton, true, "SUBIENDO EVIDENCIA…");
+
   try {
-    await callables.createSuspicious({ vehicle: data });
+    const evidence = await uploadSuspiciousEvidence(submissionId, files);
+
+    submitButton.textContent = "GUARDANDO…";
+
+    const response = await callables.createSuspicious({
+      submissionId,
+      vehicle: data,
+      evidence
+    });
+
+    if (!response.data?.ok) {
+      throw new Error("Respuesta inesperada");
+    }
+
     form.reset();
+    if ($("#suspiciousEvidenceSelection")) {
+      $("#suspiciousEvidenceSelection").textContent = "Selecciona entre 1 y 3 fotografías.";
+    }
+
     $("#suspiciousCreateDialog").close();
     await loadSuspiciousVehicles({ reset: true });
-    notice("Vehículo de interés institucional guardado como pendiente de revisión.");
+
+    notice(
+      state.profile?.is_institutional === true
+        ? "Antecedente enviado a Operaciones SKANO para revisión."
+        : "Vehículo de interés institucional guardado como pendiente de revisión."
+    );
   } catch (error) {
     technicalError("suspicious-create", error);
-    $("#suspiciousCreateMessage").textContent = cleanError(error, "No fue posible guardar el antecedente.");
+
+    $("#suspiciousCreateMessage").textContent =
+      error?.message === "invalid-image"
+        ? "Solo puedes adjuntar archivos de imagen."
+        : error?.message === "invalid-image-size"
+          ? "Una de las fotografías no pudo procesarse correctamente."
+          : cleanError(error, "No fue posible guardar el antecedente.");
   } finally {
     setBusy(submitButton, false);
   }
