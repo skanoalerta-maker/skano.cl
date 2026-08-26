@@ -19,7 +19,7 @@
 
   <link
     rel="stylesheet"
-    href="/portal-operaciones/portal.css?v=20260826-2"
+    href="/portal-operaciones/portal.css?v=20260826-3"
   >
 
   <link
@@ -211,6 +211,7 @@
         <button
           class="nav-item"
           data-view="vehicles"
+          data-permission="vehicles_read"
         >
           <span aria-hidden="true">◆</span>
           Vehículos con encargo
@@ -236,7 +237,7 @@
         </button>
 
 
-        <button class="nav-item" data-view="administration">
+        <button class="nav-item" data-view="administration" data-operations-only>
           <span aria-hidden="true">•••</span>
           Más / Administración
         </button>
@@ -376,6 +377,7 @@
       <section
         class="view"
         data-panel="vehicles"
+        data-permission="vehicles_read"
       >
 
 
@@ -647,7 +649,7 @@
       <!-- =================================================
            MÁS / ADMINISTRACIÓN
            ================================================= -->
-      <section class="view" data-panel="administration">
+      <section class="view" data-panel="administration" data-operations-only>
         <div class="section-heading">
           <div><p class="eyebrow">HERRAMIENTAS AUTORIZADAS</p><h1>Más / Administración</h1><p>Accesos adicionales disponibles según los permisos de tu sesión.</p></div>
         </div>
@@ -939,7 +941,7 @@
 
     <div class="suspicious-create-header">
       <div>
-        <p class="eyebrow">OPERACIONES SKANO</p>
+        <p class="eyebrow">INGRESO INSTITUCIONAL SKANO</p>
         <h2>Agregar vehículo sospechoso</h2>
         <p class="form-note">
           Se guardará como vehículo de interés institucional en estado pendiente de revisión.
@@ -1031,6 +1033,21 @@
       <label class="span-2">
         Observaciones
         <textarea name="observations" maxlength="5000"></textarea>
+      </label>
+
+      <label class="span-2">
+        Evidencia fotográfica
+        <input
+          id="suspiciousEvidenceFiles"
+          name="evidence_files"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          multiple
+          required
+        >
+        <small id="suspiciousEvidenceSelection" class="form-note">
+          Selecciona entre 1 y 3 fotografías. Se procesarán como JPEG privado.
+        </small>
       </label>
 
     </div>
@@ -1310,11 +1327,11 @@
        JAVASCRIPT
        ===================================================== -->
 
-  <link rel="stylesheet" href="/portal-operaciones/suspicious-vehicles.css?v=20260826-2">
+  <link rel="stylesheet" href="/portal-operaciones/suspicious-vehicles.css?v=20260826-3">
 
   <script
     type="module"
-    src="/portal-operaciones/portal.js?v=20260826-2"
+    src="/portal-operaciones/portal.js?v=20260826-3"
   ></script>
 
 
