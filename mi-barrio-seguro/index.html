@@ -81,6 +81,239 @@
     src="./barrio.js"
     defer
   ></script>
+
+  <!-- ================================================= -->
+  <!-- BANNER MÓVIL / CARRUSEL MI BARRIO SEGURO -->
+  <!-- ================================================= -->
+  <style>
+    .mb-hero-carousel {
+      position: relative;
+      width: 100%;
+      min-height: 520px;
+      overflow: hidden;
+      border: 1px solid rgba(45, 196, 255, .28);
+      border-radius: 28px;
+      background: #020b15;
+      box-shadow:
+        0 28px 75px rgba(0, 0, 0, .42),
+        0 0 60px rgba(0, 150, 255, .08);
+      isolation: isolate;
+    }
+
+    .mb-hero-carousel-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(1.035);
+      transition:
+        opacity .85s ease,
+        visibility .85s ease,
+        transform 5s ease;
+    }
+
+    .mb-hero-carousel-slide.active {
+      z-index: 2;
+      opacity: 1;
+      visibility: visible;
+      transform: scale(1);
+    }
+
+    .mb-hero-carousel-slide img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 520px;
+      object-fit: cover;
+      object-position: center;
+      background: #04101d;
+    }
+
+    .mb-hero-carousel-slide.is-contain img {
+      object-fit: contain;
+      padding: 22px;
+      background:
+        radial-gradient(circle at 50% 45%, rgba(21, 91, 144, .25), transparent 48%),
+        linear-gradient(145deg, #04101d, #020812);
+    }
+
+    .mb-hero-carousel-slide::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(
+          to top,
+          rgba(1, 7, 16, .96) 0%,
+          rgba(1, 7, 16, .62) 28%,
+          rgba(1, 7, 16, .10) 60%,
+          transparent 78%
+        );
+    }
+
+    .mb-hero-carousel-copy {
+      position: absolute;
+      z-index: 4;
+      left: 34px;
+      right: 34px;
+      bottom: 38px;
+      max-width: 650px;
+      text-align: left;
+    }
+
+    .mb-hero-carousel-copy > span {
+      display: inline-block;
+      margin-bottom: 8px;
+      color: #42d3ff;
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .15em;
+    }
+
+    .mb-hero-carousel-copy strong {
+      display: block;
+      color: #fff;
+      font-size: clamp(1.35rem, 2.6vw, 2.2rem);
+      line-height: 1.06;
+    }
+
+    .mb-hero-carousel-copy p {
+      margin: 9px 0 0;
+      max-width: 580px;
+      color: #d3dfeb;
+      font-size: .96rem;
+      line-height: 1.5;
+    }
+
+    .mb-hero-carousel-arrow {
+      position: absolute;
+      z-index: 10;
+      top: 50%;
+      width: 48px;
+      height: 48px;
+      padding: 0;
+      transform: translateY(-50%);
+      border: 1px solid rgba(255, 255, 255, .25);
+      border-radius: 50%;
+      background: rgba(0, 10, 25, .72);
+      color: #fff;
+      font: inherit;
+      font-size: 2rem;
+      line-height: 1;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition:
+        background .2s ease,
+        border-color .2s ease,
+        transform .2s ease;
+    }
+
+    .mb-hero-carousel-arrow:hover,
+    .mb-hero-carousel-arrow:focus-visible {
+      background: rgba(0, 139, 245, .94);
+      border-color: rgba(67, 211, 255, .9);
+      outline: none;
+    }
+
+    .mb-hero-carousel-prev {
+      left: 16px;
+    }
+
+    .mb-hero-carousel-next {
+      right: 16px;
+    }
+
+    .mb-hero-carousel-dots {
+      position: absolute;
+      z-index: 11;
+      left: 50%;
+      bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transform: translateX(-50%);
+    }
+
+    .mb-hero-carousel-dot {
+      width: 8px;
+      height: 8px;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .42);
+      cursor: pointer;
+      transition:
+        width .25s ease,
+        background .25s ease;
+    }
+
+    .mb-hero-carousel-dot.active {
+      width: 28px;
+      background: #2dcdff;
+    }
+
+    @media (max-width: 900px) {
+      .mb-hero-carousel {
+        min-height: 500px;
+      }
+
+      .mb-hero-carousel-slide img {
+        min-height: 500px;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .mb-hero-carousel {
+        min-height: 470px;
+        border-radius: 20px;
+      }
+
+      .mb-hero-carousel-slide img {
+        min-height: 470px;
+      }
+
+      .mb-hero-carousel-slide.is-contain img {
+        padding: 12px;
+      }
+
+      .mb-hero-carousel-copy {
+        left: 20px;
+        right: 20px;
+        bottom: 38px;
+      }
+
+      .mb-hero-carousel-copy strong {
+        font-size: 1.28rem;
+      }
+
+      .mb-hero-carousel-copy p {
+        font-size: .88rem;
+      }
+
+      .mb-hero-carousel-arrow {
+        width: 40px;
+        height: 40px;
+        font-size: 1.6rem;
+      }
+
+      .mb-hero-carousel-prev {
+        left: 9px;
+      }
+
+      .mb-hero-carousel-next {
+        right: 9px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .mb-hero-carousel-slide {
+        transform: none;
+        transition: opacity .2s ease, visibility .2s ease;
+      }
+    }
+  </style>
+
 </head>
 
 
@@ -238,38 +471,107 @@
       </div>
 
 
-      <div class="mb-scene-wrap">
+      <div
+        class="mb-hero-carousel"
+        id="mbHeroCarousel"
+        aria-label="Galería Mi Barrio Seguro"
+      >
 
-        <span class="mb-demo">
-          TECNOLOGÍA INTEGRADA POR SKANO
-        </span>
-
-        <img
-          class="mb-scene"
-          src="/assets/mi-barrio-seguro/camara-skano.png"
-          width="720"
-          height="500"
-          alt="Cámara vehicular integrada por SKANO"
-        >
-
-        <div class="mb-mini-event">
-
-          <div>
-            <small>SKANO / MONITOREO VEHICULAR</small>
-            <br>
-            <b>MI BARRIO SEGURO</b>
+        <article class="mb-hero-carousel-slide active is-contain">
+          <img
+            src="/assets/mi-barrio-seguro/banner-mi-barrio-seguro.png"
+            alt="Presentación general del servicio Mi Barrio Seguro de SKANO"
+            loading="eager"
+          >
+          <div class="mb-hero-carousel-copy">
+            <span>MI BARRIO SEGURO</span>
+            <strong>SEGURIDAD CONECTADA A TU COMUNIDAD</strong>
+            <p>Lectura de patentes, monitoreo vehicular, alertas y coordinación comunitaria.</p>
           </div>
+        </article>
 
-          <span>
-            ● SISTEMA CONECTADO
-          </span>
+        <article class="mb-hero-carousel-slide is-contain">
+          <img
+            src="/assets/mi-barrio-seguro/camara-skano.png"
+            alt="Cámara vehicular integrada por SKANO"
+            loading="lazy"
+          >
+          <div class="mb-hero-carousel-copy">
+            <span>TECNOLOGÍA SKANO</span>
+            <strong>CÁMARAS INTEGRADAS</strong>
+            <p>Equipamiento evaluado según las condiciones reales de cada acceso vehicular.</p>
+          </div>
+        </article>
 
-        </div>
+        <article class="mb-hero-carousel-slide">
+          <img
+            src="/assets/mi-barrio-seguro/lectura-vehicular-01.png"
+            alt="Prueba real de lectura vehicular SKANO con patentes protegidas"
+            loading="lazy"
+          >
+          <div class="mb-hero-carousel-copy">
+            <span>PRUEBAS EN TERRENO</span>
+            <strong>LECTURA VEHICULAR REAL</strong>
+            <p>Pruebas en condiciones reales de circulación. Las patentes originales fueron ocultadas.</p>
+          </div>
+        </article>
 
-        <p>
-          Cámaras compatibles + inteligencia SKANO +
-          coordinación comunitaria.
-        </p>
+        <article class="mb-hero-carousel-slide">
+          <img
+            src="/assets/mi-barrio-seguro/lectura-vehicular-02.png"
+            alt="Prueba de lectura vehicular SKANO desde otro ángulo"
+            loading="lazy"
+          >
+          <div class="mb-hero-carousel-copy">
+            <span>DETECCIÓN VEHICULAR</span>
+            <strong>DISTINTOS ÁNGULOS Y DISTANCIAS</strong>
+            <p>La implementación se ajusta a ubicación, iluminación, distancia y circulación.</p>
+          </div>
+        </article>
+
+        <article class="mb-hero-carousel-slide">
+          <img
+            src="/assets/mi-barrio-seguro/lectura-vehicular-03.png"
+            alt="Prueba frontal de lectura vehicular SKANO"
+            loading="lazy"
+          >
+          <div class="mb-hero-carousel-copy">
+            <span>PROCESAMIENTO SKANO</span>
+            <strong>DETECCIÓN Y REGISTRO DEL EVENTO</strong>
+            <p>Las lecturas pueden asociarse a cámara, ubicación, fecha y hora.</p>
+          </div>
+        </article>
+
+        <article class="mb-hero-carousel-slide is-contain">
+          <img
+            src="/assets/mi-barrio-seguro/protegido-por-skano.png"
+            alt="Distintivo Protegido por SKANO"
+            loading="lazy"
+          >
+          <div class="mb-hero-carousel-copy">
+            <span>COMUNIDAD CONECTADA</span>
+            <strong>PROTEGIDO POR SKANO</strong>
+            <p>Distintivo para comunidades que implementen el servicio Mi Barrio Seguro.</p>
+          </div>
+        </article>
+
+        <button
+          class="mb-hero-carousel-arrow mb-hero-carousel-prev"
+          type="button"
+          aria-label="Imagen anterior"
+        >‹</button>
+
+        <button
+          class="mb-hero-carousel-arrow mb-hero-carousel-next"
+          type="button"
+          aria-label="Imagen siguiente"
+        >›</button>
+
+        <div
+          class="mb-hero-carousel-dots"
+          id="mbHeroCarouselDots"
+          aria-label="Seleccionar imagen"
+        ></div>
 
       </div>
 
@@ -289,222 +591,6 @@
       <span>
         Protocolos seguros
       </span>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-
-<!-- ===================================================== -->
-<!-- CARRUSEL DE IMÁGENES -->
-<!-- ===================================================== -->
-
-<section class="mb-section mb-gallery-section">
-
-  <div class="shell">
-
-    <div class="mb-intro">
-
-      <span class="eyebrow">
-        SKANO EN TERRENO
-      </span>
-
-      <h2>
-        Tecnología que trabaja<br>
-        en tu comunidad
-      </h2>
-
-      <p>
-        Cámaras integradas por SKANO, lectura vehicular en
-        condiciones reales y herramientas diseñadas para
-        apoyar la seguridad del sector.
-      </p>
-
-    </div>
-
-
-    <div
-      class="mb-slider"
-      id="barrioSlider"
-    >
-
-
-      <!-- SLIDE 1 -->
-
-      <article class="mb-slide active">
-
-        <img
-          src="/assets/mi-barrio-seguro/banner-mi-barrio-seguro.png"
-          alt="Servicio Mi Barrio Seguro de SKANO"
-        >
-
-        <div class="mb-slide-copy">
-
-          <strong>
-            MI BARRIO SEGURO
-          </strong>
-
-          <span>
-            Lectura de patentes, monitoreo vehicular,
-            alertas y coordinación comunitaria.
-          </span>
-
-        </div>
-
-      </article>
-
-
-      <!-- SLIDE 2 -->
-
-      <article class="mb-slide">
-
-        <img
-          src="/assets/mi-barrio-seguro/camara-skano.png"
-          alt="Cámara de seguridad integrada por SKANO"
-        >
-
-        <div class="mb-slide-copy">
-
-          <strong>
-            TECNOLOGÍA INTEGRADA POR SKANO
-          </strong>
-
-          <span>
-            Cámaras compatibles seleccionadas según
-            las condiciones de cada acceso.
-          </span>
-
-        </div>
-
-      </article>
-
-
-      <!-- SLIDE 3 -->
-
-      <article class="mb-slide">
-
-        <img
-          src="/assets/mi-barrio-seguro/lectura-vehicular-01.png"
-          alt="Prueba real de lectura vehicular SKANO con patentes protegidas"
-        >
-
-        <div class="mb-slide-copy">
-
-          <strong>
-            PRUEBAS REALES DE LECTURA
-          </strong>
-
-          <span>
-            Pruebas de procesamiento vehicular realizadas
-            en condiciones reales de circulación.
-            Las patentes originales han sido ocultadas.
-          </span>
-
-        </div>
-
-      </article>
-
-
-      <!-- SLIDE 4 -->
-
-      <article class="mb-slide">
-
-        <img
-          src="/assets/mi-barrio-seguro/lectura-vehicular-02.png"
-          alt="Vehículo procesado durante prueba del lector SKANO"
-        >
-
-        <div class="mb-slide-copy">
-
-          <strong>
-            LECTURA DESDE DISTINTOS ÁNGULOS
-          </strong>
-
-          <span>
-            Cada instalación se diseña considerando
-            distancia, ubicación, iluminación y circulación.
-          </span>
-
-        </div>
-
-      </article>
-
-
-      <!-- SLIDE 5 -->
-
-      <article class="mb-slide">
-
-        <img
-          src="/assets/mi-barrio-seguro/lectura-vehicular-03.png"
-          alt="Prueba frontal de lectura vehicular SKANO"
-        >
-
-        <div class="mb-slide-copy">
-
-          <strong>
-            DETECCIÓN VEHICULAR
-          </strong>
-
-          <span>
-            Cada evento puede asociarse al punto de detección,
-            cámara, fecha y hora.
-          </span>
-
-        </div>
-
-      </article>
-
-
-      <!-- SLIDE 6 -->
-
-      <article class="mb-slide">
-
-        <img
-          src="/assets/mi-barrio-seguro/protegido-por-skano.png"
-          alt="Distintivo Protegido por SKANO"
-        >
-
-        <div class="mb-slide-copy">
-
-          <strong>
-            PROTEGIDO POR SKANO
-          </strong>
-
-          <span>
-            Distintivo para comunidades integradas
-            al servicio Mi Barrio Seguro.
-          </span>
-
-        </div>
-
-      </article>
-
-
-      <button
-        class="mb-slider-arrow mb-prev"
-        type="button"
-        aria-label="Imagen anterior"
-      >
-        ‹
-      </button>
-
-
-      <button
-        class="mb-slider-arrow mb-next"
-        type="button"
-        aria-label="Imagen siguiente"
-      >
-        ›
-      </button>
-
-
-      <div
-        class="mb-slider-dots"
-        id="barrioSliderDots"
-      ></div>
 
     </div>
 
@@ -2307,6 +2393,123 @@
 
 </footer>
 
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const carousel = document.getElementById("mbHeroCarousel");
+  if (!carousel) return;
+
+  const slides = Array.from(
+    carousel.querySelectorAll(".mb-hero-carousel-slide")
+  );
+  const prev = carousel.querySelector(".mb-hero-carousel-prev");
+  const next = carousel.querySelector(".mb-hero-carousel-next");
+  const dotsBox = document.getElementById("mbHeroCarouselDots");
+
+  if (!slides.length || !dotsBox) return;
+
+  let current = 0;
+  let timer = null;
+  let touchStartX = 0;
+
+  slides.forEach(function (_, index) {
+    const dot = document.createElement("button");
+    dot.type = "button";
+    dot.className = "mb-hero-carousel-dot";
+    dot.setAttribute("aria-label", "Mostrar imagen " + (index + 1));
+    dot.addEventListener("click", function () {
+      show(index);
+      restart();
+    });
+    dotsBox.appendChild(dot);
+  });
+
+  const dots = Array.from(
+    dotsBox.querySelectorAll(".mb-hero-carousel-dot")
+  );
+
+  function show(index) {
+    slides[current].classList.remove("active");
+    dots[current]?.classList.remove("active");
+
+    current = (index + slides.length) % slides.length;
+
+    slides[current].classList.add("active");
+    dots[current]?.classList.add("active");
+  }
+
+  function stop() {
+    if (timer !== null) {
+      window.clearInterval(timer);
+      timer = null;
+    }
+  }
+
+  function start() {
+    stop();
+    timer = window.setInterval(function () {
+      show(current + 1);
+    }, 4500);
+  }
+
+  function restart() {
+    stop();
+    start();
+  }
+
+  prev?.addEventListener("click", function () {
+    show(current - 1);
+    restart();
+  });
+
+  next?.addEventListener("click", function () {
+    show(current + 1);
+    restart();
+  });
+
+  carousel.addEventListener("mouseenter", stop);
+  carousel.addEventListener("mouseleave", start);
+
+  carousel.addEventListener(
+    "touchstart",
+    function (event) {
+      touchStartX = event.changedTouches[0].screenX;
+    },
+    { passive: true }
+  );
+
+  carousel.addEventListener(
+    "touchend",
+    function (event) {
+      const touchEndX = event.changedTouches[0].screenX;
+      const difference = touchStartX - touchEndX;
+
+      if (Math.abs(difference) < 45) return;
+
+      if (difference > 0) {
+        show(current + 1);
+      } else {
+        show(current - 1);
+      }
+
+      restart();
+    },
+    { passive: true }
+  );
+
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) {
+      stop();
+    } else {
+      start();
+    }
+  });
+
+  dots[0]?.classList.add("active");
+  start();
+});
+</script>
 
 </body>
 
