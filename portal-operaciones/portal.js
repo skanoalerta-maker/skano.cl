@@ -120,7 +120,14 @@ const callables =
     createSuspicious: httpsCallable(functions, "createInstitutionalSuspiciousVehicle"),
     approveSuspicious: httpsCallable(functions, "approveInstitutionalSuspiciousVehicle"),
     rejectSuspicious: httpsCallable(functions, "rejectInstitutionalSuspiciousVehicle"),
-    closeSuspicious: httpsCallable(functions, "closeInstitutionalSuspiciousVehicle")
+    closeSuspicious: httpsCallable(functions, "closeInstitutionalSuspiciousVehicle"),
+
+    listInstitutionalStolen: httpsCallable(functions, "listInstitutionalStolenVehicles"),
+    getInstitutionalStolen: httpsCallable(functions, "getInstitutionalStolenVehicle"),
+    createInstitutionalStolen: httpsCallable(functions, "createInstitutionalStolenVehicle"),
+    approveInstitutionalStolen: httpsCallable(functions, "approveInstitutionalStolenVehicle"),
+    rejectInstitutionalStolen: httpsCallable(functions, "rejectInstitutionalStolenVehicle"),
+    closeInstitutionalStolen: httpsCallable(functions, "closeInstitutionalStolenVehicle")
 
   });
 
@@ -136,6 +143,8 @@ const state = {
   user: null,
 
   vehicles: [],
+
+  institutionalStolen: [],
 
   requests: [],
 
@@ -661,9 +670,7 @@ function buildSessionProfile(
     userProfile?.police_verified === true &&
     userProfile?.institutional_status === "approved" &&
     officerProfile?.status === "active" &&
-    officerProfile?.verified === true &&
-    officerProfile?.can_manage_vehicles === true &&
-    officerProfile?.vehicle_manager_status === "active";
+    officerProfile?.verified === true;
 
 
   if (isInstitutional) {
@@ -711,10 +718,10 @@ function buildSessionProfile(
           false,
 
         vehicles_read:
-          false,
+          true,
 
         vehicles_create:
-          false,
+          true,
 
         vehicles_deactivate:
           false,
@@ -1469,6 +1476,10 @@ function toJsDate(value) {
 }
 
 function vehicleIsActive(vehicle) {
+  if (vehicle?._institutionalStolen === true) {
+    return vehicle?.status === "approved";
+  }
+
   return vehicle?.active !== false && vehicle?.status !== "inactive";
 }
 
@@ -1717,6 +1728,7 @@ async function loadVehicles() {
 
   if (!permission("vehicles_read")) {
     state.vehicles = [];
+    state.institutionalStolen = [];
     $("#vehiclesLoading").hidden = false;
     $("#vehiclesLoading").textContent = "No tienes permiso para consultar vehículos.";
     refreshVehicleMetrics();
@@ -1727,17 +1739,73 @@ async function loadVehicles() {
   $("#vehiclesLoading").textContent = "Cargando vehículos…";
 
   try {
-    const snap = await getDocs(
-      query(
-        collection(db, "stolen_vehicles"),
-        limit(250)
-      )
-    );
+    const [civilResult, institutionalResult] = await Promise.allSettled([
+      state.profile?.is_institutional === true
+        ? Promise.resolve(null)
+        : getDocs(
+            query(
+              collection(db, "stolen_vehicles"),
+              limit(250)
+            )
+          ),
+      callables.listInstitutionalStolen({
+        pageSize: 50,
+        status: "all"
+      })
+    ]);
 
-    state.vehicles = snap.docs.map(item => ({ id: item.id, ...item.data() }));
+    const civilVehicles =
+      civilResult.status === "fulfilled" && civilResult.value
+        ? civilResult.value.docs.map(item => ({
+            id: item.id,
+            ...item.data(),
+            _skanoVehicleSource: "stolen_vehicles"
+          }))
+        : [];
+
+    if (
+      civilResult.status === "rejected" &&
+      state.profile?.is_institutional !== true
+    ) {
+      technicalError("vehicles-civil-read", civilResult.reason);
+    }
+
+    const institutionalItems =
+      institutionalResult.status === "fulfilled" &&
+      Array.isArray(institutionalResult.value?.data?.items)
+        ? institutionalResult.value.data.items
+        : [];
+
+    if (institutionalResult.status === "rejected") {
+      technicalError(
+        "vehicles-institutional-read",
+        institutionalResult.reason
+      );
+    }
+
+    state.institutionalStolen = institutionalItems;
+
+    const institutionalVehicles = institutionalItems.map(item => ({
+      ...item,
+      _skanoVehicleSource: "institutional_vehicle_submissions",
+      _institutionalStolen: true
+    }));
+
+    state.vehicles = [
+      ...civilVehicles,
+      ...institutionalVehicles
+    ];
+
     refreshVehicleMetrics();
     renderVehicles();
     renderRecentMovements();
+
+    if (
+      civilResult.status === "rejected" &&
+      institutionalResult.status === "rejected"
+    ) {
+      throw new Error("No fue posible cargar ninguna fuente de vehículos.");
+    }
   } catch (error) {
     technicalError("vehicles-read", error);
     $("#vehiclesLoading").hidden = false;
@@ -1780,6 +1848,34 @@ const escapeHtml =
    RENDER VEHÍCULOS
    ========================================================= */
 
+const institutionalStolenStatusLabel = value => ({
+  pending_review: "PENDIENTE",
+  approved: "APROBADO",
+  rejected: "RECHAZADO",
+  closed: "CERRADO"
+})[value] || "NO INFORMADO";
+
+function vehicleStatusPresentation(vehicle) {
+  if (vehicle?._institutionalStolen === true) {
+    const status = vehicle.status || "";
+    return {
+      label: institutionalStolenStatusLabel(status),
+      className:
+        status === "approved"
+          ? "on"
+          : status === "pending_review"
+            ? "pending"
+            : "off"
+    };
+  }
+
+  const active = vehicleIsActive(vehicle);
+  return {
+    label: active ? "ACTIVO" : "INACTIVO",
+    className: active ? "on" : "off"
+  };
+}
+
 function renderVehicles() {
   const term = normalizePlate($("#vehicleSearch").value);
   const filter = $("#vehicleFilter").value;
@@ -1788,7 +1884,13 @@ function renderVehicles() {
     const plate = vehiclePlate(vehicle);
     const matchesTerm = !term || plate.includes(term);
     const isActive = vehicleIsActive(vehicle);
-    const matchesFilter = filter === "all" || (filter === "active" ? isActive : !isActive);
+
+    const matchesFilter =
+      filter === "all" ||
+      (filter === "active"
+        ? isActive
+        : !isActive);
+
     return matchesTerm && matchesFilter;
   });
 
@@ -1800,12 +1902,16 @@ function renderVehicles() {
     const tr = document.createElement("tr");
     const plate = vehiclePlate(vehicle);
     const active = vehicleIsActive(vehicle);
+    const statusView = vehicleStatusPresentation(vehicle);
     const brand = vehicle.brand || vehicle.marca || "No informado";
     const model = vehicle.model || vehicle.modelo || "No informado";
     const year = vehicle.year || vehicle.ano || "No informado";
     const color = vehicle.color || "No informado";
     const type = vehicle.type || vehicle.tipo || "No informado";
-    const source = vehicle.source || vehicle.origin || vehicle.fuente || "No informado";
+    const source =
+      vehicle._institutionalStolen === true
+        ? (vehicle.institution || vehicle.display_source || "INSTITUCIONAL")
+        : (vehicle.source || vehicle.origin || vehicle.fuente || "No informado");
 
     tr.innerHTML = `
       <td data-label="PPU"><b class="plate">${escapeHtml(plate || "No informado")}</b></td>
@@ -1813,9 +1919,9 @@ function renderVehicles() {
       <td data-label="Año">${escapeHtml(year)}</td>
       <td data-label="Color">${escapeHtml(color)}</td>
       <td data-label="Tipo">${escapeHtml(type)}</td>
-      <td data-label="Estado"><span class="pill ${active ? "on" : "off"}">${active ? "ACTIVO" : "INACTIVO"}</span></td>
-      <td data-label="Ingreso">${escapeHtml(safeDate(vehicle.created_at || vehicle.reported_at))}</td>
-      <td data-label="Actualización">${escapeHtml(safeDate(vehicle.updated_at || vehicle.recovered_at || vehicle.closed_at))}</td>
+      <td data-label="Estado"><span class="pill ${statusView.className}">${escapeHtml(statusView.label)}</span></td>
+      <td data-label="Ingreso">${escapeHtml(safeDate(vehicle.created_at || vehicle.reported_at || vehicle.submitted_at))}</td>
+      <td data-label="Actualización">${escapeHtml(safeDate(vehicle.updated_at || vehicle.reviewed_at || vehicle.recovered_at || vehicle.closed_at))}</td>
       <td data-label="Origen">${escapeHtml(source)}</td>
       <td data-label="Acción"><div class="action-stack"></div></td>
     `;
@@ -1826,10 +1932,19 @@ function renderVehicles() {
     detailButton.type = "button";
     detailButton.className = "text-button view-file";
     detailButton.textContent = "VER EXPEDIENTE";
-    detailButton.addEventListener("click", () => openVehicleDetail(vehicle));
+    detailButton.addEventListener(
+      "click",
+      () => vehicle._institutionalStolen === true
+        ? openInstitutionalStolenDetail(vehicle.id)
+        : openVehicleDetail(vehicle)
+    );
     actions.append(detailButton);
 
-    if (active && permission("vehicles_deactivate")) {
+    if (
+      vehicle._institutionalStolen !== true &&
+      active &&
+      permission("vehicles_deactivate")
+    ) {
       const deactivateButton = document.createElement("button");
       deactivateButton.type = "button";
       deactivateButton.className = "text-button danger-text";
@@ -1900,6 +2015,179 @@ function renderVehicleDetailSections(vehicle) {
       `).join("")}</dl>
     </section>
   `).join("");
+}
+
+function institutionalStolenDetailHtml(item) {
+  const sections = [
+    ["Identificación", [
+      ["PPU", vehiclePlate(item) || "No informado"],
+      ["Marca", vehicleDetailValue(item, ["brand", "marca"])],
+      ["Modelo", vehicleDetailValue(item, ["model", "modelo"])],
+      ["Año", vehicleDetailValue(item, ["year", "ano"])],
+      ["Color", vehicleDetailValue(item, ["color"])],
+      ["Tipo", vehicleDetailValue(item, ["type", "tipo"])]
+    ]],
+    ["Antecedente institucional", [
+      ["Estado", institutionalStolenStatusLabel(item.status)],
+      ["Institución", vehicleDetailValue(item, ["institution"])],
+      ["Funcionario", vehicleDetailValue(item, ["submitted_by_name"])],
+      ["Correo", vehicleDetailValue(item, ["submitted_by_email"])],
+      ["Referencia institucional", vehicleDetailValue(item, ["institutional_reference"])],
+      ["Observaciones", vehicleDetailValue(item, ["observations"])],
+      ["Fecha de ingreso", vehicleDetailValue(item, ["submitted_at"], { date: true })],
+      ["Fecha de revisión", vehicleDetailValue(item, ["reviewed_at"], { date: true })],
+      ["Motivo de rechazo", vehicleDetailValue(item, ["rejection_reason"])]
+    ]],
+    ["Identificadores", [
+      ["VIN", vehicleDetailValue(item, ["vin"])],
+      ["Número de chasis", vehicleDetailValue(item, ["chassis_number"])],
+      ["Número de motor", vehicleDetailValue(item, ["engine_number"])]
+    ]]
+  ];
+
+  return sections.map(([title, fields]) => `
+    <section>
+      <h3>${escapeHtml(title)}</h3>
+      <dl>${fields.map(([label, value]) => `
+        <div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>
+      `).join("")}</dl>
+    </section>
+  `).join("");
+}
+
+async function openInstitutionalStolenDetail(id) {
+  state.selectedVehicle = null;
+  $("#vehicleDetailTitle").textContent = "Cargando expediente…";
+  $("#vehicleDetailStatus").className = "pill pending";
+  $("#vehicleDetailStatus").textContent = "CARGANDO";
+  $("#vehicleDetailContent").innerHTML =
+    '<div class="inline-state">Cargando antecedente institucional…</div>';
+  $("#vehicleDetailDeactivate").hidden = true;
+  $("#vehicleDetailDialog").showModal();
+
+  try {
+    const response = await callables.getInstitutionalStolen({ id });
+    const item = response.data?.submission;
+
+    if (!item) {
+      throw new Error("Expediente institucional no disponible.");
+    }
+
+    item._skanoVehicleSource = "institutional_vehicle_submissions";
+    item._institutionalStolen = true;
+    state.selectedVehicle = item;
+
+    const statusView = vehicleStatusPresentation(item);
+    $("#vehicleDetailTitle").textContent =
+      vehiclePlate(item) || "Vehículo con encargo institucional";
+    $("#vehicleDetailStatus").className = `pill ${statusView.className}`;
+    $("#vehicleDetailStatus").textContent = statusView.label;
+    $("#vehicleDetailContent").innerHTML = institutionalStolenDetailHtml(item);
+
+    if (
+      item.status === "pending_review" &&
+      state.profile?.is_institutional !== true &&
+      permission("vehicles_create")
+    ) {
+      const actionSection = document.createElement("section");
+      actionSection.innerHTML = `
+        <h3>Revisión de Operaciones</h3>
+        <div class="action-stack">
+          <button type="button" class="primary" data-stolen-action="approve">APROBAR ENCARGO</button>
+          <button type="button" class="danger" data-stolen-action="reject">RECHAZAR</button>
+        </div>
+        <p class="form-message" data-stolen-message></p>
+      `;
+
+      $("#vehicleDetailContent").append(actionSection);
+
+      $("[data-stolen-action='approve']", actionSection)
+        ?.addEventListener("click", () => performInstitutionalStolenReview("approve", item));
+
+      $("[data-stolen-action='reject']", actionSection)
+        ?.addEventListener("click", () => performInstitutionalStolenReview("reject", item));
+    }
+  } catch (error) {
+    technicalError("institutional-stolen-detail", error);
+    $("#vehicleDetailContent").textContent =
+      cleanError(error, "No fue posible abrir el expediente institucional.");
+  }
+}
+
+async function performInstitutionalStolenReview(action, item) {
+  const message = $("[data-stolen-message]", $("#vehicleDetailContent"));
+  const approveButton =
+    $("[data-stolen-action='approve']", $("#vehicleDetailContent"));
+  const rejectButton =
+    $("[data-stolen-action='reject']", $("#vehicleDetailContent"));
+
+  let reason = null;
+
+  if (action === "reject") {
+    reason = window.prompt(
+      "Indica el motivo del rechazo del encargo institucional:"
+    );
+
+    if (reason == null) return;
+
+    reason = reason.trim();
+
+    if (!reason) {
+      if (message) message.textContent = "Debes indicar un motivo de rechazo.";
+      return;
+    }
+  }
+
+  setBusy(
+    action === "approve" ? approveButton : rejectButton,
+    true,
+    action === "approve" ? "APROBANDO…" : "RECHAZANDO…"
+  );
+
+  if (approveButton) approveButton.disabled = true;
+  if (rejectButton) rejectButton.disabled = true;
+  if (message) message.textContent = "";
+
+  try {
+    const callable =
+      action === "approve"
+        ? callables.approveInstitutionalStolen
+        : callables.rejectInstitutionalStolen;
+
+    const response = await callable({
+      id: item.id,
+      ...(reason ? { reason } : {})
+    });
+
+    if (!response.data?.ok) {
+      throw new Error("Respuesta inesperada");
+    }
+
+    $("#vehicleDetailDialog").close();
+    state.selectedVehicle = null;
+
+    notice(
+      action === "approve"
+        ? `Encargo ${vehiclePlate(item)} aprobado correctamente.`
+        : `Encargo ${vehiclePlate(item)} rechazado; se conserva su trazabilidad.`
+    );
+
+    await loadVehicles();
+  } catch (error) {
+    technicalError(`institutional-stolen-${action}`, error);
+    if (message) {
+      message.textContent = cleanError(
+        error,
+        action === "approve"
+          ? "No fue posible aprobar el encargo."
+          : "No fue posible rechazar el encargo."
+      );
+    }
+  } finally {
+    setBusy(action === "approve" ? approveButton : rejectButton, false);
+    if (approveButton) approveButton.disabled = false;
+    if (rejectButton) rejectButton.disabled = false;
+  }
 }
 
 function openVehicleDetail(vehicle) {
@@ -2093,6 +2381,22 @@ $("#vehicleForm").addEventListener(
     }
 
 
+    if (
+      state.profile?.is_institutional === true &&
+      (
+        !vehicle.brand ||
+        !vehicle.model ||
+        !Number.isInteger(vehicle.year) ||
+        vehicle.year < 1900 ||
+        vehicle.year > 2100
+      )
+    ) {
+      $("#vehicleFormMessage").textContent =
+        "Marca, modelo y año son obligatorios para ingresar un vehículo con encargo.";
+      return;
+    }
+
+
     setBusy(
       button,
       true,
@@ -2103,10 +2407,19 @@ $("#vehicleForm").addEventListener(
     try {
 
       const result =
-        await callables
-          .createVehicle({
-            vehicle
-          });
+        state.profile?.is_institutional === true
+          ? await callables.createInstitutionalStolen({
+              submissionId: doc(
+                collection(
+                  db,
+                  "institutional_vehicle_submissions"
+                )
+              ).id,
+              vehicle
+            })
+          : await callables.createVehicle({
+              vehicle
+            });
 
 
       if (
@@ -2124,7 +2437,9 @@ $("#vehicleForm").addEventListener(
 
 
       notice(
-        `Vehículo ${plate} registrado correctamente.`
+        state.profile?.is_institutional === true
+          ? `Encargo ${plate} enviado a Operaciones SKANO para revisión.`
+          : `Vehículo ${plate} registrado correctamente.`
       );
 
 
@@ -2163,6 +2478,14 @@ $("#vehicleForm").addEventListener(
 function openDeactivate(
   vehicle
 ) {
+
+  if (vehicle?._institutionalStolen === true) {
+    notice(
+      "Los encargos institucionales se gestionan mediante su flujo de revisión.",
+      "error"
+    );
+    return;
+  }
 
   if (
     !permission(
@@ -3456,7 +3779,7 @@ $("#openSuspiciousCreate")?.addEventListener("click", () => {
   $("#suspiciousCreateForm")?.reset();
   $("#suspiciousCreateMessage").textContent = "";
   if ($("#suspiciousEvidenceSelection")) {
-    $("#suspiciousEvidenceSelection").textContent = "Selecciona entre 1 y 3 fotografías.";
+    $("#suspiciousEvidenceSelection").textContent = "Fotografías opcionales: puedes adjuntar hasta 3.";
   }
   $("#suspiciousCreateDialog").showModal();
 });
@@ -3553,7 +3876,7 @@ $("#suspiciousEvidenceFiles")?.addEventListener("change", event => {
   if (!message) return;
 
   if (!files.length) {
-    message.textContent = "Selecciona entre 1 y 3 fotografías.";
+    message.textContent = "Fotografías opcionales: puedes adjuntar hasta 3.";
     return;
   }
 
@@ -3578,8 +3901,8 @@ $("#suspiciousCreateForm")?.addEventListener("submit", async event => {
   const submitButton = form.querySelector('button[type="submit"]');
   const files = selectedEvidenceFiles();
 
-  if (files.length < 1 || files.length > 3) {
-    $("#suspiciousCreateMessage").textContent = "Debes adjuntar entre 1 y 3 fotografías.";
+  if (files.length > 3) {
+    $("#suspiciousCreateMessage").textContent = "Puedes adjuntar un máximo de 3 fotografías.";
     return;
   }
 
@@ -3624,7 +3947,7 @@ $("#suspiciousCreateForm")?.addEventListener("submit", async event => {
 
     form.reset();
     if ($("#suspiciousEvidenceSelection")) {
-      $("#suspiciousEvidenceSelection").textContent = "Selecciona entre 1 y 3 fotografías.";
+      $("#suspiciousEvidenceSelection").textContent = "Fotografías opcionales: puedes adjuntar hasta 3.";
     }
 
     $("#suspiciousCreateDialog").close();
