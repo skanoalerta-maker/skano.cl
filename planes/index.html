@@ -1,1 +1,128 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Planes para propietarios | SKANO</title><meta name="description" content="Compara los planes de protección SKANO."><link rel="icon" href="/img/skano-logo.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="/planes/planes.css"></head><body><header class="top"><a class="brand" href="/"><img src="/img/skano-logo.png" alt="Logo SKANO"><span><b>SKANO</b><small>TECNOLOGÍA VEHICULAR</small></span></a><nav><a class="active" href="/planes/">Planes</a><a href="/vehiculos/">Vehículos en búsqueda</a></nav><a class="top-cta" href="#comparar">COMPARAR PLANES</a></header><main><section class="hero"><div class="grid"></div><div class="hero-copy"><span class="eyebrow">● PROTECCIÓN VEHICULAR PARA PARTICULARES</span><h1>Elige cómo quieres<br><em>proteger tu vehículo</em></h1><p>Comienza gratis o suma monitoreo activo, alertas y seguimiento. Sin letra chica y con tus datos personales siempre protegidos.</p><div class="tabs"><span>Personas</span><a href="/planes/empresas/">Empresas</a></div><div class="pills"><span>✓ Registro completo</span><span>✓ Datos privados protegidos</span><span>✓ Red SKANO</span></div></div></section><section class="section pricing"><header class="section-title"><span>PLANES PARA PERSONAS</span><h2>Una protección para cada necesidad</h2><p>Los planes pagados están disponibles para revisión visual. Los cobros aún no están habilitados.</p></header><div class="cards"><article class="card"><span class="label">FREE</span><p>Registro esencial</p><div class="price"><b>$0</b><small>para siempre</small></div><h3>Registra tu vehículo gratuitamente en SKANO</h3><ul><li>Registro completo del vehículo</li><li>Asociación segura al propietario</li><li>Ingreso a la base SKANO al reportarlo</li><li>Detección mediante lectores SKANO</li><li>Permanencia mientras el caso esté activo</li></ul><div class="warning"><b>Este plan no incluye monitoreo activo ni recompensas.</b><small>Sin alertas, correos, seguimiento ni beneficios premium.</small></div><a class="card-btn outline" href="/checkout/?plan=free">Registrar vehículo gratis →</a></article><article class="card featured"><div class="ribbon">MÁS ELEGIDO</div><span class="label">PROTECCIÓN MENSUAL</span><p>Protección flexible</p><s>$16.990 / mes</s><div class="price"><b>$6.990</b><small>/ mes</small></div><strong class="promo">durante tus primeros 6 meses</strong><span class="after">Luego $16.990 / mes</span><h3>Monitoreo, alertas y seguimiento cuando más importa</h3><ul><li>Todo lo incluido en Free</li><li>Recompensa según reglas vigentes</li><li>Alertas y correos por detección</li><li>Fecha, hora y ubicación según protocolo</li><li>Aviso e información de recuperación</li><li>Seguimiento e historial de eventos</li><li>Publicación web sin datos personales</li></ul><a class="card-btn fill" href="/checkout/?plan=protection_monthly">Elegir Protección Mensual →</a><small class="test">Checkout de prueba · sin cobro real</small></article><article class="card"><div class="ribbon annual">MEJOR PRECIO ANUAL</div><span class="label">PROTECCIÓN ANUAL</span><p>12 meses de tranquilidad</p><div class="price"><b>$120.000</b><small>/ año</small></div><strong class="promo blue">Pago único</strong><h3>12 meses de protección — sin cargos adicionales durante el período contratado.</h3><ul><li>Todo lo incluido en Protección Mensual</li><li>Recompensa, alertas y correos</li><li>Historial de eventos y seguimiento</li><li>Información de recuperación</li><li>Publicación web segura</li></ul><div class="info">Vence 12 meses después de la activación, no al terminar el año calendario.</div><a class="card-btn outline blue-btn" href="/checkout/?plan=protection_annual">Elegir Protección Anual →</a><small class="test">Checkout de prueba · sin cobro real</small></article></div></section><section class="compare" id="comparar"><header class="section-title light"><span>COMPARACIÓN DETALLADA</span><h2>Todo claro antes de elegir</h2><p>Free permite registrar el caso, pero no activa publicación pública ni funciones premium.</p></header><div class="table-wrap"><table><thead><tr><th>Función</th><th>Free</th><th>Mensual<br><small>Recomendado</small></th><th>Anual</th></tr></thead><tbody id="comparison"></tbody></table></div></section><section class="privacy"><b>◆</b><div><span>PRIVACIDAD POR DISEÑO</span><h2>Tu información personal nunca se publica.</h2><p>La vista pública puede mostrar patente, marca, modelo, año, color, fotografía autorizada, estado y fecha. Nunca muestra RUT, teléfono, correo, dirección, VIN completo, motor, chasis ni datos privados.</p></div></section></main><footer><a class="brand" href="/"><img src="/img/skano-logo.png" alt=""><span><b>SKANO</b><small>TECNOLOGÍA VEHICULAR</small></span></a><p>Protección vehicular conectada.</p></footer><script src="/planes/planes.js"></script></body></html>
+  'Cuenta Corriente N° 2231118702',
+  'Correo: jdechcomercializadora@gmail.com'
+];
+for (const button of document.querySelectorAll('[data-sk-copy]')) {
+  button.addEventListener('click', async () => {
+    const amount = button.getAttribute('data-sk-copy');
+    const text = [...skanoBankCopy, 'Monto: ' + amount + ' CLP'].join('\n');
+    try {
+      await navigator.clipboard.writeText(text);
+      const previous = button.textContent;
+      button.textContent = 'Datos copiados';
+      setTimeout(() => { button.textContent = previous; }, 2200);
+    } catch (_) {
+      window.prompt('Copia los datos bancarios:', text);
+    }
+  });
+}
+for (const link of document.querySelectorAll('[data-sk-whatsapp]')) {
+  const plan = link.getAttribute('data-sk-whatsapp');
+  const amount = link.getAttribute('data-amount');
+  const message = `Hola SKANO. Quiero contratar el plan ${plan} por ${amount}. Enviaré el comprobante de transferencia y los antecedentes del vehículo para verificar el pago y gestionar la activación.`;
+  link.href = 'https://wa.me/56954486171?text=' + encodeURIComponent(message);
+}
+'@
+$cssSection = @'
+
+/* SKANO PLANES TRANSFERENCIA 2026 */
+.pricing { background: linear-gradient(180deg,#f5f9ff 0%,#eaf3fc 100%); }
+.pricing .section-title { max-width:900px; }
+.pricing .section-title h2 { font-weight:800; }
+.pricing .cards { gap:24px; }
+.pricing .card { border-radius:20px; padding:38px 30px 28px; box-shadow:0 22px 58px rgba(3,28,61,.12); }
+.pricing .card.featured { border:1px solid #16bde3; box-shadow:0 25px 68px rgba(2,30,64,.23); }
+.pricing .card-btn { justify-content:center; border-radius:9px; font-size:12px; padding:16px 14px; }
+.pricing .card li { font-size:12px; line-height:1.7; }
+.pricing .card .label { font-size:12px; }
+.pricing .card>p { font-size:12px; }
+.pricing .test { font-size:10px; }
+.sk-special-offer { padding:95px max(20px,calc((100% - 1250px)/2)); background:#031427; color:#fff; }
+.sk-offer-header { text-align:center; max-width:780px; margin:0 auto 44px; }
+.sk-offer-header>span,.sk-annual-info>span { letter-spacing:.18em; color:#23d5ec; font-size:11px; font-weight:800; }
+.sk-offer-header h2,.sk-annual-info h2 { font-size:clamp(32px,4vw,50px); line-height:1.13; letter-spacing:-.04em; margin:14px 0; }
+.sk-offer-header p,.sk-annual-info p { color:#b8cde0; line-height:1.7; }
+.sk-offer-grid { display:grid; grid-template-columns:1.08fr .92fr; gap:25px; align-items:stretch; }
+.sk-offer-highlight { background:linear-gradient(140deg,#0b3764,#05213f 70%); border:1px solid #16bedf; border-radius:22px; padding:40px; box-shadow:0 24px 80px rgba(0,0,0,.25); }
+.sk-offer-badge { display:inline-flex; border-radius:100px; color:#062037; background:#23d8ec; padding:9px 14px; font-size:11px; letter-spacing:.08em; font-weight:900; }
+.sk-before { margin:26px 0 2px; color:#b0c6db; }
+.sk-before s { font-size:20px; }
+.sk-price { display:block; font-size:clamp(46px,5vw,70px); line-height:1.2; letter-spacing:-.055em; }
+.sk-price small { font-size:14px; font-weight:600; letter-spacing:0; white-space:nowrap; }
+.sk-discount { color:#43e2bb; font-weight:800; }
+.sk-offer-highlight ul { list-style:none; padding:0; margin:24px 0; }
+.sk-offer-highlight li { position:relative; padding-left:27px; margin:14px 0; line-height:1.65; color:#e7f1f8; font-size:13px; }
+.sk-offer-highlight li:before { content:'✓'; position:absolute; left:0; color:#31dcc6; font-weight:900; }
+.sk-fine { color:#b7cde0; font-size:12px; line-height:1.65; }
+.sk-jump { display:block; text-align:center; text-decoration:none; border-radius:10px; padding:16px; font-weight:800; background:linear-gradient(90deg,#0786ff,#1dd7e9); margin-top:22px; }
+.sk-transfer { background:#fff; color:#0a223b; border-radius:22px; padding:35px; border:1px solid #c7def0; box-shadow:0 24px 65px rgba(0,19,52,.13); scroll-margin-top:110px; }
+.sk-transfer-top>span { letter-spacing:.14em; font-size:10px; font-weight:900; color:#087ff5; }
+.sk-transfer h3 { font-size:25px; margin:10px 0; letter-spacing:-.035em; }
+.sk-transfer-top strong { font-size:clamp(35px,3.5vw,47px); letter-spacing:-.05em; }
+.sk-transfer-top p,.sk-transfer-note { color:#587187; line-height:1.6; font-size:12px; }
+.sk-transfer dl { margin:23px 0; border-top:1px solid #dbe6f0; }
+.sk-transfer dl>div { display:flex; justify-content:space-between; gap:12px; padding:12px 0; border-bottom:1px solid #e1eaf2; font-size:12px; }
+.sk-transfer dt { color:#60758a; }
+.sk-transfer dd { text-align:right; font-weight:800; margin:0; overflow-wrap:anywhere; }
+.sk-copy-bank,.sk-wa-link { display:block; width:100%; box-sizing:border-box; text-align:center; cursor:pointer; border-radius:10px; padding:15px 12px; font-family:inherit; font-weight:800; font-size:12px; text-decoration:none; }
+.sk-copy-bank { background:#eff8ff; border:1px solid #168ff3; color:#0674d2; margin-bottom:10px; }
+.sk-wa-link { background:#139958; color:#fff; border:1px solid #139958; }
+.sk-copy-bank:hover { background:#dcefff; }
+.sk-wa-link:hover { background:#0a8348; }
+.sk-transfer-note { font-size:11px; margin-top:16px; }
+.sk-annual-payment { padding:90px 20px; background:#eaf3fc; }
+.sk-annual-inner { max-width:1150px; margin:auto; display:grid; grid-template-columns:.85fr 1.15fr; gap:60px; align-items:center; }
+.sk-annual-info h2 { color:#082745; }
+.sk-annual-info p { color:#57738d; }
+@media(max-width:940px){.sk-offer-grid,.sk-annual-inner{grid-template-columns:1fr}.sk-special-offer{padding:65px 22px}.sk-offer-highlight,.sk-transfer{padding:25px}.sk-annual-inner{gap:28px}.pricing .cards{gap:45px}}
+@media(max-width:480px){.sk-transfer dl>div{display:block}.sk-transfer dd{text-align:left;margin-top:5px}.sk-offer-header h2{font-size:33px}.sk-price{font-size:44px}.pricing .card{padding:28px 22px}}
+'@
+$bankUnique = @'
+<aside class="sk-transfer sk-transfer-special" id="pago-unico" aria-labelledby="pago-unico-title">
+  <div class="sk-transfer-top"><span>TRANSFERENCIA BANCARIA DIRECTA</span><h3 id="pago-unico-title">Búsqueda Única SKANO</h3><strong>$200.000</strong><p>Transfiere a la cuenta oficial de J-DECH y envía tu comprobante al WhatsApp de SKANO.</p></div>
+  <dl><div><dt>Beneficiario</dt><dd>J-DECH COMERCIALIZADORA SpA</dd></div><div><dt>RUT</dt><dd>77.905.422-5</dd></div><div><dt>Banco</dt><dd>Banco de Chile</dd></div><div><dt>Cuenta</dt><dd>Corriente · 2231118702</dd></div><div><dt>Correo</dt><dd>jdechcomercializadora@gmail.com</dd></div></dl>
+  <button class="sk-copy-bank" type="button" data-sk-copy="$200.000">Copiar datos bancarios</button>
+  <a class="sk-wa-link" data-sk-whatsapp="Búsqueda Única SKANO" data-amount="$200.000" href="https://wa.me/56954486171" target="_blank" rel="noopener noreferrer">Enviar comprobante por WhatsApp ↗</a>
+  <p class="sk-transfer-note">WhatsApp oficial: +56 9 5448 6171. Adjunta el comprobante manualmente y entrega la patente y antecedentes del vehículo. El servicio se activa solo tras validar pago y documentación.</p>
+</aside>
+'@
+$bankAnnual = @'
+<aside class="sk-transfer sk-transfer-annual" id="pago-anual" aria-labelledby="pago-anual-title">
+  <div class="sk-transfer-top"><span>TRANSFERENCIA BANCARIA DIRECTA</span><h3 id="pago-anual-title">Protección Anual SKANO</h3><strong>$120.000</strong><p>Un solo pago por 12 meses. Envía el comprobante para su verificación.</p></div>
+  <dl><div><dt>Beneficiario</dt><dd>J-DECH COMERCIALIZADORA SpA</dd></div><div><dt>RUT</dt><dd>77.905.422-5</dd></div><div><dt>Banco</dt><dd>Banco de Chile</dd></div><div><dt>Cuenta</dt><dd>Corriente · 2231118702</dd></div><div><dt>Correo</dt><dd>jdechcomercializadora@gmail.com</dd></div></dl>
+  <button class="sk-copy-bank" type="button" data-sk-copy="$120.000">Copiar datos bancarios</button>
+  <a class="sk-wa-link" data-sk-whatsapp="Protección Anual SKANO" data-amount="$120.000" href="https://wa.me/56954486171" target="_blank" rel="noopener noreferrer">Enviar comprobante por WhatsApp ↗</a>
+  <p class="sk-transfer-note">WhatsApp oficial: +56 9 5448 6171. Adjunta el comprobante manualmente. La activación requiere pago comprobado y antecedentes verificados.</p>
+</aside>
+'@
+$newSections = @'
+</div></section>
+<section class="sk-special-offer" id="busqueda-unica" aria-labelledby="sk-offer-title">
+  <header class="sk-offer-header"><span>OFERTA ESPECIAL DE LANZAMIENTO</span><h2 id="sk-offer-title">Búsqueda hasta recuperar tu vehículo</h2><p>Para propietarios de vehículos con encargo por robo vigente que prefieren pagar una sola vez.</p></header>
+  <div class="sk-offer-grid"><article class="sk-offer-highlight"><span class="sk-offer-badge">PLAN BÚSQUEDA ÚNICA</span><p class="sk-before">Precio de lista <s>$299.000</s></p><strong class="sk-price">$200.000 <small>CLP · pago único</small></strong><p class="sk-discount">Oferta de lanzamiento · ahorras $99.000</p>
+     <ul><li>Búsqueda activa hasta la recuperación, mientras el encargo continúe vigente.</li><li>Sin mensualidades ni renovaciones.</li><li>Si el vehículo se recupera fuera de SKANO, puedes solicitar $50.000 de devolución, previa validación y conforme a las condiciones del plan.</li><li>Si se recupera mediante SKANO, no corresponde esta devolución; se evalúa recompensa para el reportante aprobado.</li><li>Ingreso estimado en 3 minutos una vez comprobado el pago y recibidos todos los antecedentes exigidos.</li></ul>
+     <p class="sk-fine">Promoción propuesta para las primeras 50 contrataciones: confirma disponibilidad antes de transferir. SKANO no garantiza la recuperación.</p><a class="sk-jump" href="#pago-unico">Quiero esta oferta →</a>
+  </article>
+'@
+$newSections += $bankUnique
+$newSections += @'
+</div></section>
+<section class="sk-annual-payment" aria-labelledby="sk-annual-title"><div class="sk-annual-inner"><div class="sk-annual-info"><span>OTRA FORMA DE CONTRATAR</span><h2 id="sk-annual-title">Protección Anual por transferencia</h2><p>Un pago de $120.000 por 12 meses de protección. La vigencia comienza cuando SKANO confirma el pago y aprueba la activación.</p><p>Sin mensualidades adicionales durante el período contratado.</p></div>
+'@
+$newSections += $bankAnnual
+$newSections += '</div></section><section class="compare"'
+$index = $index.Replace($noteOld,'Los planes mensual y empresarial conservan su checkout de demostración. Protección Anual y Búsqueda Única pueden solicitarse por transferencia, con verificación manual del pago.')
+$index = $index.Replace($annualOld,'href="#pago-anual"').Replace($annualLabel,'Contratar anual por transferencia →')
+$index = $index.Replace($anchor,$newSections)
+# Remove obsolete demo note only under annual; keep it under monthly.
+$oldAnnualNote = 'Contratar anual por transferencia →</a><small class="test">Checkout de prueba · sin cobro real</small>'
+$index = $index.Replace($oldAnnualNote,'Contratar anual por transferencia →</a><small class="test">Pago por transferencia sujeto a verificación</small>')
+$js = $js.TrimEnd()
+$js = $js.Substring(0,$js.Length-$jsAnchor.Length) + $jsSection + "`n" + $jsAnchor + "`n"
+$css += "`n" + $cssSection
+# Only write once all preconditions have passed.
+[System.IO.File]::WriteAllText($indexPath,$index,$utf8)
+[System.IO.File]::WriteAllText($cssPath,$css,$utf8)
+[System.IO.File]::WriteAllText($jsPath,$js,$utf8)
+node --check $jsPath
+if ($LASTEXITCODE -ne 0) { throw 'Error de sintaxis en JS: no publiques.' }
+git diff --check
