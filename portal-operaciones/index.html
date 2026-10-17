@@ -898,7 +898,98 @@
 
       </div>
 
-      <p class="form-note">El registro quedará sujeto a validación y trazabilidad operacional.</p>
+            <!-- SKANO: DATOS VEHICULARES UNIFICADOS -->
+
+      <h3>Antecedentes del vehículo</h3>
+
+      <div class="form-grid">
+
+        <label>
+          Tipo de vehículo
+          <input name="type" maxlength="80"
+                 placeholder="Automóvil, camioneta, camión, moto">
+        </label>
+
+        <label>
+          VIN
+          <input name="vin" maxlength="100">
+        </label>
+
+        <label>
+          Número de chasis
+          <input name="chassis_number" maxlength="100">
+        </label>
+
+        <label>
+          Número de motor
+          <input name="engine_number" maxlength="100">
+        </label>
+
+        <label>
+          Región
+          <input name="region" maxlength="100">
+        </label>
+
+        <label>
+          Comuna
+          <input name="commune" maxlength="100">
+        </label>
+
+        <label>
+          Lugar de observación
+          <input name="observation_place" maxlength="250">
+        </label>
+
+        <label>
+          Referencia institucional
+          <input name="institutional_reference" maxlength="500">
+        </label>
+
+        <label>
+          Fecha del encargo
+          <input name="theft_reported_at" type="datetime-local">
+        </label>
+
+      </div>
+
+      <label>
+        Características particulares
+        <textarea name="vehicle_characteristics"
+                  maxlength="3000" rows="3"></textarea>
+      </label>
+
+      <label>
+        Observaciones y antecedentes
+        <textarea name="observations"
+                  maxlength="5000" rows="4"></textarea>
+      </label>
+
+      <h3>Evidencia fotográfica</h3>
+
+      <label>
+        Fotografías del vehículo (máximo 3)
+        <input id="vehicleEvidenceFiles"
+               name="vehicleEvidenceFiles"
+               type="file"
+               accept="image/*"
+               multiple>
+      </label>
+
+      <p id="vehicleEvidenceSelection" class="form-note">
+        Puedes seleccionar hasta 3 fotografías.
+      </p>
+
+      <label>
+        <input name="responsibility_accepted"
+               type="checkbox"
+               required>
+        Declaro que los antecedentes ingresados son verídicos
+        según la información disponible y acepto mi
+        responsabilidad por este registro.
+      </label>
+
+      <!-- FIN DATOS VEHICULARES UNIFICADOS -->
+<p class="form-note">El registro quedará sujeto a validación y trazabilidad operacional.</p>
 
 <button
         id="createVehicleButton"

@@ -2284,6 +2284,47 @@ $$(
    FORMULARIO CREAR VEHÍCULO
    ========================================================= */
 
+async function uploadStolenEvidence(submissionId, files) {
+  if (!state.user?.uid) {
+    throw new Error("Debes iniciar sesión.");
+  }
+
+  if (files.length > 3) {
+    throw new Error("Máximo 3 fotografías.");
+  }
+
+  const blobs = await Promise.all(
+    files.map(file => compressEvidenceToJpeg(file))
+  );
+
+  const paths = [];
+
+  for (let index = 0; index < blobs.length; index += 1) {
+    const path =
+      `institutional_vehicle_submissions/${state.user.uid}/${submissionId}/evidence/photo_${index + 1}.jpg`;
+
+    await uploadBytes(
+      storageRef(storage, path),
+      blobs[index],
+      {
+        contentType: "image/jpeg",
+        customMetadata: {
+          uploader_uid: state.user.uid,
+          submission_id: submissionId,
+          report_type: "stolen_vehicle"
+        }
+      }
+    );
+
+    paths.push(path);
+  }
+
+  return {
+    paths,
+    primaryPath: paths[0] || "",
+    count: paths.length
+  };
+}
 $("#vehicleForm").addEventListener(
   "submit",
   async event => {
@@ -2337,64 +2378,55 @@ $("#vehicleForm").addEventListener(
     }
 
 
+    const value = name => String(data.get(name) || "").trim();
+
     const vehicle = {
-
       plate,
-
-      brand:
-        data.get(
-          "brand"
-        )?.trim(),
-
-      model:
-        data.get(
-          "model"
-        )?.trim(),
-
-      color:
-        data.get(
-          "color"
-        )?.trim(),
-
-      source:
-        data.get(
-          "source"
-        )?.trim() ||
-        "operations_portal"
-
+      brand: value("brand"),
+      model: value("model"),
+      year: Number(value("year")),
+      color: value("color"),
+      type: value("type"),
+      vin: value("vin"),
+      chassis_number: value("chassis_number"),
+      engine_number: value("engine_number"),
+      vehicle_characteristics: value("vehicle_characteristics"),
+      region: value("region"),
+      commune: value("commune"),
+      observation_place: value("observation_place"),
+      institutional_reference: value("institutional_reference"),
+      observations: value("observations"),
+      theft_reported_at: value("theft_reported_at") ? new Date(value("theft_reported_at")).toISOString() : null
     };
 
-
-    const year =
-      data.get(
-        "year"
-      );
-
-
-    if (year) {
-
-      vehicle.year =
-        Number(
-          year
-        );
-
-    }
-
-
     if (
-      state.profile?.is_institutional === true &&
-      (
-        !vehicle.brand ||
-        !vehicle.model ||
-        !Number.isInteger(vehicle.year) ||
-        vehicle.year < 1900 ||
-        vehicle.year > 2100
-      )
+      !vehicle.brand ||
+      !vehicle.model ||
+      !Number.isInteger(vehicle.year) ||
+      vehicle.year < 1900 ||
+      vehicle.year > 2100
     ) {
       $("#vehicleFormMessage").textContent =
-        "Marca, modelo y año son obligatorios para ingresar un vehículo con encargo.";
+        "Marca, modelo y año son obligatorios para todos los usuarios autorizados.";
       return;
     }
+
+    if (!data.get("responsibility_accepted")) {
+      $("#vehicleFormMessage").textContent =
+        "Debes aceptar la declaración de responsabilidad.";
+      return;
+    }
+
+    const evidenceFiles = [
+      ...(document.getElementById("vehicleEvidenceFiles")?.files || [])
+    ];
+
+    if (evidenceFiles.length > 3) {
+      $("#vehicleFormMessage").textContent =
+        "Puedes adjuntar un máximo de 3 fotografías.";
+      return;
+    }
+
 
 
     setBusy(
@@ -2406,20 +2438,22 @@ $("#vehicleForm").addEventListener(
 
     try {
 
-      const result =
-        state.profile?.is_institutional === true
-          ? await callables.createInstitutionalStolen({
-              submissionId: doc(
-                collection(
-                  db,
-                  "institutional_vehicle_submissions"
-                )
-              ).id,
-              vehicle
-            })
-          : await callables.createVehicle({
-              vehicle
-            });
+      const submissionId = doc(
+        collection(db, "institutional_vehicle_submissions")
+      ).id;
+
+      const evidence = await uploadStolenEvidence(
+        submissionId,
+        evidenceFiles
+      );
+
+      const result = await callables.createInstitutionalStolen({
+        submissionId,
+        vehicle,
+        evidence,
+        responsibility_accepted: true
+      });
+
 
 
       if (
@@ -2437,13 +2471,11 @@ $("#vehicleForm").addEventListener(
 
 
       notice(
-        state.profile?.is_institutional === true
-          ? `Encargo ${plate} enviado a Operaciones SKANO para revisión.`
-          : `Vehículo ${plate} registrado correctamente.`
+        `Encargo ${plate} enviado a revisión de Operaciones SKANO.`
       );
 
 
-      await loadVehicles();
+await loadVehicles();
 
     } catch (error) {
 
