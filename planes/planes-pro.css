@@ -1,0 +1,211 @@
+﻿/* SKANO | Diseño profesional de planes */
+.sk-plans {
+  --navy: #071425;
+  --cyan: #40e2f2;
+  --blue: #136eea;
+  --line: #dbe5ef;
+  background: #f1f5fa;
+}
+
+.sk-header {
+  background: #061323;
+  border-bottom: 1px solid #1f4056;
+  box-shadow: 0 8px 30px #03102126;
+}
+
+.sk-hero {
+  background:
+    radial-gradient(ellipse at 80% 25%, #12608080, transparent 48%),
+    linear-gradient(135deg, #061323, #0a2743 65%, #061323);
+}
+
+.sk-hero h1 {
+  font-size: clamp(42px, 5.6vw, 76px);
+  line-height: 1.05;
+  letter-spacing: -.06em;
+}
+
+.sk-hero h1 span {
+  color: #52e4f0;
+}
+
+.sk-hero-note {
+  border: 1px solid #5cd9ec44;
+  border-radius: 28px;
+  background: linear-gradient(145deg, #ffffff14, #ffffff03);
+  box-shadow: 0 20px 70px #00000025;
+}
+
+.sk-section-heading h2 {
+  font-size: clamp(32px, 4vw, 49px);
+}
+
+.sk-cards {
+  gap: 22px;
+  align-items: stretch;
+}
+
+.sk-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 26px;
+  padding: 34px;
+  border: 1px solid #d7e4ee;
+  box-shadow: 0 14px 48px #0a294414;
+  transition: transform .25s, box-shadow .25s, border-color .25s;
+}
+
+.sk-card:hover {
+  transform: translateY(-5px);
+  border-color: #7bcbdc;
+  box-shadow: 0 25px 60px #0a294426;
+}
+
+.sk-card-featured {
+  background:
+    radial-gradient(circle at 90% 8%, #187a9a77, transparent 36%),
+    linear-gradient(145deg, #0b304c, #061525 85%);
+  border: 1px solid #37b9d3;
+  box-shadow: 0 24px 65px #092d4840;
+}
+
+.sk-card-annual {
+  border: 2px solid #2f81d9;
+}
+
+.sk-card h3 {
+  font-size: clamp(25px, 2.7vw, 34px);
+  font-weight: 800;
+}
+
+.sk-price {
+  font-size: clamp(43px, 5vw, 65px);
+  letter-spacing: -.07em;
+  font-weight: 800;
+}
+
+.sk-card:not(.sk-card-featured) .sk-price {
+  color: #093b69;
+}
+
+.sk-card-featured .sk-price {
+  color: #62f0f5;
+}
+
+.sk-features {
+  border-top-color: #dde8f1;
+}
+
+.sk-card-featured .sk-features {
+  border-top-color: #ffffff30;
+}
+
+.sk-features li {
+  padding-left: 29px;
+  line-height: 1.65;
+}
+
+.sk-card-note {
+  border-radius: 14px;
+  padding: 18px;
+  line-height: 1.7;
+}
+
+.sk-button {
+  border-radius: 12px;
+  font-weight: 800;
+  min-height: 54px;
+}
+
+.sk-button-cyan {
+  background: linear-gradient(135deg, #42ecf4, #16b9e7);
+  color: #042235 !important;
+}
+
+.sk-button-blue {
+  background: linear-gradient(135deg, #207af1, #0754b7);
+  color: #ffffff !important;
+}
+
+.sk-transfer-section {
+  background: linear-gradient(180deg, #e6eef7, #f3f7fb);
+}
+
+.sk-bank-panel {
+  border: 1px solid #c8d9e7;
+  border-radius: 24px;
+  padding: 34px;
+  box-shadow: 0 18px 50px #092d4818;
+}
+
+.sk-transfer-total {
+  background: #eff6fe;
+  padding: 18px;
+  border-radius: 14px;
+}
+
+.sk-transfer-total > strong {
+  color: #064c9e;
+  font-size: 28px;
+}
+
+.sk-steps li:before {
+  border: 1px solid #8dc3e5;
+  background: #ffffff;
+  box-shadow: 0 4px 14px #062f4b12;
+}
+
+.sk-table-wrap {
+  border-radius: 20px;
+}
+
+.sk-conditions article {
+  background: #ffffff;
+  border: 1px solid #dbe5ed;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 10px 28px #0a29440d;
+}
+
+/* Formulario existente: solo mejoras de presentación */
+#registro-vehiculo .registro-panel {
+  background:
+    radial-gradient(circle at 100% 0, #14597955, transparent 38%),
+    linear-gradient(145deg, #091a2d, #081322);
+  border: 1px solid #227eab;
+  border-radius: 28px;
+  box-shadow: 0 24px 60px #071e3640;
+}
+
+#registro-vehiculo .registro-subtitle {
+  padding-bottom: 12px;
+  border-bottom: 1px solid #ffffff20;
+}
+
+#registro-vehiculo input,
+#registro-vehiculo select,
+#registro-vehiculo textarea {
+  border-radius: 12px;
+}
+
+/* Adaptación a celular */
+@media (max-width: 800px) {
+  .sk-cards { gap: 18px; }
+  .sk-card { padding: 26px; }
+  .sk-bank-panel { padding: 24px; }
+}
+
+@media (max-width: 620px) {
+  .sk-card { border-radius: 20px; }
+  .sk-price { font-size: 47px; }
+  .sk-hero h1 { font-size: 42px; }
+  .sk-condition-grid article { padding: 20px; }
+  #registro-vehiculo .registro-panel {
+    border-radius: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sk-card { transition: none; }
+  .sk-card:hover { transform: none; }
+}
