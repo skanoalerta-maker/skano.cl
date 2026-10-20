@@ -28,7 +28,291 @@
         <aside class="sk-hero-note" aria-label="Modalidad de búsqueda"><div class="sk-orbit" aria-hidden="true"><div><img src="/img/skano-logo.png" alt="" width="84" height="84"></div><span class="sk-orbit-dot"></span></div><p class="sk-eyebrow">UNA RED. UN MISMO PROPÓSITO.</p><h2>Conectar la información.<br>Apoyar la búsqueda.</h2><p>La tecnología complementa la denuncia y los protocolos de las autoridades. Ningún plan garantiza la recuperación.</p></aside>
       </div>
     </section>
-    <section class="sk-section sk-container" id="planes" aria-labelledby="planes-title">
+    <section class="sk-section sk-container" id="registro-vehiculo"
+         aria-labelledby="registro-title">
+
+  <style>
+    #registro-vehiculo .registro-panel {
+      background: #0b1525;
+      color: #f8fafc;
+      border: 1px solid rgba(59,130,246,.28);
+      border-radius: 24px;
+      padding: clamp(22px,4vw,42px);
+    }
+
+    #registro-vehiculo h2 {
+      color: #fff;
+      margin-bottom: 12px;
+    }
+
+    #registro-vehiculo .registro-intro {
+      color: #cbd5e1;
+      line-height: 1.7;
+      margin-bottom: 25px;
+    }
+
+    #registro-vehiculo .registro-grid {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    #registro-vehiculo .registro-field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    #registro-vehiculo label {
+      font-weight: 700;
+      font-size: .9rem;
+    }
+
+    #registro-vehiculo input,
+    #registro-vehiculo select,
+    #registro-vehiculo textarea {
+      width: 100%;
+      min-width: 0;
+      padding: 13px;
+      border-radius: 11px;
+      border: 1px solid #64748b;
+      background: #111f32;
+      color: #fff;
+      font: inherit;
+    }
+
+    #registro-vehiculo input:disabled,
+    #registro-vehiculo select:disabled,
+    #registro-vehiculo textarea:disabled {
+      opacity: .65;
+    }
+
+    #registro-vehiculo .registro-subtitle {
+      font-size: 1.13rem;
+      color: #67e8f9;
+      margin: 28px 0 18px;
+    }
+
+    #registro-vehiculo .registro-aviso {
+      padding: 16px;
+      border: 1px solid #475569;
+      border-radius: 12px;
+      color: #e2e8f0;
+      line-height: 1.6;
+      margin-top: 16px;
+    }
+
+    @media(max-width:640px) {
+      #registro-vehiculo .registro-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="registro-panel">
+
+    <p class="sk-eyebrow">REGISTRO DE VEHICULOS</p>
+
+    <h2 id="registro-title">
+      Registra tu vehiculo con encargo en SKANO
+    </h2>
+
+    <p class="registro-intro">
+      Si tu vehiculo fue robado, podras solicitar su
+      incorporacion a SKANO acreditando que eres
+      su propietario o representante autorizado
+      y presentando los antecedentes del encargo vigente.
+    </p>
+
+    <div class="registro-aviso" role="status">
+      <strong>Formulario en preparacion.</strong>
+      El registro y el envio de documentos se habilitaran
+      cuando finalice su conexion segura con Firebase.
+      Por ahora no ingreses datos personales en esta seccion.
+    </div>
+
+    <form id="sk-vehicle-form">
+
+      <fieldset disabled style="border:0;padding:0;margin:0">
+
+        <h3 class="registro-subtitle">
+          1. Datos del propietario
+        </h3>
+
+        <div class="registro-grid">
+          <div class="registro-field">
+            <label for="sk-owner-name">Nombre completo</label>
+            <input id="sk-owner-name" name="owner_name"
+                   autocomplete="name" required>
+          </div>
+
+          <div class="registro-field">
+            <label for="sk-owner-rut">RUT del propietario</label>
+            <input id="sk-owner-rut" name="owner_rut" required>
+          </div>
+
+          <div class="registro-field">
+            <label for="sk-owner-email">Correo electronico</label>
+            <input id="sk-owner-email" name="owner_email"
+                   type="email" autocomplete="email" required>
+          </div>
+
+          <div class="registro-field">
+            <label for="sk-owner-phone">Telefono de contacto</label>
+            <input id="sk-owner-phone" name="owner_phone"
+                   type="tel" autocomplete="tel" required>
+          </div>
+        </div>
+
+        <h3 class="registro-subtitle">
+          2. Datos del vehiculo
+        </h3>
+
+        <div class="registro-grid">
+          <div class="registro-field">
+            <label for="sk-plate">Patente</label>
+            <input id="sk-plate" name="plate"
+                   maxlength="8" placeholder="ABCD12" required>
+          </div>
+
+          <div class="registro-field">
+            <label for="sk-brand">Marca</label>
+            <input id="sk-brand" name="brand" required>
+          </div>
+
+          <div class="registro-field">
+            <label for="sk-model">Modelo</label>
+            <input id="sk-model" name="model" required>
+          </div>
+
+          <div class="registro-field">
+            <label for="sk-year">Anio</label>
+            <input id="sk-year" name="year"
+                   type="number" min="1900" max="2030" required>
+          </div>
+
+          <div class="registro-field">
+            <label for="sk-color">Color</label>
+            <input id="sk-color" name="color" required>
+          </div>
+
+          <div class="registro-field">
+            <label for="sk-type">Tipo de vehiculo</label>
+            <select id="sk-type" name="vehicle_type" required>
+              <option value="">Seleccionar</option>
+              <option value="automovil">Automovil</option>
+              <option value="camioneta">Camioneta</option>
+              <option value="suv">SUV</option>
+              <option value="moto">Motocicleta</option>
+              <option value="camion">Camion</option>
+              <option value="otro">Otro</option>
+            </select>
+          </div>
+        </div>
+
+        <h3 class="registro-subtitle">
+          3. Antecedentes del encargo
+        </h3>
+
+        <div class="registro-grid">
+          <div class="registro-field">
+            <label for="sk-theft-date">Fecha del robo</label>
+            <input id="sk-theft-date" name="theft_date"
+                   type="date" required>
+          </div>
+
+          <div class="registro-field">
+            <label for="sk-theft-region">Region</label>
+            <input id="sk-theft-region" name="region" required>
+          </div>
+
+          <div class="registro-field">
+            <label for="sk-theft-commune">Comuna</label>
+            <input id="sk-theft-commune" name="commune" required>
+          </div>
+
+          <div class="registro-field">
+            <label for="sk-police-unit">Unidad policial</label>
+            <input id="sk-police-unit" name="police_unit" required>
+          </div>
+
+          <div class="registro-field">
+            <label for="sk-report-number">Numero de parte o denuncia</label>
+            <input id="sk-report-number" name="report_number">
+          </div>
+        </div>
+
+        <h3 class="registro-subtitle">
+          4. Documentacion
+        </h3>
+
+        <div class="registro-grid">
+          <div class="registro-field">
+            <label for="sk-pardon">Padron del vehiculo</label>
+            <input id="sk-pardon" name="registration_document"
+                   type="file" accept=".pdf,.jpg,.jpeg,.png">
+          </div>
+
+          <div class="registro-field">
+            <label for="sk-identity">Acreditacion de identidad</label>
+            <input id="sk-identity" name="identity_document"
+                   type="file" accept=".pdf,.jpg,.jpeg,.png">
+          </div>
+
+          <div class="registro-field">
+            <label for="sk-police-report">Antecedentes del encargo</label>
+            <input id="sk-police-report" name="police_document"
+                   type="file" accept=".pdf,.jpg,.jpeg,.png">
+          </div>
+
+          <div class="registro-field">
+            <label for="sk-photos">Fotografias del vehiculo</label>
+            <input id="sk-photos" name="vehicle_photos"
+                   type="file" accept="image/*" multiple>
+          </div>
+        </div>
+
+        <h3 class="registro-subtitle">
+          5. Selecciona tu plan
+        </h3>
+
+        <div class="registro-field">
+          <label for="sk-registration-plan">Plan SKANO</label>
+          <select id="sk-registration-plan" name="plan" required>
+            <option value="free">Gratuito - $0</option>
+            <option value="monthly">Mensual - $6.990 promocional</option>
+            <option value="annual">Anual - $120.000</option>
+            <option value="unique">Busqueda Unica - $200.000</option>
+          </select>
+        </div>
+
+        <div class="registro-aviso">
+          Antes de pagar, el propietario podra consultar
+          los beneficios de cada plan y enviar sus preguntas
+          al correo administrativo de SKANO.
+        </div>
+
+        <button type="submit" class="sk-button sk-button-blue"
+                style="margin-top:22px" disabled>
+          ENVIAR SOLICITUD A SKANO
+        </button>
+
+      </fieldset>
+    </form>
+
+    <p class="registro-intro" style="margin-top:20px">
+      Las solicitudes se notificaran a
+      <strong>skano.oficial@gmail.com</strong>
+      cuando se habilite el servicio.
+      Ningun vehiculo sera activado sin validar
+      titularidad y encargo vigente.
+    </p>
+
+  </div>
+</section>
+<section class="sk-section sk-container" id="planes" aria-labelledby="planes-title">
       <div class="sk-section-heading"><div><p class="sk-eyebrow">PLANES PARA PARTICULARES</p><h2 id="planes-title">Una decisión clara.<br>Cuatro formas de comenzar.</h2></div><nav class="sk-tabs" aria-label="Tipo de cliente"><span aria-current="page">Personas</span><a href="/planes/empresas/">Empresas ↗</a></nav></div>
       <p class="sk-review"><strong>Vista previa · contratación pendiente de aprobación.</strong> Datos bancarios y condiciones comerciales en revisión. No transfieras hasta recibir la confirmación de SKANO. Mensual conserva su checkout de demostración.</p>
       <div class="sk-cards">
@@ -38,23 +322,68 @@
           <p class="sk-list-price">Precio de lista propuesto: $299.000 CLP</p><div class="sk-price">$200.000 <span>CLP · pago único</span></div><p class="sk-saving">Ahorro propuesto de $99.000</p>
           <p class="sk-offer-note">Para las primeras 50 contrataciones confirmadas. SKANO debe verificar el cupo antes de recibir tu transferencia. Precio de lista y promoción pendientes de validación comercial; no corresponde a un precio anterior acreditado.</p>
           <ul class="sk-features"><li>Un vehículo, sin mensualidades ni renovación periódica.</li><li>En búsqueda mientras siga sin recuperar y mantenga un encargo por robo vigente.</li><li>Registro y gestión administrativa del vehículo.</li><li>Integración con la búsqueda y detección disponibles en SKANO.</li><li>Tratamiento seguro de datos personales.</li></ul>
-          <div class="sk-card-note">Sin garantía de recuperación. Recompensas y devolución especial de $50.000 sujetas a verificación y condiciones. <a href="#condiciones">Revisar detalles</a>.</div>
+          <div class="sk-card-note">
+<strong>BUSQUEDA CON RECOMPENSA:</strong>
+El incentivo economico busca motivar a los reportadores
+a identificar el vehiculo y completar el protocolo seguro
+de SKANO. El reportador debe contactar a Carabineros
+cuando corresponda y aportar antecedentes verificables,
+sin exponerse a riesgos.
+Los avisos por correo y la ubicacion del avistamiento
+forman parte del seguimiento previsto y se habilitaran
+tras su implementacion.
+No se garantiza la recuperacion.
+La recompensa y la devolucion especial de $50.000
+estan sujetas a verificacion y condiciones aprobadas.
+<a href="#condiciones">Revisar condiciones</a>.
+</div>
           <a class="sk-button sk-button-cyan sk-select" data-plan="unique" href="#transferencia">APROVECHAR OFERTA — $200.000 <span aria-hidden="true">↗</span></a><p class="sk-footnote">Transferencia bancaria · activación por personal autorizado</p>
         </article>
         <article class="sk-card sk-card-annual">
           <div class="sk-card-top"><span class="sk-badge sk-badge-soft">12 MESES DE PROTECCIÓN</span><span class="sk-kicker">02 / ANUAL</span></div>
           <h3>Protección Anual</h3><p class="sk-card-intro">Un período completo, con un solo pago.</p><div class="sk-price">$120.000 <span>CLP · 12 meses</span></div><p class="sk-price-context">Desde la activación del plan.</p>
           <ul class="sk-features"><li>Todo lo incluido en Protección Mensual, según las condiciones de cada servicio.</li><li>Recompensas según las reglas vigentes.</li><li>Alertas y notificaciones.</li><li>Historial de eventos y seguimiento.</li><li>Información de recuperación.</li><li>Publicación web segura, sin datos personales.</li></ul>
-          <div class="sk-card-note">Prestaciones sujetas a disponibilidad operativa y protocolo. SKANO debe confirmar su alcance antes de contratar.</div>
+          <div class="sk-card-note">
+<strong>CON RECOMPENSA:</strong>
+El incentivo economico busca fomentar los reportes
+de usuarios que cumplan el protocolo seguro de SKANO.
+El reportador debe avisar a Carabineros cuando corresponda,
+sin perseguir ni enfrentar a los ocupantes.
+Se contempla informar al propietario sobre avistamientos
+validados, fecha, hora y ubicacion reportada mediante correo,
+una vez habilitado ese servicio.
+No se garantiza la recuperacion.
+</div>
           <a class="sk-button sk-button-blue sk-select" data-plan="annual" href="#transferencia">CONTRATAR PLAN ANUAL — $120.000 <span aria-hidden="true">↗</span></a><p class="sk-footnote">Transferencia bancaria · validación manual</p>
         </article>
         <article class="sk-card">
           <div class="sk-card-top"><span class="sk-kicker">03 / FLEXIBILIDAD</span><span class="sk-demo">DEMOSTRACIÓN</span></div><h3>Protección Mensual</h3><p class="sk-card-intro">Protección con pago mes a mes.</p><div class="sk-price">$6.990 <span>CLP / mes</span></div><p class="sk-price-context"><strong>Durante los primeros 6 meses.</strong><br>Después: $16.990 CLP mensuales.</p>
-          <ul class="sk-features"><li>Todo lo incluido en Free.</li><li>Recompensa según las reglas vigentes.</li><li>Alertas y correos por detección.</li><li>Fecha, hora y ubicación según protocolo.</li><li>Aviso de recuperación.</li><li>Seguimiento e historial de eventos.</li><li>Publicación web sin datos personales.</li></ul><div class="sk-card-note">Prestaciones descritas sujetas a confirmación operativa. Este checkout no contrata ni cobra.</div><a class="sk-button sk-button-outline" href="/checkout/?plan=protection_monthly">VER CHECKOUT DE DEMOSTRACIÓN <span aria-hidden="true">↗</span></a><p class="sk-footnote">Sin cobros reales · no activa servicios</p>
+          <ul class="sk-features"><li>Todo lo incluido en Free.</li><li>Recompensa según las reglas vigentes.</li><li>Alertas y correos por detección.</li><li>Fecha, hora y ubicación según protocolo.</li><li>Aviso de recuperación.</li><li>Seguimiento e historial de eventos.</li><li>Publicación web sin datos personales.</li></ul><div class="sk-card-note">
+<strong>CON RECOMPENSA:</strong>
+La recompensa incentiva al usuario reportador a completar
+el protocolo seguro de SKANO, contactar a Carabineros
+cuando corresponda y aportar evidencia verificable.
+Se contempla enviar correos al propietario por
+avistamientos validados con fecha, hora y ubicacion
+reportada, cuando esa funcion este habilitada.
+La deteccion no garantiza recuperacion.
+El checkout mensual sigue siendo una demostracion sin cobro.
+</div><a class="sk-button sk-button-outline" href="/checkout/?plan=protection_monthly">VER CHECKOUT DE DEMOSTRACIÓN <span aria-hidden="true">↗</span></a><p class="sk-footnote">Sin cobros reales · no activa servicios</p>
         </article>
         <article class="sk-card">
           <div class="sk-card-top"><span class="sk-kicker">04 / REGISTRO ESENCIAL</span><span class="sk-badge sk-badge-soft">FREE</span></div><h3>Free</h3><p class="sk-card-intro">El primer paso para tu vehículo.</p><div class="sk-price">$0 <span>CLP · registro gratuito</span></div><p class="sk-price-context">Permanencia mientras el caso esté activo.</p>
-          <ul class="sk-features"><li>Registro completo del vehículo.</li><li>Asociación segura al propietario.</li><li>Ingreso a la base SKANO al reportarlo.</li><li>Detección mediante lectores SKANO, según disponibilidad.</li><li>Permanencia mientras el caso esté activo.</li></ul><div class="sk-card-note">No incluye monitoreo, alertas ni seguimiento premium. Tampoco incluye recompensas.</div><a class="sk-button sk-button-outline" href="/checkout/?plan=free">REGISTRAR VEHÍCULO GRATIS <span aria-hidden="true">↗</span></a><p class="sk-footnote">Se conserva el flujo actual de registro.</p>
+          <ul class="sk-features"><li>Registro completo del vehículo.</li><li>Asociación segura al propietario.</li><li>Ingreso a la base SKANO al reportarlo.</li><li>Detección mediante lectores SKANO, según disponibilidad.</li><li>Permanencia mientras el caso esté activo.</li></ul><div class="sk-card-note">
+<strong>REGISTRO SIN RECOMPENSA:</strong>
+Una vez validado el encargo, tu vehiculo puede
+permanecer en la base SKANO mientras el caso siga activo.
+Los usuarios podran identificarlo al consultar su patente
+y decidir voluntariamente si realizan un reporte.
+Esta modalidad no ofrece incentivo economico,
+alertas premium ni seguimiento personalizado.
+SKANO no avisa automaticamente a Carabineros
+por cada consulta o deteccion.
+No se garantiza la recuperacion.
+</div><a class="sk-button sk-button-outline" href="/checkout/?plan=free">REGISTRAR VEHÍCULO GRATIS <span aria-hidden="true">↗</span></a><p class="sk-footnote">Se conserva el flujo actual de registro.</p>
         </article>
       </div>
       <p class="sk-section-note">Valores expresados en pesos chilenos para la propuesta comercial. El importe final y su tratamiento tributario deben quedar confirmados antes de habilitar la contratación.</p>
