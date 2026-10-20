@@ -209,3 +209,37 @@
   .sk-card { transition: none; }
   .sk-card:hover { transform: none; }
 }
+
+/* Campaña visual, octubre 2026. Exclusiva de planes particulares. */
+.sk-plans .sk-hero-grid{grid-template-columns:1fr 1.08fr;gap:48px;padding-block:64px 72px}
+.sk-plans .sk-hero h1{font-size:clamp(40px,4.3vw,62px);line-height:1.08;letter-spacing:-.055em}
+.sk-plans .sk-lead{font-size:16px;max-width:540px}
+.sk-plans .sk-campaign-visual{margin:0;position:relative;min-width:0;border-radius:24px;overflow:hidden;box-shadow:0 24px 80px #0005;aspect-ratio:1.12;background:#0b2031;isolation:isolate}
+.sk-plans .sk-campaign-visual>img{width:100%;height:100%;object-fit:cover;object-position:62% center;display:block}
+.sk-plans .sk-campaign-visual:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,#04142240,transparent 45%,#041422e6);z-index:0}
+.sk-plans .sk-photo-label{position:absolute;bottom:52px;left:30px;right:25px;z-index:1}
+.sk-plans .sk-photo-label span{font-size:10px;letter-spacing:.15em;color:#a9e5ed}
+.sk-plans .sk-photo-label strong{display:block;font-size:30px;letter-spacing:-.04em;line-height:1.2;margin-top:10px;color:white}
+.sk-plans .sk-campaign-visual figcaption{position:absolute;bottom:16px;left:30px;color:#c6d8e3;font-size:10px;z-index:1}
+.sk-plans .sk-value-strip{background:white;border-bottom:1px solid var(--line)}
+.sk-plans .sk-value-strip>.sk-container{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding-block:27px}
+.sk-plans .sk-value-strip .sk-container>div{display:flex;gap:16px;align-items:center}
+.sk-plans .sk-value-strip span{display:grid;place-items:center;width:40px;height:40px;flex-shrink:0;border-radius:12px;background:#eaf5fb;color:#176ab0;font-size:12px;font-weight:800}
+.sk-plans .sk-value-strip p{font-size:12px;color:#53687a;margin:0}.sk-plans .sk-value-strip strong{display:block;font-size:14px;color:#122c43}
+.sk-plans #planes{padding-top:64px}
+.sk-plans .sk-cards{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+.sk-plans .sk-card{min-width:0;padding:32px;box-shadow:0 12px 38px #0a294410}
+.sk-plans .sk-plan-art{margin:-32px -32px 28px;height:190px;position:relative;background:#092239;overflow:hidden}
+.sk-plans .sk-plan-art img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 59%}
+.sk-plans .sk-plan-art:after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,#061525dd,transparent 75%)}
+.sk-plans .sk-plan-art span{position:absolute;left:32px;bottom:18px;z-index:1;font-size:11px;font-weight:800;letter-spacing:.13em;color:#fff}
+.sk-plans .sk-card-annual{margin-top:32px;background:linear-gradient(160deg,#eaf4ff 0,#fff 45%);border:1px solid #aecbe8}
+.sk-plans .sk-card-annual:before{content:'PROTECCIÓN DURANTE 12 MESES';display:block;font-size:11px;letter-spacing:.12em;color:#1763aa;font-weight:800;border-bottom:1px solid #d1e2f1;padding-bottom:20px;margin-bottom:24px}
+.sk-plans .sk-card-note{margin-top:0;font-size:13px}.sk-plans .sk-card-note>p{margin:0 0 10px}
+.sk-plans .sk-protocol summary{cursor:pointer;font-weight:700;text-decoration:underline;text-underline-offset:3px;padding-block:8px}
+.sk-plans .sk-protocol>div{padding-top:12px}.sk-plans .sk-card .sk-button{font-size:13px}
+.sk-plans #registro-vehiculo{padding-block:48px}
+.sk-plans .sk-card:not(.sk-card-featured) .sk-card-note{background:#f2f6fa}
+@media(max-width:1024px){.sk-plans .sk-hero-grid{gap:28px}.sk-plans .sk-campaign-visual{aspect-ratio:.85}.sk-plans .sk-card{padding:26px}.sk-plans .sk-plan-art{margin:-26px -26px 24px}.sk-plans .sk-photo-label{left:22px}.sk-plans .sk-photo-label strong{font-size:26px}}
+@media(max-width:800px){.sk-plans .sk-hero-grid{grid-template-columns:1fr;padding-block:42px}.sk-plans .sk-campaign-visual{aspect-ratio:1.7}.sk-plans .sk-hero h1{font-size:48px}.sk-plans .sk-card-annual{margin-top:0}.sk-plans .sk-value-strip>.sk-container{gap:16px}.sk-plans .sk-value-strip .sk-container>div{align-items:start;gap:10px}.sk-plans .sk-value-strip span{display:none}}
+@media(max-width:620px){.sk-plans .sk-cards{grid-template-columns:1fr}.sk-plans .sk-hero h1{font-size:40px}.sk-plans .sk-campaign-visual{aspect-ratio:1.3;border-radius:18px}.sk-plans .sk-photo-label strong{font-size:25px}.sk-plans .sk-photo-label{bottom:44px}.sk-plans .sk-value-strip>.sk-container{grid-template-columns:1fr;padding-block:22px;gap:18px}.sk-plans .sk-value-strip span{display:grid;width:34px;height:34px}.sk-plans .sk-value-strip .sk-container>div{align-items:center;gap:14px}.sk-plans .sk-card{padding:24px}.sk-plans .sk-plan-art{margin:-24px -24px 24px;height:170px}.sk-plans .sk-plan-art span{left:24px}.sk-plans .sk-transfer-total>strong{font-size:25px}}
