@@ -709,7 +709,7 @@ function buildSessionProfile(
           true,
 
         suspicious_vehicles_create:
-          true,
+          (officerProfile?.can_manage_vehicles === true && officerProfile?.vehicle_manager_status === "active"),
 
         suspicious_vehicles_review:
           false,
@@ -721,7 +721,7 @@ function buildSessionProfile(
           true,
 
         vehicles_create:
-          true,
+          (officerProfile?.can_manage_vehicles === true && officerProfile?.vehicle_manager_status === "active"),
 
         vehicles_deactivate:
           false,
