@@ -1083,22 +1083,22 @@
 
       <label>
         Región
-        <input name="region" required maxlength="100">
+        <input name="region" maxlength="100">
       </label>
 
       <label>
         Comuna
-        <input name="commune" required maxlength="100">
+        <input name="commune" maxlength="100">
       </label>
 
       <label class="span-2">
         Lugar de observación
-        <input name="observation_place" required maxlength="250">
+        <input name="observation_place" maxlength="250">
       </label>
 
       <label>
         Fecha y hora
-        <input name="observed_at" type="datetime-local" required>
+        <input name="observed_at" type="datetime-local">
       </label>
 
       <label>
@@ -1108,12 +1108,12 @@
 
       <label class="span-2">
         Características del vehículo
-        <textarea name="vehicle_characteristics" required maxlength="3000"></textarea>
+        <textarea name="vehicle_characteristics" maxlength="3000"></textarea>
       </label>
 
       <label>
         Categoría modus operandi
-        <input name="modus_operandi_category" required maxlength="200">
+        <input name="modus_operandi_category" maxlength="200">
       </label>
 
       <label>
@@ -1122,8 +1122,8 @@
       </label>
 
       <label class="span-2">
-        Observaciones
-        <textarea name="observations" maxlength="5000"></textarea>
+        Motivo de sospecha (obligatorio)
+        <textarea name="observations" maxlength="5000" required></textarea>
       </label>
 
       <label class="span-2">
@@ -1134,10 +1134,9 @@
           type="file"
           accept="image/jpeg,image/png,image/webp"
           multiple
-          required
         >
         <small id="suspiciousEvidenceSelection" class="form-note">
-          Selecciona entre 1 y 3 fotografías. Se procesarán como JPEG privado.
+          Fotografías opcionales: puedes adjuntar hasta 3.
         </small>
       </label>
 
