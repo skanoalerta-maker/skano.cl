@@ -3948,6 +3948,25 @@ $("#suspiciousCreateForm")?.addEventListener("submit", async event => {
   delete data.evidence_files;
   data.year = data.year ? Number(data.year) : null;
 
+  const motivoCampo = form.elements.namedItem("observations");
+
+  if (!motivoCampo) {
+    $("#suspiciousCreateMessage").textContent =
+      "No se encontro el campo Motivo de sospecha.";
+    return;
+  }
+
+  const motivo = String(motivoCampo.value || "").trim();
+
+  if (!motivo) {
+    $("#suspiciousCreateMessage").textContent =
+      "Debes indicar el motivo de sospecha.";
+    motivoCampo.focus();
+    return;
+  }
+
+  data.observations = motivo;
+
   const normalizedPlate = normalizePlate(data.plate || "");
   if (normalizedPlate.length < 5 || normalizedPlate.length > 8) {
     $("#suspiciousCreateMessage").textContent = "Ingresa una patente válida.";
