@@ -1,0 +1,395 @@
+/* ==========================================
+   SKANO STORE - PORTAL PREMIUM
+   Personas naturales y empresas
+   ========================================== */
+
+#content:has(.portal-wrap) {
+  padding: 0 !important;
+  margin: 0;
+  max-width: none;
+  width: 100%;
+}
+
+.portal-wrap,
+.portal-wrap * {
+  box-sizing: border-box;
+}
+
+.portal-wrap {
+  --sk-bg: #070f1e;
+  --sk-panel: #101f36;
+  --sk-blue: #1674ff;
+  --sk-line: #304968;
+  --sk-text: #f3f8ff;
+  --sk-muted: #adc1dd;
+
+  min-height: 780px;
+  padding: 55px 20px 95px;
+  color: var(--sk-text);
+  background:
+    radial-gradient(ellipse 650px 420px at 50% 0%,
+      rgba(23,108,238,.25), transparent 75%),
+    radial-gradient(ellipse 400px 300px at 100% 75%,
+      rgba(17,76,159,.12), transparent 80%),
+    linear-gradient(155deg, #081427 0%, #070e1b 100%);
+  font-family: Inter, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+}
+
+.portal-brand {
+  max-width: 620px;
+  margin: 0 auto 32px;
+  text-align: center;
+}
+
+.portal-brand img {
+  display: block;
+  width: 112px;
+  height: 112px;
+  margin: 0 auto 12px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 24px rgba(20,113,255,.25));
+}
+
+.portal-brand strong {
+  display: block;
+  color: #fff;
+  font-size: clamp(26px, 5vw, 34px);
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.portal-brand strong span {
+  color: #66adff;
+}
+
+.portal-brand p {
+  margin: 12px 0 0;
+  color: #aec5e3;
+  font-size: 14px;
+  letter-spacing: .3px;
+}
+
+.portal-card {
+  width: min(100%, 640px);
+  margin: 0 auto;
+  padding: clamp(24px, 5vw, 44px);
+  border: 1px solid rgba(111,155,218,.25);
+  border-radius: 24px;
+  background:
+    linear-gradient(160deg,
+      rgba(21,42,70,.98),
+      rgba(12,25,45,.99));
+  box-shadow:
+    0 32px 85px rgba(0,0,0,.42),
+    0 0 0 1px rgba(255,255,255,.025) inset;
+}
+
+.portal-card h2 {
+  margin: 0 0 12px;
+  color: #fff;
+  font-size: clamp(24px, 4vw, 30px);
+  font-weight: 800;
+  letter-spacing: -.7px;
+  line-height: 1.2;
+}
+
+.portal-card h3 {
+  margin: 28px 0 15px;
+  padding-bottom: 12px;
+  color: #dbeaff;
+  font-size: 15px;
+  font-weight: 800;
+  border-bottom: 1px solid #344b69;
+}
+
+.portal-muted {
+  margin: 0 0 24px;
+  color: var(--sk-muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.portal-card form {
+  display: block;
+  margin: 0;
+}
+
+.portal-card label {
+  display: block;
+  margin: 16px 0;
+  color: #dce9fc;
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: .1px;
+}
+
+.portal-card input:not([type="radio"]):not([type="checkbox"]) {
+  display: block;
+  width: 100%;
+  min-height: 52px;
+  margin-top: 9px;
+  padding: 13px 15px;
+  border: 1px solid #3a5576;
+  border-radius: 11px;
+  outline: none;
+  background: #091729;
+  color: #fff;
+  font-size: 15px;
+  font-family: inherit;
+  transition: border-color .2s, box-shadow .2s,
+    background .2s;
+}
+
+.portal-card input::placeholder {
+  color: #829bb9;
+}
+
+.portal-card input:not([type="radio"]):not([type="checkbox"]):focus {
+  background: #0d2038;
+  border-color: #4b9aff;
+  box-shadow: 0 0 0 3px rgba(30,121,255,.19);
+}
+
+.portal-types {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 14px;
+  margin: 20px 0 25px;
+}
+
+.portal-types label {
+  display: flex;
+  align-items: center;
+  min-height: 72px;
+  gap: 10px;
+  padding: 16px 14px;
+  margin: 0;
+  border: 1px solid #405978;
+  border-radius: 13px;
+  background: #0d2038;
+  cursor: pointer;
+  font-size: 14px;
+  transition: border-color .2s, background .2s;
+}
+
+.portal-types label:hover {
+  border-color: #6eaeff;
+}
+
+.portal-types label:has(input:checked) {
+  border-color: #308dff;
+  background: linear-gradient(135deg,
+    #123d78, #112b4d);
+  box-shadow: 0 0 0 1px rgba(48,141,255,.2) inset;
+}
+
+.portal-types input[type="radio"],
+.portal-check input[type="checkbox"] {
+  accent-color: #2787ff;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.portal-card [hidden] {
+  display: none !important;
+}
+
+.portal-check {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 15px;
+  border: 1px solid #354c68;
+  border-radius: 12px;
+  background: rgba(10,25,47,.7);
+  line-height: 1.6;
+}
+
+.portal-card button,
+.portal-card a.portal-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 51px;
+  padding: 14px 20px;
+  margin: 22px 0 14px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(115deg,#1266ec,#2d8dff);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  font-family: inherit;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 9px 24px rgba(15,103,255,.22);
+  transition: transform .18s, filter .18s;
+}
+
+.portal-card button:hover,
+.portal-card a.portal-button:hover {
+  filter: brightness(1.13);
+  transform: translateY(-1px);
+}
+
+.portal-card button:disabled {
+  opacity: .6;
+  transform: none;
+  cursor: wait;
+}
+
+.portal-card button.portal-secondary {
+  background: #172e4d;
+  border: 1px solid #456487;
+  box-shadow: none;
+}
+
+.portal-card a:not(.portal-button) {
+  display: inline-block;
+  margin: 10px 10px 10px 0;
+  color: #8dbdff;
+  font-size: 14px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.portal-card a:not(.portal-button):hover {
+  color: #d5eaff;
+  text-decoration: underline;
+}
+
+.portal-links {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  margin-top: 18px;
+}
+
+.portal-summary {
+  display: grid;
+  gap: 12px;
+  margin: 24px 0;
+  padding: 24px;
+  border: 1px solid #36577d;
+  border-radius: 15px;
+  background: #0c1c32;
+  color: #c5d8ee;
+}
+
+.portal-summary b {
+  color: #fff;
+  font-size: 19px;
+}
+
+#portal-message {
+  min-height: 20px;
+  margin: 18px 0 0;
+  color: #a6d1ff;
+  font-size: 14px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.portal-wrap :focus-visible {
+  outline: 3px solid #65aeff;
+  outline-offset: 3px;
+}
+
+@media(max-width:600px) {
+  .portal-wrap {
+    min-height: 650px;
+    padding: 30px 12px 65px;
+  }
+
+  .portal-brand img {
+    width: 90px;
+    height: 90px;
+  }
+
+  .portal-card {
+    padding: 25px 20px;
+    border-radius: 18px;
+  }
+
+  .portal-types {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .portal-types label {
+    min-height: 55px;
+  }
+
+  .portal-links {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  .portal-wrap *,
+  .portal-wrap *::before,
+  .portal-wrap *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+/* SKANO PERFIL PREMIUM V2 */
+
+.portal-login-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px;
+  margin: 8px 0 16px;
+  background: rgba(16, 185, 129, .08);
+  border: 1px solid rgba(52, 211, 153, .3);
+  border-radius: 10px;
+  color: #a7f3d0;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.portal-login-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 12px rgba(52, 211, 153, .5);
+}
+
+.portal-card form h3 {
+  margin-top: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(133, 173, 224, .22);
+  letter-spacing: .3px;
+}
+
+.portal-card label {
+  line-height: 1.5;
+}
+
+.portal-card input:not([type="radio"]):not([type="checkbox"]) {
+  background: rgba(5, 17, 34, .7);
+  border: 1px solid #405d80;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,.12);
+}
+
+.portal-card input:not([type="radio"]):not([type="checkbox"]):hover {
+  border-color: #6486af;
+}
+
+.portal-card input:not([type="radio"]):not([type="checkbox"]):focus {
+  border-color: #4ca0ff;
+  box-shadow: 0 0 0 4px rgba(45, 141, 255, .15);
+}
+
+.portal-card > form > button {
+  margin-top: 28px;
+}

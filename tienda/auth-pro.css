@@ -1,0 +1,208 @@
+﻿/* SKANO STORE - PREMIUM AUTH */
+
+body:has(#real-auth-status) {
+  background: #081325;
+}
+
+body:has(#real-auth-status) #content {
+  background:
+    radial-gradient(ellipse at 50% 8%, #16366d 0%, transparent 50%),
+    linear-gradient(180deg, #09172d, #08111f);
+  color: #f7faff;
+  min-height: 720px;
+  padding: 65px 20px 85px;
+}
+
+body:has(#real-auth-status) #content > .heading {
+  max-width: 650px;
+  margin: 0 auto 35px;
+  text-align: center;
+  border: 0;
+}
+
+body:has(#real-auth-status) #content > .heading .eyebrow {
+  color: #69aaff;
+  font-size: 12px;
+  letter-spacing: 3px;
+  font-weight: 800;
+}
+
+body:has(#real-auth-status) #content > .heading h1 {
+  color: #ffffff;
+  font-size: clamp(30px, 5vw, 45px);
+  line-height: 1.12;
+  letter-spacing: -1.5px;
+  margin: 18px 0;
+}
+
+body:has(#real-auth-status) #content > .heading p {
+  color: #a9bfdb;
+  font-size: 15px;
+}
+
+body:has(#real-auth-status) #content > section.panel {
+  max-width: 500px !important;
+  margin: 24px auto !important;
+  padding: 36px !important;
+  border: 1px solid #304b72 !important;
+  border-radius: 22px !important;
+  background: #101f36 !important;
+  box-shadow:
+    0 28px 75px rgba(0, 0, 0, .35),
+    0 0 55px rgba(25, 100, 235, .09);
+}
+
+body:has(#real-auth-status) #content > section.panel h2 {
+  color: #ffffff;
+  font-size: 25px;
+  letter-spacing: -.6px;
+  margin: 0 0 24px;
+}
+
+body:has(#real-auth-status) #content > section.panel h3 {
+  color: #ffffff;
+}
+
+body:has(#real-auth-status) #content > section.panel label {
+  color: #d7e6fa;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+body:has(#real-auth-status) #content > section.panel input {
+  width: 100% !important;
+  min-height: 51px;
+  border-radius: 11px !important;
+  background: #081427 !important;
+  color: #ffffff !important;
+  border: 1px solid #385270 !important;
+  padding: 14px 16px !important;
+  font-size: 15px;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+body:has(#real-auth-status) #content > section.panel input:focus {
+  outline: none;
+  border-color: #3c91ff !important;
+  box-shadow: 0 0 0 3px rgba(38, 118, 255, .2);
+}
+
+body:has(#real-auth-status) #content > section.panel button.button,
+body:has(#real-auth-status) #content > section.panel form button {
+  display: block;
+  width: 100%;
+  padding: 15px 18px;
+  margin: 20px 0 12px;
+  border: 0;
+  border-radius: 11px;
+  color: white;
+  background: linear-gradient(110deg, #0865ee, #318aff);
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0, 95, 255, .22);
+  transition: transform .2s, filter .2s;
+}
+
+body:has(#real-auth-status) #content > section.panel form button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.12);
+}
+
+body:has(#real-auth-status) #content > section.panel button:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
+body:has(#real-auth-status) #real-google {
+  display: block;
+  width: 100%;
+  background: #162a47;
+  color: #ffffff;
+  border: 1px solid #405a80;
+  border-radius: 11px;
+  padding: 14px 18px;
+  margin: 12px 0 20px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+body:has(#real-auth-status) #real-google:hover {
+  background: #213a5c;
+}
+
+body:has(#real-auth-status) #content > section.panel a {
+  display: inline-block;
+  color: #78b2ff;
+  text-decoration: none;
+  font-size: 14px;
+  margin: 7px 15px 7px 0;
+  font-weight: 600;
+}
+
+body:has(#real-auth-status) #content > section.panel a:hover {
+  color: #bcd9ff;
+  text-decoration: underline;
+}
+
+body:has(#real-auth-status) #content > section.panel p {
+  color: #c0d0e5;
+}
+
+body:has(#real-auth-status) #real-auth-status {
+  max-width: 500px !important;
+  min-height: 18px;
+  color: #a9caff;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  body:has(#real-auth-status) #content {
+    padding: 35px 15px 60px;
+    min-height: 600px;
+  }
+
+  body:has(#real-auth-status) #content > section.panel {
+    padding: 24px !important;
+    border-radius: 16px !important;
+  }
+}
+
+/* Logo oficial SKANO en autenticacion */
+.skano-auth-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.skano-auth-brand img {
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 25px rgba(0,102,255,.32));
+}
+
+.skano-auth-brand-name {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.skano-auth-brand-name strong {
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.skano-auth-brand-name span {
+  color: #6faaff;
+  font-size: 12px;
+  letter-spacing: 7px;
+  font-weight: 800;
+}

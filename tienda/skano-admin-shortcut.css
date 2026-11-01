@@ -1,0 +1,23 @@
+/* Acceso visible solo cuando el servidor verifica al propietario */
+#skano-admin-shortcut {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #075fe9;
+  color: #fff !important;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1px solid #075fe9;
+}
+#skano-admin-shortcut:hover, #skano-admin-shortcut:focus-visible {
+  background: #0648ae;
+  outline-offset: 3px;
+}
+@media (max-width: 700px) {
+  #skano-admin-shortcut { font-size: 13px; padding: 8px 10px; }
+  .tools { flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+}

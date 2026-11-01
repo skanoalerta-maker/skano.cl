@@ -1,0 +1,28 @@
+/* SKANO STORE: integracion web del panel de administracion. No modifica Firebase. */
+:root { --skano-web-blue: #1265dc; --skano-web-ink: #14243a; }
+body > header { position: sticky; top: 0; z-index: 80; background: #fff; box-shadow: 0 1px 12px rgba(16,34,60,.10); }
+body > nav#nav { position: relative; z-index: 30; }
+#content { min-height: 55vh; }
+#skano-real-admin { width: min(1480px, 100%); margin-inline: auto; padding: clamp(16px, 2vw, 30px); color: var(--skano-web-ink); }
+#skano-real-admin .skano-admin-web-nav { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin: 0 0 18px; }
+#skano-real-admin .skano-admin-web-nav a { color: var(--skano-web-blue); text-decoration: none; font-weight: 650; border: 1px solid rgba(18,101,220,.22); border-radius: 11px; padding: 9px 14px; background: #fff; }
+#skano-real-admin .skano-admin-web-nav a:hover { background: #edf5ff; }
+#skano-real-admin .admin-heading { padding: clamp(18px,3vw,30px); border-radius: 18px; background: linear-gradient(115deg,#0b2146,#1265dc); color: white; margin-bottom: 20px; }
+#skano-real-admin .admin-heading h1, #skano-real-admin .admin-heading p, #skano-real-admin .admin-heading .eyebrow { color: white; }
+#skano-real-admin .admin-layout { display: grid; grid-template-columns: minmax(190px,240px) minmax(0,1fr); gap: 20px; align-items: start; }
+#skano-real-admin .admin-layout > aside { position: sticky; top: 110px; display: flex; flex-direction: column; gap: 5px; padding: 14px; border: 1px solid #dce7f7; border-radius: 16px; background: #f7faff; min-width: 0; }
+#skano-real-admin .admin-layout > aside a { display: block; padding: 10px 12px; border-radius: 9px; color: #244268; text-decoration: none; overflow-wrap: anywhere; }
+#skano-real-admin .admin-layout > aside a:hover { background: #e6f0ff; }
+#skano-real-admin .admin-layout > aside a.active { background: #1265dc; color: #fff; font-weight: 700; }
+#skano-real-admin .admin-body { min-width: 0; padding: clamp(14px,2vw,24px); border-radius: 16px; background: #fff; border: 1px solid #e2e9f3; box-shadow: 0 3px 18px rgba(18,42,75,.045); }
+#skano-real-admin .table-wrap { max-width: 100%; overflow-x: auto; }
+#skano-real-admin input, #skano-real-admin textarea, #skano-real-admin select { max-width: 100%; }
+#skano-real-admin .metrics { display: grid; grid-template-columns: repeat(auto-fit,minmax(185px,1fr)); gap: 14px; }
+#skano-admin-shortcut { display: inline-flex; align-items: center; padding: 8px 12px; color: #1265dc; font-weight: 750; border-radius: 10px; background: #eaf3ff; white-space: nowrap; text-decoration: none; }
+@media (max-width: 850px) {
+  body > header { position: relative; }
+  #skano-real-admin .admin-layout { grid-template-columns: minmax(0,1fr); }
+  #skano-real-admin .admin-layout > aside { position: static; flex-direction: row; flex-wrap: nowrap; overflow-x: auto; padding: 10px; }
+  #skano-real-admin .admin-layout > aside a { flex: 0 0 auto; white-space: nowrap; }
+  #skano-real-admin .skano-admin-web-nav { align-items: stretch; }
+}

@@ -1,0 +1,22 @@
+.skano-store{padding:96px 0;background:linear-gradient(115deg,#06182e,#0a2848);scroll-margin-top:90px}
+.store-layout{display:grid;grid-template-columns:1.1fr 1fr;gap:64px;align-items:center}
+.store-kicker{display:flex;align-items:center;gap:10px;color:#6bcce9;font-size:11px;font-weight:800;letter-spacing:.16em}
+.store-kicker::before{content:"";width:26px;height:2px;background:#0878f9}
+.store-copy h2{font-size:clamp(36px,4.5vw,60px);line-height:1.06;letter-spacing:-.055em;margin:22px 0;color:#f7fbff}
+.store-copy h2 em{font-style:normal;color:#29d8ed}
+.store-copy>p{font-size:17px;line-height:1.8;color:#b6cadc;max-width:480px}
+.store-cta{display:inline-flex;align-items:center;justify-content:space-between;gap:40px;min-height:58px;padding:18px 25px;margin-top:18px;border:0;border-radius:5px;background:#0870df;color:white;font:800 13px Manrope,Arial,sans-serif;text-decoration:none;box-shadow:0 10px 25px #0870df25;transition:background .2s,transform .2s}
+.store-cta:hover{background:#075cb7;transform:translateY(-2px)}
+.store-cta:focus-visible{outline:3px solid #09243c;outline-offset:5px}
+.store-cta:disabled{cursor:default;transform:none}
+.store-copy .store-note{font-size:12px;line-height:1.5;margin:14px 0 0}
+.store-art{position:relative;isolation:isolate;min-height:430px;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;border-radius:12px;background:radial-gradient(ellipse at 50% 65%,#126980 0%,#0b2a46 44%,#06182e 80%);color:#fff}
+.store-art::before{content:"";position:absolute;inset:0;z-index:-1;background-image:linear-gradient(#66d9ed09 1px,transparent 1px),linear-gradient(90deg,#66d9ed09 1px,transparent 1px);background-size:42px 42px}
+.store-art-label{position:absolute;top:25px;left:28px;font-size:10px;letter-spacing:.18em;color:#b2cbdc}
+.store-bag{width:230px;height:265px;filter:drop-shadow(0 28px 20px #0006);transform:rotate(-7deg);margin:30px 0 15px}
+.store-art-caption{text-align:center;font-size:12px;letter-spacing:.08em;color:#b4d6e5;margin:12px 20px 24px}
+.store-art-caption strong{display:block;font-size:17px;letter-spacing:-.02em;color:#fff;margin-bottom:9px}
+
+@media(max-width:1100px){.store-layout{gap:32px}}
+@media(max-width:760px){.skano-store{padding:60px 0}.store-layout{grid-template-columns:1fr;gap:32px}.store-art{min-height:350px}.store-bag{width:185px;height:220px}.store-copy>p{font-size:16px}.store-cta{width:100%;gap:16px}.store-copy h2{max-width:480px}}
+@media(prefers-reduced-motion:reduce){.store-cta{transition:none}.store-cta:hover{transform:none}}
