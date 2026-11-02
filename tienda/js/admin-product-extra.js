@@ -1,3 +1,4 @@
+import {mountMediaEditor,privatePhoto} from './admin-media-editor.js';
 'use strict';
 import {app} from './store-firebase.js';
 import {getFunctions,httpsCallable} from 'https://www.gstatic.com/firebasejs/12.7.0/firebase-functions.js';
@@ -13,6 +14,7 @@ export function installStoreProductExtras(products,refresh){
     const product=products.find(p=>p.id===button.dataset.productId);
     if(!product)return;
     const action=button.dataset.skanoExtra;
+    if(action==='photos'&&product.publicationStatus==='draft'){const panel=document.createElement('section');panel.className='panel';area.after(panel);await mountMediaEditor(panel,product,refresh);return;}
     if(action==='photos'){
       const current=document.getElementById('skano-photo-details');current?.remove();
       const panel=document.createElement('section');panel.id='skano-photo-details';panel.className='panel';
@@ -26,7 +28,7 @@ export function installStoreProductExtras(products,refresh){
         const gallery=document.createElement('div');gallery.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px';
         photos.forEach((img,i)=>{
           const cell=document.createElement('div');cell.style.cssText='border:1px solid #d6e4f5;border-radius:10px;padding:8px';
-          const pic=document.createElement('img');pic.src=img.url;pic.alt='Fotografía '+(i+1);pic.loading='lazy';pic.referrerPolicy='no-referrer';pic.style.cssText='width:100%;height:145px;object-fit:contain';
+          const pic=document.createElement('img');privatePhoto(product.id,img).then(src=>{if(pic.isConnected)pic.src=src;}).catch(()=>{pic.alt='No se pudo consultar la fotografía privada';});pic.alt='Fotografía '+(i+1);pic.loading='lazy';pic.referrerPolicy='no-referrer';pic.style.cssText='width:100%;height:145px;object-fit:contain';
           const label=document.createElement('p');label.textContent=i===product.coverIndex?'Portada · Foto '+(i+1):'Foto '+(i+1);
           cell.append(pic,label);gallery.append(cell);
         });panel.append(gallery);

@@ -1,11 +1,10 @@
 'use strict';
 import {auth, app} from './store-firebase.js';
-import {installStoreDraftActions} from './admin-draft-actions.js?v=20261101';
-import {installStoreProductExtras} from './admin-product-extra.js';
-import {mountProductDraftForm} from './admin-product-form-v2.js?v=20261101';
+import {installStoreDraftActions} from './admin-draft-actions.js?v=20261101-stage1';
+import {installStoreProductExtras} from './admin-product-extra.js?v=20261101-stage1';
+import {mountProductDraftForm} from './admin-product-form-v2.js?v=20261101-stage1';
 import {onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js';
 import {getFunctions,httpsCallable} from 'https://www.gstatic.com/firebasejs/12.7.0/firebase-functions.js';
-
 const fn = getFunctions(app, 'us-central1');
 const api = {
   categories: httpsCallable(fn, 'listStoreCategories'),
@@ -55,15 +54,15 @@ async function draw(){
  const renderId=++renderGeneration, uid=user?.uid, hash=location.hash;
  const current=()=>renderId===renderGeneration&&authorized&&auth.currentUser?.uid===uid&&location.hash===hash;
  if(section==='categorias'){
-   shell(section,`<h2>Categorías de la tienda</h2><div class="panel"><form id="skano-category-create"><label>Nueva categoría<input name="name" minlength="3" maxlength="70" required placeholder="Ej. Accesorios vehiculares"></label><button class="button">Crear categoría</button></form></div><div id="skano-categories-table"></div>`);
-   document.getElementById('skano-category-create').addEventListener('submit',async e=>{e.preventDefault();const b=e.target.querySelector('button');b.disabled=true;try{await api.createCategory({name:e.target.elements.name.value.trim()});await loadCategories();drawCategories();status('Categoría guardada.');e.target.reset();}catch(x){status('Error: '+(x.message||x.code));}finally{b.disabled=false;}});
+   shell(section,`<h2>Categorías de la tienda</h2><div class="panel"><form id="skano-category-create"><label>Nueva categoría<input name="name" minlength="3" maxlength="70" required placeholder="Ej. Accesorios vehiculares"></label><label>Prefijo SKU<input name="prefix" pattern="[A-Za-z]{2,5}" maxlength="5" placeholder="Ej. ACC"></label><label>Categoría principal (opcional)<select name="parentId"><option value="">Sin categoría principal</option>${categories.filter(c=>c.active&&!c.parentId).map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('')}</select></label><button class="button">Crear categoría</button></form></div><div id="skano-categories-table"></div>`);
+   document.getElementById('skano-category-create').addEventListener('submit',async e=>{e.preventDefault();const b=e.target.querySelector('button');b.disabled=true;try{await api.createCategory({name:e.target.elements.name.value.trim(),prefix:e.target.elements.prefix.value.trim()||undefined,parentId:e.target.elements.parentId.value||null});await loadCategories();drawCategories();status('Categoría guardada.');e.target.reset();}catch(x){status('Error: '+(x.message||x.code));}finally{b.disabled=false;}});
    await loadCategories();if(!current())return;drawCategories();return;
  }
  if(section==='productos'){
    shell(section,`<div class="section-title"><h2>Productos reales</h2></div><div class="notice">Gestiona los productos reales. Antes de publicar, revisa su categoría, información y fotografías. Las compras permanecen deshabilitadas.</div><div id="skano-real-product-form"></div><div id="skano-products-table">Cargando productos…</div>`);
    mountProductDraftForm(document.getElementById('skano-real-product-form'), async()=>{if(current())await draw();});
    try {const result=await api.products();if(!current())return;products=result.data?.products||[];
-   const rows=products.map(p=>[esc(p.productCode||'Sin código'),esc(p.name),esc(p.category),esc(p.brand||'—'),esc(p.model||'—'),'$'+Number(p.price||0).toLocaleString('es-CL'),esc(p.publicationStatus||'draft'),p.publicationStatus==='draft'?'<button type="button" data-store-action="edit" data-product-id="'+esc(p.id)+'">Editar</button>  <button type="button" data-store-action="publish" data-product-id="'+esc(p.id)+'">Publicar</button> <button type="button" data-skano-extra="photos" data-product-id="'+esc(p.id)+'">Ver fotos</button> <button type="button" data-skano-extra="archive" data-product-id="'+esc(p.id)+'" style="color:#b42318">Eliminar</button>':'<button type="button" data-skano-extra="photos" data-product-id="'+esc(p.id)+'">Ver fotos</button>']);
+   const rows=products.map(p=>[esc(p.productCode||'Sin código'),esc(p.name),esc(p.category),esc(p.brand||'—'),esc(p.model||'—'),'$'+Number(p.price||0).toLocaleString('es-CL'),esc(p.publicationStatus||'draft'),'<button type="button" data-store-action="history" data-product-id="'+esc(p.id)+'">Historial</button> '+(p.publicationStatus==='draft'?'<button type="button" data-store-action="verify-image" data-product-id="'+esc(p.id)+'">Revisar fotos</button> <button type="button" data-store-action="stock" data-product-id="'+esc(p.id)+'">Stock</button> <button type="button" data-store-action="edit" data-product-id="'+esc(p.id)+'">Editar</button>  <button type="button" data-store-action="publish" data-product-id="'+esc(p.id)+'">Publicar</button> <button type="button" data-skano-extra="photos" data-product-id="'+esc(p.id)+'">Fotografías</button> <button type="button" data-skano-extra="archive" data-product-id="'+esc(p.id)+'" style="color:#b42318">Archivar</button>':'<button type="button" data-store-action="unpublish" data-product-id="'+esc(p.id)+'">Despublicar</button> <button type="button" data-skano-extra="photos" data-product-id="'+esc(p.id)+'">Fotografías</button>')]);
    document.getElementById('skano-products-table').innerHTML=rows.length?table(['Código','Artículo','Categoría','Marca','Modelo','Precio','Estado','Acciones'],rows):'<div class="panel">Todavía no hay productos registrados.</div>';
    status(`${products.length} producto(s) consultados.`);
    installStoreDraftActions(products,async()=>{await draw();});
@@ -71,7 +70,8 @@ async function draw(){
    }catch(e){if(!current())return;status('No se pudieron cargar los productos: '+(e.message||e.code));}return;
  }
  if(section===''){
-   shell(section,`<h2>Resumen de la tienda</h2><div class="metrics"><div class="panel"><span>Categorías registradas</span><strong>${categories.length}</strong><small>Datos reales</small></div><div class="panel"><span>Ventas reales</span><strong>—</strong><small>Checkout pendiente</small></div><div class="panel"><span>Pedidos pagados</span><strong>—</strong><small>Sin integración de pedidos</small></div></div><div class="panel"><h3>Administración simplificada</h3><p>Ya puedes consultar los productos y gestionar las categorías reales desde el menú. Las compras y reportes se habilitarán cuando se integren los pedidos.</p><a class="button" href="#/admin/productos">Ver productos</a></div>`);return;
+   let list=[];try{const summary=await api.products();if(!current())return;list=summary.data?.products||[];}catch(e){shell(section,'<p role="alert">No se pudo consultar el resumen. Recarga para reintentar.</p>');return;}
+   shell(section,`<h2>Resumen de la tienda</h2><div class="metrics"><div class="panel"><span>Categorías registradas</span><strong>${categories.length}</strong><small>Datos reales</small></div><div class="panel"><span>Productos publicados</span><strong>${list.filter(p=>p.publicationStatus==='published').length}</strong><small>${list.filter(p=>p.publicationStatus==='draft').length} borradores activos (últimos 50)</small></div><div class="panel"><span>Ventas reales</span><strong>—</strong><small>Checkout pendiente</small></div><div class="panel"><span>Pedidos pagados</span><strong>—</strong><small>Sin integración de pedidos</small></div></div><div class="panel"><h3>Administración simplificada</h3><p>Ya puedes consultar los productos y gestionar las categorías reales desde el menú. Las compras y reportes se habilitarán cuando se integren los pedidos.</p><a class="button" href="#/admin/productos">Ver productos</a></div>`);return;
  }
  shell(section,`<h2>${esc(nav.find(x=>x[0]===section)?.[1]||'Sección')}</h2><div class="panel"><p>Esta sección aún no está conectada a datos reales. No se muestran clientes, pedidos ni ventas ficticias.</p></div>`);
 }
@@ -84,7 +84,7 @@ function drawCategories(){
  for(const item of categories){
    const row=document.createElement('div');row.className='skano-cat-row';
    const input=document.createElement('input');input.value=item.name;input.maxLength=70;input.setAttribute('aria-label','Nombre de categoría');
-   const state=document.createElement('span');state.textContent=item.active?'Activa':'Desactivada';
+   const state=document.createElement('span');state.textContent=(item.active?'Activa':'Desactivada')+(item.parentId?' · Subcategoría':'')+' · '+item.prefix;
    const save=document.createElement('button');save.type='button';save.textContent='Guardar';
    const toggle=document.createElement('button');toggle.type='button';toggle.textContent=item.active?'Desactivar':'Activar';
    save.onclick=async()=>{save.disabled=true;try{await api.updateCategory({id:item.id,name:input.value.trim()});await loadCategories();drawCategories();status('Categoría actualizada.');}catch(e){status('Error: '+(e.message||e.code));}finally{save.disabled=false;}};

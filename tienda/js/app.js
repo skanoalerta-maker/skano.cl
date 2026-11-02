@@ -39,5 +39,5 @@ window.addEventListener('hashchange',()=>{render();window.scrollTo(0,0);if(!owne
 render();start();
 // Load authenticated UI only when needed. Public routes never request private records.
 let adminLoaded=false,accountLoaded=false;
-async function protectedUI(){const path=route();try{if(!adminLoaded){adminLoaded=true;await import('./admin-real.js?v=20261101');}if(/^cuenta(\/|$)/.test(path)&&!accountLoaded){accountLoaded=true;await import('./portal-clientes.js');}}catch{if(ownedRoute())root.innerHTML='<div class="panel" role="alert">No se pudo cargar el acceso. Comprueba tu conexión y recarga la página.</div>';}}
+async function protectedUI(){const path=route();try{if(!adminLoaded){adminLoaded=true;await import('./admin-real.js?v=20261101-stage1');}if(/^cuenta(\/|$)/.test(path)&&!accountLoaded){accountLoaded=true;await import('./portal-clientes.js');}}catch{if(ownedRoute())root.innerHTML='<div class="panel" role="alert">No se pudo cargar el acceso. Comprueba tu conexión y recarga la página.</div>';}}
 window.addEventListener('hashchange',protectedUI);protectedUI();
