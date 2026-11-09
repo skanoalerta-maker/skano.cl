@@ -1,0 +1,39 @@
+/* Portada skano.cl · SKANO STORE como división comercial (rediseño estructural) */
+#skano-store.sxh{padding:120px 0 70px;background:radial-gradient(1000px 560px at 90% 0,#0a52ff38,transparent 62%),radial-gradient(800px 500px at 0 100%,#00a3ff22,transparent 60%),#03070f;border-top:1px solid #12315a;border-bottom:1px solid #12315a;overflow:hidden}
+#skano-store.sxh::before,#skano-store.sxh::after{display:none}
+.sxh-division{display:flex;align-items:center;gap:22px;padding-bottom:22px;margin-bottom:56px;border-bottom:1px solid #16345f}
+.sxh-mark{font-size:20px;font-weight:800;letter-spacing:.08em}.sxh-mark b{margin-left:8px;padding:5px 9px;border:1px solid #2f7bff;border-radius:6px;color:#7cc4ff;font-size:11px;letter-spacing:.14em}
+.sxh-label{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8fa6c6;flex:1}
+#skano-store .sxh-top{color:#8fc3ff;font-weight:700;font-size:13px;text-decoration:none}
+.sxh-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:64px;align-items:center}
+#skano-store.sxh h2{font-size:clamp(42px,5.6vw,92px);line-height:.96;letter-spacing:-.055em;margin:0 0 26px}
+#skano-store.sxh h2 em{font-style:normal;background:linear-gradient(100deg,#2f7bff 10%,#5ee6ff 90%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.sxh-lead{max-width:500px;font-size:17px;line-height:1.7;color:#b6c8e2;margin:0 0 34px}
+.sxh-actions{display:flex;gap:14px;flex-wrap:wrap}
+#skano-store .sxh-btn{display:inline-flex;align-items:center;gap:12px;min-height:56px;padding:0 30px;border-radius:999px;background:linear-gradient(135deg,#1457e6,#2d8bff);border:1px solid #5aa5ff;color:#fff;font-size:15px;font-weight:700;text-decoration:none;box-shadow:0 12px 40px #1460ff55;transition:transform .2s,box-shadow .2s}
+#skano-store .sxh-btn:hover{transform:translateY(-3px);box-shadow:0 16px 52px #1460ff88}
+#skano-store .sxh-btn.ghost{background:#ffffff0a;border-color:#ffffff33;box-shadow:none}
+.sxh-facts{display:flex;gap:10px;list-style:none;margin:34px 0 18px;padding:0}.sxh-facts li{padding:8px 16px;border:1px solid #1f4a94;border-radius:999px;background:#0b2a5a44;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:#c4dbef}
+.sxh-stage{position:relative;height:620px}
+.sxh-ph{position:absolute;margin:0;overflow:hidden;border-radius:26px;border:1px solid #2a4f8a;box-shadow:0 30px 80px #000c}
+.sxh-ph img{width:100%;height:100%;object-fit:cover;display:block}.sxh-ph::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,#03070f99)}
+.sxh-a{left:0;top:0;width:44%;height:100%}.sxh-b{left:47%;top:0;width:53%;height:44%}.sxh-c{left:47%;top:48%;width:25%;height:52%}.sxh-d{left:75%;top:48%;width:25%;height:52%}
+.sxh-stage::before{content:"";position:absolute;inset:-6%;background:radial-gradient(closest-side,#2d7bff3a,transparent);filter:blur(26px);z-index:-1}
+.sxh-chip{position:absolute;padding:10px 16px;border-radius:999px;background:#07101fdd;backdrop-filter:blur(14px);border:1px solid #3a68b3;font-size:12px;font-weight:700;color:#fff;box-shadow:0 12px 30px #0009}
+.sxh-chip-1{left:14px;bottom:20px}.sxh-chip-2{left:49%;top:calc(44% - 20px)}.sxh-chip-3{right:12px;bottom:20px}
+.sxh-cats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:70px}
+#skano-store .sxh-cats a{position:relative;display:grid;gap:6px;padding:24px;border:1px solid #17365f;border-radius:20px;background:linear-gradient(160deg,#0c2448bb,#07142ccc);color:#fff;text-decoration:none;transition:transform .3s,border-color .3s}
+#skano-store .sxh-cats a:hover{transform:translateY(-5px);border-color:#3d8bff}
+.sxh-cats span{font-size:11px;letter-spacing:.18em;color:#6db4ff;font-weight:700}.sxh-cats b{font-size:19px;letter-spacing:-.02em}.sxh-cats small{font-size:12.5px;color:#a9bfdc;line-height:1.5}
+.sxh-cats i{position:absolute;top:18px;right:20px;font-style:normal;color:#8fc3ff}
+@media(prefers-reduced-motion:no-preference){.sxh-ph{animation:sxhUp 1s both}.sxh-b{animation-delay:.1s}.sxh-c{animation-delay:.2s}.sxh-d{animation-delay:.3s}.sxh-chip{animation:sxhF 6s ease-in-out infinite}}
+@keyframes sxhUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}@keyframes sxhF{50%{transform:translateY(-7px)}}
+@media(max-width:1000px){.sxh-grid{grid-template-columns:1fr;gap:44px}.sxh-stage{height:480px}.sxh-cats{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){#skano-store.sxh{padding:64px 0 40px}.sxh-label{display:none}.sxh-division{margin-bottom:36px}.sxh-lead{font-size:15px}.sxh-actions a{flex:1;justify-content:center}.sxh-stage{height:380px}.sxh-cats{grid-template-columns:1fr;margin-top:46px}.sxh-ph{border-radius:18px}}
+#skano-store .sk-store-live{margin-top:64px}
+.sxh-chip-4{left:calc(47% + 8px);bottom:20px}
+#skano-store .sk-store-card figure{position:relative;aspect-ratio:4/3;overflow:hidden}
+#skano-store .sk-store-card figure img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#skano-store .sk-store-grid{align-items:stretch}
+@media(max-width:700px){.sxh-chip-4{left:calc(47% + 4px);font-size:10px;padding:8px 10px}}
+#skano-store.sxh h2 br{display:inline!important}

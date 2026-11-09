@@ -1,0 +1,15 @@
+/* Checkout, seguimiento y panel de pedidos. Hereda las variables de store-design.css. */
+.sk-checkout label{display:block;margin:0 0 12px;font-weight:600;color:#dbe7f5}
+.sk-checkout input,.sk-checkout select{display:block;width:100%;margin-top:6px;padding:12px 14px;border:1px solid #3a4f6a;border-radius:10px;font:inherit;min-height:44px;background:#0a1626;color:#f5f9ff}
+.sk-checkout input:focus-visible,.sk-checkout select:focus-visible{outline:3px solid #258cff;outline-offset:1px}
+.sk-checkout .panel{margin-bottom:18px}
+.sk-checkout aside.summary{position:sticky;top:90px;align-self:start}
+.sk-checkout aside .button{width:100%;margin-top:10px}
+.sk-checkout .muted,.panel .muted{color:#a9b9cc;font-size:.9rem}
+.status-pill{display:inline-block;padding:6px 14px;border-radius:999px;background:#e8f1ff;color:#0b3d91;font-weight:700}
+#sk-order .notice[role=status]{animation:sk-pulse 1.8s ease-in-out infinite}
+@keyframes sk-pulse{50%{opacity:.6}}
+@media (max-width:820px){.sk-checkout.two-col{display:block}.sk-checkout aside.summary{position:static}}
+@media (prefers-reduced-motion:reduce){#sk-order .notice[role=status]{animation:none}}
+#skano-orders-panel button{min-height:40px;margin:2px}
+#skano-orders-panel input{min-height:40px;padding:6px 10px;margin:2px}

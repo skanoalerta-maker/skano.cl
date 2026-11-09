@@ -1,0 +1,20 @@
+/* Productos publicados dentro de la sección SKANO STORE (portada). Oculto hasta que existan productos disponibles. */
+.sk-store-live{grid-column:1/-1;margin-top:8px}
+.sk-store-live[hidden]{display:none}
+.sk-store-live-title{margin:0;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#7fd9ea}
+.sk-store-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin:18px 0 0;padding:0;list-style:none}
+.sk-store-card{max-width:320px;display:flex;flex-direction:column;height:100%;background:#ffffff0a;border:1px solid #25384d;border-radius:14px;overflow:hidden;color:#f5f9ff;text-decoration:none;transition:transform .25s,border-color .25s}
+.sk-store-card:hover{transform:translateY(-4px);border-color:#22d9ee99}
+.sk-store-card:focus-visible{outline:3px solid #22d9ee;outline-offset:3px}
+.sk-store-card figure{margin:0;aspect-ratio:4/3;background:#fff;display:grid;place-items:center}
+.sk-store-card img{width:100%;height:100%;object-fit:contain}
+.sk-store-card div{padding:14px 16px 18px;display:grid;gap:5px}
+.sk-store-card small{color:#7fd9ea;letter-spacing:.08em;text-transform:uppercase;font-size:11px}
+.sk-store-card b{font-size:16px;line-height:1.25}
+.sk-store-card span{font-size:18px;font-weight:700}
+.sk-store-trust{display:flex;flex-wrap:wrap;gap:8px 24px;margin:22px 0 0;padding:0;list-style:none;color:#b9d3e6;font-size:14px}
+.sk-store-trust[hidden]{display:none}
+.sk-store-trust li:before{content:"";display:inline-block;width:7px;height:7px;margin-right:9px;border-radius:50%;background:#22d9ee;box-shadow:0 0 10px #22d9ee}
+@media(max-width:700px){.sk-store-grid{grid-template-columns:1fr 1fr;gap:12px}.sk-store-card div{padding:12px}.sk-store-card b{font-size:15px}}
+@media(max-width:420px){.sk-store-grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.sk-store-card{transition:none}}

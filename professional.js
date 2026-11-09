@@ -56,7 +56,7 @@ if(homeHero){
 }
 
 const ecosystem=document.querySelector('.ecosystem');
-if(ecosystem){
+if(ecosystem&&!document.querySelector('.sk-network')){
   const network=document.createElement('section');
   network.className='sk-network sk-reveal';
   network.setAttribute('aria-labelledby','sk-network-title');
