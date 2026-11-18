@@ -17,7 +17,7 @@ import {
   plateCorrectionCandidates,
   normalizePlate,
   isSuperadmin,
-} from "./portal-policy.mjs?v=20261118-2";
+} from "./portal-policy.mjs?v=20261118-3";
 
 // Acceso de Seguridad Ciudadana: deshabilitado hasta que las reglas de
 // Firestore y el lector PPU de producción apliquen allowed_institution_types.
@@ -74,6 +74,8 @@ const REASON_MESSAGES = Object.freeze({
   auth_user_not_found: "El servidor no encontró tu cuenta. Cierra sesión y vuelve a ingresar.",
   auth_lookup_unavailable:
     "El servidor no pudo verificar tu sesión en este momento. Tus datos siguen en pantalla; reintenta en unos minutos.",
+  session_unverified:
+    "Verificando tu acceso. Tu sesión sigue abierta y el formulario se conserva; reintenta en unos segundos.",
   session_revoked:
     "Tu sesión expiró. Vuelve a iniciar sesión en otra pestaña y reintenta: el formulario se conserva.",
   legacy_plate_document_id:

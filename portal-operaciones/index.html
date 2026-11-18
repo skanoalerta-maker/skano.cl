@@ -19,7 +19,7 @@
 
   <link
     rel="stylesheet"
-    href="/portal-operaciones/portal.css?v=20260826-3"
+    href="/portal-operaciones/portal.css?v=20261118-3"
   >
 
   <link
@@ -157,9 +157,14 @@
 
     <span class="spinner"></span>
 
-    <p>
+    <p id="loadingMessage">
       Validando acceso operativo…
     </p>
+
+    <div class="session-actions">
+      <button id="loadingRetry" type="button" class="primary" hidden>REINTENTAR</button>
+      <button id="loadingLogout" type="button" class="secondary" hidden>CERRAR SESIÓN</button>
+    </div>
 
   </div>
 
@@ -311,6 +316,12 @@
         role="status"
         hidden
       ></div>
+
+
+      <div id="sessionBanner" class="session-banner" role="status" hidden>
+        <span id="sessionBannerText"></span>
+        <button id="sessionRetry" type="button" class="secondary">REINTENTAR</button>
+      </div>
 
 
       <!-- =================================================
@@ -1465,7 +1476,7 @@
 
   <script
     type="module"
-    src="/portal-operaciones/portal.js?v=20261118-2"
+    src="/portal-operaciones/portal.js?v=20261118-3"
   ></script>
 
 

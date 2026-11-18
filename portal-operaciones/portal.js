@@ -40,11 +40,17 @@ import {
   VEHICLE_TYPES,
   normalizeVehicleType,
   plateValidationMessage
-} from "./portal-policy.mjs?v=20261118-2";
+} from "./portal-policy.mjs?v=20261118-3";
 
 import {
   renderInstitutionalManagement
-} from "./institutional-management.mjs?v=20261118-2";
+} from "./institutional-management.mjs?v=20261118-3";
+import {
+  SESSION_STATES,
+  createSessionManager,
+  isBlockedProfile,
+  readSources
+} from "./session-manager.mjs?v=20261118-3";
 
 
 /* =========================================================
@@ -95,7 +101,7 @@ const storage = getStorage(app);
    CLOUD FUNCTIONS
    ========================================================= */
 
-const callables =
+const rawCallables =
   Object.freeze({
 
     deactivateVehicle:
@@ -136,6 +142,32 @@ const callables =
     setInstitutionalRecordMunicipalAccess: httpsCallable(functions, "setInstitutionalRecordMunicipalAccess")
 
   });
+
+// Toda llamada protegida pasa por el gestor de sesión: si la autorización
+// no está confirmada no se ejecuta, y si el servidor responde que la sesión
+// no es válida se re-verifica (sin cerrar sesión por un error temporal).
+const callables = Object.freeze(Object.fromEntries(
+  Object.entries(rawCallables).map(([name, callable]) => [
+    name,
+    async (payload) => {
+      if (!session.canOperate()) {
+        session.revalidate({ force: true, reason: `call:${name}` });
+        throw Object.assign(
+          new Error("Verificando tu acceso. Reintenta en unos segundos."),
+          { code: "functions/unavailable", details: { reason: "session_unverified" } }
+        );
+      }
+      try {
+        return await callable(payload);
+      } catch (error) {
+        if (String(error?.code || "").endsWith("unauthenticated")) {
+          session.revalidate({ force: true, reason: `call:${name}` });
+        }
+        throw error;
+      }
+    },
+  ])
+));
 
 
 /* =========================================================
@@ -445,163 +477,36 @@ function enforcePermissions() {
 
 
 /* =========================================================
-   INVALIDAR SESIÓN
+   LEER PERFILES DE AUTORIZACIÓN
+   Cada fuente se lee por separado (session-manager.readSources):
+   - documento inexistente o permission-denied: definitivo (sin perfil)
+   - error de red o de servicio: indeterminado -> NO se decide la
+     revocación ni se cierra sesión.
    ========================================================= */
 
-async function invalidate(
-  message =
-    "No tienes autorización para ingresar al Portal de Operaciones SKANO."
-) {
-
-  state.validated =
-    false;
-
-  state.profile =
-    null;
-
-  state.user =
-    null;
-
-
-  await signOut(
-    auth
-  ).catch(
-    () => {}
-  );
-
-
-  $("#portalView").hidden =
-    true;
-
-  $("#loadingView").hidden =
-    true;
-
-  $("#loginView").hidden =
-    false;
-
-
-  $("#loginMessage").textContent =
-    message;
+async function readAuthorizationProfiles(user) {
+  const read = (collectionName) => async () => {
+    const snap = await getDoc(doc(db, collectionName, user.uid));
+    return snap.exists() ? snap.data() : null;
+  };
+  return readSources({
+    staffProfile: read("staff_accounts"),
+    adminProfile: read("admins"),
+    userProfile: read("users"),
+    officerProfile: read("police_officers"),
+  });
 }
 
+function authorizeSession(claims, values) {
+  const { staffProfile, adminProfile, userProfile, officerProfile } = values;
+  if (!authorizeOperationsSession(claims, staffProfile, adminProfile, userProfile, officerProfile)) {
+    return null;
+  }
+  return buildSessionProfile(staffProfile, adminProfile, userProfile, officerProfile) || null;
+}
 
-/* =========================================================
-   LEER PERFILES DE AUTORIZACIÓN
-
-   IMPORTANTE:
-
-   Un operations_staff normalmente puede leer:
-   staff_accounts/{uid}
-
-   Pero NO necesita poder leer:
-   admins/{uid}
-
-   Un admin puede leer su:
-   admins/{uid}
-
-   Por eso usamos Promise.allSettled.
-   Una consulta denegada NO hace caer automáticamente
-   la otra autorización válida.
-   ========================================================= */
-
-async function readAuthorizationProfiles(
-  user
-) {
-
-  const [
-    staffResult,
-    adminResult,
-    userResult,
-    officerResult
-  ] =
-    await Promise.allSettled([
-
-      getDoc(
-        doc(
-          db,
-          "staff_accounts",
-          user.uid
-        )
-      ),
-
-      getDoc(
-        doc(
-          db,
-          "admins",
-          user.uid
-        )
-      ),
-
-      getDoc(
-        doc(
-          db,
-          "users",
-          user.uid
-        )
-      ),
-
-      getDoc(
-        doc(
-          db,
-          "police_officers",
-          user.uid
-        )
-      )
-
-    ]);
-
-
-  const staffSnap =
-    staffResult.status ===
-    "fulfilled"
-      ? staffResult.value
-      : null;
-
-
-  const adminSnap =
-    adminResult.status ===
-    "fulfilled"
-      ? adminResult.value
-      : null;
-
-
-  const userSnap =
-    userResult.status ===
-    "fulfilled"
-      ? userResult.value
-      : null;
-
-
-  const officerSnap =
-    officerResult.status ===
-    "fulfilled"
-      ? officerResult.value
-      : null;
-
-
-  return {
-
-    staffProfile:
-      staffSnap?.exists()
-        ? staffSnap.data()
-        : null,
-
-    adminProfile:
-      adminSnap?.exists()
-        ? adminSnap.data()
-        : null,
-
-    userProfile:
-      userSnap?.exists()
-        ? userSnap.data()
-        : null,
-
-    officerProfile:
-      officerSnap?.exists()
-        ? officerSnap.data()
-        : null
-
-  };
+function sessionBlocked(values) {
+  return Object.values(values || {}).some((profile) => isBlockedProfile(profile));
 }
 
 
@@ -753,272 +658,170 @@ function buildSessionProfile(
 
 
 /* =========================================================
-   VALIDACIÓN DE SESIÓN
-
-   PERMITE:
-
-   - operations_staff válido
-   - admin activo
-   - superadmin activo
-
-   NO autoriza por correo.
-   NO autoriza solo por estar autenticado.
+   SESIÓN — gestor centralizado (session-manager.mjs)
+   - Permite: operations_staff válido, admin/superadmin activo,
+     funcionario institucional acreditado. NO autoriza por correo
+     ni solo por estar autenticado.
+   - Errores temporales: la sesión sigue abierta, aviso + REINTENTAR,
+     operaciones protegidas en pausa.
+   - Cierre solo por decisión del usuario, sesión inválida confirmada
+     por Firebase, cuenta bloqueada o autorización retirada.
    ========================================================= */
 
-async function validateSession(
-  user
-) {
-
-  $("#loginView").hidden =
-    true;
-
-  $("#portalView").hidden =
-    true;
-
-  $("#loadingView").hidden =
-    false;
-
-
-  try {
-
-    /*
-     * Renueva token para recoger
-     * claims actuales.
-     */
-
-    await user.getIdToken(
-      true
-    );
-
-
-    const token =
-      await user.getIdTokenResult();
-
-
-    /*
-     * Lee ambos caminos posibles
-     * sin hacer caer toda la sesión
-     * si uno de ellos está prohibido.
-     */
-
-    const {
-      staffProfile,
-      adminProfile,
-      userProfile,
-      officerProfile
-    } =
-      await readAuthorizationProfiles(
-        user
-      );
-
-
-    /*
-     * Seguridad real del portal.
-     */
-
-    const authorized =
-      authorizeOperationsSession(
-        token.claims,
-        staffProfile,
-        adminProfile,
-        userProfile,
-        officerProfile
-      );
-
-
-    if (!authorized) {
-
-      await invalidate();
-
-      return;
-
-    }
-
-
-    const profile =
-      buildSessionProfile(
-        staffProfile,
-        adminProfile,
-        userProfile,
-        officerProfile
-      );
-
-
-    if (!profile) {
-
-      await invalidate();
-
-      return;
-
-    }
-
-
-    state.user =
-      user;
-
-    state.profile =
-      profile;
-
-    state.validated =
-      true;
-
-
-    const displayName =
-
-      profile?.full_name ||
-
-      profile?.name ||
-
-      user.displayName ||
-
-      user.email?.split(
-        "@"
-      )[0] ||
-
-      "funcionario";
-
-
-    $("#welcomeName").textContent =
-      displayName;
-
-
-    $("#sidebarName").textContent =
-      displayName;
-
-
-    $("#sidebarEmail").textContent =
-      user.email || "";
-
-    const displayRole = profile?.is_admin === true
-      ? (profile?.role === "superadmin" ? "SUPERADMIN" : "ADMINISTRADOR")
-      : profile?.is_institutional === true
-        ? "ACCESO INSTITUCIONAL"
-        : "OPERADOR DE CONTROL";
-
-    $("#sidebarRole").textContent = displayRole;
-    $("#topbarOperator").textContent = displayName;
-    $("#topbarRole").textContent = displayRole;
-
-
-    enforcePermissions();
-
-
-    /*
-     * Oculta validación y muestra portal.
-     */
-
-    $("#loadingView").hidden =
-      true;
-
-
-    $("#loginView").hidden =
-      true;
-
-
-    $("#portalView").hidden =
-      false;
-
-
-    /*
-     * Estas cargas NO bloquean
-     * el ingreso al portal.
-     */
-
-    await Promise.allSettled([
-
-      loadVehicles(),
-
-      permission(
-        "institutional_requests_read"
-      )
-        ? loadRequests()
-        : Promise.resolve(),
-
-      permission("suspicious_vehicles_read")
-        ? loadSuspiciousVehicles({ reset: true })
-        : Promise.resolve(),
-
-      loadDashboardAggregates()
-
-    ]);
-
-    renderRecentMovements();
-
-  } catch (error) {
-
-    technicalError(
-      "session",
-      error
-    );
-
-
-    await invalidate(
-      error?.code?.includes(
-        "permission-denied"
-      )
-        ? (
-            "No tienes autorización " +
-            "para ingresar al Portal " +
-            "de Operaciones SKANO."
-          )
-        : (
-            "No fue posible " +
-            "validar la sesión."
-          )
-    );
-
+const SESSION_MESSAGES = Object.freeze({
+  [SESSION_STATES.REVOKED]:
+    "Tu acceso al Portal de Operaciones SKANO no está autorizado o fue retirado.",
+  [SESSION_STATES.BLOCKED]:
+    "Tu cuenta está bloqueada o deshabilitada. Contacta a un administrador SKANO.",
+  [SESSION_STATES.AUTH_INVALID]:
+    "Tu sesión ya no es válida. Vuelve a iniciar sesión.",
+});
+
+let portalLoadedForUid = null;
+let pendingLoginMessage = "";
+
+function showLogin(message = "") {
+  $("#portalView").hidden = true;
+  $("#loadingView").hidden = true;
+  $("#loginView").hidden = false;
+  $("#loginMessage").textContent = message;
+}
+
+function showLoading(message, { retry = false } = {}) {
+  $("#loginView").hidden = true;
+  $("#portalView").hidden = true;
+  $("#loadingView").hidden = false;
+  if ($("#loadingMessage")) $("#loadingMessage").textContent = message;
+  if ($("#loadingRetry")) $("#loadingRetry").hidden = !retry;
+  if ($("#loadingLogout")) $("#loadingLogout").hidden = !retry;
+}
+
+function setSessionBanner(text, { retry = true } = {}) {
+  const banner = $("#sessionBanner");
+  if (!banner) return;
+  if (!text) {
+    banner.hidden = true;
+    return;
+  }
+  $("#sessionBannerText").textContent = text;
+  if ($("#sessionRetry")) $("#sessionRetry").hidden = !retry;
+  banner.hidden = false;
+}
+
+function applyProfile(profile, user) {
+  const displayName =
+    profile?.full_name ||
+    profile?.name ||
+    user?.displayName ||
+    user?.email?.split("@")[0] ||
+    "funcionario";
+  $("#welcomeName").textContent = displayName;
+  $("#sidebarName").textContent = displayName;
+  $("#sidebarEmail").textContent = user?.email || "";
+  const displayRole = profile?.is_admin === true
+    ? (profile?.role === "superadmin" ? "SUPERADMIN" : "ADMINISTRADOR")
+    : profile?.is_institutional === true
+      ? "ACCESO INSTITUCIONAL"
+      : "OPERADOR DE CONTROL";
+  $("#sidebarRole").textContent = displayRole;
+  $("#topbarOperator").textContent = displayName;
+  $("#topbarRole").textContent = displayRole;
+  enforcePermissions();
+}
+
+async function loadPortalData() {
+  // Cada carga informa su propio error; ninguna cierra la sesión.
+  await Promise.allSettled([
+    loadVehicles(),
+    permission("institutional_requests_read") ? loadRequests() : Promise.resolve(),
+    permission("suspicious_vehicles_read") ? loadSuspiciousVehicles({ reset: true }) : Promise.resolve(),
+    loadDashboardAggregates(),
+  ]);
+  renderRecentMovements();
+}
+
+function renderSession(snapshot) {
+  const sameUser = auth.currentUser && auth.currentUser.uid === snapshot.uid;
+  state.user = sameUser ? auth.currentUser : null;
+  state.profile = snapshot.profile;
+  state.validated =
+    snapshot.state === SESSION_STATES.VALID ||
+    snapshot.state === SESSION_STATES.REVALIDATING;
+
+  switch (snapshot.state) {
+    case SESSION_STATES.CHECKING:
+      if (portalLoadedForUid !== snapshot.uid) showLoading("Validando acceso operativo…");
+      break;
+
+    case SESSION_STATES.VALID:
+      setSessionBanner("");
+      applyProfile(snapshot.profile, state.user);
+      if (portalLoadedForUid !== snapshot.uid) {
+        portalLoadedForUid = snapshot.uid;
+        $("#loadingView").hidden = true;
+        $("#loginView").hidden = true;
+        $("#portalView").hidden = false;
+        loadPortalData();
+      }
+      break;
+
+    case SESSION_STATES.REVALIDATING:
+      break;
+
+    case SESSION_STATES.DEGRADED:
+      if (portalLoadedForUid === snapshot.uid && snapshot.profile) {
+        setSessionBanner(
+          navigator.onLine === false
+            ? "Sin conexión a Internet. Tu sesión sigue abierta; las operaciones protegidas se reanudan al confirmar tu acceso."
+            : "No fue posible confirmar tu acceso en este momento. Tu sesión sigue abierta; las operaciones protegidas quedan en pausa."
+        );
+      } else {
+        showLoading(
+          "No fue posible validar tu acceso en este momento (conexión o servicio). Tu sesión sigue abierta.",
+          { retry: true }
+        );
+      }
+      break;
+
+    case SESSION_STATES.REVOKED:
+    case SESSION_STATES.BLOCKED:
+    case SESSION_STATES.AUTH_INVALID:
+      portalLoadedForUid = null;
+      pendingLoginMessage = SESSION_MESSAGES[snapshot.state];
+      setSessionBanner("");
+      showLogin(pendingLoginMessage);
+      break;
+
+    default: // idle / signed_out
+      portalLoadedForUid = null;
+      setSessionBanner("");
+      showLogin(pendingLoginMessage);
+      pendingLoginMessage = "";
   }
 }
 
+const session = createSessionManager({
+  getToken: (user, forceRefresh) => user.getIdTokenResult(forceRefresh),
+  readProfiles: readAuthorizationProfiles,
+  authorize: authorizeSession,
+  isBlocked: sessionBlocked,
+  signOut: () => signOut(auth),
+  onChange: renderSession,
+});
 
 /* =========================================================
    AUTH STATE
+   Firebase Auth conserva la sesión (persistencia oficial, también
+   entre pestañas). Si cambia el usuario, el gestor descarta todo lo
+   del usuario anterior.
    ========================================================= */
 
-onAuthStateChanged(
-  auth,
-  user => {
-
-    /*
-     * Firebase conserva sesiones.
-     * Si existe una sesión autenticada,
-     * vuelve a validarse el rol.
-     */
-
-    if (user) {
-
-      validateSession(
-        user
-      );
-
-      return;
-
-    }
-
-
-    state.validated =
-      false;
-
-    state.user =
-      null;
-
-    state.profile =
-      null;
-
-
-    $("#loadingView").hidden =
-      true;
-
-
-    $("#portalView").hidden =
-      true;
-
-
-    $("#loginView").hidden =
-      false;
-
+onAuthStateChanged(auth, (user) => {
+  if (user && session.snapshot.uid === user.uid && session.snapshot.state !== SESSION_STATES.IDLE) {
+    return; // mismo usuario: el gestor ya lo está validando o validó
   }
-);
+  session.start(user || null);
+});
 
 
 /* =========================================================
@@ -1231,20 +1034,7 @@ $("#logoutButton").addEventListener(
   "click",
   async () => {
 
-    state.validated =
-      false;
-
-    state.user =
-      null;
-
-    state.profile =
-      null;
-
-
-    await signOut(
-      auth
-    );
-
+    await session.signOutVoluntary().catch(() => {});
 
     location.replace(
       "/portal-operaciones/"
@@ -2363,8 +2153,9 @@ $("#vehicleForm").addEventListener(
       )
     ) {
 
-      await invalidate(
-        "Tu permiso para crear vehículos ya no está disponible."
+      notice(
+        "Tu permiso para crear vehículos ya no está disponible.",
+        "error"
       );
 
       return;
@@ -2646,8 +2437,9 @@ $("#deactivateForm").addEventListener(
       )
     ) {
 
-      await invalidate(
-        "Tu permiso para dar de baja vehículos ya no está disponible."
+      notice(
+        "Tu permiso para dar de baja vehículos ya no está disponible.",
+        "error"
       );
 
       return;
@@ -3257,8 +3049,9 @@ $("#exportButton").addEventListener(
       )
     ) {
 
-      await invalidate(
-        "Tu permiso para exportar ya no está disponible."
+      notice(
+        "Tu permiso para exportar ya no está disponible.",
+        "error"
       );
 
       return;
@@ -3492,121 +3285,38 @@ function downloadCsv(
 
 /* =========================================================
    REVALIDACIÓN DE SESIÓN
-
-   Cuando el navegador vuelve a primer plano,
-   vuelve a revisar:
-
-   - claims
-   - staff_accounts
-   - admins
-
-   También usa Promise.allSettled para que
-   operations_staff no falle por no tener
-   acceso al documento admins/{uid}.
+   Volver a la pestaña, recuperar la conexión o el paso del tiempo
+   piden una re-verificación al gestor: sin duplicados, con intervalo
+   mínimo y sin cerrar sesión por errores temporales.
    ========================================================= */
 
-document.addEventListener(
-  "visibilitychange",
-  async () => {
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) session.revalidate({ reason: "visibility" });
+});
 
-    if (
-      document.hidden ||
+window.addEventListener("online", () => {
+  session.revalidate({ force: true, reason: "online" });
+});
 
-      !state.user ||
-
-      !state.validated
-    ) {
-
-      return;
-
-    }
-
-
-    try {
-
-      const user =
-        state.user;
-
-
-      /*
-       * Fuerza actualización de claims.
-       */
-
-      await user.getIdToken(
-        true
-      );
-
-
-      const token =
-        await user.getIdTokenResult();
-
-
-      const {
-        staffProfile,
-        adminProfile,
-        userProfile,
-        officerProfile
-      } =
-        await readAuthorizationProfiles(
-          user
-        );
-
-
-      const authorized =
-        authorizeOperationsSession(
-          token.claims,
-          staffProfile,
-          adminProfile,
-          userProfile,
-          officerProfile
-        );
-
-
-      if (
-        !authorized
-      ) {
-
-        await invalidate();
-
-        return;
-
-      }
-
-
-      const profile =
-        buildSessionProfile(
-          staffProfile,
-          adminProfile,
-          userProfile,
-          officerProfile
-        );
-
-
-      if (!profile) {
-
-        await invalidate();
-
-        return;
-
-      }
-
-
-      state.profile =
-        profile;
-
-
-      enforcePermissions();
-
-    } catch (error) {
-
-      technicalError(
-        "session-recheck",
-        error
-      );
-
-    }
+window.addEventListener("offline", () => {
+  if (portalLoadedForUid) {
+    setSessionBanner(
+      "Sin conexión a Internet. Tu sesión sigue abierta; las operaciones se reanudan al volver la conexión.",
+      { retry: false }
+    );
   }
-);
+});
+
+setInterval(() => {
+  if (!document.hidden) session.revalidate({ reason: "interval" });
+}, 5 * 60 * 1000);
+
+$("#sessionRetry")?.addEventListener("click", () => session.revalidate({ force: true, reason: "manual" }));
+$("#loadingRetry")?.addEventListener("click", () => session.revalidate({ force: true, reason: "manual" }));
+$("#loadingLogout")?.addEventListener("click", () => {
+  session.signOutVoluntary().finally(() => location.replace("/portal-operaciones/"));
+});
+
 
 /* =========================================================
    VEHÍCULOS DE INTERÉS INSTITUCIONAL
