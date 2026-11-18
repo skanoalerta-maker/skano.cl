@@ -19,6 +19,11 @@ import {
   isSuperadmin,
 } from "./portal-policy.mjs?v=20261117-1";
 
+// Acceso de Seguridad Ciudadana: deshabilitado hasta que las reglas de
+// Firestore y el lector PPU de producción apliquen allowed_institution_types.
+// Mientras tanto el portal no ofrece la operación (el backend también la valida).
+const MUNICIPAL_ACCESS_ENABLED = false;
+
 const COMMON_FIELDS = [
   ["brand", "Marca", "text", 80, true],
   ["model", "Modelo", "text", 80, true],
@@ -98,12 +103,12 @@ export function renderInstitutionalManagement({
   section.innerHTML = `
     <h3>Gestión del registro</h3>
     <p class="form-note">Tipo de vehículo: <strong>${esc(vehicleTypeLabel(currentType) || item.type || "No informado")}</strong></p>
-    ${profile?.is_admin === true ? `<p class="form-note">Seguridad Ciudadana: <strong data-municipal-state>${municipalAllowed ? "AUTORIZADA" : "SIN ACCESO"}</strong></p>` : ""}
+    ${profile?.is_admin === true ? `<p class="form-note">Seguridad Ciudadana: <strong data-municipal-state>${municipalAllowed ? "AUTORIZADA" : "SIN ACCESO"}</strong>${MUNICIPAL_ACCESS_ENABLED ? "" : " · Autorización temporalmente no disponible."}</p>` : ""}
     <div class="action-stack">
       ${editable ? '<button type="button" class="secondary" data-manage="edit">EDITAR DATOS</button>' : ""}
       ${ownerClose ? '<button type="button" class="danger" data-manage="close">CERRAR / VEHÍCULO RECUPERADO</button>' : ""}
       ${superadmin ? '<button type="button" class="secondary" data-manage="plate">CORREGIR PATENTE (SUPERADMIN)</button>' : ""}
-      ${profile?.is_admin === true ? `<button type="button" class="secondary" data-manage="municipal">${municipalAllowed ? "RETIRAR ACCESO SEGURIDAD CIUDADANA" : "AUTORIZAR SEGURIDAD CIUDADANA"}</button>` : ""}
+      ${profile?.is_admin === true && MUNICIPAL_ACCESS_ENABLED ? `<button type="button" class="secondary" data-manage="municipal">${municipalAllowed ? "RETIRAR ACCESO SEGURIDAD CIUDADANA" : "AUTORIZAR SEGURIDAD CIUDADANA"}</button>` : ""}
     </div>
     <div data-manage-panel></div>
     ${history.length ? `<details><summary>Historial de correcciones de patente (${history.length})</summary><ul>${history.map(entry =>
