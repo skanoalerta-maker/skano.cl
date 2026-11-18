@@ -40,11 +40,11 @@ import {
   VEHICLE_TYPES,
   normalizeVehicleType,
   plateValidationMessage
-} from "./portal-policy.mjs?v=20261117-1";
+} from "./portal-policy.mjs?v=20261118-1";
 
 import {
   renderInstitutionalManagement
-} from "./institutional-management.mjs?v=20261117-1";
+} from "./institutional-management.mjs?v=20261118-1";
 
 
 /* =========================================================
@@ -2072,7 +2072,9 @@ async function openInstitutionalStolenDetail(id) {
   $("#vehicleDetailContent").innerHTML =
     '<div class="inline-state">Cargando antecedente institucional…</div>';
   $("#vehicleDetailDeactivate").hidden = true;
-  $("#vehicleDetailDialog").showModal();
+  // Al recargar el expediente después de una acción el diálogo ya está
+  // abierto: volver a llamar showModal() lanzaba InvalidStateError.
+  if (!$("#vehicleDetailDialog").open) $("#vehicleDetailDialog").showModal();
 
   try {
     const response = await callables.getInstitutionalStolen({ id });
@@ -3750,7 +3752,7 @@ async function renderSuspiciousEvidence(item) {
 async function openSuspiciousDetail(id) {
   clearSuspiciousEvidence();
   $("#suspiciousDetailContent").innerHTML = '<div class="inline-state">Cargando ficha completa…</div>';
-  $("#suspiciousDetailDialog").showModal();
+  if (!$("#suspiciousDetailDialog").open) $("#suspiciousDetailDialog").showModal();
   try {
     const response = await callables.getSuspicious({ id });
     const item = response.data.submission;

@@ -17,7 +17,7 @@ import {
   plateCorrectionCandidates,
   normalizePlate,
   isSuperadmin,
-} from "./portal-policy.mjs?v=20261117-1";
+} from "./portal-policy.mjs?v=20261118-1";
 
 // Acceso de Seguridad Ciudadana: deshabilitado hasta que las reglas de
 // Firestore y el lector PPU de producción apliquen allowed_institution_types.
@@ -57,6 +57,64 @@ function typeOptions(selected) {
   return VEHICLE_TYPES.map(type =>
     `<option value="${type.code}"${type.code === selected ? " selected" : ""}>${esc(type.label)}</option>`
   ).join("");
+}
+
+// Mensajes de error de la gestión institucional. Usan el motivo que
+// entrega el backend (details.reason) para no confundir un rechazo de rol
+// con una sesión expirada o una falla de red. Nunca navegan ni cierran
+// sesión: el expediente y el formulario quedan en pantalla para reintentar.
+const REASON_MESSAGES = Object.freeze({
+  superadmin_required:
+    "Tu cuenta no figura como SUPERADMIN en el servidor. La corrección de patentes exige ese rol; el formulario se conserva.",
+  admin_required: "Esta operación requiere una cuenta de administrador SKANO.",
+  not_record_owner: "Solo puedes modificar registros que tú ingresaste.",
+  no_management_role: "Tu cuenta no tiene un rol habilitado para gestionar registros institucionales.",
+  account_blocked: "Tu cuenta está bloqueada. Contacta a un administrador SKANO.",
+  account_disabled: "Tu cuenta está deshabilitada. Contacta a un administrador SKANO.",
+  auth_user_not_found: "El servidor no encontró tu cuenta. Cierra sesión y vuelve a ingresar.",
+  auth_lookup_unavailable:
+    "El servidor no pudo verificar tu sesión en este momento. Tus datos siguen en pantalla; reintenta en unos minutos.",
+  session_revoked:
+    "Tu sesión expiró. Vuelve a iniciar sesión en otra pestaña y reintenta: el formulario se conserva.",
+  legacy_plate_document_id:
+    "Este registro antiguo usa la patente como identificador. La corrección está bloqueada hasta migrarlo, para evitar alertas por la patente anterior.",
+  plate_format_mismatch:
+    "La patente no coincide con el formato del tipo de vehículo. Revisa O y 0 o confirma que es correcta.",
+});
+
+const NETWORK_MESSAGE =
+  "No hay conexión con el servidor. El formulario se conserva; reintenta cuando vuelva la conexión.";
+
+export function managementErrorMessage(error, { online = true } = {}) {
+  const code = String(error?.code || "").replace(/^functions\//, "");
+  const reason = error?.details?.reason;
+  const serverMessage = typeof error?.message === "string" ? error.message.trim() : "";
+  let text;
+
+  if (reason && REASON_MESSAGES[reason]) {
+    text = REASON_MESSAGES[reason];
+  } else if (!online || code === "unavailable" || code === "deadline-exceeded") {
+    text = NETWORK_MESSAGE;
+  } else if (code === "unauthenticated") {
+    text = REASON_MESSAGES.session_revoked;
+  } else if (code === "permission-denied") {
+    // Las funciones de gestión siempre informan el motivo; un rechazo sin
+    // motivo viene de la configuración de acceso de la función, no del rol.
+    text = "El servidor rechazó la solicitud sin indicar un motivo (configuración de acceso de la función). El formulario se conserva.";
+  } else if (["invalid-argument", "failed-precondition", "already-exists", "not-found", "aborted"].includes(code)
+    && serverMessage && serverMessage.toLowerCase() !== code) {
+    text = serverMessage;
+  } else if (code === "internal") {
+    text = "El servidor no pudo completar la operación. El formulario se conserva; reintenta.";
+  } else {
+    text = "No fue posible completar la acción. El formulario se conserva; reintenta.";
+  }
+
+  const candidates = error?.details?.candidates;
+  if (Array.isArray(candidates) && candidates.length) {
+    text += ` Sugerencias: ${candidates.join(", ")}.`;
+  }
+  return text;
 }
 
 function canEdit(item, kind, profile, uid) {
@@ -120,22 +178,36 @@ export function renderInstitutionalManagement({
   const panel = section.querySelector("[data-manage-panel]");
   const message = section.querySelector("[data-manage-message]");
 
+  // Ejecuta una acción sin abandonar el expediente: ante cualquier error
+  // solo muestra el mensaje en esta sección y conserva el formulario.
   async function run(button, label, action, successText) {
     message.textContent = "";
+    message.classList.remove("is-error");
     const original = button?.textContent;
     if (button) { button.disabled = true; button.textContent = label; }
+    let response;
     try {
-      const response = await action();
+      response = await action();
       if (!response?.data?.ok) throw new Error("Respuesta inesperada");
-      message.textContent = successText;
+    } catch (error) {
+      console.warn("[SKANO:institutional-management]", error?.code || "unknown", error?.details?.reason || "");
+      message.textContent = managementErrorMessage(error, {
+        online: typeof navigator === "undefined" ? true : navigator.onLine !== false,
+      });
+      message.classList.add("is-error");
+      if (button) { button.disabled = false; button.textContent = original; }
+      return false;
+    }
+
+    if (button) { button.disabled = false; button.textContent = original; }
+    message.textContent = successText;
+    try {
       await onChanged?.();
     } catch (error) {
-      const details = error?.details?.candidates;
-      message.textContent = cleanError(error, "No fue posible completar la acción.") +
-        (Array.isArray(details) && details.length ? ` Sugerencias: ${details.join(", ")}.` : "");
-    } finally {
-      if (button) { button.disabled = false; button.textContent = original; }
+      console.warn("[SKANO:institutional-management] recarga", error?.code || error?.message || "unknown");
+      message.textContent = `${successText} No se pudo recargar el expediente; ciérralo y vuelve a abrirlo para ver los cambios.`;
     }
+    return true;
   }
 
   section.querySelector("[data-manage='edit']")?.addEventListener("click", () => {
