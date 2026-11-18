@@ -430,6 +430,14 @@
 
 
           <select
+            id="vehicleTypeFilter"
+            class="vehicle-type-filter"
+            aria-label="Filtrar por tipo de vehículo"
+          >
+            <option value="all">Todos los tipos</option>
+          </select>
+
+          <select
             id="vehicleFilter"
             aria-label="Filtrar por estado"
           >
@@ -563,6 +571,7 @@
           <label>Buscar PPU<input id="suspiciousPlate" type="search" placeholder="AB-CD-12"></label>
           <label>Estado<select id="suspiciousStatus"><option value="all">Todos</option><option value="pending_review">Pendientes</option><option value="approved">Aprobados</option><option value="rejected">Rechazados</option><option value="closed">Cerrados / Desactivados</option></select></label>
           <label>Origen<select id="suspiciousInstitution"><option value="all">Todos</option><option value="carabineros">Carabineros</option><option value="pdi">PDI</option><option value="seguridad_ciudadana">Seguridad Ciudadana</option><option value="operations">Operaciones SKANO</option></select></label>
+          <label>Tipo<select id="suspiciousTypeFilter" class="vehicle-type-filter"><option value="all">Todos</option></select></label>
           <label>Desde<input id="suspiciousFrom" type="date"></label>
           <label>Hasta<input id="suspiciousTo" type="date"></label>
           <button id="refreshSuspicious" class="secondary" type="button">BUSCAR</button>
@@ -840,6 +849,7 @@
           <input
             name="brand"
             maxlength="80"
+            required
           >
 
         </label>
@@ -852,6 +862,7 @@
           <input
             name="model"
             maxlength="80"
+            required
           >
 
         </label>
@@ -905,10 +916,23 @@
       <div class="form-grid">
 
         <label>
-          Tipo de vehículo
-          <input name="type" maxlength="80"
-                 placeholder="Automóvil, camioneta, camión, moto">
+          Tipo de vehículo (obligatorio)
+          <select name="vehicle_type" id="vehicleTypeInput" class="vehicle-type-select" required>
+            <option value="">Selecciona el tipo…</option>
+          </select>
         </label>
+
+        <label>
+          Detalle del tipo (opcional)
+          <input name="type" maxlength="80"
+                 placeholder="Ej. furgón, tolva, cuatrimoto">
+        </label>
+
+        <label class="span-2 plate-confirm" id="vehiclePlateConfirm" hidden>
+          <input name="plate_format_confirmed" type="checkbox">
+          Confirmo que la patente es correcta aunque no coincide con el formato habitual del tipo.
+        </label>
+
 
         <label>
           VIN
@@ -1058,12 +1082,12 @@
 
       <label>
         Marca
-        <input name="brand" maxlength="80">
+        <input name="brand" maxlength="80" required>
       </label>
 
       <label>
         Modelo
-        <input name="model" maxlength="80">
+        <input name="model" maxlength="80" required>
       </label>
 
       <label>
@@ -1077,7 +1101,17 @@
       </label>
 
       <label>
-        Tipo
+        Tipo de vehículo (obligatorio)
+        <select name="vehicle_type" id="suspiciousTypeInput" class="vehicle-type-select" required>
+            <option value="">Selecciona el tipo…</option>
+          </select>
+      </label>
+        <label class="span-2 plate-confirm" id="suspiciousPlateConfirm" hidden>
+          <input name="plate_format_confirmed" type="checkbox">
+          Confirmo que la patente es correcta aunque no coincide con el formato habitual del tipo.
+        </label>
+      <label>
+        Detalle del tipo (opcional)
         <input name="type" maxlength="80">
       </label>
 
@@ -1142,6 +1176,16 @@
 
     </div>
 
+      <label class="span-2">
+        <input name="responsibility_accepted" type="checkbox" required>
+        Declaro que los antecedentes ingresados son verídicos
+        según la información disponible y acepto mi
+        responsabilidad por este registro.
+      </label>
+      <p class="form-note span-2">
+        Obligatorios en ambos formularios: PPU, tipo de vehículo, marca, modelo y declaración.
+        En vehículos sospechosos también el motivo. Los demás campos son opcionales.
+      </p>
     <div class="suspicious-create-footer">
       <button
         class="primary"
@@ -1421,7 +1465,7 @@
 
   <script
     type="module"
-    src="/portal-operaciones/portal.js?v=20261029-2"
+    src="/portal-operaciones/portal.js?v=20261117-1"
   ></script>
 
 

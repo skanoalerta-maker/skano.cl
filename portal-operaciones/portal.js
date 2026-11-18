@@ -36,8 +36,15 @@ import {
   authorizeOperationsSession,
   hasPermission,
   normalizePlate,
-  validatedEvidencePaths
-} from "./portal-policy.mjs";
+  validatedEvidencePaths,
+  VEHICLE_TYPES,
+  normalizeVehicleType,
+  plateValidationMessage
+} from "./portal-policy.mjs?v=20261117-1";
+
+import {
+  renderInstitutionalManagement
+} from "./institutional-management.mjs?v=20261117-1";
 
 
 /* =========================================================
@@ -91,12 +98,6 @@ const storage = getStorage(app);
 const callables =
   Object.freeze({
 
-    createVehicle:
-      httpsCallable(
-        functions,
-        "createOperationsVehicle"
-      ),
-
     deactivateVehicle:
       httpsCallable(
         functions,
@@ -127,7 +128,12 @@ const callables =
     createInstitutionalStolen: httpsCallable(functions, "createInstitutionalStolenVehicle"),
     approveInstitutionalStolen: httpsCallable(functions, "approveInstitutionalStolenVehicle"),
     rejectInstitutionalStolen: httpsCallable(functions, "rejectInstitutionalStolenVehicle"),
-    closeInstitutionalStolen: httpsCallable(functions, "closeInstitutionalStolenVehicle")
+    closeInstitutionalStolen: httpsCallable(functions, "closeInstitutionalStolenVehicle"),
+
+    // Gestión compartida con la app (auditada en backend).
+    updateInstitutionalVehicle: httpsCallable(functions, "updateInstitutionalVehicle"),
+    correctInstitutionalVehiclePlate: httpsCallable(functions, "correctInstitutionalVehiclePlate"),
+    setInstitutionalRecordMunicipalAccess: httpsCallable(functions, "setInstitutionalRecordMunicipalAccess")
 
   });
 
@@ -1879,10 +1885,13 @@ function vehicleStatusPresentation(vehicle) {
 function renderVehicles() {
   const term = normalizePlate($("#vehicleSearch").value);
   const filter = $("#vehicleFilter").value;
+  const typeFilter = $("#vehicleTypeFilter")?.value || "all";
 
   const rows = state.vehicles.filter(vehicle => {
     const plate = vehiclePlate(vehicle);
     const matchesTerm = !term || plate.includes(term);
+    const vehicleType = vehicle.vehicle_type || normalizeVehicleType(vehicle.type || vehicle.tipo);
+    if (typeFilter !== "all" && vehicleType !== typeFilter) return false;
     const isActive = vehicleIsActive(vehicle);
 
     const matchesFilter =
@@ -2083,6 +2092,20 @@ async function openInstitutionalStolenDetail(id) {
     $("#vehicleDetailStatus").className = `pill ${statusView.className}`;
     $("#vehicleDetailStatus").textContent = statusView.label;
     $("#vehicleDetailContent").innerHTML = institutionalStolenDetailHtml(item);
+
+    renderInstitutionalManagement({
+      item,
+      kind: "stolen",
+      container: $("#vehicleDetailContent"),
+      profile: state.profile,
+      uid: state.user?.uid,
+      callables,
+      cleanError,
+      onChanged: async () => {
+        await loadVehicles();
+        await openInstitutionalStolenDetail(item.id);
+      }
+    });
 
     if (
       item.status === "pending_review" &&
@@ -2384,8 +2407,9 @@ $("#vehicleForm").addEventListener(
       plate,
       brand: value("brand"),
       model: value("model"),
-      year: Number(value("year")),
+      year: value("year") ? Number(value("year")) : null,
       color: value("color"),
+      vehicle_type: value("vehicle_type"),
       type: value("type"),
       vin: value("vin"),
       chassis_number: value("chassis_number"),
@@ -2399,15 +2423,33 @@ $("#vehicleForm").addEventListener(
       theft_reported_at: value("theft_reported_at") ? new Date(value("theft_reported_at")).toISOString() : null
     };
 
-    if (
-      !vehicle.brand ||
-      !vehicle.model ||
-      !Number.isInteger(vehicle.year) ||
-      vehicle.year < 1900 ||
-      vehicle.year > 2100
-    ) {
+    // Mismos requisitos que el formulario de vehículos sospechosos:
+    // PPU, tipo, marca, modelo y declaración. Año y ubicación opcionales.
+    if (!vehicle.brand || !vehicle.model) {
       $("#vehicleFormMessage").textContent =
-        "Marca, modelo y año son obligatorios para todos los usuarios autorizados.";
+        "Marca y modelo son obligatorios.";
+      return;
+    }
+
+    if (
+      vehicle.year !== null &&
+      (!Number.isInteger(vehicle.year) || vehicle.year < 1900 || vehicle.year > 2100)
+    ) {
+      $("#vehicleFormMessage").textContent = "El año informado no es válido.";
+      return;
+    }
+
+    if (!vehicle.vehicle_type) {
+      $("#vehicleFormMessage").textContent = "Selecciona el tipo de vehículo.";
+      return;
+    }
+
+    // Patente fuera del formato habitual: no se rechaza, se pide confirmar.
+    const stolenPlateProblem = plateValidationMessage(plate, vehicle.vehicle_type);
+    const stolenPlateConfirmed = Boolean(data.get("plate_format_confirmed"));
+    if (stolenPlateProblem && !stolenPlateConfirmed) {
+      $("#vehiclePlateConfirm").hidden = false;
+      $("#vehicleFormMessage").textContent = stolenPlateProblem;
       return;
     }
 
@@ -2451,7 +2493,9 @@ $("#vehicleForm").addEventListener(
         submissionId,
         vehicle,
         evidence,
-        responsibility_accepted: true
+        responsibility_accepted: true,
+        form_version: 2,
+        plate_format_confirmed: Boolean(stolenPlateProblem && stolenPlateConfirmed)
       });
 
 
@@ -3343,35 +3387,21 @@ function downloadCsv(
   ];
 
 
-  const value =
-    item => {
+  // SKANO_CSV_FORMULA_PROTECTION_V1
+  const value = item => {
+    let raw = item == null
+      ? ""
+      : typeof item === "object"
+        ? JSON.stringify(item)
+        : String(item);
 
-      const raw =
+    // Impide que Excel interprete valores como formulas.
+    if (/^\s*[=+\-@]/u.test(raw)) {
+      raw = "'" + raw;
+    }
 
-        item == null
-
-          ? ""
-
-          : typeof item ===
-              "object"
-
-            ? JSON.stringify(
-                item
-              )
-
-            : String(
-                item
-              );
-
-
-      return `"${raw.replaceAll(
-        '"',
-        '""'
-      )}"`;
-
-    };
-
-
+    return `"${raw.replaceAll('"', '""')}"`;
+  };
   const csv = [
 
     columns.join(
@@ -3620,9 +3650,17 @@ async function loadSuspiciousVehicles({ reset = false } = {}) {
   }
 }
 
+function visibleSuspiciousByType() {
+  const typeFilter = $("#suspiciousTypeFilter")?.value || "all";
+  if (typeFilter === "all") return state.suspicious;
+  return state.suspicious.filter(item =>
+    (item.vehicle_type || normalizeVehicleType(item.type)) === typeFilter
+  );
+}
+
 function renderSuspiciousVehicles() {
   const body = $("#suspiciousTable tbody");
-  body.innerHTML = state.suspicious.map(item => {
+  body.innerHTML = visibleSuspiciousByType().map(item => {
     const status = item.status || "";
     const origin = item.institution || (item.source === "operations" ? "OPERACIONES SKANO" : item.institution_type);
     return `<tr>
@@ -3635,7 +3673,7 @@ function renderSuspiciousVehicles() {
     </tr>`;
   }).join("");
   $("#suspiciousLoading").hidden = true;
-  $("#suspiciousEmpty").hidden = state.suspicious.length !== 0;
+  $("#suspiciousEmpty").hidden = visibleSuspiciousByType().length !== 0;
   $("#loadMoreSuspicious").hidden = !state.suspiciousCursor;
   $$(".suspicious-detail-button").forEach(button => button.addEventListener("click", () => openSuspiciousDetail(button.dataset.id)));
 }
@@ -3722,6 +3760,19 @@ async function openSuspiciousDetail(id) {
       `<section><h3>${escapeHtml(title)}</h3><dl>${fields.map(([label, key]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(detailValue(item, key))}</dd></div>`).join("")}</dl></section>`
     ).join("");
     await renderSuspiciousEvidence(item);
+    renderInstitutionalManagement({
+      item,
+      kind: "suspicious",
+      container: $("#suspiciousDetailContent"),
+      profile: state.profile,
+      uid: state.user?.uid,
+      callables,
+      cleanError,
+      onChanged: async () => {
+        await loadSuspiciousVehicles({ reset: true });
+        await openSuspiciousDetail(item.id);
+      }
+    });
     $("#approveSuspicious").hidden = item.status !== "pending_review" || !permission("suspicious_vehicles_review");
     $("#rejectSuspicious").hidden = item.status !== "pending_review" || !permission("suspicious_vehicles_review");
     $("#closeSuspicious").hidden = item.status !== "approved" || !permission("suspicious_vehicles_deactivate");
@@ -3974,6 +4025,34 @@ $("#suspiciousCreateForm")?.addEventListener("submit", async event => {
   }
   data.plate = normalizedPlate;
 
+  // Mismos requisitos que el formulario de vehículos con encargo.
+  if (!String(data.brand || "").trim() || !String(data.model || "").trim()) {
+    $("#suspiciousCreateMessage").textContent = "Marca y modelo son obligatorios.";
+    return;
+  }
+
+  if (!data.vehicle_type) {
+    $("#suspiciousCreateMessage").textContent = "Selecciona el tipo de vehículo.";
+    return;
+  }
+
+  // Patente fuera del formato habitual: no se rechaza, se pide confirmar.
+  const suspiciousPlateProblem = plateValidationMessage(normalizedPlate, data.vehicle_type);
+  const suspiciousPlateConfirmed = data.plate_format_confirmed === "on";
+  delete data.plate_format_confirmed;
+  if (suspiciousPlateProblem && !suspiciousPlateConfirmed) {
+    $("#suspiciousPlateConfirm").hidden = false;
+    $("#suspiciousCreateMessage").textContent = suspiciousPlateProblem;
+    return;
+  }
+
+  const responsibilityAccepted = data.responsibility_accepted === "on";
+  delete data.responsibility_accepted;
+  if (!responsibilityAccepted) {
+    $("#suspiciousCreateMessage").textContent = "Debes aceptar la declaración de responsabilidad.";
+    return;
+  }
+
   const submissionId = doc(
     collection(db, "institutional_vehicle_submissions")
   ).id;
@@ -3989,7 +4068,10 @@ $("#suspiciousCreateForm")?.addEventListener("submit", async event => {
     const response = await callables.createSuspicious({
       submissionId,
       vehicle: data,
-      evidence
+      evidence,
+      responsibility_accepted: true,
+      form_version: 2,
+      plate_format_confirmed: Boolean(suspiciousPlateProblem && suspiciousPlateConfirmed)
     });
 
     if (!response.data?.ok) {
@@ -4022,3 +4104,24 @@ $("#suspiciousCreateForm")?.addEventListener("submit", async event => {
     setBusy(submitButton, false);
   }
 });
+
+/* =========================================================
+   TIPOS DE VEHÍCULO (formularios y filtros)
+   ========================================================= */
+
+function populateVehicleTypeControls() {
+  document.querySelectorAll(".vehicle-type-select, .vehicle-type-filter").forEach(select => {
+    if (select.dataset.populated === "1") return;
+    VEHICLE_TYPES.forEach(type => {
+      const option = document.createElement("option");
+      option.value = type.code;
+      option.textContent = type.label;
+      select.append(option);
+    });
+    select.dataset.populated = "1";
+  });
+}
+
+populateVehicleTypeControls();
+$("#vehicleTypeFilter")?.addEventListener("change", () => renderVehicles());
+$("#suspiciousTypeFilter")?.addEventListener("change", () => renderSuspiciousVehicles());
