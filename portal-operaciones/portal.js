@@ -40,11 +40,11 @@ import {
   VEHICLE_TYPES,
   normalizeVehicleType,
   plateValidationMessage
-} from "./portal-policy.mjs?v=20261118-1";
+} from "./portal-policy.mjs?v=20261118-2";
 
 import {
   renderInstitutionalManagement
-} from "./institutional-management.mjs?v=20261118-1";
+} from "./institutional-management.mjs?v=20261118-2";
 
 
 /* =========================================================
@@ -3749,39 +3749,81 @@ async function renderSuspiciousEvidence(item) {
   showSuspiciousEvidence(0);
 }
 
+// Mensaje cuando la ficha no se puede abrir. Conserva el detalle del
+// servidor para diagnóstico (p. ej. una versión antigua de la función).
+function suspiciousDetailErrorMessage(error) {
+  const code = String(error?.code || "").replace(/^functions\//, "");
+  const server = String(error?.message || "").trim();
+  const detail = server && server.toLowerCase() !== code ? ` (${server})` : "";
+  if (typeof navigator !== "undefined" && navigator.onLine === false) return "Sin conexión con el servidor. Reintenta cuando vuelva la conexión.";
+  if (code === "unavailable" || code === "deadline-exceeded") return `No fue posible contactar al servidor${detail}. Reintenta.`;
+  if (code === "unauthenticated") return "Tu sesión expiró. Vuelve a iniciar sesión y reintenta.";
+  if (code === "permission-denied") return `El servidor no autorizó abrir esta ficha${detail}.`;
+  if (code === "not-found") return "La ficha ya no existe o fue eliminada.";
+  return `No fue posible abrir la ficha${detail}. Reintenta.`;
+}
+
 async function openSuspiciousDetail(id) {
   clearSuspiciousEvidence();
+  // Mientras carga, o si falla, no queda a la vista ninguna ficha ni acción
+  // de otro registro: antes, ante un error, seguían visibles los botones
+  // del expediente abierto anteriormente y apuntaban a ese registro.
+  state.selectedSuspicious = null;
+  for (const selector of ["#approveSuspicious", "#rejectSuspicious", "#closeSuspicious"]) {
+    if ($(selector)) $(selector).hidden = true;
+  }
+  $("#suspiciousDetailTitle").textContent = "Cargando ficha…";
   $("#suspiciousDetailContent").innerHTML = '<div class="inline-state">Cargando ficha completa…</div>';
   if (!$("#suspiciousDetailDialog").open) $("#suspiciousDetailDialog").showModal();
+
+  let item;
   try {
     const response = await callables.getSuspicious({ id });
-    const item = response.data.submission;
-    state.selectedSuspicious = item;
-    $("#suspiciousDetailTitle").textContent = item.plate || item.observed_plate || "Detalle institucional";
-    $("#suspiciousDetailContent").innerHTML = Object.entries(detailFields).map(([title, fields]) =>
-      `<section><h3>${escapeHtml(title)}</h3><dl>${fields.map(([label, key]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(detailValue(item, key))}</dd></div>`).join("")}</dl></section>`
-    ).join("");
-    await renderSuspiciousEvidence(item);
-    renderInstitutionalManagement({
-      item,
-      kind: "suspicious",
-      container: $("#suspiciousDetailContent"),
-      profile: state.profile,
-      uid: state.user?.uid,
-      callables,
-      cleanError,
-      onChanged: async () => {
-        await loadSuspiciousVehicles({ reset: true });
-        await openSuspiciousDetail(item.id);
-      }
-    });
-    $("#approveSuspicious").hidden = item.status !== "pending_review" || !permission("suspicious_vehicles_review");
-    $("#rejectSuspicious").hidden = item.status !== "pending_review" || !permission("suspicious_vehicles_review");
-    $("#closeSuspicious").hidden = item.status !== "approved" || !permission("suspicious_vehicles_deactivate");
+    item = response.data?.submission;
+    if (!item) throw new Error("Respuesta inesperada");
   } catch (error) {
-    $("#suspiciousDetailContent").textContent = cleanError(error, "No fue posible abrir la ficha.");
-    clearSuspiciousEvidence();
+    technicalError("suspicious-detail", error);
+    $("#suspiciousDetailTitle").textContent = "Ficha no disponible";
+    const box = document.createElement("div");
+    box.className = "inline-state";
+    const text = document.createElement("p");
+    text.setAttribute("role", "alert");
+    text.textContent = suspiciousDetailErrorMessage(error);
+    const retry = document.createElement("button");
+    retry.type = "button";
+    retry.className = "secondary";
+    retry.textContent = "REINTENTAR";
+    retry.addEventListener("click", () => openSuspiciousDetail(id));
+    box.append(text, retry);
+    $("#suspiciousDetailContent").replaceChildren(box);
+    return false;
   }
+
+  state.selectedSuspicious = item;
+  $("#suspiciousDetailTitle").textContent = item.plate || item.observed_plate || "Detalle institucional";
+  $("#suspiciousDetailContent").innerHTML = Object.entries(detailFields).map(([title, fields]) =>
+    `<section><h3>${escapeHtml(title)}</h3><dl>${fields.map(([label, key]) => `<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(detailValue(item, key))}</dd></div>`).join("")}</dl></section>`
+  ).join("");
+  // La evidencia no impide usar la ficha: renderSuspiciousEvidence informa
+  // su propio error dentro de la sección de fotografías.
+  await renderSuspiciousEvidence(item).catch(error => technicalError("suspicious-evidence", error));
+  renderInstitutionalManagement({
+    item,
+    kind: "suspicious",
+    container: $("#suspiciousDetailContent"),
+    profile: state.profile,
+    uid: state.user?.uid,
+    callables,
+    cleanError,
+    onChanged: async () => {
+      await loadSuspiciousVehicles({ reset: true });
+      await openSuspiciousDetail(item.id);
+    }
+  });
+  $("#approveSuspicious").hidden = item.status !== "pending_review" || !permission("suspicious_vehicles_review");
+  $("#rejectSuspicious").hidden = item.status !== "pending_review" || !permission("suspicious_vehicles_review");
+  $("#closeSuspicious").hidden = item.status !== "approved" || !permission("suspicious_vehicles_deactivate");
+  return true;
 }
 
 async function performSuspiciousAction(action, reason = null) {

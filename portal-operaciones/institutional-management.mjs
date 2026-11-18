@@ -17,7 +17,7 @@ import {
   plateCorrectionCandidates,
   normalizePlate,
   isSuperadmin,
-} from "./portal-policy.mjs?v=20261118-1";
+} from "./portal-policy.mjs?v=20261118-2";
 
 // Acceso de Seguridad Ciudadana: deshabilitado hasta que las reglas de
 // Firestore y el lector PPU de producción apliquen allowed_institution_types.
