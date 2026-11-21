@@ -304,14 +304,20 @@ function vehicleList(containerId, { fixedStatus = null, title, eyebrow }) {
     renderBulk();
   }
 
+  // Cada carga recibe un número de secuencia: una respuesta que llega tarde
+  // (por ejemplo, del filtro anterior) se descarta y no se mezcla con la actual.
+  let seq = 0;
   async function load(reset) {
+    const my = ++seq;
     if (reset) { st.items = []; st.cursor = null; body.replaceChildren(emptyRow(8, "Cargando…")); }
     try {
       const r = await api("judicialListVehicles", { status: st.status || undefined, q: st.q || undefined, cursor: st.cursor || undefined, limit: 50 });
+      if (my !== seq) return;
       st.items.push(...r.items);
       st.cursor = r.next_cursor;
       render();
     } catch (err) {
+      if (my !== seq) return;
       body.replaceChildren(emptyRow(8, errorText(err)));
     }
   }
@@ -435,10 +441,14 @@ LOADERS.vehicle = async (vehicleId) => {
       el("div", {}, el("b", {}, C.DOC_KIND_LABEL[doc.kind] || doc.kind), el("small", {}, `${doc.file_name} · ${Math.ceil(doc.size / 1024)} KB · ${C.formatDateTime(doc.uploaded_at_ms)}`)),
       el("button", { class: "link", type: "button", onclick: async () => {
         try {
-          const r = await api("judicialGetDocumentUrl", { document_id: doc.document_id });
-          window.open(r.url, "_blank", "noopener,noreferrer");
+          const r = await api("judicialDownloadDocument", { document_id: doc.document_id });
+          const bytes = Uint8Array.from(atob(r.content_base64), (c) => c.charCodeAt(0));
+          const url = URL.createObjectURL(new Blob([bytes], { type: r.content_type }));
+          const a = el("a", { href: url, download: r.file_name });
+          document.body.append(a); a.click(); a.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 2000);
         } catch (err) { toast(errorText(err), true); }
-      } }, "Abrir (enlace temporal)")))
+      } }, "Descargar")))
       : [el("li", {}, el("span", { class: "muted" }, "Sin documentos. La publicación requiere un documento acreditativo."))])),
     C.can(S.perms, "documents.write") && C.canEdit(x.status, S.perms) ? uploadRow(x) : null);
 
@@ -639,16 +649,20 @@ async function renderImportReview() {
     more.hidden = !IMP.after;
   }
 
+  let rowsSeq = 0;
   async function loadRows(reset) {
+    const my = ++rowsSeq;
     if (reset) { IMP.rows = []; IMP.after = null; body.replaceChildren(emptyRow(5, "Cargando…")); }
     try {
       const r = await api("judicialGetImportRows", { job_id: job.job_id, status: IMP.filter, after_row: IMP.after || undefined, limit: 100 });
+      if (my !== rowsSeq) return;
       job.summary = r.job.summary;
       IMP.rows.push(...r.items);
       IMP.after = r.next_after_row;
       renderChips();
       renderRows();
     } catch (err) {
+      if (my !== rowsSeq) return;
       body.replaceChildren(emptyRow(5, errorText(err)));
     }
   }

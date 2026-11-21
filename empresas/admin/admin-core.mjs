@@ -220,7 +220,16 @@ const ERROR_TEXT = Object.freeze({
 });
 
 /** Mensaje legible para errores de httpsCallable. */
+export const CONNECTIVITY_TEXT = "No se pudo contactar al servidor de SKANO. Revisa tu conexión e intenta nuevamente.";
+
+export function isConnectivityError(err) {
+  const code = String(err?.code || "");
+  return ["functions/unavailable", "functions/deadline-exceeded", "auth/network-request-failed"].includes(code)
+    || (code === "functions/internal" && String(err?.message || "").trim().toLowerCase() === "internal" && !err?.details);
+}
+
 export function errorMessage(err) {
+  if (isConnectivityError(err)) return CONNECTIVITY_TEXT;
   const reason = err?.details?.reason;
   if (reason && ERROR_TEXT[reason]) return ERROR_TEXT[reason];
   if (err?.message && !/^internal$/i.test(err.message)) return String(err.message).replace(/^FirebaseError:\s*/, "");

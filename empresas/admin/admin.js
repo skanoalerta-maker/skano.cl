@@ -217,16 +217,20 @@ async function loadOverview() {
 
 const listState = { items: [], cursor: null };
 
+let companiesSeq = 0;
 async function loadCompanies(reset) {
+  const my = ++companiesSeq;
   if (reset) { listState.items = []; listState.cursor = null; }
   const body = $("companiesBody");
   if (reset) body.replaceChildren(el("tr", {}, el("td", { colspan: 8, class: "empty" }, "Cargando…")));
   try {
     const res = await api("adminListCompanies", { status: $("statusFilter").value || undefined, cursor: listState.cursor || undefined, limit: 25 });
+    if (my !== companiesSeq) return;
     listState.items.push(...res.items);
     listState.cursor = res.next_cursor;
     renderCompanies();
   } catch (err) {
+    if (my !== companiesSeq) return;
     body.replaceChildren(el("tr", {}, el("td", { colspan: 8, class: "empty" }, C.errorMessage(err))));
   }
 }

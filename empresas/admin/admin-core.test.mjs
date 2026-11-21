@@ -66,3 +66,9 @@ test("eventos de contrato en español", () => {
   assert.equal(C.contractEventLabel("QUOTA_INCREASE"), "Ampliación de cupo");
   assert.equal(C.contractEventLabel("STATUS_CANCELLED"), "Contrato cancelado");
 });
+
+test("errores de conectividad se distinguen de errores del servidor", () => {
+  assert.equal(C.errorMessage({ code: "functions/internal", message: "internal" }), C.CONNECTIVITY_TEXT);
+  assert.equal(C.errorMessage({ code: "functions/unavailable", message: "x" }), C.CONNECTIVITY_TEXT);
+  assert.equal(C.errorMessage({ code: "functions/internal", message: "Error interno.", details: { reason: "internal" } }), "Error interno. Intenta nuevamente.");
+});
