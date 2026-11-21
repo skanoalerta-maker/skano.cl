@@ -226,6 +226,27 @@ export function errorMessage(err) {
   return ERROR_TEXT.internal;
 }
 
+/**
+ * Enlace de invitación para el dominio en uso. Antes de que empresas.skano.cl
+ * tenga DNS, el panel se usa en <proyecto>.web.app: el enlace se reescribe a
+ * ese mismo origen SOLO si ambos dominios pertenecen al mismo entorno
+ * configurado (judicial-env.mjs). El token y la ruta no cambian.
+ */
+export function localizeInviteUrl(url, currentOrigin, envHosts = []) {
+  const raw = String(url || "");
+  try {
+    const u = new URL(raw);
+    const cur = new URL(String(currentOrigin || ""));
+    if (u.protocol !== "https:" || cur.protocol !== "https:") return raw;
+    if (u.host === cur.host) return raw;
+    const hosts = new Set((envHosts || []).map((h) => String(h).toLowerCase()));
+    if (!hosts.has(u.hostname) || !hosts.has(cur.hostname)) return raw;
+    return `${cur.origin}${u.pathname}${u.search}${u.hash}`;
+  } catch (_) {
+    return raw;
+  }
+}
+
 export function inviteLinkForDisplay(url) {
   // Enlace solo visible en pruebas; se recorta el token en la vista.
   const s = String(url || "");

@@ -36,6 +36,9 @@ if (!FBX) {
   throw new Error("SKANO portal: entorno no habilitado");
 }
 const { auth, functions, A, F } = FBX;
+if (FBX.env.stage === "emulator" && $("envTag")) {
+  $("envTag").lastChild.textContent = " ENTORNO DE PRUEBAS · EMULADORES LOCALES";
+}
 // Aviso para la pantalla de inicio que debe sobrevivir al cierre de sesión.
 let loginNotice = "";
 
@@ -780,9 +783,10 @@ LOADERS.users = async () => {
         try {
           const r = await api("companyInviteMember", { email: email.value, role: role.value });
           email.value = "";
+          const inviteUrl = r.invite_url ? C.localizeInviteUrl(r.invite_url, location.origin, FBX.env.hosts) : "";
           out.replaceChildren(el("div", { class: "invite-box" }, `Invitación creada para ${r.email} (${C.ROLE_LABEL[r.role]}), vence ${C.formatDate(r.expires_at_ms)}.`,
             r.delivery === "email" ? el("div", {}, `Enviamos el enlace por correo a ${r.email}.`) : null,
-            r.invite_url ? el("div", {}, "Comparte el enlace solo con la persona invitada — ", el("button", { class: "link", type: "button", onclick: async () => { await navigator.clipboard.writeText(r.invite_url); toast("Enlace copiado."); } }, "copiar enlace de invitación")) : null));
+            inviteUrl ? el("div", {}, "Comparte el enlace solo con la persona invitada — ", el("button", { class: "link", type: "button", onclick: async () => { await navigator.clipboard.writeText(inviteUrl); toast("Enlace copiado."); } }, "copiar enlace de invitación")) : null));
           await refreshInvites();
         } catch (err) {
           out.replaceChildren(el("p", { class: "message" }, errorText(err)));

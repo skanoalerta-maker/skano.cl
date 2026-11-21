@@ -25,6 +25,9 @@ if (!FBX) {
   throw new Error("SKANO admin: entorno no habilitado");
 }
 const { auth, functions } = FBX;
+if (FBX.env.stage === "emulator" && $("envTag")) {
+  $("envTag").lastChild.textContent = " ENTORNO DE PRUEBAS · EMULADORES LOCALES";
+}
 const { onAuthStateChanged, sendPasswordResetEmail, sendEmailVerification, signOut } = FBX.A;
 const { httpsCallable } = FBX.F;
 
@@ -396,11 +399,12 @@ function membersCard(detail) {
     try {
       const r = await api("adminInviteCompanyAdmin", { company_id: c.company_id, email: input.value });
       input.value = "";
+      const inviteUrl = r.invite_url ? C.localizeInviteUrl(r.invite_url, location.origin, FBX.env.hosts) : "";
       result.replaceChildren(el("div", { class: "invite-box" },
         `Invitación creada para ${r.email} (vence ${C.formatDate(r.expires_at_ms)}).`,
         r.delivery === "email" ? el("div", {}, `Enviamos el enlace por correo a ${r.email}.`) : null,
-        r.invite_url ? el("div", {}, "Comparte este enlace solo con la persona invitada: ", el("code", {}, C.inviteLinkForDisplay(r.invite_url)), " ",
-          el("button", { class: "link", type: "button", onclick: async () => { await navigator.clipboard.writeText(r.invite_url); toast("Enlace copiado."); } }, "Copiar enlace completo")) : null));
+        inviteUrl ? el("div", {}, "Comparte este enlace solo con la persona invitada: ", el("code", {}, C.inviteLinkForDisplay(inviteUrl)), " ",
+          el("button", { class: "link", type: "button", onclick: async () => { await navigator.clipboard.writeText(inviteUrl); toast("Enlace copiado."); } }, "Copiar enlace completo")) : null));
       await reloadSoft();
     } catch (err) {
       result.replaceChildren(el("p", { class: "message" }, C.errorMessage(err)));

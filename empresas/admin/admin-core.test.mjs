@@ -72,3 +72,16 @@ test("errores de conectividad se distinguen de errores del servidor", () => {
   assert.equal(C.errorMessage({ code: "functions/unavailable", message: "x" }), C.CONNECTIVITY_TEXT);
   assert.equal(C.errorMessage({ code: "functions/internal", message: "Error interno.", details: { reason: "internal" } }), "Error interno. Intenta nuevamente.");
 });
+
+test("enlace de invitación: se adapta al dominio del mismo entorno (antes del DNS)", () => {
+  const hosts = ["empresas.skano.cl", "skano-judicial-prd.web.app"];
+  const url = "https://empresas.skano.cl/portal/invitacion/#t=AbCdEfGhIjKlMnOpQrStUvWxYz0123456789_-abcd";
+  assert.equal(C.localizeInviteUrl(url, "https://skano-judicial-prd.web.app", hosts),
+    "https://skano-judicial-prd.web.app/portal/invitacion/#t=AbCdEfGhIjKlMnOpQrStUvWxYz0123456789_-abcd");
+  assert.equal(C.localizeInviteUrl(url, "https://empresas.skano.cl", hosts), url, "mismo dominio: sin cambios");
+  assert.equal(C.localizeInviteUrl(url, "https://otro-sitio.web.app", hosts), url, "dominio ajeno al entorno: sin cambios");
+  assert.equal(C.localizeInviteUrl("https://malicioso.example/portal/#t=x", "https://skano-judicial-prd.web.app", hosts), "https://malicioso.example/portal/#t=x");
+  assert.equal(C.localizeInviteUrl(url, "http://127.0.0.1:8088", []), url, "emulador: sin cambios");
+  assert.equal(C.localizeInviteUrl("", "https://skano-judicial-prd.web.app", hosts), "");
+  assert.equal(C.localizeInviteUrl("no-es-url", "https://skano-judicial-prd.web.app", hosts), "no-es-url");
+});
