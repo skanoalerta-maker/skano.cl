@@ -1,0 +1,67 @@
+/* SKANO Empresas — Portal empresarial (complementa /empresas/admin/admin.css) */
+.invite-banner{margin:22px 0 0;padding:12px 14px;border:1px solid rgba(53,217,242,.35);border-radius:10px;background:rgba(53,217,242,.08);color:#bfefff;font-size:.76rem;line-height:1.5}
+.tabs{display:flex;gap:6px;margin:22px 0 0;padding:4px;border:1px solid var(--line);border-radius:11px;background:#06162c}
+.tab{flex:1;padding:10px;border-radius:8px;background:transparent;color:#9db1c9;font-size:.68rem;font-weight:800;letter-spacing:.08em}
+.tab.active{background:#102c50;color:#fff}
+.state-card .btn-row{margin-top:20px}
+.picker-list{display:grid;gap:10px;margin-top:18px}
+.picker-item{display:flex;justify-content:space-between;align-items:center;gap:14px;width:100%;padding:16px;border:1px solid var(--line);border-radius:12px;background:#06162c;color:var(--white);text-align:left}
+.picker-item:hover{border-color:var(--cyan)}
+.picker-item small{display:block;color:var(--muted);margin-top:4px}
+.session-card em{font-style:normal;font-size:.6rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis}
+.nav-item.soon{opacity:.5;cursor:not-allowed}
+.nav-item .badge{margin-left:auto;min-width:22px;height:20px;padding:0 6px;display:grid;place-items:center;border-radius:20px;background:rgba(242,184,75,.18);color:var(--warning);font-size:.6rem;font-weight:800;width:auto}
+
+/* Filtros y tablas */
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+.filters input,.filters select{width:auto;min-width:180px}
+.filters .grow{flex:1;min-width:220px}
+.plate{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.86rem;letter-spacing:.08em;font-weight:700}
+td.check,th.check{width:36px}
+td.check input,th.check input{width:auto}
+.bulk-bar{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);background:rgba(53,217,242,.06);font-size:.74rem}
+.issues{margin:0;padding-left:16px;color:#ffb3bd;font-size:.7rem}
+.issues.warn{color:#f6d79b}
+.issues li+li{margin-top:2px}
+
+/* Detalle de vehículo */
+.facts.compact dd{font-size:.8rem}
+.section-title{margin:18px 0 10px;color:var(--cyan);font-size:.64rem;font-weight:800;letter-spacing:.14em}
+.doc-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.doc-list li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:rgba(4,19,39,.6);font-size:.72rem}
+.doc-list small{display:block;color:var(--muted)}
+.upload-row{display:grid;grid-template-columns:1fr 1.3fr auto;gap:10px;align-items:end;margin-top:12px}
+.timeline li ul{margin:6px 0 0;padding-left:16px;color:var(--muted);font-size:.66rem}
+
+/* Formulario de vehículo */
+dialog.wide{width:min(980px,calc(100% - 24px))}
+.form-section{margin:6px 0 10px;padding:16px;border:1px solid rgba(83,205,239,.14);border-radius:12px}
+.form-section legend{padding:0 6px;color:var(--cyan);font-size:.64rem;font-weight:800;letter-spacing:.12em}
+.form-grid.three{grid-template-columns:repeat(3,1fr)}
+.req{color:var(--warning)}
+
+/* Importador */
+.steps{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.step{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);border-radius:30px;color:var(--muted);font-size:.66rem;font-weight:800;letter-spacing:.08em}
+.step b{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#102c50;color:#fff;font-size:.6rem}
+.step.active{color:#fff;border-color:var(--cyan)}.step.active b{background:var(--cyan);color:#001425}
+.step.done{color:var(--success)}.step.done b{background:var(--success);color:#001425}
+.dropzone{display:grid;place-items:center;gap:10px;padding:34px;border:1.5px dashed rgba(53,217,242,.4);border-radius:14px;background:rgba(53,217,242,.04);text-align:center;color:var(--muted)}
+.dropzone.drag{border-color:var(--cyan);background:rgba(53,217,242,.1)}
+.dropzone input{width:auto}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 16px}
+.chip{display:grid;gap:3px;min-width:130px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(4,19,39,.55);text-align:left;color:var(--white)}
+.chip strong{font-size:1.4rem}.chip span{font-size:.6rem;color:var(--muted);letter-spacing:.08em}
+.chip.ok{border-color:rgba(86,226,164,.35)}.chip.warn{border-color:rgba(242,184,75,.4)}.chip.bad{border-color:rgba(228,81,100,.45)}
+button.chip{cursor:pointer}.chip.selected{outline:2px solid var(--cyan)}
+.mapping{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:12px 0}
+.disabled-card{padding:28px;border:1px dashed rgba(242,184,75,.5);border-radius:15px;background:rgba(242,184,75,.05)}
+.disabled-card h2{color:#f6d79b}
+.state-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+
+@media(max-width:860px){
+  .upload-row,.form-grid.three{grid-template-columns:1fr}
+  .filters input,.filters select{min-width:0;width:100%}
+}
+.kpi.text strong{font-size:1.25rem;line-height:1.2;margin:6px 0 4px}
+.detail-head h1 .plate{font-size:inherit;letter-spacing:.06em}
