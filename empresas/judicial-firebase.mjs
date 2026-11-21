@@ -1,6 +1,6 @@
 // =====================================================================
-// SKANO JUDICIAL — Arranque de Firebase compartido por /empresas/admin/ y
-// /empresas/portal/.
+// SKANO JUDICIAL — Arranque de Firebase compartido por el panel SUPERADMIN
+// (admin/) y el portal empresarial (portal/).
 // - Una sola versión del SDK web (SDK_VERSION) para ambos portales.
 // - En 127.0.0.1/localhost se conecta SOLO a los emuladores.
 // - En un dominio publicado exige configuración completa y App Check

@@ -1,5 +1,5 @@
 // =====================================================================
-// SKANO EMPRESAS — Portal empresarial (/empresas/portal/)
+// SKANO EMPRESAS — Portal empresarial (empresas.skano.cl/portal/ o /empresas/portal/)
 // Sistema B: vehículos con embargo y medidas judiciales (Firebase
 // Judicial). No muestra ni gestiona encargos por robo oficiales.
 //
@@ -588,7 +588,7 @@ function renderImportStart(blocked = null) {
     steps(1),
     el("article", { class: "card" },
       el("p", { class: "muted" }, "Las filas válidas se crean en estado «Importado»: nunca se publican automáticamente y no consumen cupo hasta su aprobación. Las inválidas quedan pendientes para corregir."),
-      el("div", { class: "btn-row" }, el("a", { class: "secondary small", href: "/empresas/portal/plantillas/skano_plantilla_embargos.xlsx", download: true }, "DESCARGAR PLANTILLA")),
+      el("div", { class: "btn-row" }, el("a", { class: "secondary small", href: "plantillas/skano_plantilla_embargos.xlsx", download: true }, "DESCARGAR PLANTILLA")),
       zone, el("div", { class: "btn-row" }, btn), msg),
     mappingBox,
     importHistory(),
@@ -938,7 +938,7 @@ function showPicker() {
   if (!S.memberships.length) {
     $("pickerTitle").textContent = "Tu cuenta no pertenece a ninguna empresa";
     list.replaceChildren(el("p", { class: "muted" }, "Solicita una invitación al administrador de tu empresa."),
-      S.isPlatform ? el("a", { class: "primary small", href: "/empresas/admin/" }, "IR A SUPERADMINISTRACIÓN") : null);
+      S.isPlatform ? el("a", { class: "primary small", href: "../admin/" }, "IR A SUPERADMINISTRACIÓN") : null);
   } else {
     $("pickerTitle").textContent = "Selecciona una empresa";
     list.replaceChildren(...S.memberships.map((m) => el("button", { class: "picker-item", type: "button", onclick: () => enterCompany(m) },

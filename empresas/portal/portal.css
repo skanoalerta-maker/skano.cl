@@ -1,4 +1,4 @@
-/* SKANO Empresas — Portal empresarial (complementa /empresas/admin/admin.css) */
+/* SKANO Empresas — Portal empresarial (complementa ../admin/admin.css) */
 .invite-banner{margin:22px 0 0;padding:12px 14px;border:1px solid rgba(53,217,242,.35);border-radius:10px;background:rgba(53,217,242,.08);color:#bfefff;font-size:.76rem;line-height:1.5}
 .tabs{display:flex;gap:6px;margin:22px 0 0;padding:4px;border:1px solid var(--line);border-radius:11px;background:#06162c}
 .tab{flex:1;padding:10px;border-radius:8px;background:transparent;color:#9db1c9;font-size:.68rem;font-weight:800;letter-spacing:.08em}

@@ -1,5 +1,5 @@
 // =====================================================================
-// SKANO EMPRESAS — Panel SUPERADMIN (/empresas/admin/)
+// SKANO EMPRESAS — Panel SUPERADMIN (empresas.skano.cl/admin/ o /empresas/admin/)
 // Conectado EXCLUSIVAMENTE a los emuladores locales (proyecto demo-*).
 // Toda autorización ocurre en el backend; la interfaz solo presenta.
 // Nunca se usa innerHTML con datos: todo el contenido va por textContent.
