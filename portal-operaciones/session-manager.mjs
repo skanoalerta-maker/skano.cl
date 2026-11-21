@@ -15,7 +15,8 @@
      degraded      error temporal (red, Firestore, token): NO se
                    cierra sesión; operaciones protegidas en pausa
      revoked       autorización realmente retirada (lecturas
-                   completas y sin perfil válido) -> cierre seguro
+                   completas y sin perfil válido, CONFIRMADA con un
+                   token renovado y una segunda lectura) -> cierre seguro
      blocked       cuenta bloqueada o deshabilitada -> cierre seguro
      auth_invalid  Firebase confirma sesión inválida -> cierre seguro
      signed_out    cierre voluntario
@@ -23,6 +24,12 @@
    Reglas:
      - Nunca se cierra sesión por un error temporal ni porque una
        consulta haya fallado: solo con una decisión definitiva.
+     - Una retirada de autorización se confirma antes de cerrar:
+       se renueva el token y se vuelve a leer; si la confirmación
+       falla por un error temporal la sesión queda en espera.
+     - El arranque usa el token en caché (más rápido) y de inmediato
+       se renueva en segundo plano; la revocación o deshabilitación
+       real se detecta igual en esa renovación.
      - Una sola verificación a la vez por usuario (single-flight).
      - Los resultados de verificaciones antiguas o de otro usuario
        se descartan (contador de generación).
@@ -168,6 +175,7 @@ export function createSessionManager({
   let inflight = null;
   let retryTimer = null;
   let retryIndex = 0;
+  let droppedUid = null; // usuario que Firebase retiró sin cierre voluntario
 
   function emit(patch) {
     snapshot = Object.freeze({ ...snapshot, ...patch });
@@ -199,13 +207,28 @@ export function createSessionManager({
     return snapshot;
   }
 
-  async function runCheck(currentUser, gen, { forceToken, reason }) {
+  async function runCheck(currentUser, gen, { forceToken, reason, confirming = false }) {
     let token;
     try {
       token = await getToken(currentUser, forceToken);
     } catch (error) {
-      if (gen !== generation) return snapshot;
       const kind = classifyError(error);
+      if (gen !== generation) {
+        // Firebase Auth cierra la sesión por su cuenta ante una cuenta
+        // deshabilitada o un token revocado (onAuthStateChanged(null) llega
+        // antes que este error). Se conserva el motivo para informarlo.
+        if ((kind === "blocked" || kind === "auth_invalid") && !user
+          && snapshot.state === SESSION_STATES.IDLE && droppedUid === currentUser.uid) {
+          droppedUid = null;
+          emit({
+            state: kind === "blocked" ? SESSION_STATES.BLOCKED : SESSION_STATES.AUTH_INVALID,
+            profile: null,
+            error: { code: error?.code || null },
+            reason,
+          });
+        }
+        return snapshot;
+      }
       if (kind === "auth_invalid") return finishFinal(gen, SESSION_STATES.AUTH_INVALID, error);
       if (kind === "blocked") return finishFinal(gen, SESSION_STATES.BLOCKED, error);
       emit({ state: SESSION_STATES.DEGRADED, error: { code: error?.code || "unknown", stage: "token" }, reason });
@@ -237,6 +260,12 @@ export function createSessionManager({
       scheduleRetry();
       return snapshot;
     }
+    if (decision.state === SESSION_STATES.REVOKED && !confirming) {
+      // Antes de cerrar, confirmar con un token renovado y una segunda
+      // lectura: un permiso denegado puntual o un token con claims
+      // desactualizados no deben expulsar al usuario.
+      return runCheck(currentUser, gen, { forceToken: true, reason: `${reason}:confirm`, confirming: true });
+    }
     return finishFinal(gen, decision.state, null);
   }
 
@@ -262,7 +291,9 @@ export function createSessionManager({
     retryIndex = 0;
     inflight = null;
     generation += 1;
+    const previousUid = user?.uid || null;
     user = nextUser || null;
+    droppedUid = user ? null : previousUid;
     if (!user) {
       emit({ state: SESSION_STATES.IDLE, uid: null, profile: null, lastConfirmedAt: 0, lastTokenRefreshAt: 0, error: null, reason: "no-user" });
       return Promise.resolve(snapshot);
@@ -275,7 +306,15 @@ export function createSessionManager({
       lastTokenRefreshAt: sameUser ? snapshot.lastTokenRefreshAt : 0,
       error: null,
     });
-    return check({ forceToken: true, reason: "start" });
+    return check({ forceToken: false, reason: "start" }).then((result) => {
+      // Renovación inmediata en segundo plano: la sesión ya se muestra,
+      // pero un token revocado o una cuenta deshabilitada se detectan
+      // en segundos (las operaciones siguen protegidas por el servidor).
+      if (result.state === SESSION_STATES.VALID && result.uid === user?.uid && result.lastTokenRefreshAt === 0) {
+        return revalidate({ force: true, reason: "start-refresh" });
+      }
+      return result;
+    });
   }
 
   /**
@@ -295,6 +334,7 @@ export function createSessionManager({
   /** Cierre voluntario. */
   async function signOutVoluntary() {
     cancelRetry();
+    droppedUid = null;
     generation += 1;
     user = null;
     emit({ state: SESSION_STATES.SIGNED_OUT, profile: null, error: null, reason: "voluntary" });

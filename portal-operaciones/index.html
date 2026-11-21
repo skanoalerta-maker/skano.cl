@@ -7,7 +7,17 @@
 
   <title>Centro de Operaciones | SKANO</title>
 
-  <link rel="icon" href="/img/skano-logo.png">
+  <link rel="icon" type="image/png" href="/img/skano-icon-96.png">
+
+  <!-- Conexiones anticipadas: Firebase SDK, Auth y Firestore -->
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://securetoken.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin>
+  <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js" crossorigin>
+  <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js" crossorigin>
+  <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js" crossorigin>
+  <link rel="modulepreload" href="/portal-operaciones/session-manager.mjs?v=20261121-1">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +29,7 @@
 
   <link
     rel="stylesheet"
-    href="/portal-operaciones/portal.css?v=20261118-3"
+    href="/portal-operaciones/portal.css?v=20261121-1"
   >
 
   <link
@@ -52,10 +62,16 @@
 
       <div class="portal-brand">
 
-        <img
-          src="/img/skano-logo.png"
-          alt=""
-        >
+        <picture>
+          <source srcset="/img/skano-logo.webp" type="image/webp">
+          <img
+            src="/img/skano-logo.png"
+            alt=""
+            width="48"
+            height="72"
+            decoding="async"
+          >
+        </picture>
 
         <span>
           <b>SKANO</b>
@@ -189,10 +205,16 @@
 
       <div class="portal-brand compact">
 
-        <img
-          src="/img/skano-logo.png"
-          alt=""
-        >
+        <picture>
+          <source srcset="/img/skano-logo.webp" type="image/webp">
+          <img
+            src="/img/skano-logo.png"
+            alt=""
+            width="48"
+            height="72"
+            decoding="async"
+          >
+        </picture>
 
         <span>
           <b>SKANO</b>
@@ -1476,7 +1498,7 @@
 
   <script
     type="module"
-    src="/portal-operaciones/portal.js?v=20261118-3"
+    src="/portal-operaciones/portal.js?v=20261121-1"
   ></script>
 
 

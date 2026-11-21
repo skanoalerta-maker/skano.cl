@@ -50,7 +50,7 @@ import {
   createSessionManager,
   isBlockedProfile,
   readSources
-} from "./session-manager.mjs?v=20261118-3";
+} from "./session-manager.mjs?v=20261121-1";
 
 
 /* =========================================================

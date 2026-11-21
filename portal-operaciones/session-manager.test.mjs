@@ -268,3 +268,125 @@ test("cierre voluntario", async () => {
   assert.equal(w.calls.signOut, 1);
   assert.equal(w.manager.snapshot.profile, null);
 });
+
+// ---------------------------------------------------------------
+// Confirmación antes de cerrar y arranque rápido (rama portal-ops)
+// ---------------------------------------------------------------
+// Falla solo durante la próxima lectura de perfiles (no en la confirmación).
+const failOnce = (w, collection, error) => {
+  const readAt = w.calls.read + 1;
+  Object.defineProperty(w.failures, collection, {
+    configurable: true, enumerable: true,
+    get() { return w.calls.read === readAt ? error : undefined; },
+  });
+};
+
+test("permiso denegado puntual: se confirma con token renovado y NO cierra sesión", async () => {
+  const w = world();
+  await w.manager.start(user("admin1"));
+  const forced = w.calls.forced;
+  failOnce(w, "admins", err("permission-denied"));
+  await w.manager.revalidate({ force: true });
+  assert.equal(w.manager.snapshot.state, S.VALID);
+  assert.equal(w.calls.signOut, 0);
+  assert.equal(w.calls.forced, forced + 2, "revalidación + confirmación con token renovado");
+});
+
+test("revocación real: se confirma con segunda lectura y token renovado antes de cerrar", async () => {
+  const w = world();
+  await w.manager.start(user("staff1"));
+  const reads = w.calls.read; const forced = w.calls.forced;
+  w.db["staff_accounts/staff1"].status = "disabled";
+  w.advance(2 * 60_000);
+  await w.manager.revalidate({ reason: "interval" });
+  assert.equal(w.manager.snapshot.state, S.REVOKED);
+  assert.equal(w.calls.signOut, 1);
+  assert.equal(w.calls.read, reads + 2, "lectura + confirmación");
+  assert.ok(w.calls.forced >= forced + 1, "la confirmación renueva el token");
+});
+
+test("confirmación con red caída: queda en espera, sin cerrar sesión", async () => {
+  const w = world();
+  await w.manager.start(user("admin1"));
+  failOnce(w, "admins", err("permission-denied"));
+  w.tokenFailures.push(undefined, err("auth/network-request-failed"));
+  await w.manager.revalidate({ force: true });
+  assert.equal(w.manager.snapshot.state, S.DEGRADED);
+  assert.equal(w.calls.signOut, 0);
+  assert.equal(w.manager.canOperate(), false);
+  await w.runTimers();
+  assert.equal(w.manager.snapshot.state, S.VALID);
+});
+
+test("arranque: token en caché para mostrar la interfaz y renovación forzada inmediata", async () => {
+  const w = world();
+  const states = [];
+  const forcedSeq = [];
+  const m = createSessionManager({
+    getToken: async (_u, force) => { forcedSeq.push(Boolean(force)); return { claims: {} }; },
+    readProfiles: async () => ({ values: { admin: { active: true, role: "admin" } }, incomplete: false, errors: {} }),
+    authorize: (_c, v) => (v.admin ? { kind: "admin" } : null),
+    isBlocked: () => false,
+    signOut: async () => {},
+    onChange: (snap) => states.push(snap.state),
+    setTimer: () => 0, clearTimer: () => {},
+  });
+  await m.start(user("admin1"));
+  assert.deepEqual(forcedSeq, [false, true], "primero caché, luego renovación forzada");
+  assert.equal(states.indexOf(S.VALID) < states.indexOf(S.REVALIDATING), true, "la interfaz se habilita antes de la renovación");
+  assert.equal(m.snapshot.state, S.VALID);
+  assert.ok(m.snapshot.lastTokenRefreshAt > 0);
+  void w;
+});
+
+test("arranque: cuenta deshabilitada se detecta en la renovación inmediata y cierra", async () => {
+  const w = world();
+  w.tokenFailures.push(undefined, err("auth/user-disabled"));
+  await w.manager.start(user("police1"));
+  assert.equal(w.manager.snapshot.state, S.BLOCKED);
+  assert.equal(w.calls.signOut, 1);
+});
+
+test("arranque: token revocado se detecta en la renovación inmediata y cierra", async () => {
+  const w = world();
+  w.tokenFailures.push(undefined, err("auth/user-token-expired"));
+  await w.manager.start(user("admin1"));
+  assert.equal(w.manager.snapshot.state, S.AUTH_INVALID);
+  assert.equal(w.calls.signOut, 1);
+});
+
+test("Firebase cierra solo la sesión (cuenta deshabilitada): se conserva el motivo para el mensaje", async () => {
+  const states = [];
+  let mgr;
+  let failNext = false;
+  mgr = createSessionManager({
+    getToken: async () => {
+      if (failNext) {
+        failNext = false;
+        await mgr.start(null);                       // onAuthStateChanged(null) del SDK
+        throw err("auth/user-disabled");
+      }
+      return { claims: {} };
+    },
+    readProfiles: async () => ({ values: { admin: { active: true } }, incomplete: false, errors: {} }),
+    authorize: (_c, v) => (v.admin ? { kind: "admin" } : null),
+    isBlocked: () => false,
+    signOut: async () => {},
+    onChange: (snap) => states.push(snap.state),
+    setTimer: () => 0, clearTimer: () => {},
+  });
+  await mgr.start(user("admin1"));
+  failNext = true;
+  await mgr.revalidate({ force: true });
+  assert.equal(mgr.snapshot.state, S.BLOCKED);
+  assert.equal(mgr.canOperate(), false);
+  assert.deepEqual(states.slice(-2), [S.IDLE, S.BLOCKED]);
+});
+
+test("cierre voluntario: no se muestra como bloqueo aunque llegue un error tardío", async () => {
+  const w = world();
+  await w.manager.start(user("admin1"));
+  await w.manager.signOutVoluntary();
+  await w.manager.start(null);
+  assert.equal(w.manager.snapshot.state, S.IDLE);
+});

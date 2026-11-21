@@ -38,7 +38,8 @@
 
   <link
     rel="icon"
-    href="/img/skano-logo.png"
+    type="image/png"
+    href="/img/skano-icon-96.png"
   >
 
   <link
@@ -415,6 +416,7 @@
   </style>
 
 <link rel="stylesheet" href="/store-section.css">
+  <link rel="stylesheet" href="/platforms.css?v=20261121-1">
   <link rel="stylesheet" href="/store-home.css?v=20261109">
   <link rel="stylesheet" href="/store-home-v2.css?v=20261109c">
 </head>
@@ -445,10 +447,16 @@
     href="/"
   >
 
-    <img
-      src="/img/skano-logo.png"
-      alt=""
-    >
+    <picture>
+      <source srcset="/img/skano-logo.webp" type="image/webp">
+      <img
+        src="/img/skano-logo.png"
+        alt=""
+        width="48"
+        height="72"
+        decoding="async"
+      >
+    </picture>
 
     <span>
 
@@ -465,7 +473,7 @@
   </a>
 
 
-  <nav id="mainNav">
+  <nav id="mainNav" class="site-nav" aria-label="Navegación principal">
 
     <a href="#skano">
       SKANO
@@ -475,20 +483,57 @@
       Nosotros
     </a>
 
-    <a href="#web-skano">
-      Plataformas
-    </a>
+    <div class="nav-drop">
+      <button
+        type="button"
+        class="nav-drop-toggle"
+        id="platformsToggle"
+        aria-expanded="false"
+        aria-controls="platformsMenu"
+      >
+        Plataformas
+        <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+      </button>
+
+      <div class="nav-drop-menu" id="platformsMenu" hidden>
+        <a class="is-featured" href="https://skano-judicial-prd.web.app/portal/">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v16"/><path d="M15 9h4a1 1 0 0 1 1 1v11"/><path d="M8 8h3M8 12h3M8 16h3M3 21h18"/></svg></span>
+          <b>Portal de Empresas</b>
+          <small>SKANO Judicial · empresas con convenio</small>
+        </a>
+        <a href="/portal-operaciones/">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg></span>
+          <b>Portal de Operaciones</b>
+          <small>Personal institucional y policial</small>
+        </a>
+        <a href="/planes/">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 17h14l-1.5-6.5A2 2 0 0 0 15.6 9H8.4a2 2 0 0 0-1.9 1.5L5 17z"/><path d="M4 17v2M20 17v2M7.5 14h.01M16.5 14h.01"/></svg></span>
+          <b>Planes y servicios</b>
+          <small>Servicios SKANO</small>
+        </a>
+        <a href="/vehiculos/">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.2-4.2"/></svg></span>
+          <b>Vehículos en búsqueda</b>
+          <small>Consulta pública</small>
+        </a>
+        <a href="/mi-barrio-seguro/">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg></span>
+          <b>Mi Barrio Seguro</b>
+          <small>Seguridad para comunidades</small>
+        </a>
+        <a href="#web-skano">
+          <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>
+          <b>Web SKANO</b>
+          <small>Otros accesos y descargas</small>
+        </a>
+        <a class="nav-drop-all" href="#plataformas">
+          Ver todas las plataformas
+        </a>
+      </div>
+    </div>
 
     <a href="/planes/">
       Planes
-    </a>
-
-    <a href="/vehiculos/">
-      Vehículos en búsqueda
-    </a>
-
-    <a href="/mi-barrio-seguro/">
-      Mi Barrio Seguro
     </a>
 
     <a href="#ruta">
@@ -503,12 +548,21 @@
       Contacto
     </a>
 
-    <a
-      class="nav-operations"
-      href="/portal-operaciones/"
-    >
-      Portal de Operaciones
-    </a>
+    <div class="nav-ctas">
+      <a
+        class="nav-companies"
+        href="https://skano-judicial-prd.web.app/portal/"
+      >
+        Portal de Empresas
+      </a>
+
+      <a
+        class="nav-operations"
+        href="/portal-operaciones/"
+      >
+        Portal de Operaciones
+      </a>
+    </div>
 
   </nav>
 
@@ -551,10 +605,16 @@
 
       <div class="hero-logo">
 
-        <img
-          src="/img/skano-logo.png"
-          alt="Logo SKANO"
-        >
+        <picture>
+          <source srcset="/img/skano-logo.webp" type="image/webp">
+          <img
+            src="/img/skano-logo.png"
+            alt="Logo SKANO"
+            width="48"
+            height="72"
+            decoding="async"
+          >
+        </picture>
 
         <span>
           DESARROLLADO EN CHILE
@@ -646,6 +706,131 @@
 
 </section>
 
+
+
+<!-- ===================================================== -->
+<!-- NUESTRAS PLATAFORMAS -->
+<!-- ===================================================== -->
+
+<section class="platforms" id="plataformas" aria-labelledby="platforms-title">
+
+  <div class="shell">
+
+    <div class="platforms-head">
+      <div>
+        <span class="eyebrow cyan">ACCESOS SKANO</span>
+        <h2 id="platforms-title">NUESTRAS <em>PLATAFORMAS</em></h2>
+      </div>
+      <p>
+        Cada plataforma tiene su propio acceso y su propia cuenta.
+        Elige la que corresponde a tu perfil.
+      </p>
+    </div>
+
+    <div class="platforms-grid">
+
+      <article class="platform-card is-ops reveal">
+        <div class="platform-top">
+          <span class="platform-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg></span>
+          <span class="platform-num">01</span>
+        </div>
+        <p class="platform-audience">PERSONAL INSTITUCIONAL Y POLICIAL</p>
+        <h3>Portal de Operaciones</h3>
+        <p>
+          Centro de operaciones SKANO para personal acreditado:
+          consulta de vehículos en búsqueda y gestión institucional.
+        </p>
+        <ul>
+          <li>Solo cuentas acreditadas</li>
+          <li>Acceso con la cuenta institucional vigente</li>
+        </ul>
+        <div class="platform-actions">
+          <a class="platform-btn" href="/portal-operaciones/">
+            Ingresar <span aria-hidden="true">→</span>
+          </a>
+        </div>
+        <p class="platform-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg> Acceso restringido</p>
+      </article>
+
+      <article class="platform-card is-companies reveal">
+        <span class="platform-featured">NUEVO</span>
+        <div class="platform-top">
+          <span class="platform-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v16"/><path d="M15 9h4a1 1 0 0 1 1 1v11"/><path d="M8 8h3M8 12h3M8 16h3M3 21h18"/></svg></span>
+          <span class="platform-num">02</span>
+        </div>
+        <p class="platform-audience">EMPRESAS CON CONVENIO</p>
+        <h3>Portal de Empresas <small>SKANO JUDICIAL</small></h3>
+        <p>
+          Plataforma independiente para que empresas autorizadas
+          gestionen de forma segura su cartera de vehículos.
+        </p>
+        <ul>
+          <li>Acceso solo para cuentas habilitadas por SKANO</li>
+          <li>Verificación en dos pasos</li>
+        </ul>
+        <div class="platform-actions">
+          <a class="platform-btn" href="https://skano-judicial-prd.web.app/portal/">
+            Ingresar al Portal de Empresas <span aria-hidden="true">→</span>
+          </a>
+          <a class="platform-btn ghost" href="#contacto">
+            Solicitar acceso <span aria-hidden="true">→</span>
+          </a>
+        </div>
+        <p class="platform-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg> Cuenta separada de las demás plataformas</p>
+      </article>
+
+      <article class="platform-card is-services reveal">
+        <div class="platform-top">
+          <span class="platform-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 17h14l-1.5-6.5A2 2 0 0 0 15.6 9H8.4a2 2 0 0 0-1.9 1.5L5 17z"/><path d="M4 17v2M20 17v2M7.5 14h.01M16.5 14h.01"/></svg></span>
+          <span class="platform-num">03</span>
+        </div>
+        <p class="platform-audience">PERSONAS Y CONDUCTORES</p>
+        <h3>Servicios SKANO</h3>
+        <p>
+          Planes de protección y búsqueda vehicular, y consulta
+          pública de vehículos activos en búsqueda.
+        </p>
+        <ul>
+          <li>Planes Free, Mensual, Anual y Búsqueda Única</li>
+          <li>Consulta pública de vehículos en búsqueda</li>
+        </ul>
+        <div class="platform-actions">
+          <a class="platform-btn" href="/planes/">
+            Ver planes <span aria-hidden="true">→</span>
+          </a>
+          <a class="platform-btn ghost" href="/vehiculos/">
+            Vehículos en búsqueda <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </article>
+
+      <article class="platform-card is-barrio reveal">
+        <div class="platform-top">
+          <span class="platform-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg></span>
+          <span class="platform-num">04</span>
+        </div>
+        <p class="platform-audience">VECINOS Y COMUNIDADES</p>
+        <h3>Mi Barrio Seguro</h3>
+        <p>
+          Lectura de patentes, monitoreo vehicular y alertas para
+          proteger barrios y comunidades con tecnología SKANO.
+        </p>
+        <ul>
+          <li>Evaluación del sector</li>
+          <li>Cámaras compatibles conectadas a SKANO</li>
+        </ul>
+        <div class="platform-actions">
+          <a class="platform-btn" href="/mi-barrio-seguro/">
+            Conocer Mi Barrio Seguro <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </article>
+
+    </div>
+
+  </div>
+
+</section>
 
 
 <!-- ===================================================== -->
@@ -1891,10 +2076,16 @@
 
       <div class="traffic-core">
 
-        <img
-          src="/img/skano-logo.png"
-          alt=""
-        >
+        <picture>
+          <source srcset="/img/skano-logo.webp" type="image/webp">
+          <img
+            src="/img/skano-logo.png"
+            alt=""
+            width="48"
+            height="72"
+            decoding="async"
+          >
+        </picture>
 
         <span>
           SKANO
@@ -1936,10 +2127,16 @@
       href="/"
     >
 
-      <img
-        src="/img/skano-logo.png"
-        alt=""
-      >
+      <picture>
+        <source srcset="/img/skano-logo.webp" type="image/webp">
+        <img
+          src="/img/skano-logo.png"
+          alt=""
+          width="48"
+          height="72"
+          decoding="async"
+        >
+      </picture>
 
       <span>
 
@@ -2063,6 +2260,7 @@
 
 
 <script src="/professional.js?v=20260813-sections-5"></script>
+<script src="/platforms.js?v=20261121-1" defer></script>
 <script src="/store-home.js?v=20261109" defer></script>
 
 </body>

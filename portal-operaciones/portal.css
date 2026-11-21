@@ -31,3 +31,4 @@ dialog{width:min(680px,calc(100% - 24px));padding:0;border:0;border-radius:18px;
 .session-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 16px;padding:12px 16px;border:1px solid rgba(250,204,21,.55);border-radius:12px;background:rgba(250,204,21,.12);color:#fde68a;font-size:.92rem}
 .session-banner[hidden]{display:none}
 .session-actions{display:flex;gap:10px;justify-content:center;margin-top:14px}
+.portal-brand picture{display:contents}
