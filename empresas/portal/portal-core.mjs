@@ -5,10 +5,10 @@
 // =====================================================================
 
 export {
-  TEST_ENV, isTestHost, isValidRut, formatRut, formatDate, formatDateTime, formatNumber,
+  isTestHost, isValidRut, formatRut, formatDate, formatDateTime, formatNumber,
   quotaPercent, quotaLevel, errorMessage, ROLE_LABEL, CONTRACT_STATE_LABEL, auditLabel as adminAuditLabel,
-} from "../admin/admin-core.mjs?v=20261120-2";
-import { auditLabel as baseAuditLabel } from "../admin/admin-core.mjs?v=20261120-2";
+} from "../admin/admin-core.mjs?v=20261121-1";
+import { auditLabel as baseAuditLabel } from "../admin/admin-core.mjs?v=20261121-1";
 
 // ------------------------------------------------------------ menú
 

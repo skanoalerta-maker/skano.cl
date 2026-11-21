@@ -5,7 +5,7 @@ import * as C from "./admin-core.mjs";
 test("guardia de entorno: solo hosts locales de prueba", () => {
   for (const h of ["localhost", "127.0.0.1", "LOCALHOST"]) assert.equal(C.isTestHost(h), true);
   for (const h of ["www.skano.cl", "skano.cl", "skano-app-e734d.web.app", "", undefined]) assert.equal(C.isTestHost(h), false);
-  assert.match(C.TEST_ENV.projectId, /^demo-/, "solo proyecto demo (sin recursos reales)");
+  assert.equal(C.TEST_ENV, undefined, "la configuración vive solo en ../judicial-env.mjs");
 });
 
 test("RUT: validación y formato", () => {

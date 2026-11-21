@@ -3,19 +3,9 @@
 // Se prueba con: node --test empresas/admin/admin-core.test.mjs
 // =====================================================================
 
-export const TEST_ENV = Object.freeze({
-  projectId: "demo-skano-judicial",
-  apiKey: "demo-skano-judicial-key",
-  authDomain: "demo-skano-judicial.firebaseapp.com",
-  region: "southamerica-west1",
-  authEmulatorUrl: "http://127.0.0.1:9299",
-  functionsHost: "127.0.0.1",
-  functionsPort: 5201,
-});
-
 const TEST_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]"]);
 
-/** El panel solo se inicializa en el entorno de pruebas local. */
+/** Host local de pruebas (emuladores). El entorno real se resuelve en ../judicial-env.mjs. */
 export function isTestHost(hostname) {
   return TEST_HOSTS.has(String(hostname || "").toLowerCase());
 }

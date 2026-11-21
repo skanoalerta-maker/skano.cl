@@ -3,21 +3,19 @@
 // Sistema B: vehículos con embargo y medidas judiciales (Firebase
 // Judicial). No muestra ni gestiona encargos por robo oficiales.
 //
-// - Conectado EXCLUSIVAMENTE a emuladores locales (proyecto demo-*).
+// - Emuladores en 127.0.0.1; en un dominio publicado solo con el proyecto
+//   Judicial configurado (judicial-env.mjs), App Check y MFA.
 // - Toda autorización ocurre en el backend; la interfaz solo presenta.
 // - Sin innerHTML con datos: todo el contenido va por textContent.
 // =====================================================================
 
-import * as C from "./portal-core.mjs?v=20261120-1";
+import * as C from "./portal-core.mjs?v=20261121-1";
+import { bootFirebase, signInWithSecondFactor, handleMfaRequired } from "../judicial-firebase.mjs?v=20261121-1";
 
 const $ = (id) => document.getElementById(id);
 const SCREENS = ["envBlocked", "loading", "login", "verify", "picker", "app"];
 const screen = (id) => { for (const s of SCREENS) $(s).hidden = s !== id; };
 
-if (!C.isTestHost(location.hostname)) {
-  screen("envBlocked");
-  throw new Error("SKANO portal: entorno no permitido");
-}
 screen("loading");
 
 // ------------------------------------------------------------ invitación
@@ -32,16 +30,14 @@ if (location.hash) history.replaceState(null, "", location.pathname);
 const clearInvite = () => { pendingInvite = null; try { sessionStorage.removeItem("skano_invite"); } catch (_) {} };
 
 // ------------------------------------------------------------ Firebase
-const FB = "https://www.gstatic.com/firebasejs/12.7.0";
-const [{ initializeApp }, A, F] = await Promise.all([
-  import(`${FB}/firebase-app.js`), import(`${FB}/firebase-auth.js`), import(`${FB}/firebase-functions.js`),
-]);
-const app = initializeApp({ apiKey: C.TEST_ENV.apiKey, authDomain: C.TEST_ENV.authDomain, projectId: C.TEST_ENV.projectId }, "skano-judicial-portal");
-const auth = A.getAuth(app);
-A.connectAuthEmulator(auth, C.TEST_ENV.authEmulatorUrl, { disableWarnings: true });
-await A.setPersistence(auth, A.browserSessionPersistence);
-const functions = F.getFunctions(app, C.TEST_ENV.region);
-F.connectFunctionsEmulator(functions, C.TEST_ENV.functionsHost, C.TEST_ENV.functionsPort);
+const FBX = await bootFirebase("skano-judicial-portal");
+if (!FBX) {
+  screen("envBlocked");
+  throw new Error("SKANO portal: entorno no habilitado");
+}
+const { auth, functions, A, F } = FBX;
+// Aviso para la pantalla de inicio que debe sobrevivir al cierre de sesión.
+let loginNotice = "";
 
 // ------------------------------------------------------------ utilidades
 function el(tag, attrs = {}, ...children) {
@@ -83,9 +79,15 @@ async function api(name, data = {}, { withCompany = true } = {}) {
     return (await F.httpsCallable(functions, name)(payload)).data;
   } catch (err) {
     const reason = err?.details?.reason;
+    if (reason === "mfa-required") {
+      loginNotice = await handleMfaRequired(FBX);
+      $("loginMessage").textContent = loginNotice;
+      throw Object.assign(new Error(loginNotice), { code: "skano/mfa-required" });
+    }
     if (["session-revoked", "user-disabled"].includes(reason) || err?.code === "functions/unauthenticated") {
+      loginNotice = C.errorMessage(err);
       await A.signOut(auth);
-      $("loginMessage").textContent = C.errorMessage(err);
+      $("loginMessage").textContent = loginNotice;
     }
     throw err;
   }
@@ -779,7 +781,8 @@ LOADERS.users = async () => {
           const r = await api("companyInviteMember", { email: email.value, role: role.value });
           email.value = "";
           out.replaceChildren(el("div", { class: "invite-box" }, `Invitación creada para ${r.email} (${C.ROLE_LABEL[r.role]}), vence ${C.formatDate(r.expires_at_ms)}.`,
-            r.invite_url ? el("div", {}, "Entorno de pruebas — ", el("button", { class: "link", type: "button", onclick: async () => { await navigator.clipboard.writeText(r.invite_url); toast("Enlace copiado."); } }, "copiar enlace de invitación")) : null));
+            r.delivery === "email" ? el("div", {}, `Enviamos el enlace por correo a ${r.email}.`) : null,
+            r.invite_url ? el("div", {}, "Comparte el enlace solo con la persona invitada — ", el("button", { class: "link", type: "button", onclick: async () => { await navigator.clipboard.writeText(r.invite_url); toast("Enlace copiado."); } }, "copiar enlace de invitación")) : null));
           await refreshInvites();
         } catch (err) {
           out.replaceChildren(el("p", { class: "message" }, errorText(err)));
@@ -876,6 +879,7 @@ function showLogin() {
   $("inviteBanner").hidden = !pendingInvite;
   $("authTabs").hidden = !pendingInvite;
   if (!pendingInvite) setAuthMode("signin");
+  if (loginNotice) { $("loginMessage").textContent = loginNotice; loginNotice = ""; }
   screen("login");
 }
 
@@ -894,10 +898,12 @@ $("loginForm").addEventListener("submit", async (ev) => {
       const cred = await A.createUserWithEmailAndPassword(auth, email, pw);
       await A.sendEmailVerification(cred.user).catch(() => {});
     } else {
-      await A.signInWithEmailAndPassword(auth, email, pw);
+      await signInWithSecondFactor(FBX, email, pw);
     }
   } catch (err) {
-    msg.textContent = err?.code === "auth/email-already-in-use" ? "Ya existe una cuenta con ese correo: usa «Ingresar»." : authMode === "signup" ? "No se pudo crear la cuenta." : "Credenciales inválidas.";
+    msg.textContent = err?.code === "auth/email-already-in-use" ? "Ya existe una cuenta con ese correo: usa «Ingresar»."
+      : err?.code === "skano/mfa-cancelled" ? "Verificación cancelada."
+      : authMode === "signup" ? "No se pudo crear la cuenta." : "Credenciales inválidas.";
   } finally {
     btn.disabled = false;
     $("loginPassword").value = "";
@@ -960,6 +966,7 @@ async function enterCompany(m) {
     screen("app");
     navigate("home");
   } catch (err) {
+    if (!auth.currentUser) return; // la sesión se cerró (MFA o sesión revocada): queda la pantalla de inicio
     toast(errorText(err), true);
     showPicker();
   }
@@ -990,8 +997,9 @@ async function afterLogin(user) {
     if (S.memberships.length === 1) await enterCompany(S.memberships[0]);
     else showPicker();
   } catch (err) {
+    if (!loginNotice) loginNotice = C.errorMessage(err);
+    $("loginMessage").textContent = loginNotice;
     await A.signOut(auth).catch(() => {});
-    $("loginMessage").textContent = C.errorMessage(err);
   }
 }
 

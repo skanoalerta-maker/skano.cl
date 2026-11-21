@@ -5,7 +5,8 @@
 // Nunca se usa innerHTML con datos: todo el contenido va por textContent.
 // =====================================================================
 
-import * as C from "./admin-core.mjs?v=20261120-1";
+import * as C from "./admin-core.mjs?v=20261121-1";
+import { bootFirebase, signInWithSecondFactor, handleMfaRequired } from "../judicial-firebase.mjs?v=20261121-1";
 
 const $ = (id) => document.getElementById(id);
 const SCREENS = ["envBlocked", "loading", "login", "app"];
@@ -14,31 +15,18 @@ function screen(id) {
   for (const s of SCREENS) $(s).hidden = s !== id;
 }
 
-if (!C.isTestHost(location.hostname)) {
-  screen("envBlocked");
-  throw new Error("SKANO admin: entorno no permitido");
-}
-
 screen("loading");
 
-const FB = "https://www.gstatic.com/firebasejs/12.7.0";
-const [{ initializeApp }, authMod, fnMod] = await Promise.all([
-  import(`${FB}/firebase-app.js`),
-  import(`${FB}/firebase-auth.js`),
-  import(`${FB}/firebase-functions.js`),
-]);
-const {
-  getAuth, connectAuthEmulator, onAuthStateChanged, signInWithEmailAndPassword,
-  sendPasswordResetEmail, sendEmailVerification, signOut, browserSessionPersistence, setPersistence,
-} = authMod;
-const { getFunctions, connectFunctionsEmulator, httpsCallable } = fnMod;
-
-const app = initializeApp({ apiKey: C.TEST_ENV.apiKey, authDomain: C.TEST_ENV.authDomain, projectId: C.TEST_ENV.projectId }, "skano-judicial-admin");
-const auth = getAuth(app);
-connectAuthEmulator(auth, C.TEST_ENV.authEmulatorUrl, { disableWarnings: true });
-await setPersistence(auth, browserSessionPersistence);
-const functions = getFunctions(app, C.TEST_ENV.region);
-connectFunctionsEmulator(functions, C.TEST_ENV.functionsHost, C.TEST_ENV.functionsPort);
+// Entorno: emuladores en 127.0.0.1; en un dominio publicado, solo con la
+// configuración del proyecto Judicial completa (judicial-env.mjs) y App Check.
+const FBX = await bootFirebase("skano-judicial-admin");
+if (!FBX) {
+  screen("envBlocked");
+  throw new Error("SKANO admin: entorno no habilitado");
+}
+const { auth, functions } = FBX;
+const { onAuthStateChanged, sendPasswordResetEmail, sendEmailVerification, signOut } = FBX.A;
+const { httpsCallable } = FBX.F;
 
 // ------------------------------------------------------------ utilidades
 
@@ -78,6 +66,11 @@ async function api(name, data = {}) {
     return res.data;
   } catch (err) {
     const reason = err?.details?.reason;
+    if (reason === "mfa-required") {
+      const text = await handleMfaRequired(FBX);
+      $("loginMessage").textContent = text;
+      throw Object.assign(new Error(text), { code: "skano/mfa-required" });
+    }
     if (["session-revoked", "user-disabled"].includes(reason) || err?.code === "functions/unauthenticated") {
       await signOut(auth);
       $("loginMessage").textContent = C.errorMessage(err);
@@ -405,7 +398,8 @@ function membersCard(detail) {
       input.value = "";
       result.replaceChildren(el("div", { class: "invite-box" },
         `Invitación creada para ${r.email} (vence ${C.formatDate(r.expires_at_ms)}).`,
-        r.invite_url ? el("div", {}, "Entorno de pruebas — enlace: ", el("code", {}, C.inviteLinkForDisplay(r.invite_url)), " ",
+        r.delivery === "email" ? el("div", {}, `Enviamos el enlace por correo a ${r.email}.`) : null,
+        r.invite_url ? el("div", {}, "Comparte este enlace solo con la persona invitada: ", el("code", {}, C.inviteLinkForDisplay(r.invite_url)), " ",
           el("button", { class: "link", type: "button", onclick: async () => { await navigator.clipboard.writeText(r.invite_url); toast("Enlace copiado."); } }, "Copiar enlace completo")) : null));
       await reloadSoft();
     } catch (err) {
@@ -517,9 +511,9 @@ $("loginForm").addEventListener("submit", async (ev) => {
   const btn = ev.currentTarget.querySelector("[type=submit]");
   btn.disabled = true;
   try {
-    await signInWithEmailAndPassword(auth, $("loginEmail").value.trim(), $("loginPassword").value);
-  } catch (_) {
-    msg.textContent = "Credenciales inválidas.";
+    await signInWithSecondFactor(FBX, $("loginEmail").value.trim(), $("loginPassword").value);
+  } catch (err) {
+    msg.textContent = err?.code === "skano/mfa-cancelled" ? "Verificación cancelada." : "Credenciales inválidas.";
   } finally {
     btn.disabled = false;
     $("loginPassword").value = "";
