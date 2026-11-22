@@ -1,26 +1,26 @@
 /* Portada: ajustes de noviembre 2026.
-   Redes sociales con menos protagonismo (sección compacta, después del contacto). */
-.community{padding:56px 0}
-.community-orbit{display:none}
-.community-frame{padding:22px 26px 16px;border-color:rgba(26,180,239,.22);border-radius:18px}
-.community-title h2{font-size:clamp(18px,2vw,24px);font-style:normal;letter-spacing:.02em}
-.community-title h2 strong{color:var(--cyan)}
-.community-title p{font-size:11px}
-.social-grid{margin-top:16px}
-.social-grid a{min-height:0;padding:10px 6px}
-.social-icon{width:46px;height:46px;font-size:18px!important;border-width:1px;box-shadow:none}
-.social-grid b{margin-top:8px;font-size:11px}
-.social-grid small{font-size:8px}
-.social-grid i{display:none}
-.social-spectrum{opacity:.45;height:1px}
-@media(max-width:700px){
-  .community{padding:44px 0}
-  .social-icon{width:40px;height:40px}
-  .social-grid{grid-template-columns:repeat(3,1fr)}
-  .social-grid a:nth-child(even){border-right:1px solid rgba(50,120,205,.23)}
-  .social-grid a:nth-child(3n){border-right:0}
+   Comunidad SKANO (TikTok y Facebook) dentro de Contacto, sobre su video de fondo. */
+.contact .community-in-contact{background:none;padding:0;margin-top:34px;overflow:visible;color:#fff}
+.community-in-contact .community-frame{
+  padding:30px 34px 24px;border-radius:20px;
+  background:rgba(5,20,45,.42);border:1px solid rgba(70,205,235,.28);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  box-shadow:0 24px 60px rgba(0,8,24,.35),inset 0 0 40px rgba(16,94,216,.08)
 }
-/* Solo TikTok y Facebook */
-.social-grid{grid-template-columns:repeat(2,minmax(0,220px))!important;justify-content:center}
-.social-grid a{border-right:1px solid rgba(50,120,205,.23)!important;border-bottom:0!important}
-.social-grid a:last-child{border-right:0!important}
+.community-in-contact .community-title h2{font-size:clamp(22px,2.4vw,32px);font-style:normal;letter-spacing:-.01em;margin:0}
+.community-in-contact .community-title h2 strong{color:var(--cyan)}
+.community-in-contact .community-title p{font-size:12px;color:#b4c6d8}
+.community-in-contact .social-grid{display:grid;grid-template-columns:repeat(2,minmax(0,240px));justify-content:center;gap:0;margin-top:22px}
+.community-in-contact .social-grid a{min-height:0;padding:12px 10px 6px;border:0;border-right:1px solid rgba(50,120,205,.28);background:transparent}
+.community-in-contact .social-grid a:last-child{border-right:0}
+.community-in-contact .social-icon{width:78px;height:78px;font-size:30px!important}
+.community-in-contact .social-grid b{margin-top:14px;font-size:13px}
+.community-in-contact .social-grid i{display:inline-block;margin-top:12px}
+.community-in-contact .social-spectrum{margin:14px 60px 0;opacity:.8}
+@media(max-width:700px){
+  .community-in-contact .community-frame{padding:24px 14px 18px}
+  .community-in-contact .social-grid{grid-template-columns:1fr 1fr}
+  .community-in-contact .social-grid a:nth-child(odd){border-right:1px solid rgba(50,120,205,.28)}
+  .community-in-contact .social-icon{width:64px;height:64px}
+  .community-in-contact .social-grid i{min-width:84px}
+}
