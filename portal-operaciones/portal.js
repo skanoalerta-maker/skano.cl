@@ -1,7 +1,10 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 
 import {
-  getAuth,
+  browserLocalPersistence,
+  browserSessionPersistence,
+  indexedDBLocalPersistence,
+  initializeAuth,
   onAuthStateChanged,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
@@ -50,7 +53,7 @@ import {
   createSessionManager,
   isBlockedProfile,
   readSources
-} from "./session-manager.mjs?v=20261121-1";
+} from "./session-manager.mjs?v=20261122-2";
 
 
 /* =========================================================
@@ -82,8 +85,19 @@ if (
 }
 
 
+// La sesión se guarda primero en localStorage. En algunos navegadores
+// IndexedDB falla al escribir ("Error thrown when writing to IndexedDB",
+// app/idb-set) y Firebase interpreta la lectura fallida como un cierre de
+// sesión, expulsando al usuario sin mensaje. Una sesión ya guardada en
+// IndexedDB se migra sola al primer almacenamiento disponible.
 const auth =
-  getAuth(app);
+  initializeAuth(app, {
+    persistence: [
+      browserLocalPersistence,
+      indexedDBLocalPersistence,
+      browserSessionPersistence
+    ]
+  });
 
 const db =
   getFirestore(app);
@@ -729,15 +743,31 @@ function applyProfile(profile, user) {
   enforcePermissions();
 }
 
+// Las acreditaciones no se muestran en el inicio (allí solo se usa su
+// conteo): se cargan al abrir la sección o en segundo plano después.
+let requestsLoad = null;
+function ensureRequestsLoaded() {
+  if (!permission("institutional_requests_read")) return Promise.resolve();
+  if (!requestsLoad) {
+    requestsLoad = loadRequests().catch(error => {
+      requestsLoad = null;
+      technicalError("requests-read", error);
+    });
+  }
+  return requestsLoad;
+}
+
 async function loadPortalData() {
-  // Cada carga informa su propio error; ninguna cierra la sesión.
+  // Primero lo visible en el inicio; cada carga informa su propio error y
+  // ninguna cierra la sesión.
+  requestsLoad = null;
   await Promise.allSettled([
     loadVehicles(),
-    permission("institutional_requests_read") ? loadRequests() : Promise.resolve(),
     permission("suspicious_vehicles_read") ? loadSuspiciousVehicles({ reset: true }) : Promise.resolve(),
     loadDashboardAggregates(),
   ]);
   renderRecentMovements();
+  setTimeout(() => { if (state.validated) ensureRequestsLoaded(); }, 3000);
 }
 
 function renderSession(snapshot) {
@@ -1157,6 +1187,8 @@ function showView(
     );
 
   }
+
+  if (name === "requests") ensureRequestsLoaded();
 }
 
 
@@ -1535,66 +1567,52 @@ async function loadVehicles() {
   $("#vehiclesLoading").textContent = "Cargando vehículos…";
 
   try {
-    const [civilResult, institutionalResult] = await Promise.allSettled([
-      state.profile?.is_institutional === true
-        ? Promise.resolve(null)
-        : getDocs(
-            query(
-              collection(db, "stolen_vehicles"),
-              limit(250)
-            )
-          ),
-      callables.listInstitutionalStolen({
-        pageSize: 50,
-        status: "all"
-      })
-    ]);
+    // Carga progresiva: cada fuente se muestra apenas llega (la lista de
+    // encargos institucionales depende de una Cloud Function más lenta).
+    let civilVehicles = [];
+    let institutionalVehicles = [];
+    const applyVehicles = () => {
+      state.vehicles = [...civilVehicles, ...institutionalVehicles];
+      refreshVehicleMetrics();
+      renderVehicles();
+      renderRecentMovements();
+    };
 
-    const civilVehicles =
-      civilResult.status === "fulfilled" && civilResult.value
-        ? civilResult.value.docs.map(item => ({
+    const civilTask = state.profile?.is_institutional === true
+      ? Promise.resolve()
+      : getDocs(query(collection(db, "stolen_vehicles"), limit(250))).then(snapshot => {
+          civilVehicles = snapshot.docs.map(item => ({
             id: item.id,
             ...item.data(),
             _skanoVehicleSource: "stolen_vehicles"
-          }))
-        : [];
+          }));
+          applyVehicles();
+        });
 
-    if (
-      civilResult.status === "rejected" &&
-      state.profile?.is_institutional !== true
-    ) {
+    const institutionalTask = callables.listInstitutionalStolen({
+      pageSize: 50,
+      status: "all"
+    }).then(result => {
+      const institutionalItems = Array.isArray(result?.data?.items) ? result.data.items : [];
+      state.institutionalStolen = institutionalItems;
+      institutionalVehicles = institutionalItems.map(item => ({
+        ...item,
+        _skanoVehicleSource: "institutional_vehicle_submissions",
+        _institutionalStolen: true
+      }));
+      applyVehicles();
+    });
+
+    const [civilResult, institutionalResult] = await Promise.allSettled([civilTask, institutionalTask]);
+
+    if (civilResult.status === "rejected") {
       technicalError("vehicles-civil-read", civilResult.reason);
     }
-
-    const institutionalItems =
-      institutionalResult.status === "fulfilled" &&
-      Array.isArray(institutionalResult.value?.data?.items)
-        ? institutionalResult.value.data.items
-        : [];
-
     if (institutionalResult.status === "rejected") {
-      technicalError(
-        "vehicles-institutional-read",
-        institutionalResult.reason
-      );
+      technicalError("vehicles-institutional-read", institutionalResult.reason);
     }
 
-    state.institutionalStolen = institutionalItems;
-
-    const institutionalVehicles = institutionalItems.map(item => ({
-      ...item,
-      _skanoVehicleSource: "institutional_vehicle_submissions",
-      _institutionalStolen: true
-    }));
-
-    state.vehicles = [
-      ...civilVehicles,
-      ...institutionalVehicles
-    ];
-
-    refreshVehicleMetrics();
-    renderVehicles();
-    renderRecentMovements();
+    applyVehicles();
 
     if (
       civilResult.status === "rejected" &&

@@ -22,6 +22,7 @@ function world() {
   };
   const claims = { staff1: { staff: true, staff_role: "operations_staff" } };
   const failures = {};           // "admins" -> error a lanzar
+  const tokenMeta = {};           // datos extra del token (issuedAtTime)
   const tokenFailures = [];      // errores para las próximas llamadas a getToken
   const calls = { token: 0, forced: 0, read: 0, signOut: 0 };
   const timers = [];
@@ -47,7 +48,7 @@ function world() {
       calls.token += 1; if (force) calls.forced += 1;
       const next = tokenFailures.shift();
       if (next) throw next;
-      return { claims: claims[user.uid] || {} };
+      return { claims: claims[user.uid] || {}, ...tokenMeta };
     },
     readProfiles: async (user) => {
       calls.read += 1;
@@ -69,7 +70,7 @@ function world() {
     clearTimer: () => {},
   });
   const api = {
-    db, claims, failures, tokenFailures, calls, timers, manager,
+    db, claims, failures, tokenFailures, tokenMeta, calls, timers, manager,
     advance(ms) { clock += ms; },
     async runTimers() { const pending = timers.splice(0); for (const t of pending) await t.fn(); await new Promise((r) => setImmediate(r)); },
   };
@@ -389,4 +390,50 @@ test("cierre voluntario: no se muestra como bloqueo aunque llegue un error tard�
   await w.manager.signOutVoluntary();
   await w.manager.start(null);
   assert.equal(w.manager.snapshot.state, S.IDLE);
+});
+
+// ---------------------------------------------------------------
+// Entrada sin consultas duplicadas
+// ---------------------------------------------------------------
+
+test("inicio de sesión con token recién emitido: una sola lectura de perfiles y sin renovación extra", async () => {
+  const w = world();
+  w.tokenMeta.issuedAtTime = new Date(1_000_000 - 5_000).toUTCString();
+  await w.manager.start(user("admin1"));
+  assert.equal(w.manager.snapshot.state, S.VALID);
+  assert.equal(w.calls.read, 1, "perfiles leídos una vez");
+  assert.equal(w.calls.forced, 0, "el token recién emitido no se vuelve a pedir");
+  assert.ok(w.manager.snapshot.lastTokenRefreshAt > 0);
+});
+
+test("F5 con token antiguo: renovación forzada sin repetir la lectura de perfiles", async () => {
+  const w = world();
+  w.tokenMeta.issuedAtTime = new Date(1_000_000 - 30 * 60_000).toUTCString();
+  await w.manager.start(user("staff1"));
+  assert.equal(w.manager.snapshot.state, S.VALID);
+  assert.equal(w.calls.forced, 1, "una renovación forzada");
+  assert.equal(w.calls.read, 1, "sin lectura duplicada");
+});
+
+test("F5: si el token renovado ya no trae los claims de staff, se confirma y se cierra", async () => {
+  const w = world();
+  w.tokenMeta.issuedAtTime = new Date(1_000_000 - 30 * 60_000).toUTCString();
+  let tokenCalls = 0;
+  const original = w.claims.staff1;
+  // El primer token (en caché) aún trae el claim; el renovado ya no.
+  Object.defineProperty(w.claims, "staff1", { configurable: true, get() { tokenCalls += 1; return tokenCalls === 1 ? original : {}; } });
+  await w.manager.start(user("staff1"));
+  assert.equal(w.manager.snapshot.state, S.REVOKED);
+  assert.equal(w.calls.signOut, 1);
+  assert.equal(w.calls.read, 2, "la revocación se confirma con una lectura nueva");
+});
+
+test("revalidación periódica sigue leyendo los perfiles (no reutiliza la lectura)", async () => {
+  const w = world();
+  w.tokenMeta.issuedAtTime = new Date(1_000_000 - 30 * 60_000).toUTCString();
+  await w.manager.start(user("admin1"));
+  const reads = w.calls.read;
+  w.advance(2 * 60_000);
+  await w.manager.revalidate({ reason: "interval" });
+  assert.equal(w.calls.read, reads + 1);
 });

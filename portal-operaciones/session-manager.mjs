@@ -157,6 +157,7 @@ export function createSessionManager({
   revalidateIntervalMs = 60_000,
   tokenRefreshIntervalMs = 10 * 60_000,
   operateGraceMs = 10 * 60_000,
+  freshTokenMs = 2 * 60_000,
   retryDelaysMs = [5_000, 15_000, 30_000, 60_000],
   setTimer = (fn, ms) => setTimeout(fn, ms),
   clearTimer = (id) => clearTimeout(id),
@@ -173,6 +174,7 @@ export function createSessionManager({
   let user = null;
   let generation = 0;
   let inflight = null;
+  let lastRead = null; // última lectura completa de perfiles (solo en memoria)
   let retryTimer = null;
   let retryIndex = 0;
   let droppedUid = null; // usuario que Firebase retiró sin cierre voluntario
@@ -201,13 +203,14 @@ export function createSessionManager({
     if (gen !== generation) return snapshot;
     cancelRetry();
     generation += 1; // ninguna verificación en curso puede revivir la sesión
+    lastRead = null;
     emit({ state, profile: null, error: error ? { code: error.code || null } : null });
     user = null;
     try { await signOut(); } catch (signOutError) { console.error("[SKANO:session] signOut", signOutError); }
     return snapshot;
   }
 
-  async function runCheck(currentUser, gen, { forceToken, reason, confirming = false }) {
+  async function runCheck(currentUser, gen, { forceToken, reason, confirming = false, tokenOnly = false }) {
     let token;
     try {
       token = await getToken(currentUser, forceToken);
@@ -236,21 +239,30 @@ export function createSessionManager({
       return snapshot;
     }
 
+    // Token recién emitido (inicio de sesión): equivale a una renovación.
+    const issuedMs = Date.parse(token?.issuedAtTime || "");
+    const freshToken = !forceToken && Number.isFinite(issuedMs) && Math.abs(now() - issuedMs) < freshTokenMs;
+
+    // Renovación de arranque: el perfil se leyó hace segundos; se vuelve a
+    // decidir con los claims del token renovado sin repetir las lecturas.
+    const reuse = tokenOnly && lastRead && snapshot.uid === currentUser.uid && snapshot.profile;
     let read;
     try {
-      read = await readProfiles(currentUser);
+      read = reuse ? lastRead : await readProfiles(currentUser);
     } catch (error) {
       read = { values: {}, incomplete: true, errors: { all: { kind: classifyError(error), code: error?.code || "unknown" } } };
     }
     if (gen !== generation || user?.uid !== currentUser.uid) return snapshot; // resultado antiguo
 
     const decision = decideSession({ claims: token?.claims, read, authorize, isBlocked });
-    const tokenPatch = forceToken ? { lastTokenRefreshAt: now() } : {};
+    const tokenPatch = forceToken || freshToken ? { lastTokenRefreshAt: now() } : {};
 
     if (decision.state === SESSION_STATES.VALID) {
       cancelRetry();
       retryIndex = 0;
-      emit({ state: SESSION_STATES.VALID, profile: decision.profile, lastConfirmedAt: now(), error: null, reason, ...tokenPatch });
+      if (!read.incomplete) lastRead = read;
+      const confirmedAt = reuse ? snapshot.lastConfirmedAt : now();
+      emit({ state: SESSION_STATES.VALID, profile: decision.profile, lastConfirmedAt: confirmedAt, error: null, reason, ...tokenPatch });
       return snapshot;
     }
     if (decision.state === SESSION_STATES.DEGRADED) {
@@ -269,7 +281,7 @@ export function createSessionManager({
     return finishFinal(gen, decision.state, null);
   }
 
-  function check({ forceToken = false, reason = "check" } = {}) {
+  function check({ forceToken = false, reason = "check", tokenOnly = false } = {}) {
     if (!user) return Promise.resolve(snapshot);
     if (inflight && inflight.uid === user.uid) return inflight.promise; // single-flight
     const currentUser = user;
@@ -278,7 +290,7 @@ export function createSessionManager({
       state: snapshot.profile && snapshot.uid === currentUser.uid ? SESSION_STATES.REVALIDATING : SESSION_STATES.CHECKING,
       reason,
     });
-    const promise = runCheck(currentUser, gen, { forceToken, reason }).finally(() => {
+    const promise = runCheck(currentUser, gen, { forceToken, reason, tokenOnly }).finally(() => {
       if (inflight?.promise === promise) inflight = null;
     });
     inflight = { uid: currentUser.uid, promise };
@@ -294,6 +306,7 @@ export function createSessionManager({
     const previousUid = user?.uid || null;
     user = nextUser || null;
     droppedUid = user ? null : previousUid;
+    if (!user || user.uid !== previousUid) lastRead = null;
     if (!user) {
       emit({ state: SESSION_STATES.IDLE, uid: null, profile: null, lastConfirmedAt: 0, lastTokenRefreshAt: 0, error: null, reason: "no-user" });
       return Promise.resolve(snapshot);
@@ -311,7 +324,7 @@ export function createSessionManager({
       // pero un token revocado o una cuenta deshabilitada se detectan
       // en segundos (las operaciones siguen protegidas por el servidor).
       if (result.state === SESSION_STATES.VALID && result.uid === user?.uid && result.lastTokenRefreshAt === 0) {
-        return revalidate({ force: true, reason: "start-refresh" });
+        return check({ forceToken: true, reason: "start-refresh", tokenOnly: true });
       }
       return result;
     });
@@ -337,6 +350,7 @@ export function createSessionManager({
     droppedUid = null;
     generation += 1;
     user = null;
+    lastRead = null;
     emit({ state: SESSION_STATES.SIGNED_OUT, profile: null, error: null, reason: "voluntary" });
     await signOut();
   }
