@@ -46,3 +46,10 @@ test("errores TOTP: código incorrecto se reintenta; sesión vencida pide clave 
   assert.equal(E.totpErrorKind({ code: "auth/internal-error" }), "other");
   assert.equal(E.totpErrorKind(null), "other");
 });
+
+test("mensajes de inicio de sesión: bloqueo temporal y red se distinguen; sin revelar si la cuenta existe", () => {
+  assert.match(E.signInErrorText({ code: "auth/too-many-requests" }), /Demasiados intentos/);
+  assert.match(E.signInErrorText({ code: "auth/network-request-failed" }), /Sin conexión/);
+  assert.equal(E.signInErrorText({ code: "auth/invalid-credential" }), E.signInErrorText({ code: "auth/user-not-found" }));
+  assert.equal(E.signInErrorText({ code: "skano/mfa-cancelled" }), "Verificación cancelada.");
+});

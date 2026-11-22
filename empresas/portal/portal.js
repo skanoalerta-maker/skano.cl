@@ -10,7 +10,7 @@
 // =====================================================================
 
 import * as C from "./portal-core.mjs?v=20261121-1";
-import { bootFirebase, signInWithSecondFactor, handleMfaRequired } from "../judicial-firebase.mjs?v=20261122-1";
+import { bootFirebase, signInWithSecondFactor, handleMfaRequired, signInErrorText } from "../judicial-firebase.mjs?v=20261122-2";
 
 const $ = (id) => document.getElementById(id);
 const SCREENS = ["envBlocked", "loading", "login", "verify", "picker", "app"];
@@ -907,7 +907,7 @@ $("loginForm").addEventListener("submit", async (ev) => {
   } catch (err) {
     msg.textContent = err?.code === "auth/email-already-in-use" ? "Ya existe una cuenta con ese correo: usa «Ingresar»."
       : err?.code === "skano/mfa-cancelled" ? "Verificación cancelada."
-      : authMode === "signup" ? "No se pudo crear la cuenta." : "Credenciales inválidas.";
+      : authMode === "signup" ? "No se pudo crear la cuenta." : signInErrorText(err);
   } finally {
     btn.disabled = false;
     $("loginPassword").value = "";

@@ -6,7 +6,7 @@
 // =====================================================================
 
 import * as C from "./admin-core.mjs?v=20261121-1";
-import { bootFirebase, signInWithSecondFactor, handleMfaRequired } from "../judicial-firebase.mjs?v=20261122-1";
+import { bootFirebase, signInWithSecondFactor, handleMfaRequired, signInErrorText } from "../judicial-firebase.mjs?v=20261122-2";
 
 const $ = (id) => document.getElementById(id);
 const SCREENS = ["envBlocked", "loading", "login", "app"];
@@ -517,7 +517,7 @@ $("loginForm").addEventListener("submit", async (ev) => {
   try {
     await signInWithSecondFactor(FBX, $("loginEmail").value.trim(), $("loginPassword").value);
   } catch (err) {
-    msg.textContent = err?.code === "skano/mfa-cancelled" ? "Verificación cancelada." : "Credenciales inválidas.";
+    msg.textContent = signInErrorText(err);
   } finally {
     btn.disabled = false;
     $("loginPassword").value = "";
