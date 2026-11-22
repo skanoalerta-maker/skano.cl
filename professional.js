@@ -189,5 +189,5 @@ const officialSocialIcons={
   whats:'<svg viewBox="0 0 24 24"><path d="M12 2.2A9.7 9.7 0 0 0 3.8 17l-1 4.8 4.9-1A9.7 9.7 0 1 0 12 2.2zm0 17.6c-1.5 0-2.9-.4-4.1-1.1l-.3-.2-2.9.6.6-2.8-.2-.3A7.8 7.8 0 1 1 12 19.8zm4.4-5.8c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.6.1-.2.2-.7.8-.8 1-.1.2-.3.2-.5.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.6-1.5-.8-2-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.2-.9.9-.9 2.1s.9 2.4 1 2.6c.1.2 1.8 2.8 4.4 3.9.6.3 1.1.4 1.5.5.6.2 1.2.1 1.6.1.5-.1 1.4-.6 1.6-1.1.2-.5.2-1 .1-1.1-.1-.2-.3-.2-.5-.3z"/></svg>'
 };
 Object.entries(officialSocialIcons).forEach(([network,icon])=>{const target=document.querySelector(`.social-grid .${network} .social-icon`);if(target)target.innerHTML=icon});
-const portalIcons=[['.web-panel .portal-main:nth-of-type(1) .portal-icon','🔐'],['.web-panel .portal-download span','📱'],['.web-panel .portal-soon span','🍎']];
+const portalIcons=[['.web-panel .portal-main:nth-of-type(1) .portal-icon','🤝'],['.web-panel .portal-download span','📱'],['.web-panel .portal-soon span','🍎']];
 portalIcons.forEach(([selector,icon])=>{const target=document.querySelector(selector);if(target)target.textContent=icon});

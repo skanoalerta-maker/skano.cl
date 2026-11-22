@@ -1,0 +1,22 @@
+/* Portada: ajustes de noviembre 2026.
+   Redes sociales con menos protagonismo (sección compacta, después del contacto). */
+.community{padding:56px 0}
+.community-orbit{display:none}
+.community-frame{padding:22px 26px 16px;border-color:rgba(26,180,239,.22);border-radius:18px}
+.community-title h2{font-size:clamp(18px,2vw,24px);font-style:normal;letter-spacing:.02em}
+.community-title h2 strong{color:var(--cyan)}
+.community-title p{font-size:11px}
+.social-grid{margin-top:16px}
+.social-grid a{min-height:0;padding:10px 6px}
+.social-icon{width:46px;height:46px;font-size:18px!important;border-width:1px;box-shadow:none}
+.social-grid b{margin-top:8px;font-size:11px}
+.social-grid small{font-size:8px}
+.social-grid i{display:none}
+.social-spectrum{opacity:.45;height:1px}
+@media(max-width:700px){
+  .community{padding:44px 0}
+  .social-icon{width:40px;height:40px}
+  .social-grid{grid-template-columns:repeat(3,1fr)}
+  .social-grid a:nth-child(even){border-right:1px solid rgba(50,120,205,.23)}
+  .social-grid a:nth-child(3n){border-right:0}
+}
