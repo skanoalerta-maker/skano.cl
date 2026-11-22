@@ -1,5 +1,5 @@
 ﻿<!doctype html>
-<html lang="es">
+<html lang="es-CL">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -12,13 +12,18 @@
 <meta property="og:title" content="Seguridad para Condominios y Barrios | SKANO">
 <meta property="og:description" content="Tecnología SKANO para seguridad vehicular en condominios, barrios y comunidades mediante cámaras, lectura de patentes, alertas y Pórticos Ciudadanos.">
 <meta property="og:url" content="https://skano.cl/seguridad-condominios/">
-<meta property="og:image" content="https://skano.cl/img/hero-autos-robados-bg.png">
+<meta property="og:image" content="https://skano.cl/img/og-skano.jpg">
 
-<link rel="icon" href="/img/skano-logo.png">
+<link rel="icon" type="image/png" href="/img/skano-icon-96.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/professional.css">
+<link rel="stylesheet" href="/landing.css?v=20261122-1">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta property="og:locale" content="es_CL">
+<meta property="og:site_name" content="SKANO">
+<meta name="twitter:card" content="summary_large_image">
 
 <style>
 *{box-sizing:border-box}
@@ -68,21 +73,28 @@ footer{padding:45px 22px;border-top:1px solid rgba(70,195,255,.15);color:#8fa8b7
 
 <body>
 
-<header class="sk-header">
-<div class="sk-nav">
-<a class="sk-brand" href="/">
-<img src="/img/skano-logo.png" alt="SKANO">
-<span>SKANO</span>
-</a>
-
-<nav class="sk-links">
-<a href="/">Inicio</a>
-<a href="/porticos-ciudadanos/">Pórticos Ciudadanos</a>
-<a href="/lector-de-patentes/">Lector PPU</a>
-<a href="/mi-barrio-seguro/">Mi Barrio Seguro</a>
-<a href="/consultar-patente-robada-chile/">Consultar patente</a>
-</nav>
-</div>
+<header class="skl-header">
+  <div class="skl-nav">
+    <a class="skl-brand" href="/">
+      <picture><source srcset="/img/skano-logo.webp" type="image/webp"><img src="/img/skano-logo.png" alt="SKANO" width="38" height="57"></picture>
+      <span>SKANO<small>TECNOLOGÍA VEHICULAR</small></span>
+    </a>
+    <button class="skl-toggle" id="sklToggle" type="button" aria-expanded="false" aria-controls="sklMenu" aria-label="Abrir menú">☰</button>
+    <div class="skl-menu" id="sklMenu">
+      <nav class="skl-links" aria-label="Navegación principal">
+      <a href="/">Inicio</a>
+      <a href="/app-autos-robados-chile/">App SKANO</a>
+      <a href="/consultar-patente-robada-chile/">Consultar patente</a>
+      <a href="/lector-de-patentes/">Lector de patentes</a>
+      <a href="/mi-barrio-seguro/">Mi Barrio Seguro</a>
+      <a href="/planes/">Planes</a>
+      </nav>
+      <div class="skl-ctas">
+        <a class="skl-companies" href="https://skano-judicial-prd.web.app/portal/">Portal de Empresas</a>
+        <a class="skl-ops" href="/portal-operaciones/">Portal de Operaciones</a>
+      </div>
+    </div>
+  </div>
 </header>
 
 <main>
@@ -208,16 +220,41 @@ El objetivo es que cada solución permanezca conectada a SKANO y pueda evolucion
 
 </main>
 
-<footer>
-<div class="footer-inner">
-<div><strong>SKANO</strong><br>Tecnología para seguridad vehicular.</div>
-<div>
-<a href="/">Inicio</a> ·
-<a href="/politicas.html">Privacidad</a> ·
-<a href="/mi-barrio-seguro/">Mi Barrio Seguro</a>
-</div>
-</div>
+<footer class="skl-footer">
+  <div class="skl-cols">
+    <div>
+      <h2>SKANO</h2>
+      <p>Tecnología chilena para seguridad vehicular: detección de vehículos con encargo por robo, lectura de patentes y alertas verificadas.</p>
+      <a href="https://play.google.com/store/apps/details?id=cl.skano.app" rel="noopener">Descargar la app en Google Play</a>
+    </div>
+    <div>
+      <h2>SOLUCIONES</h2>
+      <a href="/app-autos-robados-chile/">App para autos robados</a>
+      <a href="/consultar-patente-robada-chile/">Consultar patente robada</a>
+      <a href="/lector-de-patentes/">Lector de patentes</a>
+      <a href="/camaras-lectoras-patentes/">Cámaras lectoras de patentes</a>
+      <a href="/porticos-ciudadanos/">Pórticos Ciudadanos</a>
+      <a href="/seguridad-condominios/">Seguridad para condominios</a>
+      <a href="/mi-barrio-seguro/">Mi Barrio Seguro</a>
+    </div>
+    <div>
+      <h2>PLATAFORMAS</h2>
+      <a href="https://skano-judicial-prd.web.app/portal/">Portal de Empresas — SKANO Judicial</a>
+      <a href="/portal-operaciones/">Portal de Operaciones</a>
+      <a href="/planes/">Planes y servicios</a>
+      <a href="/vehiculos/">Vehículos en búsqueda</a>
+    </div>
+    <div>
+      <h2>SKANO</h2>
+      <a href="/#historia">Nosotros</a>
+      <a href="/#contacto">Contacto</a>
+      <a href="/politicas.html">Privacidad y seguridad</a>
+      <a href="/eliminar-cuenta.html">Eliminación de cuenta</a>
+    </div>
+  </div>
+  <p class="skl-copy">© 2026 SKANO · Tecnología creada en Talcahuano, Chile. SKANO no reemplaza a Carabineros ni a la PDI: ante un vehículo con encargo, no intervengas y llama al 133.</p>
 </footer>
+<script src="/landing.js?v=20261122-1" defer></script>
 
 </body>
 </html>

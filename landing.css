@@ -1,0 +1,58 @@
+/* =========================================================
+   SKANO · Cabecera, pie y bloques comunes de las páginas
+   informativas (app, consulta de patente, soluciones).
+   ========================================================= */
+.skl-header{position:sticky;top:0;z-index:50;background:rgba(3,8,16,.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(61,194,255,.15)}
+.skl-nav{max-width:1180px;margin:auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.skl-brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:19px;color:#eef8ff;text-decoration:none}
+.skl-brand img{width:38px;height:38px;object-fit:contain}
+.skl-brand small{display:block;font-size:9px;letter-spacing:.14em;color:#48c9ff;font-weight:800}
+.skl-links{display:flex;gap:20px;align-items:center;font-size:13.5px;font-weight:700}
+.skl-links a{color:#cfe3f1;text-decoration:none}
+.skl-links a:hover,.skl-links a[aria-current="page"]{color:#49c8ff}
+.skl-ctas{display:flex;gap:9px;align-items:center}
+.skl-ctas a{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;white-space:nowrap;padding:10px 13px;border-radius:8px}
+.skl-ctas .skl-companies{color:#fff;background:linear-gradient(100deg,#0878f9,#05aada)}
+.skl-ctas .skl-ops{color:#bff3ff;border:1px solid rgba(72,201,255,.45)}
+.skl-toggle{display:none;background:none;border:1px solid rgba(72,201,255,.35);color:#eef8ff;border-radius:8px;padding:8px 11px;font-size:18px;line-height:1;cursor:pointer}
+@media (max-width:1180px){
+  .skl-toggle{display:block}
+  .skl-menu{display:none;position:absolute;top:100%;left:0;right:0;padding:12px 22px 22px;background:#06182e;border-bottom:1px solid rgba(120,202,255,.15);max-height:calc(100vh - 70px);overflow:auto}
+  .skl-menu.open{display:block}
+  .skl-links{flex-direction:column;align-items:stretch;gap:0}
+  .skl-links a{padding:14px 2px;border-bottom:1px solid rgba(120,202,255,.08);font-size:15px}
+  .skl-ctas{flex-direction:column;align-items:stretch;margin-top:12px}
+  .skl-ctas a{text-align:center;padding:14px}
+}
+@media (min-width:1181px){.skl-menu{display:flex;align-items:center;gap:22px}}
+
+.skl-footer{padding:50px 22px 30px;border-top:1px solid rgba(70,195,255,.15);color:#8fa8b7;background:#030810;font-size:14px}
+.skl-footer .skl-cols{max-width:1180px;margin:auto;display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:28px}
+.skl-footer h2{font-size:12px;letter-spacing:.14em;color:#48c9ff;margin:0 0 12px}
+.skl-footer a{display:block;color:#b9cfdc;text-decoration:none;padding:4px 0}
+.skl-footer a:hover{color:#fff}
+.skl-footer p{line-height:1.7;margin:0 0 10px}
+.skl-copy{max-width:1180px;margin:30px auto 0;padding-top:18px;border-top:1px solid rgba(70,195,255,.1);font-size:12.5px;color:#6f8ba5}
+@media (max-width:850px){.skl-footer .skl-cols{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.skl-footer .skl-cols{grid-template-columns:1fr}}
+
+/* Bloques de contenido */
+.skl-faq{max-width:900px;margin-top:30px}
+.skl-faq details{border:1px solid rgba(70,195,255,.18);border-radius:14px;background:#071724;margin-bottom:12px}
+.skl-faq summary{cursor:pointer;padding:18px 20px;font-weight:800;color:#f4fbff;list-style:none}
+.skl-faq summary::-webkit-details-marker{display:none}
+.skl-faq summary:after{content:"+";float:right;color:#48c9ff}
+.skl-faq details[open] summary:after{content:"–"}
+.skl-faq details p{margin:0;padding:0 20px 18px;color:#b7cad6;line-height:1.7}
+.skl-shots{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;margin-top:36px}
+.skl-shots img{width:100%;height:auto;border-radius:16px;border:1px solid rgba(70,195,255,.18)}
+.skl-shots figcaption{margin-top:10px;color:#8fa8b7;font-size:14px}
+@media (max-width:700px){.skl-shots{grid-template-columns:1fr}}
+.skl-play{display:inline-flex;align-items:center;gap:10px}
+.skl-crumbs{font-size:13px;color:#7f9bb0;margin-bottom:10px}
+.skl-crumbs a{color:#9fd8ff}
+
+/* Las páginas informativas no usan la portada a pantalla completa de la página principal */
+.skl-header ~ main .hero{height:auto;min-height:0}
+.skl-links a{white-space:nowrap}
+@media (min-width:1181px) and (max-width:1320px){.skl-links{gap:14px;font-size:12.5px}.skl-ctas a{padding:9px 10px;font-size:10px}}

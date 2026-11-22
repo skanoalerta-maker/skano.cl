@@ -1,60 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
   <url>
-    <loc>https://www.skano.cl/</loc>
+    <loc>https://skano.cl/</loc>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
   </url>
-
   <url>
-    <loc>https://www.skano.cl/porticos-ciudadanos/</loc>
+    <loc>https://skano.cl/app-autos-robados-chile/</loc>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
   </url>
-
   <url>
-    <loc>https://www.skano.cl/lector-de-patentes/</loc>
+    <loc>https://skano.cl/consultar-patente-robada-chile/</loc>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
   </url>
-
   <url>
-    <loc>https://www.skano.cl/camaras-lectoras-patentes/</loc>
+    <loc>https://skano.cl/lector-de-patentes/</loc>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
-
   <url>
-    <loc>https://www.skano.cl/seguridad-condominios/</loc>
+    <loc>https://skano.cl/camaras-lectoras-patentes/</loc>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
-
   <url>
-    <loc>https://www.skano.cl/mi-barrio-seguro/</loc>
+    <loc>https://skano.cl/porticos-ciudadanos/</loc>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
-
   <url>
-    <loc>https://www.skano.cl/consultar-patente-robada-chile/</loc>
+    <loc>https://skano.cl/seguridad-condominios/</loc>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
-
   <url>
-    <loc>https://www.skano.cl/app-autos-robados-chile/</loc>
+    <loc>https://skano.cl/mi-barrio-seguro/</loc>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
-
   <url>
-    <loc>https://www.skano.cl/vehiculos/</loc>
+    <loc>https://skano.cl/planes/</loc>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
-
   <url>
-    <loc>https://www.skano.cl/planes/</loc>
+    <loc>https://skano.cl/planes/empresas/</loc>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
-
   <url>
-    <loc>https://www.skano.cl/empresa/</loc>
+    <loc>https://skano.cl/vehiculos/</loc>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
   </url>
-
   <url>
-    <loc>https://www.skano.cl/empresas/</loc>
+    <loc>https://skano.cl/politicas.html</loc>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
-
   <url>
-    <loc>https://www.skano.cl/seguridad-privada/</loc>
+    <loc>https://skano.cl/eliminar-cuenta.html</loc>
+    <lastmod>2026-11-22</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
-
-  <url>
-    <loc>https://www.skano.cl/parquimetros/</loc>
-  </url>
-
 </urlset>

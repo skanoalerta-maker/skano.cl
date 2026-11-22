@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Página no encontrada | SKANO</title>
+<meta name="robots" content="noindex, follow">
+<link rel="icon" type="image/png" href="/img/skano-icon-96.png">
+<meta name="theme-color" content="#030810">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/landing.css?v=20261122-1">
+<script>
+// Variantes antiguas de una misma página: se envía a la dirección vigente.
+(function () {
+  var p = location.pathname;
+  if (/\/index\.html?$/i.test(p)) { location.replace(p.replace(/index\.html?$/i, "") + location.search + location.hash); return; }
+  var map = { "/app-autos-robados-chile": "/app-autos-robados-chile/", "/consultar-patente-robada-chile": "/consultar-patente-robada-chile/",
+    "/seguridad-privada": "/app-autos-robados-chile/", "/empresas": "/#plataformas", "/parquimetros": "/parquimetros/login.html",
+    "/portal-operaciones": "/portal-operaciones/", "/planes": "/planes/", "/vehiculos": "/vehiculos/", "/mi-barrio-seguro": "/mi-barrio-seguro/" };
+  var key = p.replace(/\/+$/, "");
+  if (map[key] && map[key] !== p) location.replace(map[key]);
+})();
+</script>
+<style>
+body{margin:0;background:#030810;color:#eef8ff;font-family:Manrope,Arial,sans-serif}
+.nf{max-width:900px;margin:auto;padding:90px 22px}
+.nf h1{font-size:clamp(36px,6vw,60px);margin:10px 0 16px}
+.nf p{color:#b7cad6;font-size:18px;line-height:1.7}
+.nf .links{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:30px}
+.nf .links a{padding:20px;border-radius:14px;border:1px solid rgba(72,197,255,.2);background:#071724;color:#eef8ff;text-decoration:none;font-weight:800}
+.nf .links a:hover{border-color:#49c8ff}
+.nf small{display:block;color:#48c9ff;font-weight:800;letter-spacing:.14em}
+</style>
+</head>
+<body>
+<header class="skl-header">
+  <div class="skl-nav">
+    <a class="skl-brand" href="/">
+      <picture><source srcset="/img/skano-logo.webp" type="image/webp"><img src="/img/skano-logo.png" alt="SKANO" width="38" height="57"></picture>
+      <span>SKANO<small>TECNOLOGÍA VEHICULAR</small></span>
+    </a>
+    <button class="skl-toggle" id="sklToggle" type="button" aria-expanded="false" aria-controls="sklMenu" aria-label="Abrir menú">☰</button>
+    <div class="skl-menu" id="sklMenu">
+      <nav class="skl-links" aria-label="Navegación principal">
+      <a href="/">Inicio</a>
+      <a href="/app-autos-robados-chile/">App SKANO</a>
+      <a href="/consultar-patente-robada-chile/">Consultar patente</a>
+      <a href="/lector-de-patentes/">Lector de patentes</a>
+      <a href="/mi-barrio-seguro/">Mi Barrio Seguro</a>
+      <a href="/planes/">Planes</a>
+      </nav>
+      <div class="skl-ctas">
+        <a class="skl-companies" href="https://skano-judicial-prd.web.app/portal/">Portal de Empresas</a>
+        <a class="skl-ops" href="/portal-operaciones/">Portal de Operaciones</a>
+      </div>
+    </div>
+  </div>
+</header>
+<main class="nf">
+<small>ERROR 404</small>
+<h1>No encontramos esta página</h1>
+<p>Es posible que sea una dirección antigua de SKANO. Estas son las secciones vigentes:</p>
+<div class="links">
+<a href="/">Inicio de SKANO</a>
+<a href="/app-autos-robados-chile/">App para autos robados</a>
+<a href="/consultar-patente-robada-chile/">Consultar patente robada</a>
+<a href="/#plataformas">Nuestras plataformas</a>
+<a href="/mi-barrio-seguro/">Mi Barrio Seguro</a>
+<a href="/planes/">Planes</a>
+</div>
+</main>
+<footer class="skl-footer">
+  <div class="skl-cols">
+    <div>
+      <h2>SKANO</h2>
+      <p>Tecnología chilena para seguridad vehicular: detección de vehículos con encargo por robo, lectura de patentes y alertas verificadas.</p>
+      <a href="https://play.google.com/store/apps/details?id=cl.skano.app" rel="noopener">Descargar la app en Google Play</a>
+    </div>
+    <div>
+      <h2>SOLUCIONES</h2>
+      <a href="/app-autos-robados-chile/">App para autos robados</a>
+      <a href="/consultar-patente-robada-chile/">Consultar patente robada</a>
+      <a href="/lector-de-patentes/">Lector de patentes</a>
+      <a href="/camaras-lectoras-patentes/">Cámaras lectoras de patentes</a>
+      <a href="/porticos-ciudadanos/">Pórticos Ciudadanos</a>
+      <a href="/seguridad-condominios/">Seguridad para condominios</a>
+      <a href="/mi-barrio-seguro/">Mi Barrio Seguro</a>
+    </div>
+    <div>
+      <h2>PLATAFORMAS</h2>
+      <a href="https://skano-judicial-prd.web.app/portal/">Portal de Empresas — SKANO Judicial</a>
+      <a href="/portal-operaciones/">Portal de Operaciones</a>
+      <a href="/planes/">Planes y servicios</a>
+      <a href="/vehiculos/">Vehículos en búsqueda</a>
+    </div>
+    <div>
+      <h2>SKANO</h2>
+      <a href="/#historia">Nosotros</a>
+      <a href="/#contacto">Contacto</a>
+      <a href="/politicas.html">Privacidad y seguridad</a>
+      <a href="/eliminar-cuenta.html">Eliminación de cuenta</a>
+    </div>
+  </div>
+  <p class="skl-copy">© 2026 SKANO · Tecnología creada en Talcahuano, Chile. SKANO no reemplaza a Carabineros ni a la PDI: ante un vehículo con encargo, no intervengas y llama al 133.</p>
+</footer>
+<script src="/landing.js?v=20261122-1" defer></script>
+</body>
+</html>

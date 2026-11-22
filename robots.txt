@@ -1,0 +1,7 @@
+# SKANO · skano.cl
+# Los paneles privados se excluyen con <meta name="robots" content="noindex">,
+# no aquí, para que Google pueda leer esa instrucción.
+User-agent: *
+Allow: /
+
+Sitemap: https://skano.cl/sitemap.xml
