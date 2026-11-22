@@ -9,7 +9,8 @@
 // - Sin innerHTML: todo el contenido va por textContent.
 // =====================================================================
 
-import { SDK_VERSION, resolveEnvironment, formatTotpSecret, normalizeTotpCode, totpErrorKind } from "./judicial-env.mjs?v=20261122-1";
+import { SDK_VERSION, resolveEnvironment, formatTotpSecret, normalizeTotpCode, totpErrorKind, signInErrorText } from "./judicial-env.mjs?v=20261122-2";
+export { signInErrorText };
 import { qrSvg } from "./qr.mjs?v=20261122-1";
 
 /** Impide usar el portal dentro de un iframe ajeno (clickjacking). */

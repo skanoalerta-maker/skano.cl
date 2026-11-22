@@ -78,6 +78,20 @@ export function totpErrorKind(err) {
   return "other";
 }
 
+/**
+ * Mensaje de inicio de sesión. Correo inexistente y contraseña incorrecta
+ * comparten el mismo texto (no se revela si la cuenta existe).
+ */
+export function signInErrorText(err) {
+  const code = String(err?.code || "");
+  if (code === "skano/mfa-cancelled") return "Verificación cancelada.";
+  if (code === "auth/too-many-requests") return "Demasiados intentos fallidos: el acceso quedó en pausa unos minutos. Espera o usa «¿Olvidaste tu contraseña?».";
+  if (code === "auth/network-request-failed") return "Sin conexión con el servicio de acceso. Revisa tu Internet e inténtalo de nuevo.";
+  if (code === "auth/user-disabled") return "Tu cuenta está deshabilitada. Contacta a SKANO.";
+  if (["auth/invalid-credential", "auth/wrong-password", "auth/user-not-found", "auth/invalid-email", "auth/invalid-login-credentials"].includes(code)) return "Correo o contraseña incorrectos.";
+  return `No se pudo iniciar sesión (${code || "error"}). Inténtalo de nuevo.`;
+}
+
 /** Código TOTP de 6 dígitos (acepta espacios). */
 export function normalizeTotpCode(value) {
   const code = String(value || "").replace(/\s+/g, "");
