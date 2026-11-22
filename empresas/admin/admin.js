@@ -5,7 +5,7 @@
 // Nunca se usa innerHTML con datos: todo el contenido va por textContent.
 // =====================================================================
 
-import * as C from "./admin-core.mjs?v=20261122-2";
+import * as C from "./admin-core.mjs?v=20261122-3";
 import { bootFirebase, signInWithSecondFactor, handleMfaRequired, signInErrorText } from "../judicial-firebase.mjs?v=20261122-2";
 
 const $ = (id) => document.getElementById(id);
@@ -208,6 +208,7 @@ async function loadOverview() {
       kpi(m.contracts.active, "CONTRATOS VIGENTES", "ok"),
       kpi(m.contracts.expiring_30_days, "VENCEN EN 30 DÍAS", m.contracts.expiring_30_days ? "warn" : ""),
       kpi(m.contracts.pending_review || 0, "CONTRATOS POR REVISAR", m.contracts.pending_review ? "warn" : ""),
+      kpi(m.contracts.test_active || 0, "CONTRATOS DE PRUEBA VIGENTES", ""),
       kpi(m.members_active, "USUARIOS ACTIVOS"),
     );
     $("quotaSummary").replaceChildren(
@@ -334,7 +335,9 @@ function contractCard(detail) {
   const canCreate = !k || ["EXPIRED", "CANCELLED"].includes(k.state);
   card.append(el("div", { class: "card-head" },
     el("h2", {}, "Contrato y cupos"),
-    pill(k?.state || "NONE", C.CONTRACT_STATE_LABEL[k?.state || "NONE"])));
+    el("span", { class: "btn-row" },
+      k?.test_only ? el("span", { class: "pill test" }, "DE PRUEBA") : null,
+      pill(k?.state || "NONE", C.CONTRACT_STATE_LABEL[k?.state || "NONE"]))));
 
   if (!k) {
     card.append(el("p", { class: "muted" }, "La empresa no tiene contrato. Sin contrato no puede usar ningún módulo."));
@@ -503,6 +506,7 @@ $("contractForm").addEventListener("submit", (ev) => {
     errors.push(...t.errors);
     if (errors.length) { msg.textContent = errors.join("\n"); return; }
     payload.terms = t.terms;
+    payload.test_only = values.test_only === true;
     await api("adminCreateContract", payload);
     $("contractDialog").close();
     toast("Borrador de contrato creado. Emite el PDF cuando los datos estén completos.");
@@ -592,10 +596,13 @@ function renderDocBox(d) {
       onSubmit: act(() => ({ action: "ISSUE" }), "PDF emitido: pendiente de firma de la empresa."),
     }) }, ds === "BORRADOR" && !k.document_version ? "EMITIR PDF" : "EMITIR NUEVA VERSIÓN"));
   }
+  const approvalBlocked = !k.test_only && !k.template_ready;
   if (ds === "PENDIENTE_REVISION") {
-    buttons.push(el("button", { class: "primary small", type: "button", onclick: () => openAction({
+    buttons.push(el("button", { class: "primary small", type: "button", disabled: approvalBlocked, title: approvalBlocked ? "Bloqueado: contrato real con plantilla pendiente" : "", onclick: () => openAction({
       eyebrow: "REVISIÓN", title: "Aprobar contrato firmado", submit: "APROBAR · DEJAR VIGENTE", reason: "optional", reasonLabel: "Observación*",
-      text: "Al aprobar, el contrato queda VIGENTE y se habilitan los módulos y cupos contratados. Descarga y revisa el PDF firmado antes de aprobar.",
+      text: k.test_only
+        ? "Contrato DE PRUEBA: al aprobar queda VIGENTE solo para probar el sistema en esta empresa. Sin validez contractual, sin cobro y sin alertas judiciales."
+        : "Al aprobar, el contrato queda VIGENTE y se habilitan los módulos y cupos contratados. Descarga y revisa el PDF firmado antes de aprobar.",
       fields: [{ type: "checkbox", name: "confirm_verified", label: "Confirmo que revisé el PDF firmado, la identidad del firmante y que coincide con la versión emitida." }],
       onSubmit: async (v) => {
         if (v.confirm_verified !== true) throw new Error("Marca la confirmación de revisión antes de aprobar.");
@@ -618,7 +625,11 @@ function renderDocBox(d) {
   return el("div", { class: "doc-box" },
     el("div", { class: "card-head" },
       el("h3", {}, `DOCUMENTO ${k.code || ""}`),
-      el("span", { class: `pill ${C.docPillClass(ds)}` }, C.DOC_STATUS_LABEL[ds] || ds)),
+      el("span", { class: "btn-row" },
+        k.test_only ? el("span", { class: "pill test" }, "DE PRUEBA") : null,
+        el("span", { class: `pill ${C.docPillClass(ds)}` }, C.DOC_STATUS_LABEL[ds] || ds))),
+    k.test_only ? el("p", { class: "test-note" }, "DOCUMENTO DE PRUEBA — SIN VALIDEZ CONTRACTUAL. No activa servicios comerciales reales, no genera cobros ni habilita alertas judiciales.") : null,
+    approvalBlocked ? el("p", { class: "legal-note" }, `Contrato real: no puede quedar VIGENTE hasta completar ${(k.template_missing || []).join(", ")}. El bloqueo se aplica en el servidor.`) : null,
     el("dl", { class: "facts" },
       el("div", {}, el("dt", {}, "VERSIÓN EMITIDA"), el("dd", {}, k.document_version ? `v${k.document_version}` : "Sin emitir")),
       el("div", {}, el("dt", {}, "FIRMADO CARGADO"), el("dd", {}, C.formatDateTime(k.signed_uploaded_at_ms))),

@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=20261122-2">
+  <link rel="stylesheet" href="admin.css?v=20261122-3">
 </head>
 <body>
   <div class="ambient" aria-hidden="true"></div>
@@ -197,7 +197,8 @@
         <p class="form-note span-2">Los campos con * son obligatorios para emitir el PDF. La plantilla legal está pendiente de revisión jurídica.</p>
       </fieldset>
       <p class="form-note">Las alertas por detección y la evidencia compartida quedan deshabilitadas (base legal pendiente).</p>
-      <p class="form-note">El contrato se crea como BORRADOR: no habilita módulos hasta emitir el PDF, recibir la firma y aprobarlo.</p>
+      <label class="check-line test-flag"><input type="checkbox" name="test_only"> <span><b>Contrato DE PRUEBA</b> — sin validez contractual, sin cobro, cupo máximo 1.000 por módulo. Mientras la plantilla no tenga los datos legales de SKANO ni revisión jurídica, solo los contratos DE PRUEBA pueden aprobarse.</span></label>
+      <p class="form-note">El contrato se crea como BORRADOR: no habilita módulos hasta emitir el PDF, recibir la firma y aprobarlo. La marca DE PRUEBA no se puede cambiar después.</p>
       <label>Observaciones administrativas<textarea name="notes" maxlength="1000"></textarea></label>
       <p class="message" data-message role="alert"></p>
       <div class="modal-actions"><button class="secondary" type="button" data-close>CANCELAR</button><button class="primary" type="submit">CREAR BORRADOR</button></div>
@@ -247,6 +248,6 @@
 
   <div id="toast" class="toast" role="status" hidden></div>
 
-  <script type="module" src="admin.js?v=20261122-3"></script>
+  <script type="module" src="admin.js?v=20261122-4"></script>
 </body>
 </html>

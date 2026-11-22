@@ -371,8 +371,9 @@ export function termsToFormValues(t) {
 }
 
 /** Estado comercial resumido para el indicador superior. */
-export function commercialStatus(docStatus, state) {
-  if (docStatus === "VIGENTE" || (!docStatus && state === "ACTIVE")) return { tone: "on", label: "Servicio activo" };
+export function commercialStatus(docStatus, state, testOnly = false) {
+  if (testOnly === true) return { tone: "test", label: docStatus === "VIGENTE" && state === "ACTIVE" ? "Contrato de prueba · sin validez contractual" : "Contrato de prueba · habilitación pendiente" };
+  if ((docStatus === "VIGENTE" || !docStatus) && state === "ACTIVE") return { tone: "on", label: "Servicio activo" };
   if (["BORRADOR", "PENDIENTE_FIRMA", "PENDIENTE_REVISION", "RECHAZADO"].includes(docStatus)) return { tone: "pending", label: "Habilitación pendiente" };
   if (["VENCIDO", "TERMINADO"].includes(docStatus) || ["EXPIRED", "CANCELLED", "SUSPENDED"].includes(state)) return { tone: "bad", label: "Servicio no habilitado" };
   return { tone: "pending", label: "Habilitación pendiente" };

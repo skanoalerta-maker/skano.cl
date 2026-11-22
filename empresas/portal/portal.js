@@ -9,7 +9,7 @@
 // - Sin innerHTML con datos: todo el contenido va por textContent.
 // =====================================================================
 
-import * as C from "./portal-core.mjs?v=20261122-2";
+import * as C from "./portal-core.mjs?v=20261122-3";
 import { bootFirebase, signInWithSecondFactor, handleMfaRequired, signInErrorText } from "../judicial-firebase.mjs?v=20261122-2";
 
 const $ = (id) => document.getElementById(id);
@@ -211,7 +211,7 @@ function heading(eyebrow, title, ...actions) {
 function commercialPill(contract) {
   const p = $("commercialPill");
   if (!p) return;
-  const st = contract ? C.commercialStatus(contract.document_status, contract.state) : { tone: "pending", label: "Habilitación pendiente" };
+  const st = contract ? C.commercialStatus(contract.document_status, contract.state, contract.test_only) : { tone: "pending", label: "Habilitación pendiente" };
   p.textContent = st.label.toUpperCase();
   p.className = `status-pill ${st.tone}`;
   p.hidden = false;
@@ -229,6 +229,7 @@ function contractBanner(contract) {
     return;
   }
   if (contract.state !== "ACTIVE") { b.textContent = `Contrato ${C.CONTRACT_STATE_LABEL[contract.state].toLowerCase()}: altas, importaciones y publicaciones bloqueadas.`; b.hidden = false; return; }
+  if (contract.test_only) { b.textContent = "Contrato DE PRUEBA vigente: solo para probar el sistema. Sin validez contractual, sin cobro y sin alertas judiciales."; b.hidden = false; return; }
   if (contract.days_remaining <= 30) { b.textContent = `El contrato vence en ${contract.days_remaining} día(s) (${C.formatDate(contract.ends_at_ms)}).`; b.hidden = false; return; }
   b.hidden = true;
 }
@@ -905,9 +906,11 @@ function contractDocCard() {
 function renderContractDoc(d) {
   const k = d.contract;
   const ds = k.document_status;
-  const head = el("div", { class: "card-head" }, el("h2", {}, `Documento del contrato ${k.code || ""}`), el("span", { class: `pill ${C.docPillClass(ds)}` }, C.DOC_STATUS_LABEL[ds] || ds));
+  const head = el("div", { class: "card-head" }, el("h2", {}, `Documento del contrato ${k.code || ""}`),
+    el("span", { class: "btn-row" }, k.test_only ? el("span", { class: "pill test" }, "DE PRUEBA") : null, el("span", { class: `pill ${C.docPillClass(ds)}` }, C.DOC_STATUS_LABEL[ds] || ds)));
+  const testNote = k.test_only ? el("p", { class: "test-note" }, "DOCUMENTO DE PRUEBA — SIN VALIDEZ CONTRACTUAL. No activa servicios comerciales reales, no genera cobros ni habilita alertas judiciales.") : null;
   if (ds === "BORRADOR" && !k.document_version) {
-    return el("article", { class: "card" }, head, el("p", { class: "muted" }, "SKANO está preparando el contrato. Cuando esté emitido podrás descargarlo aquí para firmarlo."));
+    return el("article", { class: "card" }, head, testNote, el("p", { class: "muted" }, "SKANO está preparando el contrato. Cuando esté emitido podrás descargarlo aquí para firmarlo."));
   }
   const canDownload = C.can(S.perms, "contract.sign");
   const generated = d.files.filter((f) => f.kind === "GENERADO");
@@ -956,7 +959,7 @@ function renderContractDoc(d) {
       el("div", { class: "btn-row" }, input, btn), msg);
   }
 
-  return el("article", { class: "card" }, head,
+  return el("article", { class: "card" }, head, testNote,
     ...steps.map((x) => el("p", { class: "form-note" }, x)),
     ds === "RECHAZADO" && k.review?.reason ? el("p", { class: "legal-note" }, `SKANO rechazó el contrato firmado: ${k.review.reason}. Corrige y vuelve a cargarlo.`) : null,
     el("dl", { class: "facts" },

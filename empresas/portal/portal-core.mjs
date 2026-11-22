@@ -9,8 +9,8 @@ export {
   quotaPercent, quotaLevel, errorMessage, ROLE_LABEL, CONTRACT_STATE_LABEL, auditLabel as adminAuditLabel,
   localizeInviteUrl, DOC_STATUS_LABEL, docPillClass, FILE_KIND_LABEL, FILE_STATUS_LABEL, PERIOD_LABEL,
   formatMoney, formatBytes, shortHash, commercialStatus, environmentLabel, contractEventLabel,
-} from "../admin/admin-core.mjs?v=20261122-2";
-import { auditLabel as baseAuditLabel } from "../admin/admin-core.mjs?v=20261122-2";
+} from "../admin/admin-core.mjs?v=20261122-3";
+import { auditLabel as baseAuditLabel } from "../admin/admin-core.mjs?v=20261122-3";
 
 // ------------------------------------------------------------ menú
 

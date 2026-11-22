@@ -110,3 +110,10 @@ test("contrato firmable: términos, estados y entorno", () => {
   assert.equal(C.contractEventLabel("APPROVED"), "Aprobado por SKANO (vigente)");
   assert.equal(C.CONTRACT_STATE_LABEL.PENDING, "Pendiente de habilitación");
 });
+
+test("contrato DE PRUEBA: estado comercial identificado", () => {
+  assert.equal(C.commercialStatus("VIGENTE", "ACTIVE", true).label, "Contrato de prueba · sin validez contractual");
+  assert.equal(C.commercialStatus("PENDIENTE_FIRMA", "PENDING", true).tone, "test");
+  // Real marcado VIGENTE pero bloqueado en el servidor (PENDING): nunca "Servicio activo".
+  assert.notEqual(C.commercialStatus("VIGENTE", "PENDING", false).label, "Servicio activo");
+});
