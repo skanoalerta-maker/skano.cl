@@ -20,3 +20,7 @@
   .social-grid a:nth-child(even){border-right:1px solid rgba(50,120,205,.23)}
   .social-grid a:nth-child(3n){border-right:0}
 }
+/* Solo TikTok y Facebook */
+.social-grid{grid-template-columns:repeat(2,minmax(0,220px))!important;justify-content:center}
+.social-grid a{border-right:1px solid rgba(50,120,205,.23)!important;border-bottom:0!important}
+.social-grid a:last-child{border-right:0!important}
