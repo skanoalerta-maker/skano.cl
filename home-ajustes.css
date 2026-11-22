@@ -1,26 +1,65 @@
 /* Portada: ajustes de noviembre 2026.
-   Comunidad SKANO (TikTok y Facebook) dentro de Contacto, sobre su video de fondo. */
-.contact .community-in-contact{background:none;padding:0;margin-top:34px;overflow:visible;color:#fff}
-.community-in-contact .community-frame{
-  padding:30px 34px 24px;border-radius:20px;
-  background:rgba(5,20,45,.42);border:1px solid rgba(70,205,235,.28);
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  box-shadow:0 24px 60px rgba(0,8,24,.35),inset 0 0 40px rgba(16,94,216,.08)
+   Comunidad SKANO (TikTok y Facebook): fondo propio animado en CSS
+   (aurora + grilla + órbitas), sin repetir el video de Contacto. */
+.community{
+  position:relative;overflow:hidden;isolation:isolate;padding:96px 0;
+  background:radial-gradient(120% 90% at 50% 0%,#0b2a55 0%,#061632 45%,#020a18 100%)!important;
 }
-.community-in-contact .community-title h2{font-size:clamp(22px,2.4vw,32px);font-style:normal;letter-spacing:-.01em;margin:0}
-.community-in-contact .community-title h2 strong{color:var(--cyan)}
-.community-in-contact .community-title p{font-size:12px;color:#b4c6d8}
-.community-in-contact .social-grid{display:grid;grid-template-columns:repeat(2,minmax(0,240px));justify-content:center;gap:0;margin-top:22px}
-.community-in-contact .social-grid a{min-height:0;padding:12px 10px 6px;border:0;border-right:1px solid rgba(50,120,205,.28);background:transparent}
-.community-in-contact .social-grid a:last-child{border-right:0}
-.community-in-contact .social-icon{width:78px;height:78px;font-size:30px!important}
-.community-in-contact .social-grid b{margin-top:14px;font-size:13px}
-.community-in-contact .social-grid i{display:inline-block;margin-top:12px}
-.community-in-contact .social-spectrum{margin:14px 60px 0;opacity:.8}
+/* Aurora en los colores de las redes y de SKANO */
+.community:before{
+  content:"";position:absolute;inset:-35%;z-index:-2;
+  background:
+    radial-gradient(28% 32% at 30% 45%,rgba(255,46,123,.30),transparent 70%),
+    radial-gradient(30% 34% at 70% 52%,rgba(37,140,255,.34),transparent 70%),
+    radial-gradient(26% 30% at 50% 30%,rgba(41,216,237,.22),transparent 70%);
+  filter:blur(40px);animation:communityAurora 18s ease-in-out infinite alternate;
+}
+/* Grilla tecnológica que se desplaza */
+.community:after{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(rgba(41,216,237,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(41,216,237,.06) 1px,transparent 1px);
+  background-size:56px 56px;
+  -webkit-mask-image:radial-gradient(70% 70% at 50% 50%,#000,transparent);
+  mask-image:radial-gradient(70% 70% at 50% 50%,#000,transparent);
+  animation:communityGrid 22s linear infinite;
+}
+.community-orbit{
+  display:block;z-index:-1;width:760px;height:760px;left:50%;top:50%;right:auto;
+  margin:-380px 0 0 -380px;border-color:rgba(41,216,237,.16);
+  box-shadow:0 0 0 70px rgba(41,216,237,.025),0 0 0 140px rgba(37,140,255,.02);
+}
+.community-frame{
+  position:relative;max-width:860px;padding:38px 40px 28px;border-radius:24px;
+  background:linear-gradient(150deg,rgba(10,30,66,.72),rgba(4,14,34,.78));
+  border:1px solid rgba(70,205,235,.32);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  box-shadow:0 30px 80px rgba(0,6,20,.55),inset 0 1px 0 rgba(255,255,255,.06),inset 0 0 50px rgba(16,94,216,.10);
+}
+.community-frame:before{
+  content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;pointer-events:none;
+  background:linear-gradient(120deg,rgba(255,46,123,.7),rgba(41,216,237,.15) 35%,rgba(37,140,255,.15) 65%,rgba(37,140,255,.7));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+}
+.community-title h2{font-size:clamp(26px,3vw,40px);font-style:normal;letter-spacing:-.02em;margin:0}
+.community-title h2 strong{color:var(--cyan);text-shadow:0 0 24px rgba(41,216,237,.45)}
+.community-title p{font-size:12px;color:#b4c6d8}
+.social-grid{display:grid;grid-template-columns:repeat(2,minmax(0,260px))!important;justify-content:center;gap:0;margin-top:26px}
+.social-grid a{min-height:0;padding:14px 10px 8px;border:0!important;border-right:1px solid rgba(50,120,205,.28)!important;background:transparent}
+.social-grid a:last-child{border-right:0!important}
+.social-icon{width:88px;height:88px;font-size:34px!important;transition:transform .35s,box-shadow .35s}
+.social-grid a:hover .social-icon{transform:scale(1.06);box-shadow:0 0 0 8px color-mix(in srgb,var(--accent) 22%,transparent),0 0 42px color-mix(in srgb,var(--accent) 70%,transparent)}
+.social-grid b{margin-top:16px;font-size:14px}
+.social-grid i{display:inline-block;margin-top:14px}
+.social-spectrum{margin:18px 70px 0;opacity:.85}
+@keyframes communityAurora{0%{transform:translate3d(-4%,-2%,0) rotate(0deg)}100%{transform:translate3d(4%,3%,0) rotate(8deg)}}
+@keyframes communityGrid{to{background-position:56px 56px}}
 @media(max-width:700px){
-  .community-in-contact .community-frame{padding:24px 14px 18px}
-  .community-in-contact .social-grid{grid-template-columns:1fr 1fr}
-  .community-in-contact .social-grid a:nth-child(odd){border-right:1px solid rgba(50,120,205,.28)}
-  .community-in-contact .social-icon{width:64px;height:64px}
-  .community-in-contact .social-grid i{min-width:84px}
+  .community{padding:64px 0}
+  .community-frame{padding:28px 14px 20px}
+  .social-grid{grid-template-columns:1fr 1fr!important}
+  .social-icon{width:70px;height:70px}
+  .social-grid i{min-width:84px}
+  .community-orbit{width:520px;height:520px;margin:-260px 0 0 -260px}
 }
+@media(prefers-reduced-motion:reduce){.community:before,.community:after,.community-orbit{animation:none!important}}
