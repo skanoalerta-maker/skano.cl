@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com/recaptcha/; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://southamerica-west1-skano-judicial-prd.cloudfunctions.net https://content-firebaseappcheck.googleapis.com https://www.google.com/recaptcha/ http://127.0.0.1:9299 http://127.0.0.1:5201 http://localhost:9299 http://localhost:5201; frame-src https://www.google.com/recaptcha/ https://recaptcha.google.com/recaptcha/; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
+  <title>SKANO Empresas · Portal</title>
+  <link rel="icon" href="../../img/skano-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../admin/admin.css?v=20261122-5">
+  <link rel="stylesheet" href="portal.css?v=20261121-2">
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+
+  <section id="envBlocked" class="center-state" hidden>
+    <div class="state-card">
+      <p class="eyebrow">SKANO EMPRESAS</p>
+      <h1>Servicio aún no habilitado</h1>
+      <p>El portal empresarial de SKANO Judicial todavía no está disponible en este sitio. Si tu empresa tiene un contrato vigente, contacta a SKANO para conocer la fecha de habilitación.</p>
+    </div>
+  </section>
+
+  <section id="loading" class="center-state" hidden>
+    <span class="spinner" aria-hidden="true"></span>
+    <p id="loadingText">Cargando…</p>
+  </section>
+
+  <!-- Acceso -->
+  <section id="login" class="login-shell" hidden>
+    <div class="login-card">
+      <div class="brand"><img src="../../img/skano-logo.png" alt=""><span><b>SKANO</b><small>EMPRESAS</small></span></div>
+      <div id="inviteBanner" class="invite-banner" hidden>Tienes una invitación pendiente. Ingresa o crea tu cuenta con el mismo correo al que fue enviada.</div>
+      <p class="eyebrow">PORTAL EMPRESARIAL</p>
+      <h1>Gestión de <em>cartera vehicular</em></h1>
+      <div class="tabs" id="authTabs" role="tablist" hidden>
+        <button type="button" role="tab" class="tab active" data-auth="signin" aria-selected="true">INGRESAR</button>
+        <button type="button" role="tab" class="tab" data-auth="signup" aria-selected="false">CREAR CUENTA</button>
+      </div>
+      <form id="loginForm" novalidate>
+        <label>Correo<input id="loginEmail" type="email" autocomplete="username" required></label>
+        <label>Contraseña<input id="loginPassword" type="password" autocomplete="current-password" required minlength="10"></label>
+        <label id="confirmWrap" hidden>Confirmar contraseña<input id="loginPassword2" type="password" autocomplete="new-password"></label>
+        <p id="pwHint" class="form-note" hidden>Mínimo 10 caracteres, con letras y números.</p>
+        <button id="loginSubmit" class="primary full" type="submit">INGRESAR</button>
+        <button id="forgotBtn" class="link" type="button">¿Olvidaste tu contraseña?</button>
+        <p id="loginMessage" class="message" role="alert"></p>
+      </form>
+      <p class="env-tag" id="envTag"><i></i> ACCESO RESTRINGIDO · VERIFICACIÓN EN DOS PASOS</p>
+    </div>
+  </section>
+
+  <!-- Verificación de correo -->
+  <section id="verify" class="center-state" hidden>
+    <div class="state-card">
+      <p class="eyebrow">VERIFICA TU CORREO</p>
+      <h1>Confirma tu dirección de correo</h1>
+      <p>Enviamos un enlace de verificación a <b id="verifyEmail"></b>. Ábrelo y luego presiona continuar.</p>
+      <div class="btn-row"><button id="verifyContinue" class="primary" type="button">YA VERIFIQUÉ, CONTINUAR</button><button id="verifyResend" class="secondary" type="button">REENVIAR CORREO</button><button id="verifyLogout" class="ghost" type="button">SALIR</button></div>
+      <p id="verifyMessage" class="message" role="alert"></p>
+    </div>
+  </section>
+
+  <!-- Primer ingreso con clave temporal -->
+  <section id="tempPassword" class="center-state" hidden>
+    <div class="state-card">
+      <p class="eyebrow">PRIMER INGRESO</p>
+      <h1>Crea tu propia clave</h1>
+      <p>Ingresaste con una clave temporal entregada por SKANO. Antes de continuar, define una clave personal que solo tú conozcas.</p>
+      <form id="tempForm" class="form-grid" novalidate>
+        <label>Nueva clave<input id="tempNew" type="password" autocomplete="new-password" required minlength="10"></label>
+        <label>Repite la nueva clave<input id="tempNew2" type="password" autocomplete="new-password" required minlength="10"></label>
+        <p class="form-note">Al menos 10 caracteres, con letras y números. Después volverás a ingresar con tu nueva clave, verificarás tu correo y configurarás el doble factor.</p>
+        <div class="btn-row"><button id="tempSubmit" class="primary" type="submit">GUARDAR MI CLAVE</button><button id="tempLogout" class="ghost" type="button">SALIR</button></div>
+      </form>
+      <p id="tempMessage" class="message" role="alert"></p>
+    </div>
+  </section>
+
+  <!-- Selección de empresa / sin empresa -->
+  <section id="picker" class="center-state" hidden>
+    <div class="state-card">
+      <p class="eyebrow">EMPRESAS</p>
+      <h1 id="pickerTitle">Selecciona una empresa</h1>
+      <div id="pickerList" class="picker-list"></div>
+      <div class="btn-row"><button id="pickerLogout" class="ghost" type="button">CERRAR SESIÓN</button></div>
+    </div>
+  </section>
+
+  <!-- Aplicación -->
+  <div id="app" class="app" hidden>
+    <aside class="sidebar" id="sidebar">
+      <div class="brand compact"><img src="../../img/skano-logo.png" alt=""><span><b>SKANO</b><small>EMPRESAS</small></span></div>
+      <nav aria-label="Secciones" id="nav"></nav>
+      <div class="session-card">
+        <small>SESIÓN ACTIVA</small>
+        <b id="sessionCompany">—</b>
+        <span id="sessionRole">—</span>
+        <em id="sessionEmail"></em>
+        <button id="switchCompany" class="ghost" type="button" hidden>CAMBIAR EMPRESA</button>
+        <button id="logoutBtn" class="ghost" type="button">CERRAR SESIÓN</button>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <button id="menuBtn" class="menu" type="button" aria-label="Abrir menú">☰</button>
+        <div><p id="topTitle">INICIO</p><span id="topSubtitle">Sistema B · vehículos con embargo y medidas judiciales</span></div>
+        <div class="status-pills" aria-label="Estado del sistema"><span id="envPill" class="env-pill" title="Entorno técnico">VERIFICANDO ENTORNO</span><span id="commercialPill" class="status-pill pending" title="Estado comercial de la empresa" hidden>HABILITACIÓN PENDIENTE</span><span class="status-pill off" title="Alertas por detección: deshabilitadas hasta resolver la base legal">ALERTAS JUDICIALES: DESACTIVADAS</span></div>
+      </header>
+      <div id="contractBanner" class="banner" hidden></div>
+
+      <section class="view" id="view-home"></section>
+      <section class="view" id="view-vehicles"></section>
+      <section class="view" id="view-review"></section>
+      <section class="view" id="view-vehicle"></section>
+      <section class="view" id="view-import"></section>
+      <section class="view" id="view-alerts"></section>
+      <section class="view" id="view-users"></section>
+      <section class="view" id="view-contract"></section>
+      <section class="view" id="view-audit"></section>
+    </main>
+  </div>
+
+  <!-- Diálogo: formulario de vehículo -->
+  <dialog id="vehicleDialog" class="wide">
+    <form id="vehicleForm" class="modal" method="dialog" novalidate>
+      <button class="close" type="button" data-close aria-label="Cerrar">×</button>
+      <p class="eyebrow" data-eyebrow>VEHÍCULO CON EMBARGO</p><h2 data-title>Registrar vehículo</h2>
+      <div data-fields></div>
+      <label data-reason hidden>Motivo de la modificación*<textarea name="__reason" maxlength="500"></textarea></label>
+      <p class="form-note" data-note></p>
+      <p class="message" data-message role="alert"></p>
+      <div class="modal-actions">
+        <button class="secondary" type="button" data-close>CANCELAR</button>
+        <button class="secondary" type="submit" value="draft" data-draft>GUARDAR BORRADOR</button>
+        <button class="primary" type="submit" value="submit" data-submit>GUARDAR Y ENVIAR A REVISIÓN</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Diálogo genérico con motivo -->
+  <dialog id="actionDialog">
+    <form id="actionForm" class="modal" method="dialog" novalidate>
+      <button class="close" type="button" data-close aria-label="Cerrar">×</button>
+      <p class="eyebrow" data-eyebrow>CONFIRMAR</p><h2 data-title>Confirmar</h2>
+      <p class="muted" data-text></p>
+      <div data-fields class="form-grid"></div>
+      <label data-reason-wrap>Motivo*<textarea name="reason" maxlength="500"></textarea></label>
+      <p class="message" data-message role="alert"></p>
+      <div class="modal-actions"><button class="secondary" type="button" data-close>CANCELAR</button><button class="primary" type="submit" data-submit>CONFIRMAR</button></div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <script type="module" src="portal.js?v=20261122-5"></script>
+</body>
+</html>
