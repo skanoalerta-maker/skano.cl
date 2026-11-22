@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com/recaptcha/; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://southamerica-west1-skano-judicial-prd.cloudfunctions.net https://content-firebaseappcheck.googleapis.com https://www.google.com/recaptcha/ http://127.0.0.1:9299 http://127.0.0.1:5201 http://localhost:9299 http://localhost:5201; frame-src https://www.google.com/recaptcha/ https://recaptcha.google.com/recaptcha/; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
+  <title>SKANO Empresas · Superadministración</title>
+  <link rel="icon" href="../../img/skano-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css?v=20261122-3">
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+
+  <!-- Entorno no permitido -->
+  <section id="envBlocked" class="center-state" hidden>
+    <div class="state-card">
+      <p class="eyebrow">SKANO EMPRESAS</p>
+      <h1>Servicio aún no habilitado</h1>
+      <p>El panel de superadministración de SKANO Judicial todavía no está disponible en este sitio. Si tu empresa tiene un contrato vigente, contacta a SKANO para conocer la fecha de habilitación.</p>
+    </div>
+  </section>
+
+  <!-- Cargando -->
+  <section id="loading" class="center-state" hidden>
+    <span class="spinner" aria-hidden="true"></span>
+    <p id="loadingText">Validando acceso…</p>
+  </section>
+
+  <!-- Inicio de sesión -->
+  <section id="login" class="login-shell" hidden>
+    <div class="login-card">
+      <div class="brand"><img src="../../img/skano-logo.png" alt=""><span><b>SKANO</b><small>EMPRESAS · SUPERADMIN</small></span></div>
+      <p class="eyebrow">ACCESO PRIVADO</p>
+      <h1>Administración <em>de empresas</em></h1>
+      <p class="muted">Gestión de empresas, contratos, cupos y usuarios administradores.</p>
+      <form id="loginForm" novalidate>
+        <label>Correo<input id="loginEmail" type="email" autocomplete="username" required></label>
+        <label>Contraseña<input id="loginPassword" type="password" autocomplete="current-password" required></label>
+        <button class="primary full" type="submit">INGRESAR</button>
+        <button id="forgotBtn" class="link" type="button">¿Olvidaste tu contraseña?</button>
+        <p id="loginMessage" class="message" role="alert"></p>
+      </form>
+      <p class="env-tag" id="envTag"><i></i> ACCESO RESTRINGIDO · VERIFICACIÓN EN DOS PASOS</p>
+    </div>
+  </section>
+
+  <!-- Aplicación -->
+  <div id="app" class="app" hidden>
+    <aside class="sidebar" id="sidebar">
+      <div class="brand compact"><img src="../../img/skano-logo.png" alt=""><span><b>SKANO</b><small>EMPRESAS</small></span></div>
+      <nav aria-label="Secciones">
+        <button class="nav-item active" data-view="overview" type="button"><span>◎</span>Resumen</button>
+        <button class="nav-item" data-view="companies" type="button"><span>▦</span>Empresas</button>
+        <button class="nav-item" data-view="audit" type="button"><span>≡</span>Historial de actividad</button>
+      </nav>
+      <div class="session-card">
+        <small>SESIÓN ACTIVA</small>
+        <b id="sessionEmail">—</b>
+        <span>SUPERADMIN SKANO</span>
+        <button id="logoutBtn" class="ghost" type="button">CERRAR SESIÓN</button>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <button id="menuBtn" class="menu" type="button" aria-label="Abrir menú">☰</button>
+        <div>
+          <p id="topTitle">RESUMEN DE LA PLATAFORMA</p>
+          <span>Datos agregados · sin acceso a expedientes</span>
+        </div>
+        <div class="status-pills" aria-label="Estado del sistema"><span id="envPill" class="env-pill" title="Entorno técnico">VERIFICANDO ENTORNO</span><span class="status-pill off" title="Alertas por detección: deshabilitadas hasta resolver la base legal">ALERTAS JUDICIALES: DESACTIVADAS</span></div>
+      </header>
+
+      <div id="legalBanner" class="banner">
+        <b>Alertas por detección deshabilitadas.</b>
+        Se mantendrán en <code>false</code> para todas las empresas hasta resolver la base legal y las condiciones de tratamiento de datos.
+      </div>
+
+      <!-- Resumen -->
+      <section class="view active" id="view-overview">
+        <div class="kpis" id="kpis"></div>
+        <div class="grid-2">
+          <article class="card"><h2>Cupos contratados</h2><div id="quotaSummary"></div></article>
+          <article class="card"><h2>Contratos</h2><div id="contractSummary"></div></article>
+        </div>
+      </section>
+
+      <!-- Empresas -->
+      <section class="view" id="view-companies">
+        <div class="section-heading">
+          <div><p class="eyebrow">GESTIÓN</p><h1>Empresas</h1></div>
+          <div class="actions">
+            <select id="statusFilter" aria-label="Filtrar por estado">
+              <option value="">Todos los estados</option>
+              <option value="ACTIVE">Activas</option>
+              <option value="SUSPENDED">Suspendidas</option>
+              <option value="DISABLED">Deshabilitadas</option>
+            </select>
+            <button id="newCompanyBtn" class="primary" type="button">+ NUEVA EMPRESA</button>
+          </div>
+        </div>
+        <div class="card flush">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Empresa</th><th>RUT</th><th>Estado</th><th>Contrato</th><th>Vence</th><th>Embargos</th><th>Encargos</th><th></th></tr></thead>
+              <tbody id="companiesBody"></tbody>
+            </table>
+          </div>
+          <div class="table-footer"><span id="companiesCount"></span><button id="moreCompaniesBtn" class="secondary" type="button" hidden>CARGAR MÁS</button></div>
+        </div>
+      </section>
+
+      <!-- Detalle de empresa -->
+      <section class="view" id="view-company">
+        <button id="backBtn" class="link" type="button">← Volver a empresas</button>
+        <div id="companyDetail"></div>
+      </section>
+
+      <!-- Auditoría -->
+      <section class="view" id="view-audit">
+        <div class="section-heading">
+          <div><p class="eyebrow">TRAZABILIDAD</p><h1>Historial de actividad</h1></div>
+          <div class="actions"><input id="auditCompany" placeholder="ID de empresa (opcional)" aria-label="Filtrar por empresa"><button id="auditBtn" class="secondary" type="button">FILTRAR</button></div>
+        </div>
+        <div class="card flush"><div class="table-wrap">
+          <table><thead><tr><th>Fecha</th><th>Acción</th><th>Empresa</th><th>Actor</th><th>Motivo</th></tr></thead><tbody id="auditBody"></tbody></table>
+        </div></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Diálogo: nueva empresa -->
+  <dialog id="companyDialog">
+    <form id="companyForm" class="modal" method="dialog" novalidate>
+      <button class="close" value="cancel" type="button" data-close aria-label="Cerrar">×</button>
+      <p class="eyebrow">NUEVA EMPRESA</p><h2>Registrar empresa contratante</h2>
+      <div class="form-grid">
+        <label>Razón social*<input name="legal_name" required maxlength="200"></label>
+        <label>Nombre comercial*<input name="trade_name" required maxlength="120"></label>
+        <label>RUT empresa*<input name="rut" required placeholder="76.123.456-7"></label>
+        <label>Correo principal*<input name="primary_email" type="email" required></label>
+        <label>Representante legal<input name="rep_name" maxlength="120"></label>
+        <label>RUT representante<input name="rep_rut"></label>
+        <label>Contacto autorizado<input name="contact_name" maxlength="120"></label>
+        <label>Correo contacto<input name="contact_email" type="email"></label>
+        <label>Teléfono contacto<input name="contact_phone" maxlength="30"></label>
+        <label class="span-2">Observaciones<textarea name="notes" maxlength="1000"></textarea></label>
+      </div>
+      <p class="message" data-message role="alert"></p>
+      <div class="modal-actions"><button class="secondary" type="button" data-close>CANCELAR</button><button class="primary" type="submit">CREAR EMPRESA</button></div>
+    </form>
+  </dialog>
+
+  <!-- Diálogo: contrato -->
+  <dialog id="contractDialog">
+    <form id="contractForm" class="modal" method="dialog" novalidate>
+      <button class="close" type="button" data-close aria-label="Cerrar">×</button>
+      <p class="eyebrow">CONTRATO</p><h2>Nuevo contrato</h2>
+      <input type="hidden" name="company_id">
+      <div class="form-grid">
+        <label>Fecha de inicio*<input name="starts_at" type="date" required></label>
+        <label>Duración*
+          <select name="duration">
+            <option value="1">1 mes</option><option value="2">2 meses</option><option value="3">3 meses</option>
+            <option value="6">6 meses</option><option value="12" selected>12 meses</option><option value="24">24 meses</option>
+            <option value="custom">Personalizada</option>
+          </select>
+        </label>
+        <label data-custom hidden>Fecha de término*<input name="ends_at" type="date"></label>
+      </div>
+      <fieldset class="modules">
+        <legend>Módulos y cupos</legend>
+        <label class="check"><input type="checkbox" name="judicial_enabled" checked> Embargos y medidas judiciales</label>
+        <label>Cupo embargos<input name="judicial_quota" inputmode="numeric" value="500"></label>
+        <label class="check"><input type="checkbox" name="theft_enabled"> Encargos (registros empresariales)</label>
+        <label>Cupo encargos<input name="theft_quota" inputmode="numeric" value="0"></label>
+      </fieldset>
+      <fieldset class="modules terms">
+        <legend>Datos del contrato (aparecen en el PDF)</legend>
+        <label class="span-2">Domicilio de la empresa<input name="company_address" maxlength="200"></label>
+        <label>Representante legal*<input name="rep_name" maxlength="120"></label>
+        <label>RUT representante*<input name="rep_rut" placeholder="12.345.678-5"></label>
+        <label>Cargo<input name="rep_position" maxlength="80"></label>
+        <label>Correo representante*<input name="rep_email" type="email" maxlength="160"></label>
+        <label>Plan contratado*<input name="plan_name" maxlength="80"></label>
+        <label>Precio*<input name="price_amount" inputmode="decimal"></label>
+        <label>Moneda<select name="price_currency"><option value="CLP">CLP</option><option value="UF">UF</option></select></label>
+        <label>Periodicidad<select name="price_period"><option value="MENSUAL">Mensual</option><option value="ANUAL">Anual</option><option value="UNICO">Pago único</option></select></label>
+        <label>Impuestos<input name="price_taxes" maxlength="80" placeholder="Ej.: + IVA"></label>
+        <label class="span-2">Forma de pago<textarea name="payment_terms" maxlength="600"></textarea></label>
+        <label class="span-2">Condiciones particulares<textarea name="conditions" maxlength="2000"></textarea></label>
+        <p class="form-note span-2">Los campos con * son obligatorios para emitir el PDF. La plantilla legal está pendiente de revisión jurídica.</p>
+      </fieldset>
+      <p class="form-note">Las alertas por detección y la evidencia compartida quedan deshabilitadas (base legal pendiente).</p>
+      <label class="check-line test-flag"><input type="checkbox" name="test_only"> <span><b>Contrato DE PRUEBA</b> — sin validez contractual, sin cobro, cupo máximo 1.000 por módulo. Mientras la plantilla no tenga los datos legales de SKANO ni revisión jurídica, solo los contratos DE PRUEBA pueden aprobarse.</span></label>
+      <p class="form-note">El contrato se crea como BORRADOR: no habilita módulos hasta emitir el PDF, recibir la firma y aprobarlo. La marca DE PRUEBA no se puede cambiar después.</p>
+      <label>Observaciones administrativas<textarea name="notes" maxlength="1000"></textarea></label>
+      <p class="message" data-message role="alert"></p>
+      <div class="modal-actions"><button class="secondary" type="button" data-close>CANCELAR</button><button class="primary" type="submit">CREAR BORRADOR</button></div>
+    </form>
+  </dialog>
+
+  <!-- Diálogo: términos del contrato -->
+  <dialog id="termsDialog">
+    <form id="termsForm" class="modal" method="dialog" novalidate>
+      <button class="close" type="button" data-close aria-label="Cerrar">×</button>
+      <p class="eyebrow">CONTRATO</p><h2>Editar datos del contrato</h2>
+      <p class="muted">Guardar vuelve el contrato a BORRADOR: el PDF emitido anteriormente deja de estar disponible y deberás emitir uno nuevo.</p>
+      <input type="hidden" name="contract_id">
+      <fieldset class="modules terms">
+        <legend>Datos del contrato (aparecen en el PDF)</legend>
+        <label class="span-2">Domicilio de la empresa<input name="company_address" maxlength="200"></label>
+        <label>Representante legal*<input name="rep_name" maxlength="120"></label>
+        <label>RUT representante*<input name="rep_rut" placeholder="12.345.678-5"></label>
+        <label>Cargo<input name="rep_position" maxlength="80"></label>
+        <label>Correo representante*<input name="rep_email" type="email" maxlength="160"></label>
+        <label>Plan contratado*<input name="plan_name" maxlength="80"></label>
+        <label>Precio*<input name="price_amount" inputmode="decimal"></label>
+        <label>Moneda<select name="price_currency"><option value="CLP">CLP</option><option value="UF">UF</option></select></label>
+        <label>Periodicidad<select name="price_period"><option value="MENSUAL">Mensual</option><option value="ANUAL">Anual</option><option value="UNICO">Pago único</option></select></label>
+        <label>Impuestos<input name="price_taxes" maxlength="80" placeholder="Ej.: + IVA"></label>
+        <label class="span-2">Forma de pago<textarea name="payment_terms" maxlength="600"></textarea></label>
+        <label class="span-2">Condiciones particulares<textarea name="conditions" maxlength="2000"></textarea></label>
+        <p class="form-note span-2">Los campos con * son obligatorios para emitir el PDF. La plantilla legal está pendiente de revisión jurídica.</p>
+      </fieldset>
+      <p class="message" data-message role="alert"></p>
+      <div class="modal-actions"><button class="secondary" type="button" data-close>CANCELAR</button><button class="primary" type="submit">GUARDAR BORRADOR</button></div>
+    </form>
+  </dialog>
+
+  <!-- Diálogo genérico con motivo -->
+  <dialog id="actionDialog">
+    <form id="actionForm" class="modal" method="dialog" novalidate>
+      <button class="close" type="button" data-close aria-label="Cerrar">×</button>
+      <p class="eyebrow" data-eyebrow>CONFIRMAR</p><h2 data-title>Confirmar acción</h2>
+      <p class="muted" data-text></p>
+      <div data-fields class="form-grid"></div>
+      <label>Motivo*<textarea name="reason" required minlength="5" maxlength="500"></textarea></label>
+      <p class="message" data-message role="alert"></p>
+      <div class="modal-actions"><button class="secondary" type="button" data-close>CANCELAR</button><button class="primary" type="submit" data-submit>CONFIRMAR</button></div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <script type="module" src="admin.js?v=20261122-4"></script>
+</body>
+</html>
