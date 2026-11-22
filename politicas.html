@@ -1,36 +1,84 @@
-<!DOCTYPE html>
-<html lang="es">
+<!doctype html>
+<html lang="es-CL">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Políticas de seguridad y privacidad | SKANO</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Políticas de seguridad y privacidad | SKANO</title>
 <meta name="description" content="Cómo SKANO protege la identidad de quienes reportan, la integridad de los reportes y la información de los vehículos registrados.">
+<meta name="robots" content="index, follow, max-image-preview:large">
 <link rel="canonical" href="https://skano.cl/politicas.html">
 <meta property="og:type" content="website">
+<meta property="og:locale" content="es_CL">
+<meta property="og:site_name" content="SKANO">
 <meta property="og:title" content="Políticas de seguridad y privacidad | SKANO">
 <meta property="og:description" content="Cómo SKANO protege la identidad de quienes reportan, la integridad de los reportes y la información de los vehículos registrados.">
 <meta property="og:url" content="https://skano.cl/politicas.html">
 <meta property="og:image" content="https://skano.cl/img/og-skano.jpg">
-<meta property="og:locale" content="es_CL">
-  <link rel="stylesheet" href="style.css" />
-  <link rel="icon" type="image/png" href="img/skano-logo.png" />
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Políticas de seguridad y privacidad | SKANO">
+<meta name="twitter:description" content="Cómo SKANO protege la identidad de quienes reportan, la integridad de los reportes y la información de los vehículos registrados.">
+<meta name="twitter:image" content="https://skano.cl/img/og-skano.jpg">
+<link rel="icon" type="image/png" href="/img/skano-icon-96.png">
+<meta name="theme-color" content="#030810">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/landing.css?v=20261122-1">
+<style>
+body{margin:0;background:#030810;color:#eef8ff;font-family:Manrope,Arial,sans-serif}
+.skl-legal{position:relative;padding:70px 22px 90px;background:radial-gradient(circle at 80% 0%,rgba(0,153,255,.16),transparent 40%),linear-gradient(180deg,#030810,#06111c)}
+.skl-legal .container{max-width:900px;margin:auto}
+.skl-legal .eyebrow{color:#48c9ff;font-size:12px;font-weight:800;letter-spacing:.16em;margin:0 0 12px}
+.skl-legal h1,.skl-legal .section-title{font-size:clamp(32px,5vw,52px);line-height:1.08;letter-spacing:-.02em;margin:0 0 16px;color:#fff}
+.skl-legal .section-lead{font-size:18px;line-height:1.7;color:#b7cad6;margin:0}
+.skl-legal .glass-card{border:1px solid rgba(70,195,255,.18);border-radius:16px;background:linear-gradient(145deg,rgba(11,30,45,.92),rgba(4,13,22,.92))}
+.skl-legal h2{font-size:21px;margin:0 0 10px;color:#f4fbff}
+.skl-legal p{color:#b7cad6;line-height:1.75;margin:0 0 12px}
+.skl-legal p:last-child{margin-bottom:0}
+.skl-legal .doc-list{margin:8px 0 14px;padding-left:22px;color:#cfe0ea;line-height:1.7}
+.skl-legal .doc-list li{margin:4px 0}
+.skl-legal strong{color:#fff}
+.skl-legal a{color:#49c8ff}
+.skl-legal .box{max-width:720px;margin:auto;padding:36px 32px;border:1px solid rgba(70,195,255,.2);border-radius:18px;background:linear-gradient(145deg,rgba(11,30,45,.95),rgba(4,13,22,.95));box-shadow:0 24px 60px rgba(0,0,0,.35)}
+.skl-legal .box p{font-size:17px}
+.skl-legal .highlight{color:#49c8ff;font-weight:800}
+.skl-legal .btn{display:block;margin:26px 0 14px;padding:16px 18px;border-radius:12px;background:#27baff;color:#00111d;text-align:center;font-weight:800;text-decoration:none}
+.skl-legal .btn:hover{filter:brightness(1.08)}
+.skl-legal .back{display:inline-block;margin-top:6px;color:#9fd8ff;text-decoration:none;font-weight:700}
+@media (max-width:600px){.skl-legal .box{padding:26px 20px}.skl-legal .glass-card{padding:20px 18px!important}}
+</style>
 </head>
 <body>
-
-<header class="main-header">
-  <div class="container header-inner">
-    <div class="header-left">
-      <img src="img/skano-logo.png" alt="Logo SKANO" class="header-logo-img" />
-      <span class="header-logo-text">SKANO</span>
+<header class="skl-header">
+  <div class="skl-nav">
+    <a class="skl-brand" href="/">
+      <picture><source srcset="/img/skano-logo.webp" type="image/webp"><img src="/img/skano-logo.png" alt="SKANO" width="38" height="57"></picture>
+      <span>SKANO<small>TECNOLOGÍA VEHICULAR</small></span>
+    </a>
+    <button class="skl-toggle" id="sklToggle" type="button" aria-expanded="false" aria-controls="sklMenu" aria-label="Abrir menú">☰</button>
+    <div class="skl-menu" id="sklMenu">
+      <nav class="skl-links" aria-label="Navegación principal">
+      <a href="/">Inicio</a>
+      <a href="/app-autos-robados-chile/">App SKANO</a>
+      <a href="/consultar-patente-robada-chile/">Consultar patente</a>
+      <a href="/lector-de-patentes/">Lector de patentes</a>
+      <a href="/mi-barrio-seguro/">Mi Barrio Seguro</a>
+      <a href="/planes/">Planes</a>
+      </nav>
+      <div class="skl-ctas">
+        <a class="skl-companies" href="https://skano-judicial-prd.web.app/portal/">Portal de Empresas</a>
+        <a class="skl-ops" href="/portal-operaciones/">Portal de Operaciones</a>
+      </div>
     </div>
-    <nav class="nav-menu" id="navMenu">
-      <a href="index.html#inicio">Volver a inicio</a>
-    </nav>
-    <button class="nav-toggle" id="navToggle" aria-label="Abrir menú">☰</button>
   </div>
 </header>
-
-<section class="section section-alt">
+<main class="skl-legal">
+<div class="container">
+<p class="skl-crumbs"><a href="/">SKANO</a> › Políticas de seguridad y privacidad</p>
+</div>
+<section>
   <div class="container">
     <h1 class="section-title">Políticas de Seguridad y Privacidad SKANO</h1>
     <p class="section-lead">
@@ -136,17 +184,41 @@
     </div>
   </div>
 </section>
-
-<footer class="footer">
-  <img src="img/skano-logo.png" alt="Logo SKANO" class="footer-logo" />
-  <p class="footer-slogan">
-    “Reporta seguro, los buenos somos más.”
-  </p>
-  <p class="footer-copy">
-    © 2025 SKANO – Protección Total. Todos los derechos reservados.
-  </p>
+</main>
+<footer class="skl-footer">
+  <div class="skl-cols">
+    <div>
+      <h2>SKANO</h2>
+      <p>Tecnología chilena para seguridad vehicular: detección de vehículos con encargo por robo, lectura de patentes y alertas verificadas.</p>
+      <a href="https://play.google.com/store/apps/details?id=cl.skano.app" rel="noopener">Descargar la app en Google Play</a>
+    </div>
+    <div>
+      <h2>SOLUCIONES</h2>
+      <a href="/app-autos-robados-chile/">App para autos robados</a>
+      <a href="/consultar-patente-robada-chile/">Consultar patente robada</a>
+      <a href="/lector-de-patentes/">Lector de patentes</a>
+      <a href="/camaras-lectoras-patentes/">Cámaras lectoras de patentes</a>
+      <a href="/porticos-ciudadanos/">Pórticos Ciudadanos</a>
+      <a href="/seguridad-condominios/">Seguridad para condominios</a>
+      <a href="/mi-barrio-seguro/">Mi Barrio Seguro</a>
+    </div>
+    <div>
+      <h2>PLATAFORMAS</h2>
+      <a href="https://skano-judicial-prd.web.app/portal/">Portal de Empresas — SKANO Judicial</a>
+      <a href="/portal-operaciones/">Portal de Operaciones</a>
+      <a href="/planes/">Planes y servicios</a>
+      <a href="/vehiculos/">Vehículos en búsqueda</a>
+    </div>
+    <div>
+      <h2>SKANO</h2>
+      <a href="/#historia">Nosotros</a>
+      <a href="/#contacto">Contacto</a>
+      <a href="/politicas.html">Privacidad y seguridad</a>
+      <a href="/eliminar-cuenta.html">Eliminación de cuenta</a>
+    </div>
+  </div>
+  <p class="skl-copy">© 2026 SKANO · Tecnología creada en Talcahuano, Chile. SKANO no reemplaza a Carabineros ni a la PDI: ante un vehículo con encargo, no intervengas y llama al 133.</p>
 </footer>
-
-<script src="script.js"></script>
+<script src="/landing.js?v=20261122-1" defer></script>
 </body>
 </html>
