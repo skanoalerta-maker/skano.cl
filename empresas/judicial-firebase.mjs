@@ -9,7 +9,8 @@
 // - Sin innerHTML: todo el contenido va por textContent.
 // =====================================================================
 
-import { SDK_VERSION, resolveEnvironment, formatTotpSecret, normalizeTotpCode } from "./judicial-env.mjs?v=20261121-1";
+import { SDK_VERSION, resolveEnvironment, formatTotpSecret, normalizeTotpCode, totpErrorKind } from "./judicial-env.mjs?v=20261122-1";
+import { qrSvg } from "./qr.mjs?v=20261122-1";
 
 /** Impide usar el portal dentro de un iframe ajeno (clickjacking). */
 export function refuseFraming() {
@@ -66,7 +67,7 @@ function node(tag, attrs = {}, ...children) {
  * Pide un código de 6 dígitos. onCode(code) valida; si lanza un error, se
  * muestra y el diálogo sigue abierto. Resuelve true al validar, false al cancelar.
  */
-function codeDialog({ eyebrow, title, lines = [], extra = null, submit, onCode }) {
+function codeDialog({ eyebrow, title, lines = [], extra = null, submit, onCode, onFatal = null }) {
   return new Promise((resolve) => {
     const input = node("input", { name: "code", inputmode: "numeric", autocomplete: "one-time-code", maxlength: 7, required: true, "aria-label": "Código de 6 dígitos" });
     const msg = node("p", { class: "message", role: "alert" });
@@ -88,8 +89,12 @@ function codeDialog({ eyebrow, title, lines = [], extra = null, submit, onCode }
       ok.disabled = true;
       msg.textContent = "";
       try { await onCode(code); finish(true); } catch (err) {
-        msg.textContent = err?.code === "auth/invalid-verification-code" || err?.code === "auth/totp-challenge-timeout"
-          ? "Código incorrecto o vencido. Prueba con el código actual." : "No se pudo verificar el código.";
+        const kind = totpErrorKind(err);
+        if (kind !== "code" && onFatal) { finish(false); onFatal(err); return; }
+        msg.textContent = kind === "code"
+          ? "Código incorrecto. Revisa la hora de tu teléfono y escribe el código que se ve ahora."
+          : kind === "network" ? "Sin conexión. Revisa tu Internet e inténtalo de nuevo."
+          : "No se pudo verificar el código. Vuelve a iniciar sesión para generar una clave nueva.";
         input.value = "";
         input.focus();
       } finally { ok.disabled = false; }
@@ -137,27 +142,41 @@ export async function enrollSecondFactor(fb) {
   const user = auth.currentUser;
   if (!user) return false;
   if (A.multiFactor(user).enrolledFactors.length) return false;
+  // Cada intento genera una clave nueva en Firebase; la clave solo existe en
+  // esta pantalla (el código QR se dibuja en el navegador, sin servicios externos).
   const session = await A.multiFactor(user).getSession();
   const secret = await A.TotpMultiFactorGenerator.generateSecret(session);
   const url = secret.generateQrCodeUrl(user.email || "usuario", "SKANO Empresas");
+  const key = formatTotpSecret(secret.secretKey);
+  const copyBtn = node("button", { class: "link", type: "button" }, "Copiar clave");
+  copyBtn.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(secret.secretKey); copyBtn.textContent = "Clave copiada"; } catch (_) { copyBtn.textContent = "No se pudo copiar: escríbela"; }
+  });
+  const touch = globalThis.matchMedia?.("(pointer: coarse)").matches;
+  const deadline = secret.enrollmentCompletionDeadline ? new Date(secret.enrollmentCompletionDeadline) : null;
   const extra = node("div", { class: "mfa-secret" },
-    node("p", {}, "Clave para agregar manualmente:"),
-    node("code", {}, formatTotpSecret(secret.secretKey)),
-    node("p", { class: "muted" }, "En el teléfono también puedes abrir este enlace con tu aplicación de autenticación:"),
-    node("a", { href: url, rel: "noopener" }, "Agregar a la aplicación de autenticación"));
-  return codeDialog({
+    node("p", {}, node("b", {}, "Opción A — en el computador: "), "abre Google Authenticator en tu teléfono, toca «+» › «Escanear un código QR» y apunta a este código:"),
+    node("div", { class: "mfa-qr" }, qrSvg(url, { size: 200 })),
+    node("p", {}, node("b", {}, "Opción B — manual: "), "en la app toca «+» › «Ingresar una clave de configuración». Nombre: SKANO Empresas · Clave:"),
+    node("code", {}, key), " ", copyBtn,
+    node("p", { class: "muted" }, "Tipo de clave: basada en el tiempo. No compartas esta clave ni el código QR."),
+    touch ? node("p", {}, node("a", { href: url, rel: "noopener" }, "Opción C — en este teléfono: abrir en la app de autenticación")) : null,
+    deadline ? node("p", { class: "muted" }, `Completa la activación antes de las ${deadline.toLocaleTimeString("es-CL", { hour: "2-digit", minute: "2-digit" })}; después se genera una clave nueva.`) : null);
+  let fatal = null;
+  const ok = await codeDialog({
     eyebrow: "SEGURIDAD DE LA CUENTA", title: "Activa la verificación en dos pasos",
     lines: [
       "Tu rol administra información judicial y requiere un segundo factor.",
-      "1. Instala una aplicación de autenticación (por ejemplo Google Authenticator, Microsoft Authenticator o 1Password).",
-      "2. Agrega SKANO Empresas con la clave de abajo.",
-      "3. Escribe el código de 6 dígitos que muestra la aplicación.",
+      "Agrega SKANO Empresas a tu aplicación de autenticación (Google Authenticator, Microsoft Authenticator o 1Password) y escribe el código de 6 dígitos que aparece.",
     ],
     extra, submit: "ACTIVAR",
     onCode: async (code) => {
       await A.multiFactor(user).enroll(A.TotpMultiFactorGenerator.assertionForEnrollment(secret, code), "Aplicación de autenticación");
     },
+    onFatal: (err) => { fatal = err; },
   });
+  if (fatal) throw fatal;
+  return ok;
 }
 
 /**
@@ -177,9 +196,12 @@ export async function handleMfaRequired(fb) {
         : "Tu rol requiere activar la verificación en dos pasos para continuar.";
     }
   } catch (err) {
-    text = err?.code === "auth/requires-recent-login"
-      ? "Por seguridad, vuelve a ingresar y activa la verificación en dos pasos."
-      : "No se pudo activar la verificación en dos pasos. Inténtalo de nuevo.";
+    const kind = totpErrorKind(err);
+    text = kind === "expired"
+      ? "La clave de activación venció. Vuelve a ingresar: se generará una clave nueva."
+      : kind === "network"
+        ? "Sin conexión al activar la verificación. Vuelve a ingresar cuando tengas Internet."
+        : `No se pudo activar la verificación en dos pasos (${err?.code || "error"}). Vuelve a ingresar para intentarlo con una clave nueva.`;
   }
   await A.signOut(auth).catch(() => {});
   return text;

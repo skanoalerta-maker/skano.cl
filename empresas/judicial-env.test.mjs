@@ -37,3 +37,12 @@ test("TOTP: clave legible y código de 6 dígitos", () => {
   assert.equal(E.normalizeTotpCode(" 123 456 "), "123456");
   for (const bad of ["12345", "1234567", "12a456", "", null]) assert.equal(E.normalizeTotpCode(bad), "");
 });
+
+test("errores TOTP: código incorrecto se reintenta; sesión vencida pide clave nueva", () => {
+  assert.equal(E.totpErrorKind({ code: "auth/invalid-verification-code" }), "code");
+  assert.equal(E.totpErrorKind({ code: "auth/requires-recent-login" }), "expired");
+  assert.equal(E.totpErrorKind({ code: "auth/invalid-multi-factor-session" }), "expired");
+  assert.equal(E.totpErrorKind({ code: "auth/network-request-failed" }), "network");
+  assert.equal(E.totpErrorKind({ code: "auth/internal-error" }), "other");
+  assert.equal(E.totpErrorKind(null), "other");
+});

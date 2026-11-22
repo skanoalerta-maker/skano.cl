@@ -63,6 +63,21 @@ export function formatTotpSecret(secret) {
   return String(secret || "").replace(/\s+/g, "").toUpperCase().match(/.{1,4}/g)?.join(" ") || "";
 }
 
+/**
+ * Clasifica un error de Firebase al activar o usar TOTP:
+ *  "code"    código incorrecto: se puede reintentar en el mismo diálogo
+ *  "expired" sesión o clave vencida / requiere inicio reciente: nueva clave
+ *  "network" sin conexión
+ *  "other"   cualquier otro
+ */
+export function totpErrorKind(err) {
+  const code = String(err?.code || "");
+  if (["auth/invalid-verification-code", "auth/totp-challenge-timeout", "auth/missing-code", "auth/invalid-totp-code"].includes(code)) return "code";
+  if (["auth/requires-recent-login", "auth/invalid-multi-factor-session", "auth/missing-multi-factor-session", "auth/code-expired", "auth/user-token-expired", "auth/session-expired"].includes(code)) return "expired";
+  if (code === "auth/network-request-failed") return "network";
+  return "other";
+}
+
 /** Código TOTP de 6 dígitos (acepta espacios). */
 export function normalizeTotpCode(value) {
   const code = String(value || "").replace(/\s+/g, "");

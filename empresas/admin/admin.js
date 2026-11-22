@@ -6,7 +6,7 @@
 // =====================================================================
 
 import * as C from "./admin-core.mjs?v=20261121-1";
-import { bootFirebase, signInWithSecondFactor, handleMfaRequired } from "../judicial-firebase.mjs?v=20261121-1";
+import { bootFirebase, signInWithSecondFactor, handleMfaRequired } from "../judicial-firebase.mjs?v=20261122-1";
 
 const $ = (id) => document.getElementById(id);
 const SCREENS = ["envBlocked", "loading", "login", "app"];
