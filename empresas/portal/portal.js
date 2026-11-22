@@ -552,77 +552,195 @@ function uploadRow(x) {
 }
 
 // ------------------------------------------------------------ importador
-const IMP = { job: null, rows: [], filter: "INVALID", after: null, file: null, mapping: {} };
+const IMP = { job: null, rows: [], filter: "INVALID", after: null, file: null, base64: null, analysis: null, assign: {}, confirmed: {}, constants: {}, sheet: undefined, headerRow: undefined };
 
 LOADERS.import = () => renderImportStart();
 
+const IMPORT_STEPS = ["Archivo", "Columnas", "Revisión y corrección", "Confirmación"];
 function steps(active) {
-  const names = ["Archivo", "Revisión y corrección", "Confirmación"];
-  return el("div", { class: "steps" }, ...names.map((n, i) => el("div", { class: `step ${i + 1 < active ? "done" : i + 1 === active ? "active" : ""}` }, el("b", {}, String(i + 1)), n.toUpperCase())));
+  return el("div", { class: "steps" }, ...IMPORT_STEPS.map((n, i) => el("div", { class: `step ${i + 1 < active ? "done" : i + 1 === active ? "active" : ""}` }, el("b", {}, String(i + 1)), n.toUpperCase())));
 }
 
-function renderImportStart(blocked = null) {
+const EXTRA_FIELD_LABEL = { photo_ref: "Referencia de fotografía", file_ref: "Identificador de archivo" };
+const fieldLabel = (f) => C.FIELD_LABEL[f] || EXTRA_FIELD_LABEL[f] || f;
+const CONFIDENCE_TEXT = { alta: "Reconocida", media: "Confirmar", sin_asignar: "Sin asignar" };
+
+function renderImportStart() {
   const v = $("view-import");
   const file = el("input", { type: "file", accept: ".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", id: "importFile", "aria-label": "Archivo Excel" });
   const msg = el("p", { class: "message" });
-  const btn = el("button", { class: "primary", type: "button" }, "VALIDAR ARCHIVO");
-  const zone = el("div", { class: "dropzone" }, el("b", {}, "Arrastra aquí tu archivo .xlsx o selecciónalo"), file, el("small", {}, "Máximo 5.000 filas y 7 MB. Solo se lee la primera hoja."));
+  const btn = el("button", { class: "primary", type: "button" }, "ANALIZAR ARCHIVO");
+  const zone = el("div", { class: "dropzone" }, el("b", {}, "Arrastra aquí tu archivo .xlsx o selecciónalo"), file,
+    el("small", {}, "Máximo 5.000 filas y 7 MB. Reconocemos los encabezados de tu planilla aunque usen otros nombres (PATENTE, PPU, PLACA…), y tú confirmas la correspondencia antes de importar."));
   zone.addEventListener("dragover", (e) => { e.preventDefault(); zone.classList.add("drag"); });
   zone.addEventListener("dragleave", () => zone.classList.remove("drag"));
   zone.addEventListener("drop", (e) => { e.preventDefault(); zone.classList.remove("drag"); if (e.dataTransfer.files[0]) { const dt = new DataTransfer(); dt.items.add(e.dataTransfer.files[0]); file.files = dt.files; } });
   btn.addEventListener("click", async () => {
     msg.textContent = "";
-    const f = file.files[0] || IMP.file;
+    const f = file.files[0];
     const problem = C.checkUpload(f, "xlsx");
     if (problem) { msg.textContent = problem; return; }
-    IMP.file = f;
     btn.disabled = true;
-    btn.textContent = "VALIDANDO…";
+    btn.textContent = "ANALIZANDO…";
     try {
-      const r = await api("judicialValidateImport", { file_name: f.name, content_base64: await readFileBase64(f), mapping: Object.keys(IMP.mapping).length ? IMP.mapping : undefined });
-      if (r.blocked) { renderImportStart(r); return; }
-      IMP.job = r;
-      IMP.mapping = {};
-      if (r.reused) toast("Este archivo ya había sido validado: se muestra el resultado existente.");
-      await renderImportReview();
+      IMP.file = f;
+      IMP.base64 = await readFileBase64(f);
+      IMP.sheet = undefined;
+      IMP.headerRow = undefined;
+      await analyzeImport();
     } catch (err) {
       msg.textContent = errorText(err);
     } finally {
       btn.disabled = false;
-      btn.textContent = "VALIDAR ARCHIVO";
+      btn.textContent = "ANALIZAR ARCHIVO";
     }
   });
-
-  let mappingBox = null;
-  if (blocked) {
-    const c = blocked.columns;
-    mappingBox = el("article", { class: "card" },
-      el("h2", {}, "Asigna las columnas obligatorias"),
-      el("p", { class: "muted" }, `No reconocimos estas columnas en «${blocked.file_name}». Indica cuál de tus encabezados corresponde a cada campo.`),
-      el("div", { class: "mapping" }, ...c.missing_required.map((field) => {
-        const sel = el("select", { "aria-label": `Columna para ${C.FIELD_LABEL[field] || field}` }, el("option", { value: "" }, "Seleccionar columna…"),
-          ...c.headers.filter((h) => h && !Object.values(c.mapping).includes(h)).map((h) => el("option", { value: h, selected: IMP.mapping[h] === field }, h)));
-        sel.addEventListener("change", () => {
-          for (const [h, f] of Object.entries(IMP.mapping)) if (f === field) delete IMP.mapping[h];
-          if (sel.value) IMP.mapping[sel.value] = field;
-        });
-        return el("label", {}, `${C.FIELD_LABEL[field] || field} *`, sel);
-      })),
-      el("p", { class: "form-note" }, "Vuelve a presionar «Validar archivo» con el mismo archivo."));
-  } else {
-    IMP.mapping = {};
-  }
 
   v.replaceChildren(
     heading("CARGA MASIVA", "Importar vehículos con embargo"),
     steps(1),
     el("article", { class: "card" },
-      el("p", { class: "muted" }, "Las filas válidas se crean en estado «Importado»: nunca se publican automáticamente y no consumen cupo hasta su aprobación. Las inválidas quedan pendientes para corregir."),
-      el("div", { class: "btn-row" }, el("a", { class: "secondary small", href: "plantillas/skano_plantilla_embargos.xlsx", download: true }, "DESCARGAR PLANTILLA")),
+      el("p", { class: "muted" }, "Las filas válidas se crean en estado «Importado»: nunca se publican automáticamente, no acreditan la medida judicial por sí solas y no activan alertas. Las inválidas quedan pendientes para corregir."),
+      el("div", { class: "btn-row" }, el("a", { class: "secondary small", href: "plantillas/skano_plantilla_embargos.xlsx", download: true }, "DESCARGAR PLANTILLA SKANO")),
       zone, el("div", { class: "btn-row" }, btn), msg),
-    mappingBox,
     importHistory(),
   );
+}
+
+async function analyzeImport() {
+  const r = await api("judicialValidateImport", {
+    file_name: IMP.file.name, content_base64: IMP.base64, analyze: true,
+    sheet_name: IMP.sheet, header_row: IMP.headerRow,
+  });
+  IMP.analysis = r;
+  IMP.sheet = r.sheet_name;
+  IMP.headerRow = r.header_row;
+  // Propuesta inicial: lo reconocido se asigna; lo dudoso queda por confirmar.
+  IMP.assign = Object.fromEntries(r.columns.map((c) => [c.index, c.field || ""]));
+  IMP.confirmed = Object.fromEntries(r.columns.map((c) => [c.index, c.confidence !== "media"]));
+  IMP.constants = {};
+  renderImportMapping();
+}
+
+function renderImportMapping() {
+  const v = $("view-import");
+  const a = IMP.analysis;
+  const msg = el("p", { class: "message", role: "alert" });
+  const options = (current) => [el("option", { value: "" }, "Sin asignar (no importar)"),
+    ...a.available_fields.map((f) => el("option", { value: f, selected: current === f }, `${fieldLabel(f)}${a.required_fields.includes(f) ? " *" : ""}`))];
+
+  const sheetSel = a.sheets.length > 1 ? el("label", {}, "Hoja del libro", el("select", { "aria-label": "Hoja", onchange: async (e) => {
+    IMP.sheet = e.target.value; IMP.headerRow = undefined;
+    try { await analyzeImport(); } catch (err) { toast(errorText(err), true); }
+  } }, ...a.sheets.map((s) => el("option", { value: s, selected: s === a.sheet_name }, s)))) : null;
+  const headerSel = el("label", {}, "Fila de encabezados", el("select", { "aria-label": "Fila de encabezados", onchange: async (e) => {
+    IMP.headerRow = Number(e.target.value);
+    try { await analyzeImport(); } catch (err) { toast(errorText(err), true); }
+  } }, ...a.header_candidates.map((c) => el("option", { value: c.row, selected: c.row === a.header_row }, `Fila ${c.row}: ${c.preview}`))));
+
+  const body = el("tbody");
+  const constBox = el("div");
+  const preview = el("div", { class: "table-wrap" });
+  const go = el("button", { class: "primary", type: "button" }, "VALIDAR CON ESTA CORRESPONDENCIA");
+
+  function assignedFields() {
+    const used = {};
+    for (const c of a.columns) { const f = IMP.assign[c.index]; if (f) (used[f] ||= []).push(c.header); }
+    return used;
+  }
+
+  function refresh() {
+    const used = assignedFields();
+    body.replaceChildren(...a.columns.map((c) => {
+      const f = IMP.assign[c.index];
+      const sel = el("select", { "aria-label": `Campo SKANO para ${c.header}`, onchange: (e) => { IMP.assign[c.index] = e.target.value; IMP.confirmed[c.index] = true; refresh(); } }, ...options(f));
+      const pending = c.confidence === "media" && !IMP.confirmed[c.index];
+      const state = !f ? "sin_asignar" : pending ? "media" : "alta";
+      const dup = f && used[f].length > 1;
+      return el("tr", { class: pending ? "needs-confirm" : "" },
+        td("Columna del Excel", el("b", {}, c.header)),
+        td("Ejemplo", a.sample[0]?.[c.index] || "—"),
+        td("Campo SKANO", sel, dup ? el("small", { class: "bad-text" }, "Asignado a más de una columna") : null,
+          c.alternatives.length && c.confidence !== "alta" ? el("small", {}, `Posibles: ${c.alternatives.map(fieldLabel).join(", ")}`) : null),
+        td("Estado", el("span", { class: `pill ${state === "alta" ? "on" : state === "media" ? "pending" : "off"}` }, f && state === "alta" && c.confidence === "media" ? "Confirmada" : CONFIDENCE_TEXT[state]),
+          pending ? el("button", { class: "link", type: "button", onclick: () => { IMP.confirmed[c.index] = true; refresh(); } }, "Confirmar") : null));
+    }));
+
+    // Campos obligatorios que faltan: el usuario puede declarar un valor fijo (no se inventa nada).
+    const missing = a.required_fields.filter((f) => !used[f]);
+    const missingNoConst = missing.filter((f) => !a.constant_fields.includes(f));
+    for (const k of Object.keys(IMP.constants)) if (used[k]) delete IMP.constants[k];
+    constBox.replaceChildren(missing.length ? el("article", { class: "card" },
+      el("h2", {}, "Campos obligatorios que tu archivo no trae"),
+      missingNoConst.length ? el("p", { class: "message" }, `Asigna una columna para: ${missingNoConst.map(fieldLabel).join(", ")}. Estos datos deben venir en el archivo.`) : null,
+      ...missing.filter((f) => a.constant_fields.includes(f)).map((f) => el("label", {}, `${fieldLabel(f)} — valor para todas las filas *`,
+        el("input", { value: IMP.constants[f] || "", maxlength: 200, placeholder: f === "court" ? "Ej.: 1° Juzgado Civil de Santiago" : f === "measure_type" ? "Ej.: Embargo" : "",
+          "aria-label": `Valor fijo para ${fieldLabel(f)}`, oninput: (e) => { IMP.constants[f] = e.target.value; refreshPreview(); refreshGo(); } }))),
+      el("p", { class: "form-note" }, "Este valor lo declaras tú y queda registrado en la importación como «valor fijo». Úsalo solo si es el mismo para todas las filas del archivo.")) : null);
+    refreshPreview();
+    refreshGo();
+  }
+
+  function mappedFields() {
+    return a.columns.filter((c) => IMP.assign[c.index]).map((c) => ({ field: IMP.assign[c.index], index: c.index }));
+  }
+
+  function refreshPreview() {
+    const cols = mappedFields();
+    const consts = Object.entries(IMP.constants).filter(([, v]) => String(v).trim());
+    preview.replaceChildren(el("table", {},
+      el("thead", {}, el("tr", {}, ...cols.map((c) => el("th", {}, fieldLabel(c.field))), ...consts.map(([f]) => el("th", {}, `${fieldLabel(f)} (fijo)`)))),
+      el("tbody", {}, ...(a.sample.length ? a.sample.map((row) => el("tr", {}, ...cols.map((c) => el("td", {}, row[c.index] || "—")), ...consts.map(([, val]) => el("td", {}, val))))
+        : [el("tr", {}, el("td", {}, "La hoja no tiene filas de datos."))]))));
+  }
+
+  function refreshGo() {
+    const used = assignedFields();
+    const problems = [];
+    if (Object.values(used).some((h) => h.length > 1)) problems.push("Hay un campo asignado a más de una columna.");
+    if (a.columns.some((c) => c.confidence === "media" && !IMP.confirmed[c.index])) problems.push("Confirma o cambia las columnas marcadas «Confirmar».");
+    const missing = a.required_fields.filter((f) => !used[f] && !String(IMP.constants[f] || "").trim());
+    if (missing.length) problems.push(`Faltan campos obligatorios: ${missing.map(fieldLabel).join(", ")}.`);
+    go.disabled = problems.length > 0 || a.data_rows === 0;
+    msg.textContent = problems.join(" ");
+  }
+
+  go.addEventListener("click", async () => {
+    go.disabled = true;
+    go.textContent = "VALIDANDO…";
+    try {
+      const mapping = Object.fromEntries(a.columns.map((c) => [c.header, IMP.assign[c.index] || ""]));
+      const constants = Object.fromEntries(Object.entries(IMP.constants).filter(([, val]) => String(val).trim()));
+      const r = await api("judicialValidateImport", {
+        file_name: IMP.file.name, content_base64: IMP.base64, sheet_name: IMP.sheet, header_row: IMP.headerRow, mapping,
+        constants: Object.keys(constants).length ? constants : undefined,
+      });
+      if (r.blocked) { msg.textContent = `Faltan columnas obligatorias: ${(r.columns.missing_required || []).map(fieldLabel).join(", ")}.`; return; }
+      IMP.job = r;
+      if (r.reused) toast("Este archivo ya había sido validado con la misma correspondencia: se muestra el resultado existente.");
+      await renderImportReview();
+    } catch (err) {
+      msg.textContent = errorText(err);
+    } finally {
+      go.textContent = "VALIDAR CON ESTA CORRESPONDENCIA";
+      if (document.body.contains(go)) refreshGo();
+    }
+  });
+
+  v.replaceChildren(
+    heading("CARGA MASIVA", IMP.file.name, el("button", { class: "link", type: "button", onclick: () => renderImportStart() }, "Elegir otro archivo")),
+    steps(2),
+    el("article", { class: "card" },
+      el("h2", {}, "Correspondencia de columnas"),
+      el("p", { class: "muted" }, `${C.formatNumber(a.data_rows)} fila(s) con datos. Revisa cómo se transformará tu planilla al formato SKANO. Lo reconocido se asignó solo; lo dudoso debes confirmarlo y lo que no reconocimos queda «Sin asignar».`),
+      el("div", { class: "form-grid" }, sheetSel, headerSel),
+      el("div", { class: "table-wrap" }, el("table", { class: "mapping-table" },
+        el("thead", {}, el("tr", {}, ...["Columna del Excel", "Ejemplo", "Campo SKANO", "Estado"].map((h) => el("th", {}, h)))), body))),
+    constBox,
+    el("article", { class: "card" }, el("h2", {}, "Vista previa en formato SKANO (primeras filas)"), preview),
+    el("div", { class: "btn-row" }, go), msg,
+  );
+  refresh();
 }
 
 function importHistory() {
@@ -728,7 +846,7 @@ async function renderImportReview() {
 
   v.replaceChildren(
     heading("CARGA MASIVA", job.file_name, el("button", { class: "link", type: "button", onclick: () => renderImportStart() }, "Cargar otro archivo")),
-    steps(2), chipsBox,
+    steps(3), chipsBox,
     el("div", { class: "card flush" }, el("div", { class: "table-wrap" }, el("table", {},
       el("thead", {}, el("tr", {}, ...["Fila", "Patente", "Medida / causa", "Problemas", ""].map((h) => el("th", {}, h)))), body)),
     el("div", { class: "table-footer" }, el("span", {}, "Corrige las filas o descarga el reporte, corrige el Excel y vuelve a cargarlo."), more)),
@@ -743,7 +861,7 @@ function renderImportDone(r) {
   const v = $("view-import");
   v.replaceChildren(
     heading("CARGA MASIVA", "Importación confirmada"),
-    steps(3),
+    steps(4),
     el("div", { class: "chips" },
       el("div", { class: "chip ok" }, el("strong", {}, C.formatNumber(r.created)), el("span", {}, "CREADOS (IMPORTADO)")),
       el("div", { class: "chip" }, el("strong", {}, C.formatNumber(r.skipped_existing)), el("span", {}, "YA EXISTÍAN")),

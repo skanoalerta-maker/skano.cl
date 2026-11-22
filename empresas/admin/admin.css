@@ -176,3 +176,8 @@ fieldset.terms{grid-template-columns:1fr 1fr;align-items:start}
 .temp-pw{font-size:1rem;letter-spacing:.08em;padding:4px 8px;border-radius:6px;background:rgba(242,184,75,.12);color:#ffd88a;user-select:all}
 .member-row{display:flex!important;justify-content:space-between;align-items:center;gap:10px}
 .member-row>span{display:flex;flex-direction:column}
+/* Importador: correspondencia de columnas */
+.mapping-table select{min-width:210px}
+.mapping-table small{display:block;margin-top:4px;color:var(--muted);font-size:.64rem}
+.mapping-table tr.needs-confirm td{background:rgba(242,184,75,.06)}
+.bad-text{color:#ff8291!important}
