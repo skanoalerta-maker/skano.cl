@@ -149,3 +149,22 @@ dialog::backdrop{background:rgba(0,7,17,.82);backdrop-filter:blur(6px)}
 .mfa-qr{display:flex;justify-content:center;margin:8px 0 14px}
 .mfa-qr svg{width:200px;height:200px;max-width:100%;border-radius:8px;background:#fff;padding:6px}
 .mfa-secret .link{padding:0;margin:0 0 10px}
+
+/* Estado del sistema y contrato firmable */
+.status-pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;align-items:center}
+.env-pill.prod{border-color:rgba(86,226,164,.45);color:var(--success)!important}
+.status-pill{padding:6px 10px;border-radius:30px;font-size:.6rem!important;font-weight:800;letter-spacing:.1em;border:1px solid var(--line)}
+.status-pill.on{color:var(--success)!important;border-color:rgba(86,226,164,.4)}
+.status-pill.pending{color:var(--warning)!important;border-color:rgba(242,184,75,.45)}
+.status-pill.bad{color:#ff8291!important;border-color:rgba(228,81,100,.45)}
+.status-pill.off{color:#a6b4c5!important}
+fieldset.terms{grid-template-columns:1fr 1fr;align-items:start}
+.doc-box{margin-top:16px;padding:14px;border:1px solid var(--line);border-radius:12px}
+.doc-box h3{margin:0 0 10px;font-size:.78rem;letter-spacing:.12em}
+.file-list{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
+.file-list li{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:.74rem}
+.file-list small{display:block;color:var(--muted);font-size:.64rem;word-break:break-all}
+.legal-note{margin:10px 0 0;padding:10px 12px;border-left:3px solid var(--warning);background:rgba(242,184,75,.06);font-size:.7rem;color:#f6d79b}
+.check-line{display:flex;gap:8px;align-items:flex-start;font-size:.74rem}
+@media (max-width:760px){.status-pills{justify-content:flex-start}.topbar{flex-wrap:wrap;padding:12px 16px}fieldset.terms{grid-template-columns:1fr}}
+.doc-box>h3:not(:first-child){margin-top:18px}.doc-box>.btn-row{margin-top:12px}

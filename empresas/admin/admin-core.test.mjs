@@ -85,3 +85,28 @@ test("enlace de invitación: se adapta al dominio del mismo entorno (antes del D
   assert.equal(C.localizeInviteUrl("", "https://skano-judicial-prd.web.app", hosts), "");
   assert.equal(C.localizeInviteUrl("no-es-url", "https://skano-judicial-prd.web.app", hosts), "no-es-url");
 });
+
+test("contrato firmable: términos, estados y entorno", () => {
+  const ok = C.buildTermsPayload({ rep_name: "Persona Ficticia", rep_rut: "12.345.678-5", rep_email: "Rep@Ejemplo.cl", plan_name: "Plan Prueba", price_amount: "150.000", price_currency: "CLP", price_period: "MENSUAL" }, { requireAll: true });
+  assert.deepEqual(ok.errors, []);
+  assert.equal(ok.terms.price.amount, 150000);
+  assert.equal(ok.terms.representative.email, "rep@ejemplo.cl");
+  const uf = C.buildTermsPayload({ price_amount: "12,5", price_currency: "UF" });
+  assert.equal(uf.terms.price.amount, 12.5);
+  const missing = C.buildTermsPayload({}, { requireAll: true });
+  assert.ok(missing.errors.length >= 4);
+  assert.equal("amount" in C.buildTermsPayload({}).terms.price, false);
+  assert.ok(C.buildTermsPayload({ rep_rut: "12.345.678-9" }).errors.some((e) => /RUT/.test(e)));
+  const back = C.termsToFormValues(ok.terms);
+  assert.equal(back.rep_name, "Persona Ficticia");
+  assert.equal(C.environmentLabel("production"), "PRODUCCIÓN");
+  assert.equal(C.environmentLabel("emulator"), "PRUEBAS · EMULADORES");
+  assert.equal(C.commercialStatus("PENDIENTE_FIRMA", "PENDING").label, "Habilitación pendiente");
+  assert.equal(C.commercialStatus("VIGENTE", "ACTIVE").tone, "on");
+  assert.equal(C.commercialStatus(undefined, "ACTIVE").tone, "on"); // contratos anteriores al flujo
+  assert.equal(C.commercialStatus("TERMINADO", "CANCELLED").tone, "bad");
+  assert.equal(C.docPillClass("VIGENTE"), "on");
+  assert.equal(C.formatMoney(1500000, "CLP"), "$1.500.000 CLP");
+  assert.equal(C.contractEventLabel("APPROVED"), "Aprobado por SKANO (vigente)");
+  assert.equal(C.CONTRACT_STATE_LABEL.PENDING, "Pendiente de habilitación");
+});

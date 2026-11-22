@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="admin.css?v=20261122-1">
+  <link rel="stylesheet" href="admin.css?v=20261122-2">
 </head>
 <body>
   <div class="ambient" aria-hidden="true"></div>
@@ -73,7 +73,7 @@
           <p id="topTitle">RESUMEN DE LA PLATAFORMA</p>
           <span>Datos agregados · sin acceso a expedientes</span>
         </div>
-        <span class="env-pill">PRUEBAS</span>
+        <div class="status-pills" aria-label="Estado del sistema"><span id="envPill" class="env-pill" title="Entorno técnico">VERIFICANDO ENTORNO</span><span class="status-pill off" title="Alertas por detección: deshabilitadas hasta resolver la base legal">ALERTAS JUDICIALES: DESACTIVADAS</span></div>
       </header>
 
       <div id="legalBanner" class="banner">
@@ -180,10 +180,55 @@
         <label class="check"><input type="checkbox" name="theft_enabled"> Encargos (registros empresariales)</label>
         <label>Cupo encargos<input name="theft_quota" inputmode="numeric" value="0"></label>
       </fieldset>
+      <fieldset class="modules terms">
+        <legend>Datos del contrato (aparecen en el PDF)</legend>
+        <label class="span-2">Domicilio de la empresa<input name="company_address" maxlength="200"></label>
+        <label>Representante legal*<input name="rep_name" maxlength="120"></label>
+        <label>RUT representante*<input name="rep_rut" placeholder="12.345.678-5"></label>
+        <label>Cargo<input name="rep_position" maxlength="80"></label>
+        <label>Correo representante*<input name="rep_email" type="email" maxlength="160"></label>
+        <label>Plan contratado*<input name="plan_name" maxlength="80"></label>
+        <label>Precio*<input name="price_amount" inputmode="decimal"></label>
+        <label>Moneda<select name="price_currency"><option value="CLP">CLP</option><option value="UF">UF</option></select></label>
+        <label>Periodicidad<select name="price_period"><option value="MENSUAL">Mensual</option><option value="ANUAL">Anual</option><option value="UNICO">Pago único</option></select></label>
+        <label>Impuestos<input name="price_taxes" maxlength="80" placeholder="Ej.: + IVA"></label>
+        <label class="span-2">Forma de pago<textarea name="payment_terms" maxlength="600"></textarea></label>
+        <label class="span-2">Condiciones particulares<textarea name="conditions" maxlength="2000"></textarea></label>
+        <p class="form-note span-2">Los campos con * son obligatorios para emitir el PDF. La plantilla legal está pendiente de revisión jurídica.</p>
+      </fieldset>
       <p class="form-note">Las alertas por detección y la evidencia compartida quedan deshabilitadas (base legal pendiente).</p>
+      <p class="form-note">El contrato se crea como BORRADOR: no habilita módulos hasta emitir el PDF, recibir la firma y aprobarlo.</p>
       <label>Observaciones administrativas<textarea name="notes" maxlength="1000"></textarea></label>
       <p class="message" data-message role="alert"></p>
-      <div class="modal-actions"><button class="secondary" type="button" data-close>CANCELAR</button><button class="primary" type="submit">CREAR CONTRATO</button></div>
+      <div class="modal-actions"><button class="secondary" type="button" data-close>CANCELAR</button><button class="primary" type="submit">CREAR BORRADOR</button></div>
+    </form>
+  </dialog>
+
+  <!-- Diálogo: términos del contrato -->
+  <dialog id="termsDialog">
+    <form id="termsForm" class="modal" method="dialog" novalidate>
+      <button class="close" type="button" data-close aria-label="Cerrar">×</button>
+      <p class="eyebrow">CONTRATO</p><h2>Editar datos del contrato</h2>
+      <p class="muted">Guardar vuelve el contrato a BORRADOR: el PDF emitido anteriormente deja de estar disponible y deberás emitir uno nuevo.</p>
+      <input type="hidden" name="contract_id">
+      <fieldset class="modules terms">
+        <legend>Datos del contrato (aparecen en el PDF)</legend>
+        <label class="span-2">Domicilio de la empresa<input name="company_address" maxlength="200"></label>
+        <label>Representante legal*<input name="rep_name" maxlength="120"></label>
+        <label>RUT representante*<input name="rep_rut" placeholder="12.345.678-5"></label>
+        <label>Cargo<input name="rep_position" maxlength="80"></label>
+        <label>Correo representante*<input name="rep_email" type="email" maxlength="160"></label>
+        <label>Plan contratado*<input name="plan_name" maxlength="80"></label>
+        <label>Precio*<input name="price_amount" inputmode="decimal"></label>
+        <label>Moneda<select name="price_currency"><option value="CLP">CLP</option><option value="UF">UF</option></select></label>
+        <label>Periodicidad<select name="price_period"><option value="MENSUAL">Mensual</option><option value="ANUAL">Anual</option><option value="UNICO">Pago único</option></select></label>
+        <label>Impuestos<input name="price_taxes" maxlength="80" placeholder="Ej.: + IVA"></label>
+        <label class="span-2">Forma de pago<textarea name="payment_terms" maxlength="600"></textarea></label>
+        <label class="span-2">Condiciones particulares<textarea name="conditions" maxlength="2000"></textarea></label>
+        <p class="form-note span-2">Los campos con * son obligatorios para emitir el PDF. La plantilla legal está pendiente de revisión jurídica.</p>
+      </fieldset>
+      <p class="message" data-message role="alert"></p>
+      <div class="modal-actions"><button class="secondary" type="button" data-close>CANCELAR</button><button class="primary" type="submit">GUARDAR BORRADOR</button></div>
     </form>
   </dialog>
 
@@ -202,6 +247,6 @@
 
   <div id="toast" class="toast" role="status" hidden></div>
 
-  <script type="module" src="admin.js?v=20261121-2"></script>
+  <script type="module" src="admin.js?v=20261122-3"></script>
 </body>
 </html>

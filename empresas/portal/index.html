@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../admin/admin.css?v=20261122-1">
+  <link rel="stylesheet" href="../admin/admin.css?v=20261122-2">
   <link rel="stylesheet" href="portal.css?v=20261121-2">
 </head>
 <body>
@@ -94,7 +94,7 @@
       <header class="topbar">
         <button id="menuBtn" class="menu" type="button" aria-label="Abrir menú">☰</button>
         <div><p id="topTitle">INICIO</p><span id="topSubtitle">Sistema B · vehículos con embargo y medidas judiciales</span></div>
-        <span class="env-pill">PRUEBAS</span>
+        <div class="status-pills" aria-label="Estado del sistema"><span id="envPill" class="env-pill" title="Entorno técnico">VERIFICANDO ENTORNO</span><span id="commercialPill" class="status-pill pending" title="Estado comercial de la empresa" hidden>HABILITACIÓN PENDIENTE</span><span class="status-pill off" title="Alertas por detección: deshabilitadas hasta resolver la base legal">ALERTAS JUDICIALES: DESACTIVADAS</span></div>
       </header>
       <div id="contractBanner" class="banner" hidden></div>
 
@@ -142,6 +142,6 @@
 
   <div id="toast" class="toast" role="status" hidden></div>
 
-  <script type="module" src="portal.js?v=20261121-2"></script>
+  <script type="module" src="portal.js?v=20261122-3"></script>
 </body>
 </html>

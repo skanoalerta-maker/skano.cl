@@ -9,7 +9,7 @@
 // - Sin innerHTML con datos: todo el contenido va por textContent.
 // =====================================================================
 
-import * as C from "./portal-core.mjs?v=20261121-1";
+import * as C from "./portal-core.mjs?v=20261122-2";
 import { bootFirebase, signInWithSecondFactor, handleMfaRequired, signInErrorText } from "../judicial-firebase.mjs?v=20261122-2";
 
 const $ = (id) => document.getElementById(id);
@@ -38,6 +38,11 @@ if (!FBX) {
 const { auth, functions, A, F } = FBX;
 if (FBX.env.stage === "emulator" && $("envTag")) {
   $("envTag").lastChild.textContent = " ENTORNO DE PRUEBAS · EMULADORES LOCALES";
+}
+// Indicador de entorno técnico: derivado de la configuración, nunca fijo.
+if ($("envPill")) {
+  $("envPill").textContent = C.environmentLabel(FBX.env.stage);
+  $("envPill").classList.toggle("prod", FBX.env.stage !== "emulator");
 }
 // Aviso para la pantalla de inicio que debe sobrevivir al cierre de sesión.
 let loginNotice = "";
@@ -203,9 +208,26 @@ function heading(eyebrow, title, ...actions) {
   return el("div", { class: "section-heading" }, el("div", {}, el("p", { class: "eyebrow" }, eyebrow), el("h1", {}, title)), el("div", { class: "actions" }, ...actions));
 }
 
+function commercialPill(contract) {
+  const p = $("commercialPill");
+  if (!p) return;
+  const st = contract ? C.commercialStatus(contract.document_status, contract.state) : { tone: "pending", label: "Habilitación pendiente" };
+  p.textContent = st.label.toUpperCase();
+  p.className = `status-pill ${st.tone}`;
+  p.hidden = false;
+}
+
 function contractBanner(contract) {
+  commercialPill(contract);
   const b = $("contractBanner");
   if (!contract) { b.textContent = "La empresa no tiene contrato vigente: solo lectura."; b.hidden = false; return; }
+  const ds = contract.document_status;
+  if (ds && ds !== "VIGENTE" && contract.state !== "EXPIRED") {
+    const why = { BORRADOR: "SKANO está preparando el contrato", PENDIENTE_FIRMA: "el contrato está disponible para firma del representante legal", PENDIENTE_REVISION: "SKANO está revisando el contrato firmado", RECHAZADO: "el contrato firmado fue rechazado; revisa el motivo en «Contrato y cupos»", TERMINADO: "el contrato fue terminado" }[ds] || "el contrato no está vigente";
+    b.textContent = `Habilitación pendiente: ${why}. Altas, importaciones y publicaciones bloqueadas hasta que SKANO apruebe el contrato.`;
+    b.hidden = false;
+    return;
+  }
   if (contract.state !== "ACTIVE") { b.textContent = `Contrato ${C.CONTRACT_STATE_LABEL[contract.state].toLowerCase()}: altas, importaciones y publicaciones bloqueadas.`; b.hidden = false; return; }
   if (contract.days_remaining <= 30) { b.textContent = `El contrato vence en ${contract.days_remaining} día(s) (${C.formatDate(contract.ends_at_ms)}).`; b.hidden = false; return; }
   b.hidden = true;
@@ -840,11 +862,126 @@ LOADERS.contract = async () => {
             bar(k.modules[m].used, k.modules[m].quota),
             el("small", {}, !k.modules[m].enabled ? "Módulo no contratado o suspendido" : k.modules[m].over_quota ? "Uso sobre el cupo: nuevas aprobaciones bloqueadas" : `${C.formatNumber(k.modules[m].available)} disponibles`))),
             el("p", { class: "form-note" }, "Consumen cupo los registros aprobados, publicados y suspendidos. Para ampliar el cupo o renovar, contacta a SKANO."))),
+      k ? contractDocCard() : null,
     );
   } catch (err) {
     v.replaceChildren(el("p", { class: "message" }, errorText(err)));
   }
 };
+
+// ------------------------------------------------------------ documento del contrato
+function b64ToBytes(b64) {
+  const bin = atob(b64);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i += 1) out[i] = bin.charCodeAt(i);
+  return out;
+}
+async function sha256Hex(bytes) {
+  const d = await crypto.subtle.digest("SHA-256", bytes);
+  return [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+async function downloadContractFile(fileId) {
+  const r = await api("companyDownloadContractFile", { file_id: fileId });
+  const bytes = b64ToBytes(r.content_base64);
+  if ((await sha256Hex(bytes)) !== r.sha256) throw new Error("La huella SHA-256 del archivo no coincide. No se guardó el archivo.");
+  const url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
+  const a = el("a", { href: url, download: r.file_name });
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 30000);
+  toast(`Descargado ${r.file_name} · SHA-256 verificado.`);
+}
+
+const MAX_SIGNED_PDF = 6 * 1024 * 1024;
+
+function contractDocCard() {
+  const card = el("article", { class: "card" }, el("p", { class: "muted" }, "Cargando documento del contrato…"));
+  api("companyGetContract").then((d) => card.replaceWith(renderContractDoc(d))).catch((err) => card.replaceChildren(el("p", { class: "message" }, errorText(err))));
+  return card;
+}
+
+function renderContractDoc(d) {
+  const k = d.contract;
+  const ds = k.document_status;
+  const head = el("div", { class: "card-head" }, el("h2", {}, `Documento del contrato ${k.code || ""}`), el("span", { class: `pill ${C.docPillClass(ds)}` }, C.DOC_STATUS_LABEL[ds] || ds));
+  if (ds === "BORRADOR" && !k.document_version) {
+    return el("article", { class: "card" }, head, el("p", { class: "muted" }, "SKANO está preparando el contrato. Cuando esté emitido podrás descargarlo aquí para firmarlo."));
+  }
+  const canDownload = C.can(S.perms, "contract.sign");
+  const generated = d.files.filter((f) => f.kind === "GENERADO");
+  const signed = d.files.filter((f) => f.kind === "FIRMADO");
+  const current = generated.find((f) => f.status === "ACTIVE");
+  const approved = signed.find((f) => f.status === "APPROVED");
+  const t = k.terms || {};
+  const r = t.representative || {};
+  const p = t.price || {};
+  const dlBtn = (f, label, cls = "secondary") => el("button", { class: `${cls} small`, type: "button", onclick: async (ev) => {
+    const b = ev.currentTarget;
+    b.disabled = true;
+    try { await downloadContractFile(f.file_id); } catch (err) { toast(errorText(err), true); } finally { b.disabled = false; }
+  } }, label);
+
+  const steps = [];
+  if (ds === "PENDIENTE_FIRMA") steps.push("1. Descarga el contrato emitido. 2. Revísalo, fírmalo el representante legal y guárdalo como PDF. 3. Cárgalo aquí. SKANO lo revisará antes de habilitar el servicio.");
+  if (ds === "PENDIENTE_REVISION") steps.push("Recibimos el contrato firmado. SKANO lo está revisando; el servicio se habilita solo cuando SKANO lo aprueba.");
+  if (ds === "VIGENTE") steps.push("Contrato aprobado por SKANO y vigente.");
+
+  let upload = null;
+  if (d.can_sign) {
+    const input = el("input", { type: "file", accept: "application/pdf,.pdf", "aria-label": "PDF firmado" });
+    const msg = el("p", { class: "message", role: "alert" });
+    const btn = el("button", { class: "primary small", type: "button", onclick: async () => {
+      msg.textContent = "";
+      const file = input.files?.[0];
+      if (!file) { msg.textContent = "Selecciona el PDF firmado."; return; }
+      if (!/\.pdf$/i.test(file.name) && file.type !== "application/pdf") { msg.textContent = "Solo se acepta un archivo PDF."; return; }
+      if (file.size > MAX_SIGNED_PDF) { msg.textContent = "El archivo supera 6 MB."; return; }
+      btn.disabled = true;
+      try {
+        const buf = await file.arrayBuffer();
+        const r2 = await api("companyUploadSignedContract", { contract_id: k.contract_id, file_name: file.name, content_base64: C.arrayBufferToBase64(buf) });
+        toast(`Contrato firmado cargado · SHA-256 ${C.shortHash(r2.sha256)}. Queda pendiente de revisión SKANO.`);
+        LOADERS.contract();
+        api("companyGetOverview").then((ov) => { S.company = ov; contractBanner(ov.contract); }).catch(() => {});
+      } catch (err) {
+        msg.textContent = errorText(err);
+      } finally {
+        btn.disabled = false;
+      }
+    } }, "SUBIR CONTRATO FIRMADO");
+    upload = el("div", { class: "doc-box" }, el("h3", {}, "CARGAR CONTRATO FIRMADO"),
+      el("p", { class: "muted" }, "PDF de hasta 6 MB. La carga no habilita el servicio: SKANO debe revisarlo y aprobarlo."),
+      el("div", { class: "btn-row" }, input, btn), msg);
+  }
+
+  return el("article", { class: "card" }, head,
+    ...steps.map((x) => el("p", { class: "form-note" }, x)),
+    ds === "RECHAZADO" && k.review?.reason ? el("p", { class: "legal-note" }, `SKANO rechazó el contrato firmado: ${k.review.reason}. Corrige y vuelve a cargarlo.`) : null,
+    el("dl", { class: "facts" },
+      el("div", {}, el("dt", {}, "VERSIÓN"), el("dd", {}, k.document_version ? `v${k.document_version}` : "—")),
+      el("div", {}, el("dt", {}, "REPRESENTANTE"), el("dd", {}, [r.name, r.rut ? C.formatRut(r.rut) : ""].filter(Boolean).join(" · ") || "—")),
+      el("div", {}, el("dt", {}, "PLAN"), el("dd", {}, t.plan_name || "—")),
+      el("div", {}, el("dt", {}, "PRECIO"), el("dd", {}, p.amount == null ? "—" : `${C.formatMoney(p.amount, p.currency)} ${C.PERIOD_LABEL[p.period] || ""}${p.taxes ? ` · ${p.taxes}` : ""}`)),
+      el("div", {}, el("dt", {}, "APROBADO"), el("dd", {}, C.formatDateTime(k.approved_at_ms)))),
+    k.legal_reviewed ? null : el("p", { class: "legal-note" }, "Modelo de contrato en revisión jurídica por SKANO."),
+    canDownload ? el("div", { class: "btn-row" },
+      current ? dlBtn(current, "DESCARGAR CONTRATO", "primary") : null,
+      approved ? dlBtn(approved, "DESCARGAR COPIA FIRMADA APROBADA") : null) : el("p", { class: "muted" }, "Solo el administrador de la empresa puede descargar y firmar el contrato."),
+    upload,
+    canDownload && d.files.length ? el("div", { class: "doc-box" }, el("h3", {}, "ARCHIVOS"), el("ul", { class: "file-list" }, ...d.files.slice().reverse().map((f) => el("li", {},
+      el("span", {}, el("b", {}, `${C.FILE_KIND_LABEL[f.kind] || f.kind} · v${f.version}`),
+        el("small", {}, `${f.file_name} · ${C.formatBytes(f.size)} · ${C.formatDateTime(f.created_at_ms)}`),
+        el("small", { title: f.sha256 }, `SHA-256 ${C.shortHash(f.sha256)}`)),
+      el("span", { class: "btn-row" }, el("span", { class: `pill ${f.status === "APPROVED" || f.status === "ACTIVE" ? "on" : f.status === "REJECTED" ? "bad" : "pending"}` }, C.FILE_STATUS_LABEL[f.status] || f.status),
+        f.kind === "GENERADO" && f.status !== "ACTIVE" ? null : dlBtn(f, "DESCARGAR")))))) : null,
+    el("div", { class: "doc-box" }, el("h3", {}, "HISTORIAL DEL CONTRATO"), el("ul", { class: "timeline" }, ...(d.events.length
+      ? d.events.slice().sort((a, b) => b.at_ms - a.at_ms).map((e) => el("li", {}, el("b", {}, C.contractEventLabel(e.type)),
+        el("span", {}, [C.formatDateTime(e.at_ms), C.ROLE_LABEL[e.actor_role] || e.actor_role, e.file ? `${C.FILE_KIND_LABEL[e.file.kind] || e.file.kind} v${e.file.version}` : "", e.reason].filter(Boolean).join(" · "))))
+      : [el("li", {}, el("span", {}, "Sin eventos."))]))),
+  );
+}
 
 // ------------------------------------------------------------ auditoría
 LOADERS.audit = async () => {

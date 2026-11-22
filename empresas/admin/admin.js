@@ -5,7 +5,7 @@
 // Nunca se usa innerHTML con datos: todo el contenido va por textContent.
 // =====================================================================
 
-import * as C from "./admin-core.mjs?v=20261121-1";
+import * as C from "./admin-core.mjs?v=20261122-2";
 import { bootFirebase, signInWithSecondFactor, handleMfaRequired, signInErrorText } from "../judicial-firebase.mjs?v=20261122-2";
 
 const $ = (id) => document.getElementById(id);
@@ -27,6 +27,11 @@ if (!FBX) {
 const { auth, functions } = FBX;
 if (FBX.env.stage === "emulator" && $("envTag")) {
   $("envTag").lastChild.textContent = " ENTORNO DE PRUEBAS · EMULADORES LOCALES";
+}
+// Indicador de entorno técnico: se deriva de la configuración real, nunca es fijo.
+if ($("envPill")) {
+  $("envPill").textContent = C.environmentLabel(FBX.env.stage);
+  $("envPill").classList.toggle("prod", FBX.env.stage !== "emulator");
 }
 const { onAuthStateChanged, sendPasswordResetEmail, sendEmailVerification, signOut } = FBX.A;
 const { httpsCallable } = FBX.F;
@@ -100,7 +105,7 @@ function quotaBlock(label, m) {
 function bindDialogClose(dialog) {
   dialog.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", () => dialog.close()));
 }
-["companyDialog", "contractDialog", "actionDialog"].forEach((id) => bindDialogClose($(id)));
+["companyDialog", "contractDialog", "termsDialog", "actionDialog"].forEach((id) => bindDialogClose($(id)));
 
 function formValues(form) {
   const values = {};
@@ -126,7 +131,8 @@ async function submitWith(form, fn) {
 }
 
 let actionHandler = null;
-function openAction({ eyebrow = "CONFIRMAR", title, text = "", fields = [], submit = "CONFIRMAR", danger = false, onSubmit }) {
+let actionReasonMode = "required";
+function openAction({ eyebrow = "CONFIRMAR", title, text = "", fields = [], submit = "CONFIRMAR", danger = false, reason = "required", reasonLabel = "Motivo*", onSubmit }) {
   const d = $("actionDialog");
   const form = $("actionForm");
   form.reset();
@@ -140,6 +146,9 @@ function openAction({ eyebrow = "CONFIRMAR", title, text = "", fields = [], subm
   const box = form.querySelector("[data-fields]");
   box.replaceChildren(...fields.map((f) => {
     let input;
+    if (f.type === "checkbox") {
+      return el("label", { class: "check-line span-2" }, el("input", { type: "checkbox", name: f.name }), f.label);
+    }
     if (f.type === "select") {
       input = el("select", { name: f.name }, ...f.options.map(([v, l]) => el("option", { value: v, selected: v === f.value }, l)));
     } else {
@@ -148,6 +157,10 @@ function openAction({ eyebrow = "CONFIRMAR", title, text = "", fields = [], subm
     return el("label", {}, f.label, input);
   }));
   actionHandler = onSubmit;
+  actionReasonMode = reason;
+  const reasonBox = form.elements.reason.closest("label");
+  reasonBox.hidden = reason === "none";
+  reasonBox.firstChild.textContent = reason === "optional" ? reasonLabel.replace(/\*$/, " (opcional)") : reasonLabel;
   d.showModal();
 }
 
@@ -156,7 +169,8 @@ $("actionForm").addEventListener("submit", (ev) => {
   const form = ev.currentTarget;
   submitWith(form, async (msg) => {
     const values = formValues(form);
-    if (String(values.reason || "").trim().length < 5) { msg.textContent = "Debes indicar el motivo (mínimo 5 caracteres)."; return; }
+    if (actionReasonMode === "required" && String(values.reason || "").trim().length < 5) { msg.textContent = "Debes indicar el motivo (mínimo 5 caracteres)."; return; }
+    if (actionReasonMode === "none") delete values.reason;
     await actionHandler(values);
     $("actionDialog").close();
   });
@@ -193,6 +207,7 @@ async function loadOverview() {
       kpi(m.companies.disabled, "DESHABILITADAS", "bad"),
       kpi(m.contracts.active, "CONTRATOS VIGENTES", "ok"),
       kpi(m.contracts.expiring_30_days, "VENCEN EN 30 DÍAS", m.contracts.expiring_30_days ? "warn" : ""),
+      kpi(m.contracts.pending_review || 0, "CONTRATOS POR REVISAR", m.contracts.pending_review ? "warn" : ""),
       kpi(m.members_active, "USUARIOS ACTIVOS"),
     );
     $("quotaSummary").replaceChildren(
@@ -202,8 +217,11 @@ async function loadOverview() {
     $("contractSummary").replaceChildren(el("dl", { class: "facts" },
       el("div", {}, el("dt", {}, "VIGENTES"), el("dd", {}, C.formatNumber(m.contracts.active))),
       el("div", {}, el("dt", {}, "POR VENCER (30 DÍAS)"), el("dd", {}, C.formatNumber(m.contracts.expiring_30_days))),
+      el("div", {}, el("dt", {}, "FIRMADOS POR REVISAR"), el("dd", {}, C.formatNumber(m.contracts.pending_review || 0))),
       el("div", {}, el("dt", {}, "ACTUALIZADO"), el("dd", {}, C.formatDateTime(m.generated_at_ms))),
-    ));
+    ), (m.pending_review || []).length ? el("ul", { class: "file-list" }, ...m.pending_review.map((p) => el("li", {},
+      el("span", {}, el("b", {}, p.code || p.contract_id), el("small", {}, `Firmado cargado ${C.formatDateTime(p.signed_uploaded_at_ms)}`)),
+      el("button", { class: "primary small", type: "button", onclick: () => openCompany(p.company_id) }, "REVISAR")))) : null);
   } catch (err) {
     toast(C.errorMessage(err), true);
   }
@@ -351,9 +369,11 @@ function contractCard(detail) {
         ),
       ));
     }
+    const docFlow = !!k.document_status;
+    const canRenew = !docFlow || k.document_status === "VIGENTE";
     if (k.state !== "CANCELLED") {
       card.append(el("div", { class: "btn-row" },
-        el("button", { class: "primary small", type: "button", onclick: () => openAction({
+        !canRenew ? null : el("button", { class: "primary small", type: "button", onclick: () => openAction({
           eyebrow: "RENOVACIÓN", title: "Renovar vigencia", submit: "RENOVAR",
           text: k.state === "EXPIRED" ? "El contrato está vencido: el nuevo período comienza hoy y los registros vencidos deberán reverificarse." : "La vigencia se extiende desde la fecha de término actual.",
           fields: [{ name: "months", label: "Extensión", type: "select", value: "12", options: [["1", "1 mes"], ["2", "2 meses"], ["3", "3 meses"], ["6", "6 meses"], ["12", "12 meses"], ["24", "24 meses"]] }],
@@ -376,6 +396,7 @@ function contractCard(detail) {
       ));
     }
   }
+  if (k?.document_status) card.append(contractDocBox(k));
   if (canCreate && c.status !== "DISABLED") {
     card.append(el("div", { class: "btn-row" }, el("button", { class: "primary small", type: "button", onclick: () => openContractDialog(c.company_id) }, "NUEVO CONTRATO")));
   }
@@ -476,11 +497,166 @@ $("contractForm").addEventListener("submit", (ev) => {
   ev.preventDefault();
   const form = ev.currentTarget;
   submitWith(form, async (msg) => {
-    const { errors, payload } = C.buildContractPayload(formValues(form));
+    const values = formValues(form);
+    const { errors, payload } = C.buildContractPayload(values);
+    const t = C.buildTermsPayload(values);
+    errors.push(...t.errors);
     if (errors.length) { msg.textContent = errors.join("\n"); return; }
+    payload.terms = t.terms;
     await api("adminCreateContract", payload);
     $("contractDialog").close();
-    toast("Contrato creado.");
+    toast("Borrador de contrato creado. Emite el PDF cuando los datos estén completos.");
+    await reload();
+  });
+});
+
+// ------------------------------------------------------------ documento del contrato
+
+function b64ToBytes(b64) {
+  const bin = atob(b64);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i += 1) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
+async function sha256Hex(bytes) {
+  const d = await crypto.subtle.digest("SHA-256", bytes);
+  return [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+/** Descarga un PDF entregado por la función y verifica su huella SHA-256 en el navegador. */
+async function downloadContractFile(fnName, fileId) {
+  const r = await api(fnName, { file_id: fileId });
+  const bytes = b64ToBytes(r.content_base64);
+  const hash = await sha256Hex(bytes);
+  if (hash !== r.sha256) throw new Error("La huella SHA-256 del archivo descargado no coincide. No se guardó el archivo.");
+  const url = URL.createObjectURL(new Blob([bytes], { type: "application/pdf" }));
+  const a = el("a", { href: url, download: r.file_name });
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 30000);
+  toast(`Descargado ${r.file_name} · SHA-256 verificado.`);
+}
+
+function fileItem(f, fnName) {
+  return el("li", {},
+    el("span", {},
+      el("b", {}, `${C.FILE_KIND_LABEL[f.kind] || f.kind} · v${f.version}`),
+      el("small", {}, `${f.file_name} · ${C.formatBytes(f.size)} · ${C.formatDateTime(f.created_at_ms)}`),
+      el("small", { title: f.sha256 }, `SHA-256 ${C.shortHash(f.sha256)}`)),
+    el("span", { class: "btn-row" },
+      pill(f.status === "APPROVED" || f.status === "ACTIVE" ? "on" : f.status === "REJECTED" ? "EXPIRED" : "pending", C.FILE_STATUS_LABEL[f.status] || f.status),
+      el("button", { class: "secondary small", type: "button", onclick: async (ev) => {
+        const b = ev.currentTarget;
+        b.disabled = true;
+        try { await downloadContractFile(fnName, f.file_id); } catch (err) { toast(C.errorMessage(err), true); } finally { b.disabled = false; }
+      } }, "DESCARGAR")));
+}
+
+function termsFacts(t) {
+  if (!t) return el("p", { class: "muted" }, "Sin datos del contrato.");
+  const r = t.representative || {};
+  const p = t.price || {};
+  return el("dl", { class: "facts" },
+    el("div", {}, el("dt", {}, "REPRESENTANTE"), el("dd", {}, [r.name, r.rut ? C.formatRut(r.rut) : "", r.position].filter(Boolean).join(" · ") || "—")),
+    el("div", {}, el("dt", {}, "CORREO"), el("dd", {}, r.email || "—")),
+    el("div", {}, el("dt", {}, "PLAN"), el("dd", {}, t.plan_name || "—")),
+    el("div", {}, el("dt", {}, "PRECIO"), el("dd", {}, p.amount == null ? "—" : `${C.formatMoney(p.amount, p.currency)} ${C.PERIOD_LABEL[p.period] || ""}${p.taxes ? ` · ${p.taxes}` : ""}`)),
+  );
+}
+
+function contractDocBox(k) {
+  const box = el("div", { class: "doc-box" }, el("p", { class: "muted" }, "Cargando documento del contrato…"));
+  api("adminContractAction", { action: "GET", contract_id: k.id })
+    .then((d) => box.replaceWith(renderDocBox(d)))
+    .catch((err) => box.replaceChildren(el("p", { class: "message" }, C.errorMessage(err))));
+  return box;
+}
+
+function renderDocBox(d) {
+  const k = d.contract;
+  const ds = k.document_status;
+  const id = k.contract_id;
+  const act = (data, okText) => async (v) => {
+    await api("adminContractAction", { contract_id: id, ...data(v) });
+    toast(okText);
+    await reload();
+  };
+  const buttons = [];
+  if (["BORRADOR", "PENDIENTE_FIRMA", "RECHAZADO"].includes(ds)) {
+    buttons.push(el("button", { class: "secondary small", type: "button", onclick: () => openTermsDialog(id, k.terms) }, "EDITAR DATOS"));
+    buttons.push(el("button", { class: "primary small", type: "button", onclick: () => openAction({
+      eyebrow: "EMITIR PDF", title: `Emitir contrato ${k.code || ""} v${(k.document_version || 0) + 1}`, submit: "EMITIR PDF", reason: "none",
+      text: "Se genera un PDF nuevo con los datos actuales y queda disponible para que el representante lo descargue y firme. Las versiones anteriores quedan reemplazadas. La plantilla está pendiente de revisión jurídica.",
+      onSubmit: act(() => ({ action: "ISSUE" }), "PDF emitido: pendiente de firma de la empresa."),
+    }) }, ds === "BORRADOR" && !k.document_version ? "EMITIR PDF" : "EMITIR NUEVA VERSIÓN"));
+  }
+  if (ds === "PENDIENTE_REVISION") {
+    buttons.push(el("button", { class: "primary small", type: "button", onclick: () => openAction({
+      eyebrow: "REVISIÓN", title: "Aprobar contrato firmado", submit: "APROBAR · DEJAR VIGENTE", reason: "optional", reasonLabel: "Observación*",
+      text: "Al aprobar, el contrato queda VIGENTE y se habilitan los módulos y cupos contratados. Descarga y revisa el PDF firmado antes de aprobar.",
+      fields: [{ type: "checkbox", name: "confirm_verified", label: "Confirmo que revisé el PDF firmado, la identidad del firmante y que coincide con la versión emitida." }],
+      onSubmit: async (v) => {
+        if (v.confirm_verified !== true) throw new Error("Marca la confirmación de revisión antes de aprobar.");
+        await act(() => ({ action: "REVIEW", decision: "APROBAR", confirm_verified: true, reason: v.reason || undefined }), "Contrato aprobado: VIGENTE.")(v);
+      },
+    }) }, "APROBAR"));
+    buttons.push(el("button", { class: "danger small", type: "button", onclick: () => openAction({
+      eyebrow: "REVISIÓN", title: "Rechazar contrato firmado", submit: "RECHAZAR", danger: true, reasonLabel: "Motivo del rechazo (lo verá la empresa)*",
+      text: "La empresa podrá corregir y volver a cargar el PDF firmado.",
+      onSubmit: act((v) => ({ action: "REVIEW", decision: "RECHAZAR", reason: v.reason }), "Contrato rechazado."),
+    }) }, "RECHAZAR"));
+  }
+  if (!["TERMINADO"].includes(ds)) {
+    buttons.push(el("button", { class: "danger small", type: "button", onclick: () => openAction({
+      eyebrow: "TERMINACIÓN", title: "Terminar contrato", submit: "TERMINAR", danger: true,
+      text: "El contrato queda TERMINADO y la empresa pierde la habilitación comercial. No se eliminan archivos ni registros.",
+      onSubmit: act((v) => ({ action: "TERMINATE", reason: v.reason }), "Contrato terminado."),
+    }) }, "TERMINAR"));
+  }
+  return el("div", { class: "doc-box" },
+    el("div", { class: "card-head" },
+      el("h3", {}, `DOCUMENTO ${k.code || ""}`),
+      el("span", { class: `pill ${C.docPillClass(ds)}` }, C.DOC_STATUS_LABEL[ds] || ds)),
+    el("dl", { class: "facts" },
+      el("div", {}, el("dt", {}, "VERSIÓN EMITIDA"), el("dd", {}, k.document_version ? `v${k.document_version}` : "Sin emitir")),
+      el("div", {}, el("dt", {}, "FIRMADO CARGADO"), el("dd", {}, C.formatDateTime(k.signed_uploaded_at_ms))),
+      el("div", {}, el("dt", {}, "APROBADO"), el("dd", {}, C.formatDateTime(k.approved_at_ms))),
+      el("div", {}, el("dt", {}, "PLANTILLA"), el("dd", {}, k.template_version || "—"))),
+    termsFacts(k.terms),
+    k.legal_reviewed ? null : el("p", { class: "legal-note" }, "Plantilla en borrador: pendiente de revisión jurídica. No usar con clientes reales hasta su aprobación."),
+    k.review?.decision === "RECHAZAR" ? el("p", { class: "legal-note" }, `Último rechazo: ${k.review.reason}`) : null,
+    buttons.length ? el("div", { class: "btn-row" }, ...buttons) : null,
+    el("h3", {}, "ARCHIVOS"),
+    d.files.length ? el("ul", { class: "file-list" }, ...d.files.slice().reverse().map((f) => fileItem(f, "adminDownloadContractFile"))) : el("p", { class: "muted" }, "Sin archivos emitidos."),
+    el("h3", {}, "HISTORIAL DEL DOCUMENTO"),
+    el("ul", { class: "timeline" }, ...(d.events.length ? d.events.slice().sort((a, b) => b.at_ms - a.at_ms).map((e) => el("li", {},
+      el("b", {}, C.contractEventLabel(e.type)),
+      el("span", {}, [C.formatDateTime(e.at_ms), C.ROLE_LABEL[e.actor_role] || e.actor_role, e.file ? `${C.FILE_KIND_LABEL[e.file.kind] || e.file.kind} v${e.file.version}` : "", e.reason].filter(Boolean).join(" · "))))
+      : [el("li", {}, el("span", {}, "Sin eventos."))])),
+  );
+}
+
+function openTermsDialog(contractId, terms) {
+  const form = $("termsForm");
+  form.reset();
+  form.elements.contract_id.value = contractId;
+  for (const [k, v] of Object.entries(C.termsToFormValues(terms))) if (form.elements[k]) form.elements[k].value = v;
+  form.querySelector("[data-message]").textContent = "";
+  $("termsDialog").showModal();
+}
+
+$("termsForm").addEventListener("submit", (ev) => {
+  ev.preventDefault();
+  const form = ev.currentTarget;
+  submitWith(form, async (msg) => {
+    const values = formValues(form);
+    const { errors, terms } = C.buildTermsPayload(values);
+    if (errors.length) { msg.textContent = errors.join("\n"); return; }
+    await api("adminContractAction", { action: "UPDATE_TERMS", contract_id: values.contract_id, terms });
+    $("termsDialog").close();
+    toast("Datos guardados. El contrato volvió a borrador: emite el PDF nuevamente.");
     await reload();
   });
 });

@@ -56,6 +56,7 @@ export const CONTRACT_STATE_LABEL = Object.freeze({
   EXPIRED: "Vencido",
   SUSPENDED: "Suspendido",
   CANCELLED: "Cancelado",
+  PENDING: "Pendiente de habilitación",
 });
 export const ROLE_LABEL = Object.freeze({
   SUPERADMIN_SKANO: "Superadmin SKANO",
@@ -69,6 +70,12 @@ export const MODULE_LABEL = Object.freeze({ judicial: "Embargos", theft: "Encarg
 
 const AUDIT_LABEL = Object.freeze({
   COMPANY_CREATED: "Empresa creada",
+  CONTRACT_TERMS_UPDATED: "Datos del contrato editados",
+  CONTRACT_ISSUED: "Contrato emitido para firma",
+  CONTRACT_SIGNED_UPLOADED: "Contrato firmado cargado",
+  CONTRACT_APPROVED: "Contrato aprobado (vigente)",
+  CONTRACT_REJECTED: "Contrato firmado rechazado",
+  CONTRACT_TERMINATED: "Contrato terminado",
   COMPANY_UPDATED: "Empresa modificada",
   COMPANY_STATUS_CHANGED: "Estado de empresa",
   CONTRACT_CREATED: "Contrato creado",
@@ -95,6 +102,13 @@ const CONTRACT_EVENT_LABEL = Object.freeze({
   STATUS_ACTIVE: "Contrato reactivado",
   STATUS_SUSPENDED: "Contrato suspendido",
   STATUS_CANCELLED: "Contrato cancelado",
+  TERMS_UPDATED: "Términos editados (vuelve a borrador)",
+  ISSUED: "PDF emitido para firma",
+  SIGNED_UPLOADED: "PDF firmado cargado por la empresa",
+  APPROVED: "Aprobado por SKANO (vigente)",
+  REJECTED: "Rechazado por SKANO",
+  TERMINATED: "Contrato terminado",
+  DOWNLOADED: "Descarga de archivo",
 });
 
 export function contractEventLabel(type) {
@@ -107,7 +121,7 @@ export function auditLabel(action) {
 
 export function pillClass(value) {
   if (["ACTIVE", "on"].includes(value)) return "on";
-  if (["SUSPENDED", "NOT_STARTED", "pending"].includes(value)) return "pending";
+  if (["SUSPENDED", "NOT_STARTED", "PENDING", "pending"].includes(value)) return "pending";
   if (["EXPIRED", "DISABLED", "CANCELLED"].includes(value)) return "bad";
   return "off";
 }
@@ -252,4 +266,119 @@ export function inviteLinkForDisplay(url) {
   const s = String(url || "");
   const i = s.indexOf("#t=");
   return i < 0 ? s : `${s.slice(0, i + 3)}${s.slice(i + 3, i + 9)}…`;
+}
+
+// ------------------------------------------------------------ contrato firmable
+
+/** Estado documental del contrato (flujo de firma). */
+export const DOC_STATUS_LABEL = Object.freeze({
+  BORRADOR: "Borrador",
+  PENDIENTE_FIRMA: "Pendiente de firma",
+  PENDIENTE_REVISION: "Pendiente de revisión SKANO",
+  VIGENTE: "Vigente",
+  RECHAZADO: "Rechazado",
+  VENCIDO: "Vencido",
+  TERMINADO: "Terminado",
+});
+
+export function docPillClass(status) {
+  if (status === "VIGENTE") return "on";
+  if (["PENDIENTE_FIRMA", "PENDIENTE_REVISION", "BORRADOR"].includes(status)) return "pending";
+  if (["RECHAZADO", "VENCIDO", "TERMINADO"].includes(status)) return "bad";
+  return "off";
+}
+
+export const FILE_KIND_LABEL = Object.freeze({ GENERADO: "Contrato emitido por SKANO", FIRMADO: "Contrato firmado por la empresa" });
+export const FILE_STATUS_LABEL = Object.freeze({
+  ACTIVE: "Versión vigente", SUPERSEDED: "Reemplazado", PENDING_REVIEW: "En revisión", APPROVED: "Aprobado", REJECTED: "Rechazado",
+});
+export const PERIOD_LABEL = Object.freeze({ MENSUAL: "mensual", ANUAL: "anual", UNICO: "pago único" });
+
+export function formatMoney(amount, currency) {
+  if (amount == null || amount === "") return "—";
+  const n = Number(amount);
+  if (!Number.isFinite(n)) return "—";
+  if (currency === "UF") return `UF ${new Intl.NumberFormat("es-CL", { maximumFractionDigits: 2 }).format(n)}`;
+  return `$${new Intl.NumberFormat("es-CL", { maximumFractionDigits: 0 }).format(n)} CLP`;
+}
+
+export function formatBytes(n) {
+  const b = Number(n) || 0;
+  if (b < 1024) return `${b} B`;
+  if (b < 1024 * 1024) return `${(b / 1024).toFixed(1).replace(".", ",")} KB`;
+  return `${(b / (1024 * 1024)).toFixed(2).replace(".", ",")} MB`;
+}
+
+/** Huella abreviada para mostrar (la completa va en title / copia). */
+export function shortHash(h) {
+  const s = String(h || "");
+  return s.length > 16 ? `${s.slice(0, 8)}…${s.slice(-8)}` : s;
+}
+
+/**
+ * Términos comerciales del formulario → objeto `terms` del backend.
+ * Validación de forma; la validación definitiva es del backend.
+ * `requireAll` exige lo necesario para emitir el PDF.
+ */
+export function buildTermsPayload(values, { requireAll = false } = {}) {
+  const errors = [];
+  const amountRaw = trimmed(values.price_amount).replace(/\./g, "").replace(",", ".");
+  const terms = {
+    company_address: trimmed(values.company_address),
+    representative: {
+      name: trimmed(values.rep_name),
+      rut: trimmed(values.rep_rut),
+      position: trimmed(values.rep_position),
+      email: trimmed(values.rep_email).toLowerCase(),
+    },
+    plan_name: trimmed(values.plan_name),
+    price: {
+      amount: amountRaw === "" ? null : Number(amountRaw),
+      currency: values.price_currency === "UF" ? "UF" : "CLP",
+      period: ["MENSUAL", "ANUAL", "UNICO"].includes(values.price_period) ? values.price_period : "MENSUAL",
+      taxes: trimmed(values.price_taxes),
+    },
+    payment_terms: trimmed(values.payment_terms),
+    conditions: trimmed(values.conditions),
+  };
+  const r = terms.representative;
+  if (r.rut && !isValidRut(r.rut)) errors.push("RUT del representante inválido.");
+  if (r.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(r.email)) errors.push("Correo del representante inválido.");
+  if (terms.price.amount != null && (!Number.isFinite(terms.price.amount) || terms.price.amount < 0)) errors.push("Precio inválido.");
+  if (requireAll) {
+    if (r.name.length < 3) errors.push("Falta el nombre del representante legal.");
+    if (!r.rut) errors.push("Falta el RUT del representante legal.");
+    if (!r.email) errors.push("Falta el correo del representante legal.");
+    if (terms.plan_name.length < 2) errors.push("Falta el plan contratado.");
+    if (terms.price.amount == null) errors.push("Falta el precio.");
+  }
+  if (terms.price.amount == null) delete terms.price.amount;
+  return { errors, terms };
+}
+
+/** Términos guardados → valores de formulario (para editar). */
+export function termsToFormValues(t) {
+  const terms = t || {};
+  const r = terms.representative || {};
+  const p = terms.price || {};
+  return {
+    company_address: terms.company_address || "", rep_name: r.name || "", rep_rut: r.rut ? formatRut(r.rut) : "",
+    rep_position: r.position || "", rep_email: r.email || "", plan_name: terms.plan_name || "",
+    price_amount: p.amount == null ? "" : String(p.amount), price_currency: p.currency || "CLP",
+    price_period: p.period || "MENSUAL", price_taxes: p.taxes || "", payment_terms: terms.payment_terms || "",
+    conditions: terms.conditions || "",
+  };
+}
+
+/** Estado comercial resumido para el indicador superior. */
+export function commercialStatus(docStatus, state) {
+  if (docStatus === "VIGENTE" || (!docStatus && state === "ACTIVE")) return { tone: "on", label: "Servicio activo" };
+  if (["BORRADOR", "PENDIENTE_FIRMA", "PENDIENTE_REVISION", "RECHAZADO"].includes(docStatus)) return { tone: "pending", label: "Habilitación pendiente" };
+  if (["VENCIDO", "TERMINADO"].includes(docStatus) || ["EXPIRED", "CANCELLED", "SUSPENDED"].includes(state)) return { tone: "bad", label: "Servicio no habilitado" };
+  return { tone: "pending", label: "Habilitación pendiente" };
+}
+
+/** Etiqueta del entorno técnico (nunca "pruebas" en producción). */
+export function environmentLabel(stage) {
+  return stage === "emulator" ? "PRUEBAS · EMULADORES" : "PRODUCCIÓN";
 }
