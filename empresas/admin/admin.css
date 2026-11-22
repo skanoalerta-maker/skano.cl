@@ -174,3 +174,5 @@ fieldset.terms{grid-template-columns:1fr 1fr;align-items:start}
 .check-line.test-flag{margin-top:12px;padding:10px 12px;border:1px solid rgba(228,81,100,.5);border-radius:10px}
 .temp-box{border-color:rgba(242,184,75,.5)!important}
 .temp-pw{font-size:1rem;letter-spacing:.08em;padding:4px 8px;border-radius:6px;background:rgba(242,184,75,.12);color:#ffd88a;user-select:all}
+.member-row{display:flex!important;justify-content:space-between;align-items:center;gap:10px}
+.member-row>span{display:flex;flex-direction:column}

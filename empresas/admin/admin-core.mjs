@@ -71,6 +71,9 @@ export const MODULE_LABEL = Object.freeze({ judicial: "Embargos", theft: "Encarg
 const AUDIT_LABEL = Object.freeze({
   COMPANY_CREATED: "Empresa creada",
   MEMBER_ACCESS_CREATED: "Acceso con clave temporal creado",
+  MEMBER_REMOVED: "Usuario eliminado de la empresa",
+  USER_ACCOUNT_DELETED: "Cuenta de acceso eliminada",
+  USER_SESSIONS_REVOKED: "Sesiones del usuario cerradas",
   MEMBER_TEMP_PASSWORD_RESET: "Clave temporal regenerada",
   MEMBER_TEMP_PASSWORD_CHANGED: "Clave temporal reemplazada por el usuario",
   CONTRACT_TERMS_UPDATED: "Datos del contrato editados",

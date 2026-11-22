@@ -406,9 +406,25 @@ function contractCard(detail) {
   return card;
 }
 
+function removeMember(m) {
+  openAction({
+    eyebrow: "ELIMINAR USUARIO", title: `Eliminar a ${m.email}`, submit: "ELIMINAR USUARIO", danger: true,
+    reasonLabel: "Motivo*",
+    text: "Se quita su acceso a esta empresa, se anulan sus invitaciones pendientes y se cierran sus sesiones. Si no pertenece a otra empresa, también se elimina su cuenta de acceso. Los vehículos, importaciones e historial de la empresa se conservan. No se puede deshacer: para volver a darle acceso tendrás que crearlo de nuevo.",
+    fields: [{ name: "confirm_email", label: `Escribe el correo para confirmar (${m.email})*` }],
+    onSubmit: async (v) => {
+      const r = await api("adminRemoveCompanyUser", { company_id: currentCompanyId, uid: m.uid, reason: v.reason, confirm_email: v.confirm_email });
+      toast(r.account_deleted ? `${r.email} eliminado (cuenta de acceso borrada).` : `${r.email} eliminado de esta empresa (conserva acceso a otra).`);
+      await reload();
+    },
+  });
+}
+
 function membersList(members) {
   return el("ul", { class: "timeline", dataset: { membersList: "1" } }, ...(members.length
-    ? members.map((m) => el("li", {}, el("b", {}, m.email), el("span", {}, `${C.ROLE_LABEL[m.role] || m.role} · ${m.status === "ACTIVE" ? "Activo" : "Deshabilitado"}`)))
+    ? members.map((m) => el("li", { class: "member-row" },
+      el("span", {}, el("b", {}, m.email), el("span", {}, `${C.ROLE_LABEL[m.role] || m.role} · ${m.status === "ACTIVE" ? "Activo" : "Deshabilitado"}`)),
+      el("button", { class: "danger small", type: "button", onclick: () => removeMember(m) }, "ELIMINAR")))
     : [el("li", {}, el("span", {}, "Sin usuarios. Invita a un administrador de la empresa."))]));
 }
 
