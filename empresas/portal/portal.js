@@ -13,7 +13,7 @@ import * as C from "./portal-core.mjs?v=20261122-3";
 import { bootFirebase, signInWithSecondFactor, handleMfaRequired, signInErrorText } from "../judicial-firebase.mjs?v=20261122-2";
 
 const $ = (id) => document.getElementById(id);
-const SCREENS = ["envBlocked", "loading", "login", "verify", "picker", "app"];
+const SCREENS = ["envBlocked", "loading", "login", "verify", "tempPassword", "picker", "app"];
 const screen = (id) => { for (const s of SCREENS) $(s).hidden = s !== id; };
 
 screen("loading");
@@ -91,6 +91,10 @@ async function api(name, data = {}, { withCompany = true } = {}) {
       loginNotice = await handleMfaRequired(FBX);
       $("loginMessage").textContent = loginNotice;
       throw Object.assign(new Error(loginNotice), { code: "skano/mfa-required" });
+    }
+    if (reason === "password-change-required") {
+      screen("tempPassword");
+      throw err;
     }
     if (["session-revoked", "user-disabled"].includes(reason) || err?.code === "functions/unauthenticated") {
       loginNotice = C.errorMessage(err);
@@ -1041,6 +1045,7 @@ $("loginForm").addEventListener("submit", async (ev) => {
       if (pw !== $("loginPassword2").value) { msg.textContent = "Las contraseñas no coinciden."; return; }
       const cred = await A.createUserWithEmailAndPassword(auth, email, pw);
       await A.sendEmailVerification(cred.user).catch(() => {});
+      markVerificationSent(cred.user.uid);
     } else {
       await signInWithSecondFactor(FBX, email, pw);
     }
@@ -1061,6 +1066,31 @@ $("forgotBtn").addEventListener("click", async () => {
   try { await A.sendPasswordResetEmail(auth, email); } catch (_) { /* respuesta uniforme */ }
   $("loginMessage").textContent = "Si el correo está registrado, recibirás instrucciones.";
 });
+
+$("tempForm").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const msg = $("tempMessage");
+  const pw = $("tempNew").value;
+  msg.textContent = "";
+  if (pw.length < 10 || !/[A-Za-z]/.test(pw) || !/\d/.test(pw)) { msg.textContent = "La clave debe tener al menos 10 caracteres, con letras y números."; return; }
+  if (pw !== $("tempNew2").value) { msg.textContent = "Las claves no coinciden."; return; }
+  const btn = $("tempSubmit");
+  btn.disabled = true;
+  try {
+    await api("meChangeTemporaryPassword", { new_password: pw }, { withCompany: false });
+    const email = auth.currentUser?.email || "";
+    loginNotice = "Clave actualizada. Ingresa con tu correo y tu nueva clave.";
+    await A.signOut(auth);
+    $("loginEmail").value = email;
+  } catch (err) {
+    msg.textContent = C.errorMessage(err);
+  } finally {
+    btn.disabled = false;
+    $("tempNew").value = "";
+    $("tempNew2").value = "";
+  }
+});
+$("tempLogout").addEventListener("click", () => A.signOut(auth));
 
 const logout = () => A.signOut(auth);
 $("logoutBtn").addEventListener("click", logout);
@@ -1116,12 +1146,36 @@ async function enterCompany(m) {
   }
 }
 
+// Envío automático del correo de verificación una vez por sesión de pestaña
+// (las cuentas creadas por SKANO con clave temporal aún no lo reciben).
+const VERIFY_SENT_KEY = "skano.verifySent";
+function markVerificationSent(uid) {
+  try { sessionStorage.setItem(VERIFY_SENT_KEY, uid); } catch (_) { /* sin almacenamiento */ }
+}
+function verificationSent(uid) {
+  try { return sessionStorage.getItem(VERIFY_SENT_KEY) === uid; } catch (_) { return false; }
+}
+
 async function afterLogin(user) {
   screen("loading");
   $("loadingText").textContent = "Validando acceso…";
+  // Clave temporal entregada por SKANO: lo primero es reemplazarla.
+  let claims = {};
+  try { claims = (await A.getIdTokenResult(user, true)).claims || {}; } catch (_) { /* se valida igual en el servidor */ }
+  if (claims.temp_pw === true) {
+    $("tempMessage").textContent = Number(claims.temp_pw_exp || 0) <= Date.now()
+      ? "Tu clave temporal venció. Pide a SKANO una nueva." : "";
+    $("tempForm").reset();
+    screen("tempPassword");
+    return;
+  }
   if (!user.emailVerified) {
     $("verifyEmail").textContent = user.email;
     $("verifyMessage").textContent = "";
+    if (!verificationSent(user.uid)) {
+      markVerificationSent(user.uid);
+      A.sendEmailVerification(user).catch(() => { $("verifyMessage").textContent = "No se pudo enviar el correo; usa «REENVIAR CORREO»."; });
+    }
     screen("verify");
     return;
   }

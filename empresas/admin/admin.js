@@ -436,10 +436,33 @@ function membersCard(detail) {
       invite.disabled = false;
     }
   } }, "INVITAR ADMINISTRADOR");
+  const tempAccess = el("button", { class: "secondary small", type: "button", onclick: () => {
+    const email = input.value.trim();
+    if (!email) { result.replaceChildren(el("p", { class: "message" }, "Escribe el correo del cliente.")); return; }
+    openAction({
+      eyebrow: "ACCESO CON CLAVE TEMPORAL", title: `Crear acceso para ${email}`, submit: "CREAR CLAVE TEMPORAL", reason: "none",
+      text: "Se crea la cuenta como administrador de la empresa con una clave provisoria de 16 caracteres, válida por 7 días. La verás una sola vez: entrégala al cliente por un canal privado (en persona o por teléfono), nunca junto al correo. Si la cuenta aún no usó su clave temporal, esto genera una nueva.",
+      onSubmit: async () => {
+        const r = await api("adminCreateCompanyAccess", { company_id: c.company_id, email });
+        input.value = "";
+        const pw = el("code", { class: "temp-pw" }, r.temporary_password);
+        result.replaceChildren(el("div", { class: "invite-box temp-box" },
+          el("b", {}, r.regenerated ? "Nueva clave temporal generada" : "Acceso creado"),
+          el("div", {}, `Correo: ${r.email} · Rol: ${C.ROLE_LABEL[r.role] || r.role} · Vence: ${C.formatDateTime(r.expires_at_ms)}`),
+          el("div", {}, "Clave temporal: ", pw, " ",
+            el("button", { class: "link", type: "button", onclick: async () => { await navigator.clipboard.writeText(r.temporary_password); toast("Clave copiada."); } }, "Copiar")),
+          el("div", { class: "muted" }, "Esta clave no se vuelve a mostrar. El cliente ingresa en el Portal de Empresas con su correo y esta clave; el portal le pedirá crear su propia clave."),
+          el("button", { class: "link", type: "button", onclick: (ev) => { ev.currentTarget.closest(".temp-box").remove(); } }, "Ocultar")));
+        toast("Acceso con clave temporal creado.");
+        await reloadSoft();
+      },
+    });
+  } }, "CLAVE TEMPORAL");
   return el("article", { class: "card" },
     el("div", { class: "card-head" }, el("h2", {}, "Usuarios de la empresa"), el("span", { class: "muted" }, `${detail.members.length}`)),
     list,
-    c.status === "ACTIVE" ? el("div", { class: "btn-row" }, input, invite) : el("p", { class: "muted" }, "La empresa debe estar activa para invitar usuarios."),
+    c.status === "ACTIVE" ? el("div", { class: "btn-row" }, input, invite, tempAccess) : el("p", { class: "muted" }, "La empresa debe estar activa para invitar usuarios."),
+    c.status === "ACTIVE" ? el("p", { class: "form-note" }, "INVITAR envía un enlace para que el cliente cree su clave. CLAVE TEMPORAL crea la cuenta con una clave provisoria que tú entregas; en su primer ingreso el cliente debe cambiarla, verificar su correo y configurar el doble factor.") : null,
     result);
 }
 
