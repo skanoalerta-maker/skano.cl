@@ -179,7 +179,7 @@ $("actionForm").addEventListener("submit", (ev) => {
 
 // ------------------------------------------------------------ navegación
 
-const TITLES = { overview: "RESUMEN DE LA PLATAFORMA", companies: "EMPRESAS", company: "DETALLE DE EMPRESA", audit: "HISTORIAL DE ACTIVIDAD" };
+const TITLES = { overview: "RESUMEN DE LA PLATAFORMA", companies: "EMPRESAS", company: "DETALLE DE EMPRESA", audit: "HISTORIAL DE ACTIVIDAD", legal: "CENTRO LEGAL Y CUMPLIMIENTO" };
 
 function navigate(view) {
   document.querySelectorAll(".view").forEach((v) => v.classList.toggle("active", v.id === `view-${view}`));
@@ -189,6 +189,7 @@ function navigate(view) {
   if (view === "overview") loadOverview();
   if (view === "companies") loadCompanies(true);
   if (view === "audit") loadAudit();
+  if (view === "legal") loadLegalCenter();
 }
 
 document.querySelectorAll(".nav-item").forEach((n) => n.addEventListener("click", () => navigate(n.dataset.view)));
@@ -522,6 +523,54 @@ function renderCompany(detail) {
           ? detail.audit.map((a) => el("li", {}, el("b", {}, C.auditLabel(a.action)), el("span", {}, `${C.formatDateTime(a.at_ms)} · ${a.actor_role}${a.reason ? ` · ${a.reason}` : ""}`)))
           : [el("li", {}, el("span", {}, "Sin actividad."))]))),
       )),
+  );
+}
+
+// ------------------------------------------------------------ centro legal (vista general)
+
+async function loadLegalCenter() {
+  const v = $("view-legal");
+  const head = el("div", { class: "section-heading" }, el("div", {}, el("p", { class: "eyebrow" }, "CUMPLIMIENTO"), el("h1", {}, "Centro Legal")));
+  v.replaceChildren(head, el("p", { class: "muted" }, "Cargando…"));
+  let r;
+  try { r = await api("adminLegalAction", { action: "CATALOG" }); } catch (err) { v.replaceChildren(head, el("p", { class: "message" }, C.errorMessage(err))); return; }
+  const fmt = (ms) => (ms ? C.formatDateTime(ms) : "—");
+  const verified = new Date(`${r.verified_at}T12:00:00`).toLocaleDateString("es-CL");
+  v.replaceChildren(
+    head,
+    el("article", { class: "card" },
+      el("div", { class: "card-head" }, el("h2", {}, "Estado para contratos reales"),
+        el("span", { class: `pill ${r.real_contracts_blocked ? "pending" : "on"}` }, r.real_contracts_blocked ? "Bloqueados" : "Habilitados")),
+      r.real_contracts_blocked
+        ? el("p", { class: "muted" }, `Los contratos reales no pueden aprobarse hasta completar: ${r.contract_template.missing.join(", ")}. Los contratos DE PRUEBA sí funcionan.`)
+        : el("p", { class: "muted" }, "La plantilla está revisada y los datos de SKANO están completos."),
+      el("p", { class: "legal-note" }, "Todos los textos son borradores pendientes de revisión por abogado chileno. Además se exige un procedimiento válido de comprobación de firmas antes de aprobar contratos reales."),
+      el("p", { class: "muted small" }, `Plantilla de contrato ${r.contract_template.version} · Catálogo ${r.catalog_version}`)),
+    el("article", { class: "card" },
+      el("div", { class: "card-head" }, el("h2", {}, "Bases legales"), el("span", { class: "muted small" }, `Revisadas en fuente oficial el ${verified}`)),
+      el("ul", { class: "timeline" }, ...r.bases.map((b) => el("li", {},
+        el("b", {}, b.name),
+        el("span", {}, `Estado: ${b.status}`),
+        el("span", {}, `Aplica a SKANO: ${b.applies}`),
+        el("a", { href: b.url, target: "_blank", rel: "noopener noreferrer" }, "Ver texto oficial en LeyChile (BCN) ↗")))),
+      el("p", { class: "muted small" }, "El estado de las leyes puede cambiar: confírmalo con tu abogado antes de usar los documentos con clientes reales.")),
+    el("article", { class: "card" },
+      el("div", { class: "card-head" }, el("h2", {}, "Documentos por revisar (todas las empresas)"),
+        el("span", { class: `pill ${r.pending.length ? "pending" : "on"}` }, String(r.pending.length))),
+      r.pending.length ? el("ul", { class: "file-list" }, ...r.pending.map((p) => el("li", {},
+        el("span", {}, el("b", {}, p.title), el("small", {}, `${p.company_name} · enviado ${fmt(p.submitted_at_ms)}`)),
+        el("button", { class: "primary small", type: "button", onclick: () => openCompany(p.company_id) }, "REVISAR"))))
+        : el("p", { class: "muted" }, "No hay documentos pendientes de revisión.")),
+    el("article", { class: "card" },
+      el("div", { class: "card-head" }, el("h2", {}, "Los 13 documentos del Centro Legal")),
+      el("p", { class: "muted small" }, "«VER MODELO» abre el PDF sin empresa, con logo, sello de agua y la marca «MODELO — SIN VALIDEZ CONTRACTUAL». Para emitir un documento a una empresa, entra a su ficha."),
+      el("ul", { class: "file-list" }, ...r.types.map((t) => el("li", {},
+        el("span", {}, el("b", {}, `${t.title}${t.required ? " *" : ""}`),
+          el("small", {}, `${LG.LEGAL_MODE_LABEL[t.mode] || t.mode} · ${t.required ? "Obligatorio" : "Opcional"} · ${t.validity_months ? `vigencia ${t.validity_months} meses` : "sin vencimiento"}`),
+          el("small", {}, t.description || (t.sections.length ? `Contenido: ${t.sections.join(" · ")}` : ""))),
+        t.has_model
+          ? el("button", { class: "secondary small", type: "button", onclick: () => LG.openViewer({ el, title: `Modelo · ${t.title}`, toast, fetchFile: () => api("adminLegalAction", { action: "TEMPLATE", type: t.type }) }) }, "VER MODELO")
+          : el("span", { class: "muted small" }, t.mode === "CONTRATO" ? "En la ficha de cada empresa" : "Lo aporta la empresa"))))),
   );
 }
 

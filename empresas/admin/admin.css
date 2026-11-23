@@ -194,3 +194,7 @@ fieldset.terms{grid-template-columns:1fr 1fr;align-items:start}
 .file-list li>.btn-row{margin-top:0;justify-content:flex-end;align-items:center}
 .facts.compact{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}
 #legalViewer .doc-box{max-height:40vh;overflow:auto}
+#view-legal .timeline{max-height:none}
+#view-legal .timeline li span,#view-legal .timeline li a{display:block;margin-top:3px}
+#view-legal .timeline li a{color:var(--cyan,#22d3ee);font-size:.66rem}
+#view-legal .card{margin-bottom:16px}
