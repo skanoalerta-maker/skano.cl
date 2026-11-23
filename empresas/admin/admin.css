@@ -198,3 +198,5 @@ fieldset.terms{grid-template-columns:1fr 1fr;align-items:start}
 #view-legal .timeline li span,#view-legal .timeline li a{display:block;margin-top:3px}
 #view-legal .timeline li a{color:var(--cyan,#22d3ee);font-size:.66rem}
 #view-legal .card{margin-bottom:16px}
+#view-legal .timeline li .pill{display:inline-block;margin:4px 0 2px}
+#view-legal .bill-note{color:#fbbf24 !important}
