@@ -10,10 +10,10 @@ const PERMS = {
 };
 
 test("menú según permisos", () => {
-  assert.equal(C.visibleMenu(PERMS.ADMIN).length, 8);
-  assert.deepEqual(C.visibleMenu(PERMS.OPER).map((m) => m.view), ["home", "vehicles", "import", "contract"]);
-  assert.deepEqual(C.visibleMenu(PERMS.REV).map((m) => m.view), ["home", "vehicles", "review", "contract"]);
-  assert.deepEqual(C.visibleMenu(PERMS.ALERT).map((m) => m.view), ["home", "vehicles", "alerts"]);
+  assert.equal(C.visibleMenu(PERMS.ADMIN).length, 13);
+  assert.deepEqual(C.visibleMenu(PERMS.OPER).map((m) => m.view), ["home", "vehicles", "theft", "import", "imports", "documents", "legal", "contract", "settings"]);
+  assert.deepEqual(C.visibleMenu(PERMS.REV).map((m) => m.view), ["home", "vehicles", "theft", "review", "documents", "legal", "contract", "settings"]);
+  assert.deepEqual(C.visibleMenu(PERMS.ALERT).map((m) => m.view), ["home", "vehicles", "theft", "alerts", "settings"]);
   assert.deepEqual(C.visibleMenu([]), []);
 });
 

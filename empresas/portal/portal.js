@@ -9,7 +9,8 @@
 // - Sin innerHTML con datos: todo el contenido va por textContent.
 // =====================================================================
 
-import * as C from "./portal-core.mjs?v=20261122-3";
+import * as C from "./portal-core.mjs?v=20261123-1";
+import * as LG from "../admin/legal-ui.mjs?v=20261123-1";
 import { bootFirebase, signInWithSecondFactor, handleMfaRequired, signInErrorText } from "../judicial-firebase.mjs?v=20261122-2";
 
 const $ = (id) => document.getElementById(id);
@@ -186,7 +187,7 @@ function fieldInput(f, value = "") {
 }
 
 // ------------------------------------------------------------ navegación
-const TITLES = { home: "INICIO", vehicles: "VEHÍCULOS CON EMBARGO", review: "PENDIENTES DE REVISIÓN", vehicle: "DETALLE DEL VEHÍCULO", import: "IMPORTAR EXCEL", alerts: "ALERTAS Y DETECCIONES", users: "USUARIOS Y PERMISOS", contract: "CONTRATO Y CUPOS", audit: "HISTORIAL DE ACTIVIDAD" };
+const TITLES = { theft: "ENCARGOS POR ROBO", imports: "IMPORTACIONES ANTERIORES", documents: "DOCUMENTOS JUDICIALES", legal: "CENTRO LEGAL Y CUMPLIMIENTO", settings: "CONFIGURACIÓN EMPRESARIAL", home: "RESUMEN", vehicles: "VEHÍCULOS CON EMBARGO", review: "PENDIENTES DE REVISIÓN", vehicle: "DETALLE DEL VEHÍCULO", import: "IMPORTAR EXCEL", alerts: "ALERTAS Y DETECCIONES", users: "USUARIOS Y PERMISOS", contract: "CONTRATO Y CUPOS", audit: "HISTORIAL DE ACTIVIDAD" };
 const LOADERS = {};
 let currentView = "home";
 
@@ -201,9 +202,6 @@ function navigate(view, arg) {
 
 function buildNav() {
   const items = C.visibleMenu(S.perms).map((m) => el("button", { class: "nav-item", type: "button", dataset: { view: m.view }, onclick: () => navigate(m.view) }, el("span", {}, m.icon), m.label));
-  if (S.company?.contract?.modules?.theft?.enabled) {
-    items.splice(2, 0, el("button", { class: "nav-item soon", type: "button", disabled: true, title: "Módulo en desarrollo (Fase 5)" }, el("span", {}, "▧"), "Vehículos con encargo", el("span", { class: "badge" }, "F5")));
-  }
   $("nav").replaceChildren(...items);
 }
 $("menuBtn").addEventListener("click", () => $("sidebar").classList.toggle("open"));
@@ -277,6 +275,7 @@ LOADERS.home = async () => {
       kpis,
       el("div", { class: "grid-2" }, quota, byStatus),
       el("div", { class: "grid-2" }, imports, alerts),
+      C.can(S.perms, "contract.read") ? legalSummaryCard() : null,
     );
   } catch (err) {
     v.replaceChildren(el("p", { class: "message" }, C.errorMessage(err)));
@@ -1107,6 +1106,194 @@ function renderContractDoc(d) {
       : [el("li", {}, el("span", {}, "Sin eventos."))]))),
   );
 }
+
+// ------------------------------------------------------------ centro legal
+function legalSummaryCard() {
+  const card = el("article", { class: "card" }, el("h2", {}, "Estado legal de habilitación"), el("p", { class: "muted" }, "Cargando…"));
+  api("companyLegal", { action: "LIST" }).then((r) => {
+    card.replaceChildren(el("div", { class: "card-head" }, el("h2", {}, "Estado legal de habilitación"),
+      el("span", { class: `pill ${r.ready ? "on" : "pending"}` }, r.ready ? "Documentación completa" : `${r.missing.length} pendiente(s)`)),
+      r.ready ? el("p", { class: "muted" }, "Todos los documentos exigidos están aprobados o aceptados.")
+        : el("p", { class: "muted" }, `Pendientes: ${r.missing.join(", ")}.`),
+      el("button", { class: "secondary small", type: "button", onclick: () => navigate("legal") }, "IR AL CENTRO LEGAL"));
+  }).catch(() => card.remove());
+  return card;
+}
+
+LOADERS.legal = async () => {
+  const v = $("view-legal");
+  v.replaceChildren(heading("CUMPLIMIENTO", "Centro Legal"), el("p", { class: "muted" }, "Cargando…"));
+  let r;
+  try { r = await api("companyLegal", { action: "LIST" }); } catch (err) { v.replaceChildren(heading("CUMPLIMIENTO", "Centro Legal"), el("p", { class: "message" }, errorText(err))); return; }
+  const canSign = C.can(S.perms, "contract.sign");
+  const fmt = (ms) => (ms ? C.formatDateTime(ms) : "—");
+  const rows = r.items.map((d) => {
+    const actions = [];
+    const view = (label = "VER") => el("button", { class: "secondary small", type: "button", onclick: () => legalDetail(d) }, label);
+    if (d.mode === "CONTRATO") actions.push(el("button", { class: "secondary small", type: "button", onclick: () => navigate("contract") }, "IR AL CONTRATO"));
+    else {
+      if (d.status !== "NO_EMITIDO" || d.mode === "CARGA") actions.push(view(d.mode === "CARGA" && !d.version ? "HISTORIAL" : "VER / HISTORIAL"));
+      if (canSign && d.mode === "ACEPTACION" && d.status === "PENDIENTE_EMPRESA") actions.push(el("button", { class: "primary small", type: "button", onclick: () => acceptLegal(d) }, "LEER Y ACEPTAR"));
+      if (canSign && d.mode === "FIRMA" && ["PENDIENTE_EMPRESA", "RECHAZADO", "CORRECCION_SOLICITADA"].includes(d.status)) actions.push(uploadLegalButton(d, "SUBIR FIRMADO (PDF)", ".pdf,application/pdf"));
+      if (canSign && d.mode === "CARGA" && ["PENDIENTE_EMPRESA", "RECHAZADO", "CORRECCION_SOLICITADA", "VENCIDO", "APROBADO"].includes(d.status)) actions.push(uploadLegalButton(d, d.status === "APROBADO" ? "SUBIR NUEVA VERSIÓN" : "SUBIR DOCUMENTO", ".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg"));
+    }
+    return el("article", { class: "card legal-item" },
+      el("div", { class: "card-head" },
+        el("div", {}, el("h2", {}, d.title), el("p", { class: "muted small" }, `${LG.LEGAL_MODE_LABEL[d.mode] || d.mode}${d.required ? " · Obligatorio" : " · Opcional"}`)),
+        el("span", { class: `pill ${LG.legalPillClass(d.status)}` }, LG.LEGAL_STATUS_LABEL[d.status] || d.status)),
+      el("p", { class: "muted" }, d.description || ""),
+      d.mode !== "CONTRATO" ? el("dl", { class: "facts compact" },
+        el("div", {}, el("dt", {}, "VERSIÓN"), el("dd", {}, d.version ? `v${d.version}` : "—")),
+        el("div", {}, el("dt", {}, "EMITIDO"), el("dd", {}, fmt(d.issued_at_ms))),
+        el("div", {}, el("dt", {}, "ENVIADO"), el("dd", {}, fmt(d.submitted_at_ms))),
+        el("div", {}, el("dt", {}, "VENCE"), el("dd", {}, fmt(d.expires_at_ms)))) : null,
+      d.review?.reason && ["RECHAZADO", "CORRECCION_SOLICITADA"].includes(d.status) ? el("p", { class: "legal-note" }, `SKANO: ${d.review.reason}`) : null,
+      d.acceptance ? el("p", { class: "muted small" }, `Aceptado por ${d.acceptance.email || d.acceptance.uid} el ${C.formatDateTime(d.acceptance.at_ms)} (versión ${d.acceptance.version}).`) : null,
+      actions.length ? el("div", { class: "btn-row" }, ...actions) : null);
+  });
+  v.replaceChildren(
+    heading("CUMPLIMIENTO", "Centro Legal"),
+    el("article", { class: "card" },
+      el("div", { class: "card-head" }, el("h2", {}, "Estado legal de habilitación"), el("span", { class: `pill ${r.ready ? "on" : "pending"}` }, r.ready ? "Documentación completa" : "Habilitación pendiente")),
+      r.ready ? el("p", { class: "muted" }, "La documentación exigida está completa.") : el("p", { class: "muted" }, `Falta: ${r.missing.join(", ")}.`),
+      r.test_only ? el("p", { class: "test-note" }, "Empresa con contrato DE PRUEBA: los documentos emitidos llevan la marca «DOCUMENTO DE PRUEBA — SIN VALIDEZ CONTRACTUAL».") : null,
+      el("p", { class: "legal-note" }, "Los textos son borradores pendientes de revisión por abogado chileno. Firma: descarga el PDF, fírmalo (firma manuscrita escaneada o firma electrónica) y súbelo; SKANO lo revisa."),
+      canSign ? null : el("p", { class: "muted small" }, "Solo el administrador de la empresa puede aceptar, firmar o subir documentos.")),
+    ...rows,
+  );
+};
+
+function legalFetch(fileId) {
+  return () => api("companyLegal", { action: "DOWNLOAD", file_id: fileId });
+}
+
+async function legalDetail(d) {
+  try {
+    const g = await api("companyLegal", { action: "GET", type: d.type });
+    const current = g.files.find((f) => ["ACTIVE", "PENDING_REVIEW", "APPROVED"].includes(f.status)) || g.files[0];
+    const list = el("div", { class: "doc-box" }, el("h3", {}, "VERSIONES Y ARCHIVOS"),
+      g.files.length ? el("ul", { class: "file-list" }, ...g.files.map((f) => el("li", {},
+        el("span", {}, el("b", {}, `${f.kind === "EMITIDO" ? "Emitido por SKANO" : f.kind === "FIRMADO" ? "Firmado por la empresa" : "Aportado por la empresa"} · v${f.version}`),
+          el("small", {}, `${f.file_name} · ${C.formatBytes(f.size)} · ${C.formatDateTime(f.created_at_ms)} · ${f.status}`)),
+        el("button", { class: "link", type: "button", onclick: () => LG.openViewer({ el, title: f.file_name, fetchFile: legalFetch(f.file_id), toast }) }, "Ver")))) : el("p", { class: "muted" }, "Sin archivos."),
+      el("h3", {}, "HISTORIAL"),
+      el("ul", { class: "timeline" }, ...(g.events.length ? g.events.map((e) => el("li", {}, el("b", {}, LG.LEGAL_EVENT_LABEL[e.type] || e.type),
+        el("span", {}, [C.formatDateTime(e.at_ms), C.ROLE_LABEL[e.actor_role] || e.actor_role, e.reason].filter(Boolean).join(" · ")))) : [el("li", {}, el("span", {}, "Sin eventos."))])));
+    if (current) {
+      await LG.openViewer({ el, title: `${d.title} · v${current.version}`, fetchFile: legalFetch(current.file_id), toast });
+      document.querySelector("#legalViewer .viewer-body")?.after(list);
+    } else {
+      toast("Aún no hay archivos para este documento.");
+    }
+  } catch (err) { toast(errorText(err), true); }
+}
+
+async function acceptLegal(d) {
+  const g = await api("companyLegal", { action: "GET", type: d.type });
+  const file = g.files.find((f) => f.status === "ACTIVE");
+  if (!file) { toast("No hay una versión emitida.", true); return; }
+  const check = el("input", { type: "checkbox", "aria-label": "Acepto el documento" });
+  const btn = el("button", { class: "primary small", type: "button", disabled: true }, "ACEPTAR DOCUMENTO");
+  check.addEventListener("change", () => { btn.disabled = !check.checked; });
+  const viewer = await LG.openViewer({
+    el, title: `${d.title} · v${g.document.version}`, fetchFile: legalFetch(file.file_id), toast,
+    extra: [el("label", { class: "check-line" }, check, `Leí y acepto «${d.title}» (versión ${g.document.version}).`), btn],
+  });
+  btn.addEventListener("click", async () => {
+    btn.disabled = true;
+    try {
+      await api("companyLegal", { action: "ACCEPT", type: d.type, confirm: true, version: g.document.version });
+      viewer.close();
+      toast("Documento aceptado. Quedó registrada la evidencia de aceptación.");
+      LOADERS.legal();
+    } catch (err) { toast(errorText(err), true); btn.disabled = false; }
+  });
+}
+
+function uploadLegalButton(d, label, accept) {
+  const input = el("input", { type: "file", accept, hidden: true, "aria-label": `Archivo para ${d.title}` });
+  input.addEventListener("change", async () => {
+    const f = input.files[0];
+    if (!f) return;
+    if (f.size > LG.LEGAL_MAX_BYTES) { toast("El archivo supera 6 MB.", true); return; }
+    try {
+      await api("companyLegal", { action: "UPLOAD", type: d.type, file_name: f.name, content_base64: await LG.readFileBase64(f) });
+      toast("Documento enviado. Queda pendiente de revisión por SKANO.");
+      LOADERS.legal();
+    } catch (err) { toast(errorText(err), true); }
+  });
+  return el("span", {}, input, el("button", { class: "primary small", type: "button", onclick: () => input.click() }, label));
+}
+
+// ------------------------------------------------------------ encargos por robo
+LOADERS.theft = () => {
+  const k = S.company?.contract;
+  const mod = k?.modules?.theft;
+  $("view-theft").replaceChildren(
+    heading("MÓDULO INDEPENDIENTE", "Vehículos con encargo por robo"),
+    el("article", { class: "card" },
+      el("div", { class: "card-head" }, el("h2", {}, "Estado del módulo"),
+        el("span", { class: `pill ${mod?.enabled ? "pending" : "off"}` }, mod?.enabled ? "Contratado · registro no habilitado" : "No contratado")),
+      el("p", { class: "muted" }, "Este módulo es independiente de los embargos y tiene restricciones propias:"),
+      el("ul", { class: "timeline" },
+        el("li", {}, el("b", {}, "Fuente oficial obligatoria"), el("span", {}, "Cada encargo debe provenir de una fuente oficial acreditada (denuncia o parte policial) y no de una planilla interna.")),
+        el("li", {}, el("b", {}, "Sin alertas"), el("span", {}, "Las alertas por detección permanecen desactivadas hasta contar con base legal suficiente.")),
+        el("li", {}, el("b", {}, "Cupo separado"), el("span", {}, mod ? `Cupo contratado: ${C.formatNumber(mod.quota || 0)} registros.` : "Sin cupo contratado.")),
+        el("li", {}, el("b", {}, "Habilitación"), el("span", {}, "El registro de encargos se habilitará cuando SKANO complete la revisión jurídica del módulo. Para consultas, contacta a SKANO."))),
+    ),
+  );
+};
+
+// ------------------------------------------------------------ importaciones anteriores
+LOADERS.imports = () => {
+  $("view-imports").replaceChildren(
+    heading("CARGA MASIVA", "Importaciones anteriores", el("button", { class: "primary small", type: "button", onclick: () => navigate("import") }, "NUEVA IMPORTACIÓN")),
+    importHistory(),
+  );
+};
+
+// ------------------------------------------------------------ documentos judiciales
+LOADERS.documents = async () => {
+  const v = $("view-documents");
+  v.replaceChildren(heading("RESPALDOS", "Documentos judiciales"), el("p", { class: "muted" }, "Cargando…"));
+  try {
+    const r = await api("companyListDocuments");
+    const body = el("tbody", {}, ...(r.items.length ? r.items.map((d) => el("tr", {},
+      td("Patente", el("span", { class: "plate" }, d.ppu)),
+      td("Tipo", C.DOC_KIND_LABEL[d.kind] || d.kind),
+      td("Archivo", d.file_name, el("small", {}, C.formatBytes(d.size))),
+      td("Fecha", C.formatDateTime(d.uploaded_at_ms)),
+      td("", el("button", { class: "link", type: "button", onclick: () => navigate("vehicle", d.vehicle_id) }, "Ver ficha"))))
+      : [emptyRow(5, "Aún no hay documentos. Súbelos desde la ficha de cada vehículo.")]));
+    v.replaceChildren(heading("RESPALDOS", "Documentos judiciales"),
+      el("p", { class: "muted" }, "Resoluciones, certificados y fotografías de cada vehículo. Se suben y se ven desde la ficha del vehículo; aquí tienes el listado completo de tu empresa. La documentación general de la cartera se gestiona en el Centro Legal."),
+      el("div", { class: "card flush" }, el("div", { class: "table-wrap" }, el("table", {},
+        el("thead", {}, el("tr", {}, ...["Patente", "Tipo", "Archivo", "Fecha", ""].map((h) => el("th", {}, h)))), body))));
+  } catch (err) { v.replaceChildren(heading("RESPALDOS", "Documentos judiciales"), el("p", { class: "message" }, errorText(err))); }
+};
+
+// ------------------------------------------------------------ configuración
+LOADERS.settings = () => {
+  const c = S.company?.company || {};
+  const me = S.company?.me || {};
+  $("view-settings").replaceChildren(
+    heading("EMPRESA", "Configuración empresarial"),
+    el("div", { class: "grid-2" },
+      el("article", { class: "card" }, el("h2", {}, "Datos de la empresa"),
+        el("dl", { class: "facts" },
+          el("div", {}, el("dt", {}, "RAZÓN SOCIAL"), el("dd", {}, c.legal_name || "—")),
+          el("div", {}, el("dt", {}, "NOMBRE DE FANTASÍA"), el("dd", {}, c.trade_name || "—")),
+          el("div", {}, el("dt", {}, "ESTADO"), el("dd", {}, c.status === "ACTIVE" ? "Activa" : c.status || "—"))),
+        el("p", { class: "muted small" }, "Para modificar los datos legales de la empresa, escribe a SKANO: el cambio queda registrado y se revisa con la documentación correspondiente.")),
+      el("article", { class: "card" }, el("h2", {}, "Seguridad y cuenta"),
+        el("dl", { class: "facts" },
+          el("div", {}, el("dt", {}, "TU ROL"), el("dd", {}, C.ROLE_LABEL[me.role] || me.role || "—")),
+          el("div", {}, el("dt", {}, "DOBLE FACTOR"), el("dd", {}, "Obligatorio para administradores y revisores")),
+          el("div", {}, el("dt", {}, "ALERTAS JUDICIALES"), el("dd", {}, "Desactivadas (base legal pendiente)")),
+          el("div", {}, el("dt", {}, "AISLAMIENTO"), el("dd", {}, "Tu empresa solo ve su propia información"))),
+        el("div", { class: "btn-row" }, C.can(S.perms, "members.read") ? el("button", { class: "secondary small", type: "button", onclick: () => navigate("users") }, "USUARIOS Y PERMISOS") : null))),
+  );
+};
 
 // ------------------------------------------------------------ auditoría
 LOADERS.audit = async () => {

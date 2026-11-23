@@ -9,20 +9,25 @@ export {
   quotaPercent, quotaLevel, errorMessage, ROLE_LABEL, CONTRACT_STATE_LABEL, auditLabel as adminAuditLabel,
   localizeInviteUrl, DOC_STATUS_LABEL, docPillClass, FILE_KIND_LABEL, FILE_STATUS_LABEL, PERIOD_LABEL,
   formatMoney, formatBytes, shortHash, commercialStatus, environmentLabel, contractEventLabel,
-} from "../admin/admin-core.mjs?v=20261122-3";
-import { auditLabel as baseAuditLabel } from "../admin/admin-core.mjs?v=20261122-3";
+} from "../admin/admin-core.mjs?v=20261123-1";
+import { auditLabel as baseAuditLabel } from "../admin/admin-core.mjs?v=20261123-1";
 
 // ------------------------------------------------------------ menú
 
 export const MENU = Object.freeze([
-  { view: "home", label: "Inicio", icon: "◎", perm: "company.read" },
+  { view: "home", label: "Resumen", icon: "◎", perm: "company.read" },
   { view: "vehicles", label: "Vehículos con embargo", icon: "▤", perm: "vehicles.read" },
+  { view: "theft", label: "Vehículos con encargo por robo", icon: "▧", perm: "vehicles.read" },
   { view: "review", label: "Pendientes de revisión", icon: "◐", perm: "vehicles.review" },
   { view: "import", label: "Importar Excel", icon: "⇪", perm: "imports.run" },
+  { view: "imports", label: "Importaciones anteriores", icon: "☰", perm: "imports.run" },
+  { view: "documents", label: "Documentos judiciales", icon: "▥", perm: "documents.read" },
+  { view: "legal", label: "Centro Legal", icon: "§", perm: "contract.read" },
+  { view: "contract", label: "Contrato y cupos", icon: "▣", perm: "contract.read" },
   { view: "alerts", label: "Alertas y detecciones", icon: "◬", perm: "alerts.read" },
   { view: "users", label: "Usuarios y permisos", icon: "◍", perm: "members.read" },
-  { view: "contract", label: "Contrato y cupos", icon: "▣", perm: "contract.read" },
   { view: "audit", label: "Historial de actividad", icon: "≡", perm: "audit.read" },
+  { view: "settings", label: "Configuración empresarial", icon: "⚙", perm: "company.read" },
 ]);
 
 export function visibleMenu(permissions) {

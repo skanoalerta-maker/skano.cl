@@ -5,7 +5,8 @@
 // Nunca se usa innerHTML con datos: todo el contenido va por textContent.
 // =====================================================================
 
-import * as C from "./admin-core.mjs?v=20261122-3";
+import * as C from "./admin-core.mjs?v=20261123-1";
+import * as LG from "./legal-ui.mjs?v=20261123-1";
 import { bootFirebase, signInWithSecondFactor, handleMfaRequired, signInErrorText } from "../judicial-firebase.mjs?v=20261122-2";
 
 const $ = (id) => document.getElementById(id);
@@ -209,6 +210,7 @@ async function loadOverview() {
       kpi(m.contracts.expiring_30_days, "VENCEN EN 30 DÍAS", m.contracts.expiring_30_days ? "warn" : ""),
       kpi(m.contracts.pending_review || 0, "CONTRATOS POR REVISAR", m.contracts.pending_review ? "warn" : ""),
       kpi(m.contracts.test_active || 0, "CONTRATOS DE PRUEBA VIGENTES", ""),
+      kpi(m.legal?.pending_review || 0, "DOCUMENTOS LEGALES POR REVISAR", m.legal?.pending_review ? "warn" : ""),
       kpi(m.members_active, "USUARIOS ACTIVOS"),
     );
     $("quotaSummary").replaceChildren(
@@ -222,6 +224,10 @@ async function loadOverview() {
       el("div", {}, el("dt", {}, "ACTUALIZADO"), el("dd", {}, C.formatDateTime(m.generated_at_ms))),
     ), (m.pending_review || []).length ? el("ul", { class: "file-list" }, ...m.pending_review.map((p) => el("li", {},
       el("span", {}, el("b", {}, p.code || p.contract_id), el("small", {}, `Firmado cargado ${C.formatDateTime(p.signed_uploaded_at_ms)}`)),
+      el("button", { class: "primary small", type: "button", onclick: () => openCompany(p.company_id) }, "REVISAR")))) : null,
+    (m.legal_pending || []).length ? el("h3", {}, "DOCUMENTOS LEGALES POR REVISAR") : null,
+    (m.legal_pending || []).length ? el("ul", { class: "file-list" }, ...m.legal_pending.map((p) => el("li", {},
+      el("span", {}, el("b", {}, p.type), el("small", {}, `Empresa ${p.company_id} · enviado ${C.formatDateTime(p.submitted_at_ms)}`)),
       el("button", { class: "primary small", type: "button", onclick: () => openCompany(p.company_id) }, "REVISAR")))) : null);
   } catch (err) {
     toast(C.errorMessage(err), true);
@@ -499,7 +505,7 @@ function renderCompany(detail) {
       el("div", {}, el("p", { class: "eyebrow" }, "EMPRESA"), el("h1", {}, c.trade_name, el("small", {}, `${c.legal_name} · RUT ${C.formatRut(c.rut)}`))),
       el("div", { class: "actions" }, pill(c.status, C.COMPANY_STATUS_LABEL[c.status]), ...companyStatusActions(c))),
     el("div", { class: "detail-grid" },
-      el("div", { class: "stack" }, contractCard(detail), members),
+      el("div", { class: "stack" }, contractCard(detail), legalCard(c), members),
       el("div", { class: "stack" },
         el("article", { class: "card" }, el("h2", {}, "Datos de la empresa"), el("dl", { class: "facts" },
           el("div", {}, el("dt", {}, "CORREO PRINCIPAL"), el("dd", {}, c.primary_email)),
@@ -508,6 +514,7 @@ function renderCompany(detail) {
           el("div", {}, el("dt", {}, "REGISTRADA"), el("dd", {}, C.formatDate(c.created_at_ms))),
           el("div", {}, el("dt", {}, "ID"), el("dd", {}, el("code", {}, c.company_id))),
         )),
+        portfolioCard(c),
         el("article", { class: "card" }, el("h2", {}, "Eventos del contrato"), el("ul", { class: "timeline" }, ...(detail.contract_events.length
           ? detail.contract_events.map((e) => el("li", {}, el("b", {}, C.contractEventLabel(e.type)), el("span", {}, `${C.formatDateTime(e.at_ms)}${e.reason ? ` · ${e.reason}` : ""}`)))
           : [el("li", {}, el("span", {}, "Sin eventos."))]))),
@@ -516,6 +523,122 @@ function renderCompany(detail) {
           : [el("li", {}, el("span", {}, "Sin actividad."))]))),
       )),
   );
+}
+
+// ------------------------------------------------------------ centro legal
+
+function legalCard(c) {
+  const card = el("article", { class: "card" }, el("h2", {}, "Centro Legal y cumplimiento"), el("p", { class: "muted" }, "Cargando…"));
+  api("adminLegalAction", { action: "LIST", company_id: c.company_id }).then((r) => {
+    const fmt = (ms) => (ms ? C.formatDateTime(ms) : "—");
+    card.replaceChildren(
+      el("div", { class: "card-head" }, el("h2", {}, "Centro Legal y cumplimiento"),
+        el("span", { class: `pill ${r.ready ? "on" : "pending"}` }, r.ready ? "Habilitada legalmente" : "Habilitación legal pendiente")),
+      r.ready ? null : el("p", { class: "muted small" }, `Falta: ${r.missing.join(", ")}.`),
+      el("p", { class: "legal-note" }, "Plantillas en borrador, pendientes de revisión por abogado chileno. Un contrato real no se aprueba sin la documentación exigida."),
+      el("ul", { class: "file-list" }, ...r.items.map((d) => {
+        const actions = [];
+        if (d.mode === "CONTRATO") {
+          actions.push(el("span", { class: "muted small" }, "Ver tarjeta del contrato"));
+        } else {
+          if (d.mode !== "CARGA" && d.status !== "PENDIENTE_REVISION") {
+            actions.push(el("button", { class: "secondary small", type: "button", onclick: () => issueLegal(c, d) }, d.version ? "EMITIR NUEVA VERSIÓN" : "EMITIR"));
+          }
+          if (d.status === "PENDIENTE_REVISION") actions.push(el("button", { class: "primary small", type: "button", onclick: () => reviewLegal(c, d) }, "REVISAR"));
+          if (d.version || d.status !== "NO_EMITIDO") actions.push(el("button", { class: "link", type: "button", onclick: () => legalHistory(c, d) }, "Ver / historial"));
+        }
+        return el("li", {},
+          el("span", {}, el("b", {}, `${d.title}${d.required ? " *" : ""}`),
+            el("small", {}, `${LG.LEGAL_MODE_LABEL[d.mode]} · v${d.version || 0} · enviado ${fmt(d.submitted_at_ms)} · vence ${fmt(d.expires_at_ms)}`),
+            d.acceptance ? el("small", {}, `Aceptado por ${d.acceptance.email || d.acceptance.uid} · ${fmt(d.acceptance.at_ms)} · SHA-256 ${C.shortHash(d.acceptance.sha256)}`) : null,
+            d.review?.reason ? el("small", {}, `Motivo: ${d.review.reason}`) : null),
+          el("span", { class: "btn-row" }, el("span", { class: `pill ${LG.legalPillClass(d.status)}` }, LG.LEGAL_STATUS_LABEL[d.status] || d.status), ...actions));
+      })),
+    );
+  }).catch((err) => card.replaceChildren(el("h2", {}, "Centro Legal y cumplimiento"), el("p", { class: "message" }, C.errorMessage(err))));
+  return card;
+}
+
+const legalFetchAdmin = (fileId) => () => api("adminLegalAction", { action: "DOWNLOAD", file_id: fileId });
+
+function issueLegal(c, d) {
+  openAction({
+    eyebrow: "CENTRO LEGAL", title: `${d.version ? "Emitir nueva versión" : "Emitir"}: ${d.title}`, submit: "EMITIR PDF",
+    reason: "none",
+    text: "Se genera el PDF con logotipo, sello de agua, número y versión. Si la empresa tiene contrato DE PRUEBA, lleva además la marca «DOCUMENTO DE PRUEBA — SIN VALIDEZ CONTRACTUAL». La versión anterior queda reemplazada.",
+    fields: d.type === "ANEXO_CONTRACTUAL" ? [{ name: "annex_text", label: "Condiciones del anexo*", type: "text" }] : [],
+    onSubmit: async (v) => {
+      await api("adminLegalAction", { action: "ISSUE", company_id: c.company_id, type: d.type, annex_text: v.annex_text });
+      toast("Documento emitido: queda pendiente de la empresa.");
+      await reload();
+    },
+  });
+}
+
+async function reviewLegal(c, d) {
+  const g = await api("adminLegalAction", { action: "GET", company_id: c.company_id, type: d.type });
+  const sub = g.files.find((f) => f.status === "PENDING_REVIEW");
+  const decide = (decision) => openAction({
+    eyebrow: "REVISIÓN LEGAL", title: `${{ APROBAR: "Aprobar", RECHAZAR: "Rechazar", CORREGIR: "Solicitar corrección" }[decision]}: ${d.title}`,
+    submit: { APROBAR: "APROBAR", RECHAZAR: "RECHAZAR", CORREGIR: "SOLICITAR CORRECCIÓN" }[decision], danger: decision !== "APROBAR",
+    reason: decision === "APROBAR" ? "optional" : "required", reasonLabel: decision === "APROBAR" ? "Observación*" : "Motivo (lo verá la empresa)*",
+    fields: decision === "APROBAR" ? [{ type: "checkbox", name: "confirm_verified", label: "Confirmo que revisé el archivo enviado, su firma y que corresponde a esta empresa." }] : [],
+    onSubmit: async (v) => {
+      if (decision === "APROBAR" && v.confirm_verified !== true) throw new Error("Marca la confirmación de revisión antes de aprobar.");
+      await api("adminLegalAction", { action: "REVIEW", company_id: c.company_id, type: d.type, decision, reason: v.reason || undefined, confirm_verified: v.confirm_verified === true });
+      toast("Revisión registrada.");
+      await reload();
+    },
+  });
+  const closeViewer = () => document.getElementById("legalViewer")?.close();
+  await LG.openViewer({
+    el, title: `${d.title} · ${sub ? sub.file_name : ""}`, toast,
+    fetchFile: legalFetchAdmin((sub || g.files[0]).file_id),
+    extra: [
+      el("button", { class: "primary small", type: "button", onclick: () => { closeViewer(); decide("APROBAR"); } }, "APROBAR"),
+      el("button", { class: "secondary small", type: "button", onclick: () => { closeViewer(); decide("CORREGIR"); } }, "SOLICITAR CORRECCIÓN"),
+      el("button", { class: "danger small", type: "button", onclick: () => { closeViewer(); decide("RECHAZAR"); } }, "RECHAZAR"),
+    ],
+  });
+}
+
+async function legalHistory(c, d) {
+  const g = await api("adminLegalAction", { action: "GET", company_id: c.company_id, type: d.type });
+  const current = g.files[0];
+  if (!current) { toast("Aún no hay archivos."); return; }
+  await LG.openViewer({ el, title: `${d.title} · v${current.version}`, fetchFile: legalFetchAdmin(current.file_id), toast });
+  document.querySelector("#legalViewer .viewer-body")?.after(el("div", { class: "doc-box" },
+    el("h3", {}, "VERSIONES Y ARCHIVOS"),
+    el("ul", { class: "file-list" }, ...g.files.map((f) => el("li", {},
+      el("span", {}, el("b", {}, `${f.kind} · v${f.version}`), el("small", {}, `${f.file_name} · ${C.formatBytes(f.size)} · ${C.formatDateTime(f.created_at_ms)} · ${f.status}`), el("small", { title: f.sha256 }, `SHA-256 ${C.shortHash(f.sha256)}`)),
+      el("button", { class: "link", type: "button", onclick: () => LG.openViewer({ el, title: f.file_name, fetchFile: legalFetchAdmin(f.file_id), toast }) }, "Ver")))),
+    el("h3", {}, "HISTORIAL Y EVIDENCIA"),
+    el("ul", { class: "timeline" }, ...(g.events.length ? g.events.map((e) => el("li", {}, el("b", {}, LG.LEGAL_EVENT_LABEL[e.type] || e.type),
+      el("span", {}, [C.formatDateTime(e.at_ms), C.ROLE_LABEL[e.actor_role] || e.actor_role, e.reason].filter(Boolean).join(" · ")))) : [el("li", {}, el("span", {}, "Sin eventos."))]))));
+}
+
+// ------------------------------------------------------------ cartera de la empresa
+
+function portfolioCard(c) {
+  const card = el("article", { class: "card" }, el("h2", {}, "Cartera e importaciones"),
+    el("p", { class: "muted small" }, "Resumen sin expedientes. La consulta queda registrada."),
+    el("button", { class: "secondary small", type: "button", onclick: async (ev) => {
+      ev.currentTarget.disabled = true;
+      try {
+        const r = await api("adminCompanyPortfolio", { company_id: c.company_id });
+        card.replaceChildren(el("h2", {}, "Cartera e importaciones"),
+          el("dl", { class: "facts compact" }, el("div", {}, el("dt", {}, "VEHÍCULOS"), el("dd", {}, C.formatNumber(r.vehicles_total))),
+            ...Object.entries(r.vehicles_by_status).map(([st, n]) => el("div", {}, el("dt", {}, st), el("dd", {}, C.formatNumber(n))))),
+          el("h3", {}, "IMPORTACIONES"),
+          el("ul", { class: "timeline" }, ...(r.imports.length ? r.imports.slice(0, 20).map((j) => el("li", {}, el("b", {}, j.file_name),
+            el("span", {}, `${C.formatDateTime(j.created_at_ms)} · ${j.status} · hoja «${j.sheet_name || "—"}», encabezados fila ${j.header_row} · ${j.summary.committed || 0} importadas · ${j.summary.invalid || 0} inválidas${Object.keys(j.constants || {}).length ? ` · valores fijos: ${Object.keys(j.constants).join(", ")}` : ""}`)))
+            : [el("li", {}, el("span", {}, "Sin importaciones."))])),
+          el("h3", {}, "VEHÍCULOS (PATENTE Y ESTADO)"),
+          el("ul", { class: "timeline" }, ...(r.vehicles.length ? r.vehicles.slice(0, 50).map((x) => el("li", {}, el("b", {}, x.ppu), el("span", {}, `${x.status} · ${x.measure_type || "—"} · ${C.formatDateTime(x.updated_at_ms)}`)))
+            : [el("li", {}, el("span", {}, "Sin vehículos."))])));
+      } catch (err) { toast(C.errorMessage(err), true); ev.target.disabled = false; }
+    } }, "CONSULTAR CARTERA"));
+  return card;
 }
 
 // ------------------------------------------------------------ contrato
